@@ -43,43 +43,21 @@ bun tools/build.ts
 
 This does the following:
 
-- Compile the bytecode for each contract into `contracts/codgen/bytecode/*.polkavm`
-- Generate the abi for each contract into `contracts/codgen/abi/*.ts` and the index `contracts/codegen/abis.ts`
+- Compile the bytecode for each contract into `codgen/bytecode/*.polkavm`
+- Generate the abi for each contract into `codgen/abi/*.ts` and the index `codegen/abis.ts`
 
 ### Deploying contracts
 
-Now that the contracts are compiled, you can deploy them to either a local chain or Westend testnet.
+Update `contracts/deploy.ts` to include new contracts you want to deploy. Make sure to specify the constructor arguments and the value, if needed.
 
-Update `contracts/deploy.ts` to specify the contracts you want to deploy and specify the constructor arguments, and value if needed.
-
-Here is what the default deploy script looks like:
-
-````ts
-```sh
-import { deploy } from './codegen'
-
-await deploy({ name: 'WagmiMintExample', args: [] })
-````
-
-If you want to deploy a `Token` contract with a `name` and `symbol` constructor argument, you can do so like this:
-
-```ts
-import { deploy } from './codegen'
-
-await deploy({ name: 'WagmiMintExample', args: [] })
-await deploy({ name: 'Token', args: ['My awesome token', 'MAT'] })
-```
-
-If you have setup lsp in your editor, you should get autocomplete for the contract names and constructor arguments.
-
-Before you can deploy the contract, let's copy the `.env.example` file to `.env` and fill in the required environment variables.
+Before you can deploy contracts, let's copy the `.env.example` file to `.env` and fill in the required environment variables.
 
 ```sh
 cp .env.example .env
 ```
 
 To deploy to Westend, you will need to specify the `WESTEND_PRIVATE_KEY`.
-For local development, checkout the instructions [here](https://contracts.polkadot.io/work-with-a-local-node) to setup a local chain.
+For local development, checkout the instructions [here](https://contracts.polkadot.io/work-with-a-local-node) to setup and start a local chain.
 
 Now that you have the environment variables setup, you can deploy the contracts by running:
 
@@ -87,7 +65,7 @@ Now that you have the environment variables setup, you can deploy the contracts 
 bun tools/deploy.ts
 ```
 
-This command will update the `contracts/addresses.ts` file with the deployed contract addresses, so that you can use them in your frontend.
+This command will update the `codegen/addresses.ts` file with the deployed contract addresses, so that you can easily import them in your frontend.
 
 ### Running the frontend
 
