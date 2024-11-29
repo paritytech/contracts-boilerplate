@@ -81,3 +81,8 @@ The default app let you do the following actions:
 - Display the connected account
 - Mint an NFT.
 - Display the minted NFT.
+
+# Learn more
+
+- Consult the [wagmi documentation](https://wagmi.sh/) to learn more about building EVM Dapps with React.
+- Consult the [viem documentation](https://viem.sh/) to learn more about the library used to interact with EVM contracts.
