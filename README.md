@@ -19,8 +19,7 @@ git clone https://github.com/paritytech/contracts-boilerplate.git
 cd contracts-boilerplate
 ```
 
-We will use `bun`, a modern alternative to npm with batteries included. Bun is designed to be fast and comes with a built-in bundler, transpiler, and task runner.
-
+We will use [Bun](https://bun.sh), a modern alternative to node/npm with batteries included.
 To install Bun, run the following command:
 
 ```sh
