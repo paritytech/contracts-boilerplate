@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { readdirSync } from 'node:fs'
 import { join, basename } from 'node:path'
 
-console.log('Compiling contracts...')
+console.log('🚀 Compiling contracts...')
 
 // Get all contracts in the contracts directory.
 const rootDir = join(__dirname, '..')
@@ -21,7 +21,7 @@ const indexCode = [
 ]
 
 for (const file of input) {
-    console.log(`Compiling ${file}...`)
+    console.log(`🔨 Compiling ${file}...`)
     const name = basename(file, '.sol')
     const input = {
         [name]: { content: readFileSync(join(contractsDir, file), 'utf8') },
@@ -31,7 +31,7 @@ for (const file of input) {
 
     for (const contracts of Object.values(out.contracts)) {
         for (const [name, contract] of Object.entries(contracts)) {
-            console.log(`Add contract ${name}`)
+            console.log(`📜 Add contract ${name}`)
             const abi = contract.abi
             const abiName = `${name}Abi`
             writeFileSync(

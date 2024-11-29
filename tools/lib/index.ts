@@ -96,7 +96,7 @@ export async function deploy<K extends keyof Abis>({
     args: ContractConstructorArgs<Abis[K]>
     value?: bigint
 }) {
-    console.log(`Deploying ${name} to ${wallet.chain.name}`)
+    console.log(`🚀 Deploying ${name} to ${wallet.chain.name}`)
 
     id ??= name
     const hash = await wallet.deployContract({
@@ -124,5 +124,5 @@ export async function deploy<K extends keyof Abis>({
     }
 
     writeFileSync(addressesFile, addresses, 'utf8')
-    console.log(`Contract ${name} deployed: ${address}`)
+    console.log(`✅ Contract ${name} deployed: ${address}`)
 }
