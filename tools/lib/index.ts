@@ -17,10 +17,12 @@ const chain = (() => {
         console.error(
             `Invalid CHAIN env variable ${process.env.CHAIN}. Please provide either westend or kitchensink`
         )
+        process.exit(1)
     } else {
         console.error(
             'Please provide a CHAIN env variable by specifying directly or adding it to the .env file'
         )
+        process.exit(1)
     }
 })()
 
