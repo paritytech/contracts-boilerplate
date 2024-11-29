@@ -3,6 +3,8 @@
 > ⚠️ Warning: Hardhat plugins are not available yet for Contracts on Asset Hub.
 > This repository serves as a temporary solution until we can use the hardhat tools.
 
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/paritytech/contracts-boilerplate/tree/stackblitz)
+
 This repository contains a sample project that you can use as the starting point
 for your Smart Contracts on Asset Hub project. It's also a great fit for learning the basics of
 smart contract development.
