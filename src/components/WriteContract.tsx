@@ -5,8 +5,8 @@ import {
     useWaitForTransactionReceipt,
     useReadContract,
 } from 'wagmi'
-import { WagmiMintExample as address } from '../../codegen/addresses'
-import { WagmiMintExampleAbi } from '../../codegen/abi/WagmiMintExample'
+import { WagmiMintExample as address } from '../../stackblitz/addresses'
+import { WagmiMintExampleAbi } from '../../stackblitz/abi/WagmiMintExample'
 
 export function WriteContract() {
     const [tokenId, setTokenId] = useState<string>('')
