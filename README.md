@@ -71,16 +71,18 @@ This command will update the `codegen/addresses.ts` file with the deployed contr
 Once the contracts are deployed you can run the frontend by running:
 
 ```sh
-bun dev
+bun dev --open
 ```
 
-This will start a development server with live reload.
+This will start a development server with live reload and open your browser to the local url.
 The default app let you do the following actions:
 
 - Connect to different wallets
 - Display the connected account
 - Mint an NFT.
 - Display the minted NFT.
+
+![screenshot](https://github.com/user-attachments/assets/1fda3678-c22b-4f7d-a0be-68e01662b329)
 
 # Learn more
 
