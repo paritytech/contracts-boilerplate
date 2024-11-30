@@ -88,5 +88,6 @@ The default app let you do the following actions:
 
 # Learn more
 
-- Consult the [wagmi documentation](https://wagmi.sh/) to learn more about building EVM Dapps with React.
-- Consult the [viem documentation](https://viem.sh/) to learn more about the library used to interact with EVM contracts.
+- [Asset Hub documentation](https://contracts.polkadot.io) to learn more about building Smart Contracts on Asset Hub.
+- [wagmi documentation](https://wagmi.sh/) to learn more about building EVM Dapps with React.
+- [viem documentation](https://viem.sh/) to learn more about the library used to interact with EVM contracts.
