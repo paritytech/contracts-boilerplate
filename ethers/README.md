@@ -18,7 +18,7 @@ dependencies:
 
 ```sh
 git clone https://github.com/paritytech/contracts-boilerplate.git
-cd contracts-boilerplate
+cd contracts-boilerplate/ethers
 ```
 
 We will use [Bun](https://bun.sh), a modern alternative to node/npm with batteries included.
@@ -83,7 +83,7 @@ This Dapp consists of multiple React Components, which you can find in
 
 Most of them are presentational components, have no logic, and just render HTML.
 
-The core functionality is implemented in `src/components/Dapp.js`, which has
+The core functionality is implemented in `src/components/Dapp.tsx`, which has
 examples of how to connect to the user's wallet, initialize your wallet
 connection and contracts, read from the contract's state, and send transactions.
 

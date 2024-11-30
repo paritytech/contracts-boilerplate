@@ -18,7 +18,7 @@ dependencies:
 
 ```sh
 git clone https://github.com/paritytech/contracts-boilerplate.git
-cd contracts-boilerplate
+cd contracts-boilerplate/ethers
 ```
 
 We will use [Bun](https://bun.sh), a modern alternative to node/npm with batteries included.
