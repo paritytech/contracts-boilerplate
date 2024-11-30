@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "lint": "prettier --check . --write",
+        "lint": "prettier --plugin=prettier-plugin-solidity --check . --write",
         "preview": "vite preview"
     },
     "dependencies": {
@@ -17,6 +17,7 @@
         "wagmi": "latest"
     },
     "devDependencies": {
+        "prettier-plugin-solidity": "^1.4.1",
         "@openzeppelin/contracts": "^5.1.0",
         "@parity/revive": "^0.0.5",
         "prettier": "^3.4.1",

@@ -1,0 +1,30 @@
+{
+    "name": "contracts-boilerplate",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "lint": "prettier --plugin=prettier-plugin-solidity --check . --write",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.3",
+        "ethers": "^6.13.4",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    },
+    "devDependencies": {
+        "prettier-plugin-solidity": "^1.4.1",
+        "@parity/revive": "^0.0.5",
+        "@openzeppelin/contracts": "^5.1.0",
+        "prettier": "^3.4.1",
+        "@types/react": "^18.3.1",
+        "@types/react-dom": "^18.3.0",
+        "@vitejs/plugin-react": "^4.2.1",
+        "buffer": "^6.0.3",
+        "typescript": "^5.4.5",
+        "vite": "^5.2.11"
+    }
+}
