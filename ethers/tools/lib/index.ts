@@ -6,18 +6,18 @@ import { westend, kitchensink } from '../../src/chains.ts'
 
 // Get the chain to deploy to.
 export const chain = (() => {
-    if (process.env.CHAIN === 'westend') {
+    if (process.env.VITE_CHAIN === 'westend') {
         return westend
-    } else if (process.env.CHAIN == 'kitchensink') {
+    } else if (process.env.VITE_CHAIN == 'kitchensink') {
         return kitchensink
-    } else if (process.env.CHAIN) {
+    } else if (process.env.VITE_CHAIN) {
         console.error(
-            `Invalid CHAIN env variable ${process.env.CHAIN}. Please provide either westend or kitchensink`
+            `Invalid VITE_CHAIN env variable ${process.env.VITE_CHAIN}. Please provide either westend or kitchensink`
         )
         process.exit(1)
     } else {
         console.error(
-            'Please provide a CHAIN env variable by specifying directly or adding it to the .env file'
+            'Please provide a VITE_CHAIN env variable by specifying directly or adding it to the .env file'
         )
         process.exit(1)
     }

@@ -7,9 +7,7 @@ export function NoTokensMessage({ selectedAddress }: NoTokensMessageProps) {
         <>
             <p>You don't have tokens to transfer</p>
             <p>
-                To get some tokens, open a terminal in the root of the
-                repository and run:
-                <br />
+                To get some tokens, run the following command in your terminal:
                 <br />
                 <code>bun tools/faucet.ts --address {selectedAddress}</code>
             </p>

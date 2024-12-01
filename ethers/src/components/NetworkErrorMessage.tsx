@@ -8,17 +8,17 @@ export function NetworkErrorMessage({
     dismiss,
 }: NetworkErrorMessageProps) {
     return (
-        <div className="alert alert-danger" role="alert">
-            {message}
+        <div
+            className="alert alert-danger d-flex justify-content-between align-items-center"
+            role="alert"
+        >
+            <span>{message}</span>
             <button
                 type="button"
-                className="close"
-                data-dismiss="alert"
+                className="btn-close"
                 aria-label="Close"
                 onClick={dismiss}
-            >
-                <span aria-hidden="true">&times;</span>
-            </button>
+            ></button>
         </div>
     )
 }
