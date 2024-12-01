@@ -4,7 +4,7 @@ This repository contains 2 boilerplates Dapp to help you getting started buildin
 
 ## Build Dapp with ethers.js & react
 
-This is a Dapp boilerplate that uses ethers.js along with react to build a Dapp. Ethers.js is a well-adopted predecessor to more modern takes like viem, providing comprehensive utilities for interacting with the Ethereum blockchain.
+This is a Dapp boilerplate that uses ethers.js along with react to build a Dapp.
 
 See [ethers/README.md](./ethers)
 
