@@ -10,7 +10,8 @@ See [ethers/README.md](./ethers)
 
 ## Build Dapp with wagmi & react & viem
 
-This is a more modern Dapp boilerplate that uses Viem and Wagmi. Viem is a lightweight TypeScript library for interacting with Ethereum, focusing on providing a simple, type-safe API for Ethereum JSON-RPC methods. Wagmi is a collection of React hooks for Ethereum.
+This is a more modern Dapp boilerplate that uses Viem and Wagmi.
+Viem is a lightweight TypeScript library for interacting with Ethereum, focusing on providing a simple, type-safe API for Ethereum JSON-RPC methods. Wagmi is a collection of React hooks for Ethereum.
 
 See [viem/README.md](./viem)
 
