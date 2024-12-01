@@ -43,7 +43,7 @@ bun tools/build.ts
 This does the following:
 
 - Compile the bytecode for each contract into `codgen/bytecode/*.polkavm`
-- Generate the abi for each contract into `codgen/abi/*.ts` and the index `codegen/abis.ts`
+- Generate the abi for each contract into `codgen/abi/*.json`
 
 ### Deploying contracts
 
@@ -64,7 +64,7 @@ Now that you have the environment variables setup, you can deploy the contracts 
 bun tools/deploy.ts
 ```
 
-This command will update the `codegen/addresses.ts` file with the deployed contract addresses, so that you can easily import them in your frontend.
+This command will update the `src/contracts/contract-address.json` file with the deployed contract addresses, so that you can easily import them in your frontend.
 
 ### Running the frontend
 
