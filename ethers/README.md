@@ -47,7 +47,7 @@ This does the following:
 
 ### Deploying contracts
 
-Update `contracts/deploy.ts` to include new contracts you want to deploy. Make sure to specify the constructor arguments and the value, if needed.
+Update `tools/deploy.ts` to include new contracts you want to deploy. Make sure to specify the constructor arguments and the value, if needed.
 
 Before you can deploy contracts, let's copy the `.env.example` file to `.env` and fill in the required environment variables.
 
