@@ -57,7 +57,7 @@ Before you can deploy contracts, let's copy the `.env.example` file to `.env` an
 cp .env.example .env
 ```
 
-To deploy to Westend, you will need to specify the `WESTEND_PRIVATE_KEY`.
+To deploy to Westend, you will need to specify as the `WESTEND_PRIVATE_KEY` your [Eth account's private key](https://support.metamask.io/managing-my-wallet/secret-recovery-phrase-and-private-keys/how-to-export-an-accounts-private-key/). 
 For local development, checkout the instructions [here](https://contracts.polkadot.io/work-with-a-local-node) to setup and start a local chain.
 
 Now that you have the environment variables setup, you can deploy the contracts by running:
