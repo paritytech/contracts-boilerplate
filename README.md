@@ -1,4 +1,4 @@
-⚠️ Archived: Use https://github.com/paritytech/contracts-boilerplate instead
+⚠️ Archived: Use https://github.com/paritytech/create-polkadot-dapp instead
 
 # Getting started with Dapp on Asset Hub
 
