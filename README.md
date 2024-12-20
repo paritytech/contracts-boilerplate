@@ -1,3 +1,5 @@
+⚠️ Archived: Use https://github.com/paritytech/contracts-boilerplate instead
+
 # Getting started with Dapp on Asset Hub
 
 This repository contains 2 boilerplates Dapp to help you getting started building contracts on Asset Hub.
