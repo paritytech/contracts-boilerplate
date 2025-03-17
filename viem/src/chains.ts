@@ -17,7 +17,7 @@ export const AssetHubWestend = defineChain({
 })
 
 export const Kitchensink = defineChain({
-    id: 420420420,
+    id: 420420421,
     name: 'Kitchensink',
     nativeCurrency: {
         name: 'Dev',

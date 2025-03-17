@@ -9,5 +9,4 @@ import { deploy } from './lib'
  * await deploy({ name: 'Token', args: ["My Awseome Token", "MAT"] })
  * ```
  */
-//await deploy({ name: 'Token', args: [] })
 await deploy({ name: 'Storage', args: [] })

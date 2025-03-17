@@ -11,20 +11,20 @@
     },
     "dependencies": {
         "bootstrap": "^5.3.3",
-        "ethers": "^6.13.4",
+        "ethers": "^6.13.5",
         "react": "^18.3.1",
         "react-dom": "^18.3.1"
     },
     "devDependencies": {
-        "prettier-plugin-solidity": "^1.4.1",
-        "@parity/revive": "^0.0.6",
-        "@openzeppelin/contracts": "^5.1.0",
-        "prettier": "^3.4.1",
-        "@types/react": "^18.3.1",
-        "@types/react-dom": "^18.3.0",
-        "@vitejs/plugin-react": "^4.2.1",
+        "prettier-plugin-solidity": "^1.4.2",
+        "@parity/revive": "^0.0.9",
+        "@openzeppelin/contracts": "^5.2.0",
+        "prettier": "^3.4.2",
+        "@types/react": "^18.3.18",
+        "@types/react-dom": "^18.3.5",
+        "@vitejs/plugin-react": "^4.3.4",
         "buffer": "^6.0.3",
-        "typescript": "^5.4.5",
-        "vite": "^5.2.11"
+        "typescript": "^5.7.3",
+        "vite": "^5.4.11"
     }
 }

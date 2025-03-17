@@ -7,28 +7,25 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "lint": "prettier --plugin=prettier-plugin-solidity --check . --write",
-        "preview": "vite preview",
-        "build-contracts": "tsc tools/**/*.ts"
+        "preview": "vite preview"
     },
     "dependencies": {
-        "@redstone-finance/evm-connector": "^0.6.2",
-        "@tanstack/react-query": "5.45.1",
+        "bootstrap": "^5.3.3",
+        "ethers": "^6.13.5",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "viem": "latest",
-        "wagmi": "latest"
+        "web3": "^4.1.0"
     },
     "devDependencies": {
         "prettier-plugin-solidity": "^1.4.2",
+        "@parity/revive": "^0.0.9",
         "@openzeppelin/contracts": "^5.2.0",
-        "@parity/revive": "^0.0.14",
-        "prettier": "^3.5.1",
+        "prettier": "^3.4.2",
         "@types/react": "^18.3.18",
         "@types/react-dom": "^18.3.5",
         "@vitejs/plugin-react": "^4.3.4",
-        "@wagmi/cli": "latest",
         "buffer": "^6.0.3",
         "typescript": "^5.7.3",
-        "vite": "^5.4.14"
+        "vite": "^5.4.11"
     }
 }

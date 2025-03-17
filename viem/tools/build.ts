@@ -1,13 +1,13 @@
 import { compile } from '@parity/revive'
 import { format } from 'prettier'
-import { readFileSync, writeFileSync } from 'fs'
-import { readdirSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, basename } from 'node:path'
+import { Buffer } from 'node:buffer'
 
 console.log('🚀 Compiling contracts...')
 
 // Get all contracts in the contracts directory.
-const rootDir = join(__dirname, '..')
+const rootDir = join(import.meta.dirname, '..')
 const contractsDir = join(rootDir, 'contracts')
 const codegenDir = join(rootDir, 'codegen')
 const input = readdirSync(contractsDir).filter((f) => f.endsWith('.sol'))
@@ -19,7 +19,6 @@ const indexCode = [
     export const abis = {
     `.trimEnd(),
 ]
-
 for (const file of input) {
     console.log(`🔨 Compiling ${file}...`)
     const name = basename(file, '.sol')
@@ -49,7 +48,7 @@ for (const file of input) {
                 Buffer.from(contract.evm.bytecode.object, 'hex')
             )
 
-            indexCode.unshift(`import { ${abiName} } from './abi/${name}'`)
+            indexCode.unshift(`import { ${abiName} } from './abi/${name}.ts'`)
             indexCode.push(`${name}: ${abiName},`)
         }
     }

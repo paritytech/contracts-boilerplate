@@ -1,0 +1,4 @@
+src/contracts/*.json
+src/contracts/*.polkavm
+
+
