@@ -140,15 +140,16 @@ export const wallet = createWalletClient({
 }).extend(publicActions)
 
 // On geth let's endow the account wallet with some funds, to match the eth-rpc setup
-if (chainName == 'geth') {
+if (chainName == 'Geth') {
     const endowment = parseEther('1000')
-    const balance = await serverWallet.getBalance(serverWallet.account)
+    const balance = await serverWallet.getBalance(wallet.account)
     if (balance < endowment / 2n) {
-        await serverWallet.sendTransaction({
+        const hash =  await serverWallet.sendTransaction({
             account: serverWallet.account,
             to: wallet.account.address,
             value: endowment,
         })
+        serverWallet.waitForTransactionReceipt({ hash })
     }
 }
 
@@ -193,7 +194,7 @@ const codegenDir = join(import.meta.dirname, '..', '..', 'codegen')
  * Get the byte code of a contract.
  */
 export function getByteCode(name: string): Hex {
-    const ext = chainName == 'geth' ? 'evm' : 'polkavm'
+    const ext = chainName == 'Geth' ? 'evm' : 'polkavm'
     const data = readFileSync(
         join(codegenDir, 'bytecode', `${name}.${ext}`)
     ).toString('hex')
@@ -233,6 +234,10 @@ export async function deploy<K extends keyof Abis>({
         console.log(
             `👤 Account ${wallet.account.address} - balance: ${formatEther(balance)}\n`
         )
+        if (balance == 0n) {
+            console.error('❌ Account has no funds')
+            process.exit(1)
+        }
     }
     console.log(`🚀 Deploying ${name}`)
 
