@@ -19,7 +19,7 @@
     },
     "devDependencies": {
         "@openzeppelin/contracts": "^5.2.0",
-        "@parity/revive": "^0.0.14",
+        "@parity/revive": "^0.0.15",
         "@types/react": "^18.3.18",
         "@types/react-dom": "^18.3.5",
         "@vitejs/plugin-react": "^4.3.4",

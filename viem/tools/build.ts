@@ -54,11 +54,10 @@ const input = readdirSync(contractsDir)
     .filter((f) => f.endsWith('.sol'))
     .filter((f) => !filter || f.includes(filter))
 
-
 if (clean) {
     console.log('🧹 Cleaning codegen directory...')
     for (const dirname of ['abi', 'bytecode']) {
-        const dir =  join(codegenDir, dirname)
+        const dir = join(codegenDir, dirname)
         const files = readdirSync(dir).filter((f) => !f.endsWith('.gitkeep'))
         for (const file of files) {
             unlinkSync(join(dir, file))
@@ -82,9 +81,12 @@ for (const file of input) {
         [name]: { content: readFileSync(join(contractsDir, file), 'utf8') },
     }
 
-    const reviveOut = await compile(input)
-    const evmOut = JSON.parse(evmCompile(input)) as SolcOutput
+    const reviveOut = await compile(input).catch((err) => {
+        console.error('Failed to build with resolc', err)
+        process.exit(1)
+    })
 
+    const evmOut = JSON.parse(evmCompile(input)) as SolcOutput
 
     for (const [id, contracts] of Object.entries(reviveOut.contracts)) {
         for (const [name, contract] of Object.entries(contracts)) {
@@ -108,7 +110,10 @@ for (const file of input) {
 
             writeFileSync(
                 join(codegenDir, 'bytecode', `${name}.evm`),
-                Buffer.from(evmOut.contracts[id][name].evm.bytecode.object, 'hex')
+                Buffer.from(
+                    evmOut.contracts[id][name].evm.bytecode.object,
+                    'hex'
+                )
             )
 
             indexCode.unshift(`import { ${abiName} } from './abi/${name}.ts'`)

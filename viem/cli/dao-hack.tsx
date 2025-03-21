@@ -27,26 +27,28 @@ async function attack() {
     })
 
     console.assert(receipt.status === 'success', 'Transaction failed')
-    setTimeout(attack, 0)
 }
 
 // Get the initial balances.
 const initialBalances = await fetchBalances()
 
-// Start the attack loop.
-setTimeout(attack, 0)
-
 // Render both balances in the terminal.
 const App = () => {
     const [[attacker, dao], setBalances] = useState(initialBalances)
 
-    // Fetch the balances every second.
+    // Run the attack in a loop
     useEffect(() => {
-        const interval = setInterval(
-            () => fetchBalances().then(setBalances),
-            1000
-        )
-        return () => clearInterval(interval)
+        let timeoutId: NodeJS.Timeout | undefined = undefined
+        async function loop() {
+            await attack()
+            const [attacker, dao] = await fetchBalances()
+            setBalances([attacker, dao])
+            if (dao > 0) {
+                timeoutId = setTimeout(loop, 100)
+            }
+        }
+        loop()
+        return () => clearTimeout(timeoutId)
     }, [])
 
     return (
