@@ -149,7 +149,7 @@ if (chainName == 'Geth') {
             to: wallet.account.address,
             value: endowment,
         })
-        serverWallet.waitForTransactionReceipt({ hash })
+        await serverWallet.waitForTransactionReceipt({ hash })
     }
 }
 
