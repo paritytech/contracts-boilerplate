@@ -1,3 +1,5 @@
+//! Call with deno task build [--filter <filter>] [--clean]
+
 /// <reference path="./solc.d.ts" />
 import { compile, SolcOutput, tryResolveImport } from '@parity/revive'
 import solc from 'solc'
@@ -52,7 +54,7 @@ const contractsDir = join(rootDir, 'contracts')
 const codegenDir = join(rootDir, 'codegen')
 const input = readdirSync(contractsDir)
     .filter((f) => f.endsWith('.sol'))
-    .filter((f) => !filter || f.includes(filter))
+    .filter((f) => !filter || f.toLowerCase().includes(filter.toLowerCase()))
 
 if (clean) {
     console.log('🧹 Cleaning codegen directory...')
@@ -75,7 +77,7 @@ const indexCode = [
     `.trimEnd(),
 ]
 for (const file of input) {
-    console.log(`🔨 Compiling ${file}...`)
+    console.log(`\n🔨 Compiling ${file}...`)
     const name = basename(file, '.sol')
     const input = {
         [name]: { content: readFileSync(join(contractsDir, file), 'utf8') },
@@ -90,7 +92,7 @@ for (const file of input) {
 
     for (const [id, contracts] of Object.entries(reviveOut.contracts)) {
         for (const [name, contract] of Object.entries(contracts)) {
-            console.log(`📜 Add contract ${name}`)
+            console.log(`- 📜 contract ${name}`)
             const abi = contract.abi
             const abiName = `${name}Abi`
             writeFileSync(

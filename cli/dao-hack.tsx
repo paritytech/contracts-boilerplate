@@ -1,3 +1,4 @@
+// deno --env-file --allow-all ./cli/dao-hack.tsx
 import React, { useState, useEffect } from 'react'
 import { render, Text, Box } from 'ink'
 import { formatEther } from 'viem'

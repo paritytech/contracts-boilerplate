@@ -1,6 +1,7 @@
 // Run with
+// deno task build --filter dao
 // deno --env-file --allow-all ./cli/dao-hack-traces.ts | jless
-import { wallet, debugClient, visit } from '../tools/lib/index.ts'
+import { wallet, debugClient } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import {
     encodeFunctionData,
@@ -25,6 +26,30 @@ const result = await debugClient.traceCall(
 )
 console.log(JSON.stringify(visit(result, visitor), null, 2))
 
+function visit(obj: any, callback: (key: string, value: any) => any): any {
+    if (Array.isArray(obj)) {
+        return obj.map((item) => visit(item, callback))
+    } else if (typeof obj === 'object' && obj !== null) {
+        const out = Object.keys(obj).reduce((acc, key) => {
+            const res = visit(callback(key, obj[key]), callback)
+            if (res) {
+                acc[key] = res
+            }
+            return acc
+        }, {} as any)
+
+        // Keep 'calls' last
+        return Object.fromEntries(
+            Object.entries(out).sort(([keyA], [keyB]) => {
+                if (keyA === 'calls') return 1
+                if (keyB === 'calls') return -1
+                return 0
+            })
+        )
+    } else {
+        return obj
+    }
+}
 function visitor(key: string, value: any) {
     switch (key) {
         case 'gas':
@@ -46,6 +71,9 @@ function visitor(key: string, value: any) {
         case 'value':
             return formatEther(hexToBigInt(value))
         case 'input':
+            if (value === '0x') {
+                return { functionName: 'receive' }
+            }
             try {
                 return decodeFunctionData({
                     abi: [...abis.DaoAttacker, ...abis.Dao],

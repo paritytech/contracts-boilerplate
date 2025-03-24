@@ -1,3 +1,5 @@
+//! Call with deno task deploy [--filter <filter>]
+
 import { parseEther } from 'viem'
 import { deploy } from './lib/index.ts'
 

