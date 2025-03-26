@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import { createEnv } from '../../utils/index.ts'
 import { ContractConstructorArgs, formatEther } from 'viem'
-import { abis, Abis } from '../../codegen/abis.ts'
+import { Abis } from '../../codegen/abis.ts'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Hex } from 'viem'
@@ -71,7 +71,7 @@ if (!privateKey) {
 
 assertHex(privateKeyName, privateKey)
 
-const env = await createEnv({
+export const env = await createEnv({
     rpcUrl,
     privateKey,
 })

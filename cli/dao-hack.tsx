@@ -4,7 +4,9 @@ import { render, Text, Box } from 'ink'
 import { formatEther } from 'viem'
 import { Dao, DaoAttacker } from '../codegen/addresses.ts'
 import { abis } from '../codegen/abis.ts'
-import { wallet } from '../tools/lib/index.ts'
+import { env } from '../tools/lib/index.ts'
+
+const { wallet } = env
 
 // Fetch the current balances of the attacker and the DAO.
 async function fetchBalances() {

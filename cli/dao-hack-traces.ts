@@ -1,7 +1,7 @@
 // Run with
 // deno task build --filter dao
 // deno --env-file --allow-all ./cli/dao-hack-traces.ts | jless
-import { wallet, debugClient } from '../tools/lib/index.ts'
+import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import {
     encodeFunctionData,
@@ -12,44 +12,16 @@ import {
 } from 'viem'
 import { Dao, DaoAttacker } from '../codegen/addresses.ts'
 
-const result = await debugClient.traceCall(
-    {
-        to: DaoAttacker,
-        from: wallet.account.address,
-        data: encodeFunctionData({
-            abi: abis.DaoAttacker,
-            functionName: 'attack',
-            args: [],
-        }),
-    },
-    { withLog: false }
-)
+const result = await env.debugClient.traceCall({
+    to: DaoAttacker,
+    data: encodeFunctionData({
+        abi: abis.DaoAttacker,
+        functionName: 'attack',
+        args: [],
+    }),
+})
 console.log(JSON.stringify(visit(result, visitor), null, 2))
 
-function visit(obj: any, callback: (key: string, value: any) => any): any {
-    if (Array.isArray(obj)) {
-        return obj.map((item) => visit(item, callback))
-    } else if (typeof obj === 'object' && obj !== null) {
-        const out = Object.keys(obj).reduce((acc, key) => {
-            const res = visit(callback(key, obj[key]), callback)
-            if (res) {
-                acc[key] = res
-            }
-            return acc
-        }, {} as any)
-
-        // Keep 'calls' last
-        return Object.fromEntries(
-            Object.entries(out).sort(([keyA], [keyB]) => {
-                if (keyA === 'calls') return 1
-                if (keyB === 'calls') return -1
-                return 0
-            })
-        )
-    } else {
-        return obj
-    }
-}
 function visitor(key: string, value: any) {
     switch (key) {
         case 'gas':
@@ -63,7 +35,7 @@ function visitor(key: string, value: any) {
                 return '<DAO>'
             } else if (value === DaoAttacker) {
                 return '<Attacker>'
-            } else if (value == wallet.account.address.toLowerCase()) {
+            } else if (value == '0x0000000000000000000000000000000000000000') {
                 return '<caller>'
             }
             return value
@@ -90,5 +62,30 @@ function visitor(key: string, value: any) {
             }
             return value
         }
+    }
+}
+
+function visit(obj: any, callback: (key: string, value: any) => any): any {
+    if (Array.isArray(obj)) {
+        return obj.map((item) => visit(item, callback))
+    } else if (typeof obj === 'object' && obj !== null) {
+        const out = Object.keys(obj).reduce((acc, key) => {
+            const res = visit(callback(key, obj[key]), callback)
+            if (res) {
+                acc[key] = res
+            }
+            return acc
+        }, {} as any)
+
+        // Keep 'calls' last
+        return Object.fromEntries(
+            Object.entries(out).sort(([keyA], [keyB]) => {
+                if (keyA === 'calls') return 1
+                if (keyB === 'calls') return -1
+                return 0
+            })
+        )
+    } else {
+        return obj
     }
 }

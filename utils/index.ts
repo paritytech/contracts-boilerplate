@@ -158,7 +158,7 @@ export async function createEnv({
 
         async traceCall(
             args: CallParameters | { from?: Hex },
-            tracerConfig: { withLog: boolean }
+            tracerConfig: { withLog: boolean } = { withLog: false }
         ) {
             return client.request({
                 method: 'debug_traceCall' as any,
