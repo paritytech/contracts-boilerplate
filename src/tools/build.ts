@@ -4,7 +4,13 @@
 import { compile, SolcOutput, tryResolveImport } from '@parity/revive'
 import solc from 'solc'
 import { format } from 'prettier'
-import { readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import {
+    mkdirSync,
+    readdirSync,
+    readFileSync,
+    unlinkSync,
+    writeFileSync,
+} from 'node:fs'
 import { join, basename } from 'node:path'
 import { Buffer } from 'node:buffer'
 import { parseArgs } from 'node:util'
@@ -89,6 +95,9 @@ for (const file of input) {
     })
 
     const evmOut = JSON.parse(evmCompile(input)) as SolcOutput
+
+    mkdirSync(join(codegenDir, 'abi'), { recursive: true })
+    mkdirSync(join(codegenDir, 'bytecode'), { recursive: true })
 
     for (const [id, contracts] of Object.entries(reviveOut.contracts)) {
         for (const [name, contract] of Object.entries(contracts)) {
