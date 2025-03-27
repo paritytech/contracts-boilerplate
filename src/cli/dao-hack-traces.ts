@@ -1,6 +1,6 @@
 // Run with
 // deno task build --filter dao
-// deno --env-file --allow-all ./cli/dao-hack-traces.ts | jless
+// deno --env-file --allow-all src/cli/dao-hack-traces.ts | jless
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import {

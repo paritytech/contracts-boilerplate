@@ -2,19 +2,19 @@
     "tasks": {
         "build": {
             "description": "Build contracts from the contracts directory and output bytecode and abi in the codegen directory",
-            "command": "deno run --env-file --allow-all tools/build.ts"
+            "command": "deno run --env-file --allow-all src/tools/build.ts"
         },
         "deploy": {
             "description": "Deploy contracts to the network specified in the .env file, and update addresses in the codegen directory",
-            "command": "deno run --env-file --allow-all tools/deploy.ts"
+            "command": "deno run --env-file --allow-all src/tools/deploy.ts"
         },
         "dao-hack-cli": {
             "description": "Run the dao-hack cli demo",
-            "command": "deno --env-file --allow-all ./cli/dao-hack.tsx"
+            "command": "deno --env-file --allow-all src/cli/dao-hack.tsx"
         },
         "dao-hack-traces": {
             "description": "Run the dao-hack tracing demo",
-            "command": "deno --env-file --allow-all ./cli/dao-hack-traces.ts"
+            "command": "deno --env-file --allow-all src/cli/dao-hack-traces.ts"
         }
     }
 }
