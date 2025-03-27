@@ -78,7 +78,7 @@ This command will update the `codegen/addresses.ts` file with the deployed contr
 Once the contracts are deployed you can run the frontend by running:
 
 ```sh
-deno dev --open
+deno task dev --open
 ```
 
 This will start a development server with live reload and open your browser to the local url.
