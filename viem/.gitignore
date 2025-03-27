@@ -1,6 +1,0 @@
-codegen/abi/*.ts
-codegen/bytecode/*.polkavm
-codegen/abis.ts
-codegen/addresses.ts
-
-
