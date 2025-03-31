@@ -156,22 +156,44 @@ export const chain = defineChain({
     if (!address) {
         throw new Error('Deployed receipt should have a contract address')
     }
+    {
+        let addressesFile = join(codegenDir, 'addresses.ts')
+        let addresses = existsSync(addressesFile)
+            ? readFileSync(addressesFile, 'utf8')
+            : ''
 
-    let addressesFile = join(codegenDir, 'addresses.ts')
-    let addresses = existsSync(addressesFile)
-        ? readFileSync(addressesFile, 'utf8')
-        : ''
+        const exportLine = `export const ${id} = "${address}";`
+        const regex = new RegExp(`^export const ${id} = .*`, 'm')
 
-    const exportLine = `export const ${id} = "${address}";`
-    const regex = new RegExp(`^export const ${id} = .*`, 'm')
-
-    if (regex.test(addresses)) {
-        addresses = addresses.replace(regex, exportLine)
-    } else {
-        addresses = `${addresses}\n${exportLine}`
+        if (regex.test(addresses)) {
+            addresses = addresses.replace(regex, exportLine)
+        } else {
+            addresses = `${addresses}\n${exportLine}`
+        }
+        writeFileSync(addressesFile, addresses, 'utf8')
     }
 
-    writeFileSync(addressesFile, addresses, 'utf8')
+    {
+        let contractsFile = join(codegenDir, 'contracts.ts')
+        let contracts = existsSync(contractsFile)
+            ? readFileSync(contractsFile, 'utf8')
+            : [
+                  `// prettier-ignore`,
+                  `import * as addresses from './addresses.ts'`,
+                  `import { abis } from './abis.ts'`,
+              ].join('\n')
+
+        const exportLine = `export const ${id} = { address: addresses.${id}, abi: abis.${id} }`
+        const regex = new RegExp(`^export const ${id} = .*`, 'm')
+
+        if (regex.test(contracts)) {
+            contracts = contracts.replace(regex, exportLine)
+        } else {
+            contracts = `${contracts}\n${exportLine}`
+        }
+        writeFileSync(contractsFile, contracts, 'utf8')
+    }
+
     console.log(`✅ ${name} deployed: ${address}\n`)
     return address
 }

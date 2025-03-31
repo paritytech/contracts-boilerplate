@@ -25,3 +25,5 @@ await deploy({
     args: [daoAddress, 2n],
     value: parseEther('1'),
 })
+
+await deploy({ name: 'MagicWord', args: [] })
