@@ -10,7 +10,7 @@ pragma solidity >=0.8.2 <0.9.0;
 contract MagicWord {
 
     string private magicWord;
-    string[] private constant adjectives = [
+    string[] private adjectives = [
         "amazing", "awesome", "brilliant", "beautiful", "brave", 
         "bold", "bright", "calm", "charming", "cheerful", 
         "clever", "colorful", "comfortable", "confident", "considerate", 
