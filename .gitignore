@@ -1,6 +1,11 @@
 # Logs
 logs
-src/codegen/**
+src/codegen/*.ts
+src/codegen/abi/**
+!src/codegen/abi/.gitkeep
+
+src/codegen/bytecode/**
+!src/codegen/bytecode/.gitkeep
 *.log
 npm-debug.log*
 yarn-debug.log*
