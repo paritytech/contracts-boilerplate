@@ -1,5 +1,6 @@
 # Logs
 logs
+src/codegen/*.ts
 src/codegen/abi/**
 !src/codegen/abi/.gitkeep
 
