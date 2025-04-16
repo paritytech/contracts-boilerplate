@@ -13,17 +13,3 @@ import { deploy } from './lib/index.ts'
  * ```
  */
 await deploy({ name: 'WagmiMintExample', args: [] })
-
-const daoAddress = await deploy({
-    name: 'Dao',
-    value: parseEther('100'),
-    args: [],
-})
-
-await deploy({
-    name: 'DaoAttacker',
-    args: [daoAddress, 2n],
-    value: parseEther('1'),
-})
-
-await deploy({ name: 'MagicWord', args: [] })

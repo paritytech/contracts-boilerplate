@@ -107,12 +107,13 @@ export async function deploy<K extends keyof Abis>({
     if (firstDeploy) {
         firstDeploy = false
         const balance = await env.wallet.getBalance(env.wallet.account)
+        const nonce = await env.wallet.getTransactionCount(env.wallet.account)
         console.log(
-            `🔗 Chain ${env.wallet.chain.name} - ${env.wallet.chain.rpcUrls.default.http[0]}`
+            `🔗 Chain: ${env.wallet.chain.name} - ${env.wallet.chain.rpcUrls.default.http[0]}`
         )
-        console.log(
-            `👤 Account ${env.wallet.account.address} - balance: ${formatEther(balance)}\n`
-        )
+        console.log(`👤 Account: ${env.wallet.account.address}`)
+        console.log(`💰 balance: ${formatEther(balance)}`)
+        console.log(`🔢 nonce: ${nonce}\n`)
         if (balance == 0n) {
             console.error('❌ Account has no funds')
             process.exit(1)
