@@ -1,9 +1,11 @@
+import { formatEther } from 'viem'
 import {
     useAccount,
     useChainId,
     useDisconnect,
     useEnsAvatar,
     useEnsName,
+    useBalance,
     usePublicClient,
 } from 'wagmi'
 
@@ -15,6 +17,7 @@ export function Account() {
     const { disconnect } = useDisconnect()
     const { data: ensName } = useEnsName({ address })
     const { data: ensAvatar } = useEnsAvatar({ name: ensName! })
+    const { data: balance } = useBalance({ address })
 
     const formattedAddress = formatAddress(address)
 
@@ -37,8 +40,15 @@ export function Account() {
                                 {ensName
                                     ? `${ensName} (${formattedAddress})`
                                     : address}
+
+                                <div className="subtext">
+                                    {balance?.value
+                                        ? formatEther(balance.value)
+                                        : ''}
+                                </div>
                             </div>
                         )}
+
                         <div className="subtext">
                             Connected to {connector?.name} Connector - ChainId:{' '}
                             {chainId} - RPC:{' '}

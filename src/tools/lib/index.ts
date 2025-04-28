@@ -195,6 +195,8 @@ export const chain = defineChain({
         writeFileSync(contractsFile, contracts, 'utf8')
     }
 
-    console.log(`✅ ${name} deployed: ${address}\n`)
+    console.log(
+        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n`
+    )
     return address
 }
