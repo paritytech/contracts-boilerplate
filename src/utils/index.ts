@@ -13,6 +13,16 @@ import { createWalletClient, Hex, http, publicActions } from 'viem'
 import { privateKeyToAccount, nonceManager } from 'viem/accounts'
 import { readFileSync } from 'node:fs'
 
+type TracerType = 'callTracer' | 'prestateTracer'
+type TracerConfig = {
+    callTracer: { withLog?: boolean; onlyTopCall?: boolean }
+    prestateTracer: {
+        diffMode?: boolean
+        disableCode?: boolean
+        disableStorage?: boolean
+    }
+}
+
 export async function createEnv({
     rpcUrl,
     privateKey,
@@ -134,38 +144,41 @@ export async function createEnv({
         chain,
         transport,
     }).extend((client) => ({
-        async traceTransaction(
+        async traceTransaction<Tracer extends TracerType>(
             txHash: Hex,
-            tracerConfig: { withLog: boolean }
+            tracer: Tracer,
+            tracerConfig?: TracerConfig[Tracer]
         ) {
             return client.request({
                 method: 'debug_traceTransaction' as any,
-                params: [txHash, { tracer: 'callTracer', tracerConfig } as any],
+                params: [txHash, { tracer, tracerConfig } as any],
             })
         },
-        async traceBlock(
+        async traceBlock<Tracer extends TracerType>(
             blockNumber: bigint,
-            tracerConfig: { withLog: boolean }
+            tracer: Tracer,
+            tracerConfig?: TracerConfig[Tracer]
         ) {
             return client.request({
                 method: 'debug_traceBlockByNumber' as any,
                 params: [
                     `0x${blockNumber.toString(16)}`,
-                    { tracer: 'callTracer', tracerConfig } as any,
+                    { tracer, tracerConfig } as any,
                 ],
             })
         },
 
-        async traceCall(
-            args: CallParameters | { from?: Hex },
-            tracerConfig: { withLog: boolean } = { withLog: false }
+        async traceCall<Tracer extends TracerType>(
+            args: CallParameters,
+            tracer: Tracer,
+            tracerConfig?: TracerConfig[Tracer]
         ) {
             return client.request({
                 method: 'debug_traceCall' as any,
                 params: [
                     formatTransactionRequest(args),
                     'latest',
-                    { tracer: 'callTracer', tracerConfig } as any,
+                    { tracer, tracerConfig } as any,
                 ],
             })
         },

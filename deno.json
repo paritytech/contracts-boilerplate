@@ -16,5 +16,6 @@
             "description": "Run the dao-hack tracing demo",
             "command": "deno --env-file --allow-all src/cli/dao-hack-traces.ts"
         }
-    }
+    },
+    "compilerOptions": {}
 }

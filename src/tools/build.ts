@@ -1,7 +1,7 @@
 //! Call with deno task build [--filter <filter>] [--clean]
 
 /// <reference path="./solc.d.ts" />
-import { compile, SolcOutput, tryResolveImport } from '@parity/revive'
+import { compile, SolcOutput, tryResolveImport } from '@parity/resolc'
 import solc from 'solc'
 import { format } from 'prettier'
 import {
@@ -127,8 +127,11 @@ for (const file of input) {
                 )
             )
 
-            indexCode.unshift(`import { ${abiName} } from './abi/${name}.ts'`)
-            indexCode.push(`${name}: ${abiName},`)
+            const importStatement = `import { ${abiName} } from './abi/${name}.ts'`
+            if (!indexCode.includes(importStatement)) {
+                indexCode.unshift(importStatement)
+                indexCode.push(`${name}: ${abiName},`)
+            }
         }
     }
 }
