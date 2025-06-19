@@ -169,15 +169,16 @@ export async function createEnv({
         },
 
         async traceCall<Tracer extends TracerType>(
-            args: CallParameters,
+            args: TransactionRequest,
             tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer]
+            tracerConfig: TracerConfig[Tracer],
+            blockOrTag: 'latest' | Hex = 'latest'
         ) {
             return client.request({
                 method: 'debug_traceCall' as any,
                 params: [
                     formatTransactionRequest(args),
-                    'latest',
+                    blockOrTag,
                     { tracer, tracerConfig } as any,
                 ],
             })
@@ -198,6 +199,7 @@ export async function createEnv({
             bytecode: getByteCode(name),
             args: args as any,
             value,
+            maxPriorityFeePerGas: 0n,
         })
 
         return await wallet.waitForTransactionReceipt({ hash })

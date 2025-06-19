@@ -78,6 +78,21 @@ export const env = await createEnv({
 
 let firstDeploy = true
 
+export async function printAccountInfo() {
+    const balance = await env.wallet.getBalance(env.wallet.account)
+    const nonce = await env.wallet.getTransactionCount(env.wallet.account)
+    console.log(
+        `🔗 Chain: ${env.wallet.chain.name} - ${env.wallet.chain.rpcUrls.default.http[0]}`
+    )
+    console.log(`👤 Account: ${env.wallet.account.address}`)
+    console.log(`💰 balance: ${formatEther(balance)}`)
+    console.log(`🔢 nonce: ${nonce}\n`)
+    if (balance == 0n) {
+        console.error('❌ Account has no funds')
+        process.exit(1)
+    }
+}
+
 /**
  * Deploys a contract to the network.
  *
@@ -106,19 +121,6 @@ export async function deploy<K extends keyof Abis>({
 
     if (firstDeploy) {
         firstDeploy = false
-        const balance = await env.wallet.getBalance(env.wallet.account)
-        const nonce = await env.wallet.getTransactionCount(env.wallet.account)
-        console.log(
-            `🔗 Chain: ${env.wallet.chain.name} - ${env.wallet.chain.rpcUrls.default.http[0]}`
-        )
-        console.log(`👤 Account: ${env.wallet.account.address}`)
-        console.log(`💰 balance: ${formatEther(balance)}`)
-        console.log(`🔢 nonce: ${nonce}\n`)
-        if (balance == 0n) {
-            console.error('❌ Account has no funds')
-            process.exit(1)
-        }
-
         const chain = `
 import { defineChain } from 'viem'
 
@@ -196,7 +198,8 @@ export const chain = defineChain({
     }
 
     console.log(
-        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n`
+        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n`,
+        receipt.effectiveGasPrice
     )
     return address
 }

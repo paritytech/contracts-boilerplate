@@ -1,0 +1,70 @@
+// Run with
+// deno task build --filter storage
+// deno --env-file --allow-all src/cli/prestate-playground.ts
+import { env } from '../tools/lib/index.ts'
+import { abis } from '../codegen/abis.ts'
+import { PretraceFixture } from '../codegen/addresses.ts'
+import { encodeFunctionData } from 'viem'
+
+// const reqs = [
+//     await env.wallet.prepareTransactionRequest({
+//         to: PretraceFixture,
+//         nonceManager: env.wallet.account.nonceManager,
+//         data: encodeFunctionData({
+//             abi: abis.PretraceFixture,
+//             functionName: 'writeStorage',
+//             args: [BigInt(Date.now())],
+//         }),
+//     }),
+//
+//     await env.wallet.prepareTransactionRequest({
+//         to: PretraceFixture,
+//         nonceManager: env.wallet.account.nonceManager,
+//         data: encodeFunctionData({
+//             abi: abis.PretraceFixture,
+//             functionName: 'writeStorage',
+//             args: [BigInt(Date.now() + 42)],
+//         }),
+//     }),
+// ]
+
+// const hashes = await Promise.all(
+//     reqs.map((req) => env.wallet.sendTransaction(req))
+// )
+//
+// const receipts = await Promise.all(
+//     hashes.map((hash) => env.wallet.waitForTransactionReceipt({ hash }))
+// )
+//
+// {
+//     const blockNumber = receipts[0].blockNumber
+//     const res = await env.debugClient.traceBlock(
+//         blockNumber,
+//         'prestateTracer',
+//         {
+//             diffMode: true,
+//             disableCode: true,
+//         }
+//     )
+//     console.log(`traceBlock ${blockNumber}`, res)
+// }
+
+{
+    const res = await env.debugClient.traceCall(
+        {
+            from: env.wallet.account.address,
+            to: PretraceFixture,
+            data: encodeFunctionData({
+                abi: abis.PretraceFixture,
+                functionName: 'writeStorage',
+                args: [BigInt(Date.now() + 142)],
+            }),
+        },
+        'prestateTracer',
+        {
+            diffMode: true,
+            disableCode: true,
+        }
+    )
+    console.log('trace', res)
+}

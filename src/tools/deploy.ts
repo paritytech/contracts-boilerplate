@@ -1,6 +1,9 @@
 //! Call with deno task deploy [--filter <filter>]
 
-import { deploy } from './lib/index.ts'
+import {
+    deploy,
+    // printAccountInfo
+} from './lib/index.ts'
 
 /**
  * List all contracts to deploy here:
@@ -12,9 +15,12 @@ import { deploy } from './lib/index.ts'
  * ```
  */
 
-// const cAddress = await deploy({ name: 'CTracing', args: [] })
-// const bAddress = await deploy({ name: 'BTracing', args: [cAddress] })
-// await deploy({ name: 'ATracing', args: [bAddress] })
-// await deploy({ name: 'Storage', args: [] })
-
-await deploy({ name: 'MyToken', args: ['MTK'] })
+// await printAccountInfo()
+await deploy({ name: 'Test', args: [] })
+// // await deploy({ name: 'PretraceFixtureChild', args: [] })
+// const address = await deploy({ name: 'Dao', args: [] })
+// await deploy({
+//     name: 'DaoAttacker',
+//     args: [address, 1n],
+//     value: parseEther('1'),
+// })

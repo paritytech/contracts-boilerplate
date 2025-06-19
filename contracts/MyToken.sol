@@ -1,10 +1,26 @@
 // SPDX-License-Identifier: MIT
-// Compatible with OpenZeppelin Contracts ^5.0.0
-pragma solidity ^0.8.27;
+pragma solidity >=0.8.0;
 
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+contract Test {
+    uint8 constant SIZE = 3;
 
-contract MyToken is ERC20, ERC20Permit {
-    constructor(string memory symbol) ERC20("MyToken", symbol) ERC20Permit("MyToken") {}
+    function array() public pure {
+        uint8[SIZE][SIZE][SIZE] memory array;
+
+        for(uint8 i = 0; i < SIZE; i++) {
+            for(uint8 j = 0; j < SIZE; j++) {
+                for(uint8 p = 0; p < SIZE; p++) {
+                    array[i][j][p] = i*SIZE*SIZE + j*SIZE + p;
+                }
+            }
+        }
+
+        for(uint8 p = 0; p < SIZE; p++) {
+            for(uint8 j = 0; j < SIZE; j++) {
+                for(uint8 i = 0; i < SIZE; i++) {
+                    array[i][j][p] == i*SIZE*SIZE + j*SIZE + p;
+                }
+            }
+        }
+    }
 }
