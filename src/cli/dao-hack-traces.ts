@@ -12,14 +12,17 @@ import {
 } from 'viem'
 import { Dao, DaoAttacker } from '../codegen/addresses.ts'
 
-const result = await env.debugClient.traceCall({
-    to: DaoAttacker,
-    data: encodeFunctionData({
-        abi: abis.DaoAttacker,
-        functionName: 'attack',
-        args: [],
-    }),
-})
+const result = await env.debugClient.traceCall(
+    {
+        to: DaoAttacker,
+        data: encodeFunctionData({
+            abi: abis.DaoAttacker,
+            functionName: 'attack',
+            args: [],
+        }),
+    },
+    'callTracer'
+)
 console.log(JSON.stringify(visit(result, visitor), null, 2))
 
 function visitor(key: string, value: any) {

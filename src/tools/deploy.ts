@@ -17,4 +17,23 @@ import { deploy } from './lib/index.ts'
 // await deploy({ name: 'ATracing', args: [bAddress] })
 // await deploy({ name: 'Storage', args: [] })
 
-await deploy({ name: 'MyToken', args: ['MTK'] })
+await deploy({
+    name: 'Storage',
+    args: [],
+})
+
+// // await deploy({
+// //     name: 'DaoAttacker',
+// //     args: [address, 1n],
+// //     value: parseEther('1'),
+// // })
+//
+// await deploy({
+//     name: 'PretraceFixtureChild',
+//     args: [],
+// })
+//
+// await deploy({
+//     name: 'PretraceFixture',
+//     args: [],
+// })

@@ -1,6 +1,6 @@
 // Run with
 // deno task build --filter dao
-// deno --env-file --allow-all ./cli/dao-playground.ts
+// deno --env-file --allow-all ./src/cli/dao-playground.ts
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import { Dao, DaoAttacker } from '../codegen/addresses.ts'

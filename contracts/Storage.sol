@@ -16,6 +16,10 @@ contract Storage {
         n2 = 100;
     }
 
+    function gethash() public view returns (bytes32) {
+        return blockhash(block.number);
+    }
+
     /**
      * @dev Store value in variable
      * @param num value to store
