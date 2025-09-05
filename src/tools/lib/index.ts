@@ -196,7 +196,7 @@ export const chain = defineChain({
     }
 
     console.log(
-        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n`
+        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`
     )
     return address
 }

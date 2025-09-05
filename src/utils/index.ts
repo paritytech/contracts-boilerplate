@@ -203,5 +203,5 @@ export async function createEnv({
         return await wallet.waitForTransactionReceipt({ hash })
     }
 
-    return { chain, deploy, wallet, debugClient }
+    return { chain, deploy, getByteCode, wallet, debugClient }
 }

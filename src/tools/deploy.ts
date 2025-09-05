@@ -18,7 +18,7 @@ import { deploy } from './lib/index.ts'
 // await deploy({ name: 'Storage', args: [] })
 
 await deploy({
-    name: 'Storage',
+    name: 'Fibonacci',
     args: [],
 })
 
