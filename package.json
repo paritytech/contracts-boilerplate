@@ -22,7 +22,7 @@
         "wagmi": "latest"
     },
     "devDependencies": {
-        "@openzeppelin/contracts": "^5.2.0",
+        "@openzeppelin/contracts": "^5.4.0",
         "@parity/resolc": "^0.1.0-dev.16",
         "@types/react": "^18.3.18",
         "@types/react-dom": "^18.3.5",
