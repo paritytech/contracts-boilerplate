@@ -1,5 +1,6 @@
 //! Call with deno task deploy [--filter <filter>]
 
+import { parseEther } from 'viem'
 import { deploy } from './lib/index.ts'
 
 /**
@@ -17,23 +18,14 @@ import { deploy } from './lib/index.ts'
 // await deploy({ name: 'ATracing', args: [bAddress] })
 // await deploy({ name: 'Storage', args: [] })
 
-await deploy({
-    name: 'Fibonacci',
+const address = await deploy({
+    name: 'Dao',
     args: [],
+    value: parseEther('100'),
 })
 
-// // await deploy({
-// //     name: 'DaoAttacker',
-// //     args: [address, 1n],
-// //     value: parseEther('1'),
-// // })
-//
-// await deploy({
-//     name: 'PretraceFixtureChild',
-//     args: [],
-// })
-//
-// await deploy({
-//     name: 'PretraceFixture',
-//     args: [],
-// })
+await deploy({
+    name: 'DaoAttacker',
+    args: [address, 3n],
+    value: parseEther('1'),
+})
