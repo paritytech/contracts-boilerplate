@@ -21,11 +21,13 @@ import { deploy } from './lib/index.ts'
 const address = await deploy({
     name: 'Dao',
     args: [],
-    value: parseEther('100'),
+    value: parseEther('0.1'),
+    bytecodeType: 'evm',
 })
 
 await deploy({
     name: 'DaoAttacker',
     args: [address, 3n],
     value: parseEther('1'),
+    bytecodeType: 'evm',
 })

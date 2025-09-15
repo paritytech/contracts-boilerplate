@@ -51,6 +51,12 @@ contract DaoAttacker {
 
     function attack() public payable {
         calls = 0;
+
+        // Dummy use of MSTORE
+        assembly {
+            // Store the value 0x1234 at memory position 0x80
+            mstore(0x80, 0x1234)
+        }
         if (dao.getBalance(address(this)) == 0) {
             dao.deposit{value: 1 ether}();
         }

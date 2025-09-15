@@ -13,9 +13,15 @@ import { createWalletClient, Hex, http, publicActions } from 'viem'
 import { privateKeyToAccount, nonceManager } from 'viem/accounts'
 import { readFileSync } from 'node:fs'
 
-type TracerType = 'callTracer' | 'prestateTracer'
+type TracerType = 'callTracer' | 'prestateTracer' | 'opcodeTracer'
 type TracerConfig = {
     callTracer: { withLog?: boolean; onlyTopCall?: boolean }
+    opcodeTracer: {
+        disableStack?: boolean
+        enableMemory?: boolean
+        disableStorage?: boolean
+        enableReturnData?: boolean
+    }
     prestateTracer: {
         diffMode?: boolean
         disableCode?: boolean
@@ -83,9 +89,13 @@ export async function createEnv({
         }
     })()
 
-    function getByteCode(name: string): Hex {
+    function getByteCode(name: string, bytecodeType?: 'evm' | 'polkavm'): Hex {
         const codegenDir = join(import.meta.dirname, '..', 'codegen')
-        const ext = chainName == 'Geth' ? 'evm' : 'polkavm'
+        const ext = bytecodeType
+            ? bytecodeType
+            : chainName == 'Geth'
+              ? 'evm'
+              : 'polkavm'
         const data = readFileSync(
             join(codegenDir, 'bytecode', `${name}.${ext}`)
         ).toString('hex')
@@ -170,16 +180,17 @@ export async function createEnv({
 
         async traceCall<Tracer extends TracerType>(
             args: CallParameters,
-            tracer: Tracer,
+            tracer: Tracer | null,
             tracerConfig?: TracerConfig[Tracer]
         ) {
+            const params: any =
+                tracer == null
+                    ? tracerConfig
+                    : ({ tracer, tracerConfig } as any)
+
             return client.request({
                 method: 'debug_traceCall' as any,
-                params: [
-                    formatTransactionRequest(args),
-                    'latest',
-                    { tracer, tracerConfig } as any,
-                ],
+                params: [formatTransactionRequest(args), 'latest', params],
             })
         },
     }))
@@ -188,14 +199,16 @@ export async function createEnv({
         name,
         args,
         value,
+        bytecodeType,
     }: {
         name: K
         args: ContractConstructorArgs<Abis[K]>
         value?: bigint
+        bytecodeType?: 'evm' | 'polkavm'
     }) {
         const hash = await wallet.deployContract({
             abi: abis[name] as any,
-            bytecode: getByteCode(name),
+            bytecode: getByteCode(name, bytecodeType),
             args: args as any,
             value,
         })

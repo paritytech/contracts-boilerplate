@@ -94,11 +94,13 @@ export async function deploy<K extends keyof Abis>({
     name,
     args,
     value,
+    bytecodeType,
 }: {
     id?: string
     name: K
     args: ContractConstructorArgs<Abis[K]>
     value?: bigint
+    bytecodeType?: 'evm' | 'polkavm'
 }): Promise<Hex> {
     if (filter && !name.toLowerCase().includes(filter.toLowerCase())) {
         return '0x'
@@ -147,6 +149,7 @@ export const chain = defineChain({
         name,
         args: args as any,
         value,
+        bytecodeType,
     })
 
     if (receipt.status === 'reverted') {
