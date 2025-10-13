@@ -1,6 +1,5 @@
-// Run with
-// deno task build --filter dao
-// deno --env-file --allow-all src/cli/dao-hack-traces.ts | jless
+#!/usr/bin/env -S deno run --env-file --allow-all
+
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import {
@@ -16,7 +15,7 @@ const result = await env.debugClient.traceCall(
     {
         to: DaoAttacker,
         data: encodeFunctionData({
-            abi: abis.DaoAttacker,
+            abi: (abis as any).DaoAttacker,
             functionName: 'attack',
             args: [],
         }),
@@ -51,14 +50,14 @@ function visitor(key: string, value: any) {
             }
             try {
                 return decodeFunctionData({
-                    abi: [...abis.DaoAttacker, ...abis.Dao],
+                    abi: [...(abis as any).DaoAttacker, ...(abis as any).Dao],
                     data: value,
                 })
             } catch (e) {
                 return value
             }
         case 'logs':
-            return parseEventLogs({ abi: abis.Dao, logs: value })
+            return parseEventLogs({ abi: (abis as any).Dao, logs: value })
         default: {
             if (typeof value === 'bigint') {
                 return value.toString()

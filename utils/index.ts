@@ -90,7 +90,7 @@ export async function createEnv({
     })()
 
     function getByteCode(name: string, bytecodeType?: 'evm' | 'polkavm'): Hex {
-        const codegenDir = join(import.meta.dirname, '..', 'codegen')
+        const codegenDir = join(import.meta.dirname!, '..', 'codegen')
         const ext = bytecodeType
             ? bytecodeType
             : chainName == 'Geth'

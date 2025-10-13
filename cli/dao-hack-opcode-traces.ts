@@ -1,6 +1,5 @@
-// Run with
-// deno task build --filter dao
-// deno --env-file --allow-all src/cli/dao-hack-opcode-traces.ts | jless
+#!/usr/bin/env -S deno run --env-file --allow-all
+
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import { encodeFunctionData } from 'viem'
@@ -10,7 +9,7 @@ const result = await env.debugClient.traceCall(
     {
         to: StaticCaller,
         data: encodeFunctionData({
-            abi: abis.StaticCaller,
+            abi: (abis as any).StaticCaller,
             functionName: 'staticCallChangeState',
             args: [StateChanger, 42n],
         }),

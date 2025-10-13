@@ -2,20 +2,32 @@
     "tasks": {
         "build": {
             "description": "Build contracts from the contracts directory and output bytecode and abi in the codegen directory",
-            "command": "deno run --env-file --allow-all src/tools/build.ts"
+            "command": "deno run --env-file --allow-all tools/build.ts"
         },
         "deploy": {
             "description": "Deploy contracts to the network specified in the .env file, and update addresses in the codegen directory",
-            "command": "deno run --env-file --allow-all src/tools/deploy.ts"
-        },
-        "dao-hack-cli": {
-            "description": "Run the dao-hack cli demo",
-            "command": "deno --env-file --allow-all src/cli/dao-hack.tsx"
-        },
-        "dao-hack-traces": {
-            "description": "Run the dao-hack tracing demo",
-            "command": "deno --env-file --allow-all src/cli/dao-hack-traces.ts"
+            "command": "deno run --env-file --allow-all tools/deploy.ts"
         }
     },
-    "compilerOptions": {}
+    "imports": {
+        "@parity/resolc": "npm:@parity/resolc@0.1.0-dev.16",
+        "solc": "npm:solc@^0.8.28",
+        "prettier": "npm:prettier@^3.4.2",
+        "viem": "npm:viem@^2.21.54",
+        "viem/accounts": "npm:viem@^2.21.54/accounts",
+        "vitest": "npm:vitest@^2.1.8",
+        "vitest/node.js": "npm:vitest@^2.1.8/node"
+    },
+    "compilerOptions": {
+        "strict": true
+    },
+    "fmt": {
+        "useTabs": false,
+        "lineWidth": 80,
+        "indentWidth": 4,
+        "semiColons": false,
+        "singleQuote": true,
+        "proseWrap": "preserve"
+    },
+    "nodeModulesDir": "auto"
 }

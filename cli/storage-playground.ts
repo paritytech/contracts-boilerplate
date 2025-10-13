@@ -1,6 +1,5 @@
-// Run with
-// deno task build --filter storage
-// deno --env-file --allow-all src/cli/storage-playground.ts
+#!/usr/bin/env -S deno run --env-file --allow-all
+
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import { Storage } from '../codegen/addresses.ts'
@@ -11,7 +10,7 @@ import { encodeFunctionData } from 'viem'
         {
             to: Storage,
             data: encodeFunctionData({
-                abi: abis.Storage,
+                abi: (abis as any).Storage,
                 functionName: 'write_n1_read_n2',
                 args: [BigInt(Date.now())],
             }),

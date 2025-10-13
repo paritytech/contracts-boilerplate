@@ -12,7 +12,7 @@ const { deploy, wallet } = await createEnv({
 
 beforeAll(async () => {
     Dao = await deploy({
-        name: 'Dao',
+        name: 'Dao' as any,
         value: parseEther('100'),
         args: [],
     }).then((receipt) => receipt.contractAddress!)
@@ -21,10 +21,10 @@ beforeAll(async () => {
 test('deposit works', async () => {
     const { request } = await wallet.simulateContract({
         address: Dao,
-        abi: abis.Dao,
+        abi: (abis as any).Dao,
         functionName: 'deposit',
         value: parseEther('1'),
-    })
+    } as any)
 
     const hash = await wallet.writeContract(request)
     let receipt = await wallet.waitForTransactionReceipt({

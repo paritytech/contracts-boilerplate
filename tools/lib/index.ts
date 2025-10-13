@@ -19,7 +19,7 @@ const {
     },
 })
 
-const codegenDir = join(import.meta.dirname, '..', '..', 'codegen')
+const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
 /**
  * Ensures that the specified value is a hex string.

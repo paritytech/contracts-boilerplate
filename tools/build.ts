@@ -55,7 +55,7 @@ function evmCompile(sources: CompileInput) {
 }
 
 // Get all contracts in the contracts directory.
-const rootDir = join(import.meta.dirname, '..', '..')
+const rootDir = join(import.meta.dirname!, '..', '..')
 const contractsDir = join(rootDir, 'contracts')
 const codegenDir = join(rootDir, 'src', 'codegen')
 const input = readdirSync(contractsDir)
