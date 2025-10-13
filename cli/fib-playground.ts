@@ -1,6 +1,5 @@
-// Run with
-// deno task build --filter dao
-// deno --env-file --allow-all src/cli/fib-playground.ts | jless
+#!/usr/bin/env -S deno run --env-file --allow-all
+
 import { env } from '../tools/lib/index.ts'
 
 const result = await env.debugClient.traceTransaction(
@@ -8,6 +7,6 @@ const result = await env.debugClient.traceTransaction(
     'callTracer',
     {
         withLog: true,
-    }
+    },
 )
 console.log(result)

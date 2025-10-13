@@ -1,8 +1,8 @@
 /// <reference path="./test-setup.ts" />
-import { beforeAll, inject, expect, test } from 'vitest'
+import { beforeAll, expect, inject, test } from 'vitest'
 import { abis } from '../codegen/abis.ts'
 import { createEnv } from '../utils/index.ts'
-import { Hex, parseEther } from 'viem'
+import { Abi, Hex, parseEther } from 'viem'
 let Dao: Hex = '0x'
 
 const { deploy, wallet } = await createEnv({
@@ -21,13 +21,13 @@ beforeAll(async () => {
 test('deposit works', async () => {
     const { request } = await wallet.simulateContract({
         address: Dao,
-        abi: abis.Dao,
+        abi: (abis as Record<string, Abi>).Dao,
         functionName: 'deposit',
         value: parseEther('1'),
     })
 
     const hash = await wallet.writeContract(request)
-    let receipt = await wallet.waitForTransactionReceipt({
+    const receipt = await wallet.waitForTransactionReceipt({
         hash,
     })
 

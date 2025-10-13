@@ -1,4 +1,5 @@
 import {
+    Abi,
     CallParameters,
     ContractConstructorArgs,
     createClient,
@@ -7,15 +8,21 @@ import {
     hexToNumber,
     parseEther,
 } from 'viem'
-import { abis, Abis } from '../codegen/abis.ts'
+import { Abis, abis } from '../codegen/abis.ts'
 import { join } from 'node:path'
 import { createWalletClient, Hex, http, publicActions } from 'viem'
-import { privateKeyToAccount, nonceManager } from 'viem/accounts'
+import { nonceManager, privateKeyToAccount } from 'viem/accounts'
 import { readFileSync } from 'node:fs'
 
-type TracerType = 'callTracer' | 'prestateTracer'
+type TracerType = 'callTracer' | 'prestateTracer' | 'opcodeTracer'
 type TracerConfig = {
     callTracer: { withLog?: boolean; onlyTopCall?: boolean }
+    opcodeTracer: {
+        disableStack?: boolean
+        enableMemory?: boolean
+        disableStorage?: boolean
+        enableReturnData?: boolean
+    }
     prestateTracer: {
         diffMode?: boolean
         disableCode?: boolean
@@ -43,11 +50,11 @@ export async function createEnv({
                     id: 1,
                 }),
             })
-            let { result } = await resp.json()
+            const { result } = await resp.json()
             return hexToNumber(result)
         } catch (e) {
             console.error(`Failed to get chain id from ${rpcUrl}`, e)
-            process.exit(1)
+            Deno.exit(1)
         }
     })()
 
@@ -65,7 +72,7 @@ export async function createEnv({
                     id: 1,
                 }),
             })
-            let { result } = await resp.json()
+            const { result } = await resp.json()
             const id = String(result).split('/')[0] || 'Unknown'
 
             if (id == 'Geth') {
@@ -79,15 +86,19 @@ export async function createEnv({
             }
         } catch (e) {
             console.error(`Failed to get chain name from ${rpcUrl}`, e)
-            process.exit(1)
+            Deno.exit(1)
         }
     })()
 
-    function getByteCode(name: string): Hex {
-        const codegenDir = join(import.meta.dirname, '..', 'codegen')
-        const ext = chainName == 'Geth' ? 'evm' : 'polkavm'
+    function getByteCode(name: string, bytecodeType?: 'evm' | 'polkavm'): Hex {
+        const codegenDir = join(import.meta.dirname!, '..', 'codegen')
+        const ext = bytecodeType
+            ? bytecodeType
+            : chainName == 'Geth'
+            ? 'evm'
+            : 'polkavm'
         const data = readFileSync(
-            join(codegenDir, 'bytecode', `${name}.${ext}`)
+            join(codegenDir, 'bytecode', `${name}.${ext}`),
         ).toString('hex')
         return `0x${data}`
     }
@@ -144,42 +155,46 @@ export async function createEnv({
         chain,
         transport,
     }).extend((client) => ({
-        async traceTransaction<Tracer extends TracerType>(
+        traceTransaction<Tracer extends TracerType>(
             txHash: Hex,
             tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer]
+            tracerConfig?: TracerConfig[Tracer],
         ) {
+            const params: Record<string, unknown> = tracer == null
+                ? tracerConfig ?? {}
+                : { tracer, tracerConfig }
+
             return client.request({
-                method: 'debug_traceTransaction' as any,
-                params: [txHash, { tracer, tracerConfig } as any],
+                method: 'debug_traceTransaction' as never,
+                params: [txHash, params],
             })
         },
-        async traceBlock<Tracer extends TracerType>(
+        traceBlock<Tracer extends TracerType>(
             blockNumber: bigint,
             tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer]
+            tracerConfig?: TracerConfig[Tracer],
         ) {
             return client.request({
-                method: 'debug_traceBlockByNumber' as any,
+                method: 'debug_traceBlockByNumber' as never,
                 params: [
                     `0x${blockNumber.toString(16)}`,
-                    { tracer, tracerConfig } as any,
+                    { tracer, tracerConfig },
                 ],
             })
         },
 
-        async traceCall<Tracer extends TracerType>(
+        traceCall<Tracer extends TracerType>(
             args: CallParameters,
-            tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer]
+            tracer: Tracer | null,
+            tracerConfig?: TracerConfig[Tracer],
         ) {
+            const params: Record<string, unknown> = tracer == null
+                ? tracerConfig ?? {}
+                : { tracer, tracerConfig }
+
             return client.request({
-                method: 'debug_traceCall' as any,
-                params: [
-                    formatTransactionRequest(args),
-                    'latest',
-                    { tracer, tracerConfig } as any,
-                ],
+                method: 'debug_traceCall' as never,
+                params: [formatTransactionRequest(args), 'latest', params],
             })
         },
     }))
@@ -188,15 +203,17 @@ export async function createEnv({
         name,
         args,
         value,
+        bytecodeType,
     }: {
         name: K
         args: ContractConstructorArgs<Abis[K]>
         value?: bigint
+        bytecodeType?: 'evm' | 'polkavm'
     }) {
         const hash = await wallet.deployContract({
-            abi: abis[name] as any,
-            bytecode: getByteCode(name),
-            args: args as any,
+            abi: abis[name] as Abi,
+            bytecode: getByteCode(name, bytecodeType),
+            args: args as readonly unknown[],
             value,
         })
 
