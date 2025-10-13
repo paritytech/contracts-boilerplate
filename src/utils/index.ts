@@ -159,9 +159,14 @@ export async function createEnv({
             tracer: Tracer,
             tracerConfig?: TracerConfig[Tracer]
         ) {
+            const params: any =
+                tracer == null
+                    ? tracerConfig
+                    : ({ tracer, tracerConfig } as any)
+
             return client.request({
                 method: 'debug_traceTransaction' as any,
-                params: [txHash, { tracer, tracerConfig } as any],
+                params: [txHash, params],
             })
         },
         async traceBlock<Tracer extends TracerType>(

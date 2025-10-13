@@ -4,23 +4,23 @@
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import { encodeFunctionData } from 'viem'
-import { DaoAttacker } from '../codegen/addresses.ts'
+import { StateChanger, StaticCaller } from '../codegen/addresses.ts'
 
 const result = await env.debugClient.traceCall(
     {
-        to: DaoAttacker,
+        to: StaticCaller,
         data: encodeFunctionData({
-            abi: abis.DaoAttacker,
-            functionName: 'attack',
-            args: [],
+            abi: abis.StaticCaller,
+            functionName: 'staticCallChangeState',
+            args: [StateChanger, 42n],
         }),
     },
-    null,
-    {
-        enableMemory: true,
-        disableStack: false,
-        disableStorage: false,
-        enableReturnData: true,
-    }
+    'callTracer'
+    // {
+    //     enableMemory: true,
+    //     disableStack: false,
+    //     disableStorage: false,
+    //     enableReturnData: true,
+    // }
 )
 console.log(JSON.stringify(result, null, 2))
