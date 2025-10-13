@@ -7,6 +7,6 @@ const result = await env.debugClient.traceTransaction(
     'callTracer',
     {
         withLog: true,
-    }
+    },
 )
 console.log(result)

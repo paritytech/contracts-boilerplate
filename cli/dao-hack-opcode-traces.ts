@@ -4,17 +4,18 @@ import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import { encodeFunctionData } from 'viem'
 import { StateChanger, StaticCaller } from '../codegen/addresses.ts'
+import type { Abi } from 'viem'
 
 const result = await env.debugClient.traceCall(
     {
         to: StaticCaller,
         data: encodeFunctionData({
-            abi: (abis as any).StaticCaller,
+            abi: (abis as Record<string, Abi>).StaticCaller,
             functionName: 'staticCallChangeState',
             args: [StateChanger, 42n],
         }),
     },
-    'callTracer'
+    'callTracer',
     // {
     //     enableMemory: true,
     //     disableStack: false,

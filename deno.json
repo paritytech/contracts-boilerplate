@@ -10,7 +10,12 @@
         }
     },
     "imports": {
+        "@openzeppelin/contracts": "npm:@openzeppelin/contracts@^5.4.0",
         "@parity/resolc": "npm:@parity/resolc@0.1.0-dev.16",
+        "@std/cli": "jsr:@std/cli@^1.0.23",
+        "ink": "npm:ink@^6.3.1",
+        "react": "npm:react@^19.2.0",
+        "react/jsx-runtime": "npm:react@^19.2.0/jsx-runtime",
         "solc": "npm:solc@^0.8.28",
         "prettier": "npm:prettier@^3.4.2",
         "viem": "npm:viem@^2.21.54",
@@ -19,7 +24,8 @@
         "vitest/node.js": "npm:vitest@^2.1.8/node"
     },
     "compilerOptions": {
-        "strict": true
+        "strict": true,
+        "jsx": "react"
     },
     "fmt": {
         "useTabs": false,

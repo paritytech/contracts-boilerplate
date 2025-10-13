@@ -11,27 +11,22 @@ import {
     unlinkSync,
     writeFileSync,
 } from 'node:fs'
-import { join, basename } from 'node:path'
+import { basename, join } from 'node:path'
 import { Buffer } from 'node:buffer'
-import { parseArgs } from 'node:util'
+import { parseArgs } from '@std/cli/parse-args'
 
 type CompileInput = Parameters<typeof compile>[0]
 
-const {
-    values: { filter, clean },
-} = parseArgs({
-    args: process.argv.slice(2),
-    options: {
-        clean: {
-            type: 'boolean',
-            short: 'c',
-        },
-        filter: {
-            type: 'string',
-            short: 'f',
-        },
+const flags = parseArgs(Deno.args, {
+    boolean: ['clean'],
+    string: ['filter'],
+    alias: {
+        c: 'clean',
+        f: 'filter',
     },
 })
+
+const { filter, clean } = flags
 
 function evmCompile(sources: CompileInput) {
     const input = {
@@ -55,9 +50,9 @@ function evmCompile(sources: CompileInput) {
 }
 
 // Get all contracts in the contracts directory.
-const rootDir = join(import.meta.dirname!, '..', '..')
+const rootDir = join(import.meta.dirname!, '..')
 const contractsDir = join(rootDir, 'contracts')
-const codegenDir = join(rootDir, 'src', 'codegen')
+const codegenDir = join(rootDir, 'codegen')
 const input = readdirSync(contractsDir)
     .filter((f) => f.endsWith('.sol'))
     .filter((f) => !filter || f.toLowerCase().includes(filter.toLowerCase()))
@@ -91,7 +86,7 @@ for (const file of input) {
 
     const reviveOut = await compile(input).catch((err) => {
         console.error('Failed to build with resolc', err)
-        process.exit(1)
+        Deno.exit(1)
     })
 
     const evmOut = JSON.parse(evmCompile(input)) as SolcOutput
@@ -107,7 +102,11 @@ for (const file of input) {
             writeFileSync(
                 join(codegenDir, 'abi', `${name}.ts`),
                 await format(
-                    `export const ${abiName} = ${JSON.stringify(abi, null, 2)} as const`,
+                    `export const ${abiName} = ${JSON.stringify(
+                        abi,
+                        null,
+                        2
+                    )} as const`,
                     {
                         parser: 'typescript',
                     }

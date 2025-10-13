@@ -5,19 +5,16 @@ import { Abis } from '../../codegen/abis.ts'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Hex } from 'viem'
-import { parseArgs } from 'node:util'
+import { parseArgs } from '@std/cli/parse-args'
 
-const {
-    values: { filter },
-} = parseArgs({
-    args: process.argv.slice(2),
-    options: {
-        filter: {
-            type: 'string',
-            short: 'f',
-        },
+const flags = parseArgs(Deno.args, {
+    string: ['filter'],
+    alias: {
+        f: 'filter',
     },
 })
+
+const { filter } = flags
 
 const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
@@ -27,46 +24,46 @@ const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 export function assertHex(label: string, value: string): asserts value is Hex {
     if (!value.startsWith('0x')) {
         console.error(`${label} must start with 0x`)
-        process.exit(1)
+        Deno.exit(1)
     }
 }
 
 // The RPC URL to use
 const rpcUrl = (() => {
-    if (process.env.VITE_CHAIN === 'local') {
-        if (!process.env.VITE_LOCAL_RPC_URL) {
+    if (Deno.env.get('VITE_CHAIN') === 'local') {
+        if (!Deno.env.get('VITE_LOCAL_RPC_URL')) {
             console.error(
                 'VITE_LOCAL_RPC_URL must be set when VITE_CHAIN is local'
             )
-            process.exit(1)
+            Deno.exit(1)
         }
-        return String(process.env.VITE_LOCAL_RPC_URL)
-    } else if (process.env.VITE_CHAIN === 'testnet') {
-        if (!process.env.VITE_TESTNET_RPC_URL) {
+        return String(Deno.env.get('VITE_LOCAL_RPC_URL'))
+    } else if (Deno.env.get('VITE_CHAIN') === 'testnet') {
+        if (!Deno.env.get('VITE_TESTNET_RPC_URL')) {
             console.error(
                 'VITE_TESTNET_RPC_URL must be set when VITE_CHAIN is testnet'
             )
-            process.exit(1)
+            Deno.exit(1)
         }
-        return String(process.env.VITE_TESTNET_RPC_URL)
+        return String(Deno.env.get('VITE_TESTNET_RPC_URL'))
     }
 
     console.error('VITE_CHAIN must be set in the .env file')
-    process.exit(1)
+    Deno.exit(1)
 })()
 
 // Ensure that the DEPLOYER_PRIVATE_KEY env variable is set.
 const privateKeyName =
-    process.env.VITE_CHAIN === 'local'
+    Deno.env.get('VITE_CHAIN') === 'local'
         ? 'LOCAL_PRIVATE_KEY'
         : 'TESTNET_PRIVATE_KEY'
 
-const privateKey = process.env[privateKeyName]
+const privateKey = Deno.env.get(privateKeyName)
 if (!privateKey) {
     console.error(
         `Please provide a ${privateKeyName} env variable by specifying directly or adding it to the .env file`
     )
-    process.exit(1)
+    Deno.exit(1)
 }
 
 assertHex(privateKeyName, privateKey)
@@ -111,14 +108,16 @@ export async function deploy<K extends keyof Abis>({
         const balance = await env.wallet.getBalance(env.wallet.account)
         const nonce = await env.wallet.getTransactionCount(env.wallet.account)
         console.log(
-            `🔗 Chain: ${env.wallet.chain.name} - ${env.wallet.chain.rpcUrls.default.http[0]}`
+            `🔗 Chain: ${env.wallet.chain.name} - ${
+                env.wallet.chain.rpcUrls.default.http[0]
+            }`
         )
         console.log(`👤 Account: ${env.wallet.account.address}`)
         console.log(`💰 balance: ${formatEther(balance)}`)
         console.log(`🔢 nonce: ${nonce}\n`)
         if (balance == 0n) {
             console.error('❌ Account has no funds')
-            process.exit(1)
+            Deno.exit(1)
         }
 
         const chain = `
@@ -147,21 +146,21 @@ export const chain = defineChain({
     id ??= name
     const receipt = await env.deploy({
         name,
-        args: args as any,
+        args,
         value,
         bytecodeType,
     })
 
     if (receipt.status === 'reverted') {
         console.error(`❌ Contract "${name}" reverted`)
-        process.exit(1)
+        Deno.exit(1)
     }
     const address = receipt.contractAddress
     if (!address) {
         throw new Error('Deployed receipt should have a contract address')
     }
     {
-        let addressesFile = join(codegenDir, 'addresses.ts')
+        const addressesFile = join(codegenDir, 'addresses.ts')
         let addresses = existsSync(addressesFile)
             ? readFileSync(addressesFile, 'utf8')
             : ''
@@ -178,7 +177,7 @@ export const chain = defineChain({
     }
 
     {
-        let contractsFile = join(codegenDir, 'contracts.ts')
+        const contractsFile = join(codegenDir, 'contracts.ts')
         let contracts = existsSync(contractsFile)
             ? readFileSync(contractsFile, 'utf8')
             : [

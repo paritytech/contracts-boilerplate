@@ -1,8 +1,8 @@
-// deno --env-file --allow-all src/cli/dao-hack.tsx
+// deno --env-file --allow-all cli/dao-hack.tsx
 
-// @ts-ignore
-import React, { useState, useEffect } from 'react'
-import { render, Text, Box } from 'ink'
+// React must be in scope for JSX
+import React, { useEffect, useState } from 'react'
+import { Box, render, Text } from 'ink'
 import { formatEther } from 'viem'
 import { Dao, DaoAttacker } from '../codegen/addresses.ts'
 import { abis } from '../codegen/abis.ts'
@@ -11,7 +11,7 @@ import { env } from '../tools/lib/index.ts'
 const { wallet } = env
 
 // Fetch the current balances of the attacker and the DAO.
-async function fetchBalances() {
+function fetchBalances() {
     return Promise.all([
         wallet.getBalance({ address: DaoAttacker }),
         wallet.getBalance({ address: Dao }),
@@ -27,7 +27,7 @@ async function attack() {
     })
 
     const hash = await wallet.writeContract(request)
-    let receipt = await wallet.waitForTransactionReceipt({
+    const receipt = await wallet.waitForTransactionReceipt({
         hash,
     })
 
@@ -43,7 +43,7 @@ const App = () => {
 
     // Run the attack in a loop
     useEffect(() => {
-        let timeoutId: NodeJS.Timeout | undefined = undefined
+        let timeoutId: number | undefined = undefined
         async function loop() {
             await attack()
             const [attacker, dao] = await fetchBalances()
