@@ -1,3 +1,34 @@
+# Validates that POLKADOT_SDK_DIR exists and is a valid polkadot-sdk checkout
+# Returns 0 if valid, 1 if invalid
+function validate_polkadot_sdk_dir() {
+	local sdk_dir="$1"
+
+	# Check if directory exists
+	if [ ! -d "$sdk_dir" ]; then
+		echo "Error: POLKADOT_SDK_DIR does not exist at $sdk_dir"
+		echo "Please clone the repository: git clone https://github.com/paritytech/polkadot-sdk.git ~/polkadot-sdk"
+		return 1
+	fi
+
+	# Check if it's a git repository
+	if [ ! -d "$sdk_dir/.git" ]; then
+		echo "Error: $sdk_dir is not a git repository"
+		return 1
+	fi
+
+	# Check if it's the correct repository by examining the remote URL
+	local git_remote
+	git_remote=$(git -C "$sdk_dir" remote get-url origin 2>/dev/null || echo "")
+
+	if [[ ! "$git_remote" =~ github\.com[/:]paritytech/polkadot-sdk ]]; then
+		echo "Error: $sdk_dir is not a checkout of https://github.com/paritytech/polkadot-sdk"
+		echo "Found remote: $git_remote"
+		return 1
+	fi
+
+	return 0
+}
+
 # Manages the Polkadot Revive development node with various build and run options
 # Usage: dev-node [bacon|build|proxy|run] [additional-args]
 # Examples:
@@ -19,6 +50,11 @@ function dev-node() {
 
 	# Define the polkadot-sdk directory path
 	POLKADOT_SDK_DIR=~/polkadot-sdk
+
+	# Validate the polkadot-sdk directory
+	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
+		return 1
+	fi
 
 	# Parse arguments to detect --release flag and set binary folder accordingly
 	bin_folder="debug"
@@ -80,6 +116,11 @@ function eth-rpc() {
 
 	# Define the polkadot-sdk directory path
 	POLKADOT_SDK_DIR=~/polkadot-sdk
+
+	# Validate the polkadot-sdk directory
+	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
+		return 1
+	fi
 
 	# Execute the appropriate command based on the first argument
 	case "$arg" in
@@ -145,16 +186,24 @@ function eth-rpc() {
 # Runs the complete Revive development stack (dev-node + eth-rpc) in tmux panes
 # This starts both the development node and Ethereum RPC bridge in separate panes
 # Usage: revive_dev_stack [run|proxy]
+# Environment variables:
+#   REVIVE_DEV_STACK_MODE - Set the mode (run or proxy), can be overridden by argument
 # Examples:
-#   revive_dev_stack run    - Run both services with pre-built binaries
-#   revive_dev_stack proxy  - Run both services with mitmproxy for traffic inspection
-#   revive_dev_stack        - Default: runs both services
+#   revive_dev_stack run                    - Run both services with pre-built binaries
+#   revive_dev_stack proxy                  - Run both services with mitmproxy for traffic inspection
+#   REVIVE_DEV_STACK_MODE=proxy revive_dev_stack  - Use environment variable to set mode
+#   revive_dev_stack                        - Default: runs both services (respects env var)
 function revive_dev_stack() {
-	# Capture the first argument as the mode (run or proxy)
-	mode=${1:-run}
+	# Capture the mode from argument, env variable, or default to "run"
+	mode=${1:-${REVIVE_DEV_STACK_MODE:-run}}
 
 	# Define the polkadot-sdk directory path
 	POLKADOT_SDK_DIR=~/polkadot-sdk
+
+	# Validate the polkadot-sdk directory
+	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
+		return 1
+	fi
 
 	# Check if running in tmux
 	if [ -z "$TMUX" ]; then

@@ -11,6 +11,64 @@ You can install it by running:
 curl -fsSL https://deno.land/install.sh | sh
 ```
 
+### Setting up the Development Environment
+
+For local development with Polkadot Revive, you'll need to build the development node and Ethereum RPC bridge.
+
+#### 1. Clone the Polkadot SDK
+
+First, clone the Polkadot SDK repository:
+
+```sh
+git clone https://github.com/paritytech/polkadot-sdk.git ~/polkadot-sdk
+```
+
+#### 2. Source the Helper Scripts
+
+Source the helper scripts to make the build commands available:
+
+```sh
+source scripts/node-env.sh
+```
+
+You can add this to your shell profile (`.bashrc`, `.zshrc`, etc.) to make these commands available in every session.
+
+#### 3. Build the Binaries
+
+Build both the development node and the Ethereum RPC bridge:
+
+```sh
+# Build the development node
+dev-node build
+
+# Build the Ethereum RPC bridge
+eth-rpc build
+```
+
+These commands will compile the binaries into `~/polkadot-sdk/target/debug/`. The build process may take some time on the first run.
+
+#### 4. Running the Development Stack
+
+Once built, you can run the complete development stack in tmux:
+
+```sh
+# Run both services in separate tmux panes
+revive_dev_stack
+
+# Or run with mitmproxy for traffic inspection
+revive_dev_stack proxy
+```
+
+Alternatively, you can run each service individually:
+
+```sh
+# Run the development node
+dev-node run
+
+# In another terminal, run the Ethereum RPC bridge
+eth-rpc run ws://localhost:9944
+```
+
 ### Building contracts
 
 We can now compile the contracts located in the `contracts/` directory:
