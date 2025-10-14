@@ -23,6 +23,7 @@ import { deploy } from './lib/index.ts'
 // })
 
 await deploy({
-    name: 'UsernameRegistry',
+    name: 'Test',
     args: [],
+    bytecodeType: 'evm',
 })
