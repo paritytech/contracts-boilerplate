@@ -97,7 +97,7 @@ Make sure to specify the constructor arguments and the value, if needed.
 #### Deploying to Testnet
 
 To deploy to Westend Testnet, you will need to specify the `TESTNET_PRIVATE_KEY`.
-Check the instructions [here](https://contracts.polkadot.io/connect-to-asset-hub) to connect with your wallet and request funds.
+Check the instructions [here](https://docs.polkadot.com/develop/networks/#westend) to connect with your wallet and request funds.
 
 #### Deploying to a local chain
 
