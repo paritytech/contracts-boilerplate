@@ -12,6 +12,12 @@ import { Test } from '../codegen/addresses.ts'
         args: [],
     })
 
-    const result = await env.wallet.writeContract(request)
-    console.log(result)
+    const hash = await env.wallet.writeContract(request)
+    console.log(hash)
+
+    const receipt = await env.wallet.waitForTransactionReceipt({
+        hash,
+    })
+
+    console.log(receipt)
 }
