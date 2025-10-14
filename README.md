@@ -13,7 +13,7 @@ curl -fsSL https://deno.land/install.sh | sh
 
 ### Setting up the Development Environment
 
-For local development with Polkadot Revive, you'll need to build the development node and Ethereum RPC bridge.
+For local development, you'll need to build the development node and Ethereum RPC proxy.
 
 #### 1. Clone the Polkadot SDK
 
@@ -35,7 +35,7 @@ You can add this to your shell profile (`.bashrc`, `.zshrc`, etc.) to make these
 
 #### 3. Build the Binaries
 
-Build both the development node and the Ethereum RPC bridge:
+Build both the development node and the Ethereum RPC proxy:
 
 ```sh
 # Build the development node
@@ -101,11 +101,7 @@ Check the instructions [here](https://contracts.polkadot.io/connect-to-asset-hub
 
 #### Deploying to a local chain
 
-For local development, checkout the instructions [here](https://contracts.polkadot.io/work-with-a-local-node) to setup and start a local chain.
-
-> Note: You can also test against `geth`, the deployment code, will detect the chain and deploy the right bytecode (evm or pvm).
-
-> Local deployments will use the account `0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac` already configured in your `.env` file, This account is pre-funded at genesis, so you can use it to deploy contracts.
+Local deployments will use the account `0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac` already configured in your `.env` file, This account is pre-funded at genesis, so you can use it to deploy contracts.
 
 Now that you have the environment variables setup, ensure that your chain is running and deploy the contracts by running:
 
@@ -114,6 +110,8 @@ deno task deploy [--filter <contract-name>]
 ```
 
 This command will update the `codegen/addresses.ts` file with the deployed contract addresses, so that you can easily reference them in your apps.
+
+> Note: You can also test against `geth`, the deployment code, will detect the chain and deploy the right bytecode (evm or pvm).
 
 # Run cli
 
