@@ -56,6 +56,7 @@ Once built, you can run the complete development stack in tmux:
 revive_dev_stack
 
 # Or run with mitmproxy for traffic inspection
+# Note: Requires mitmproxy setup first - https://github.com/pgherveou/mitmproxy
 revive_dev_stack proxy
 ```
 
@@ -119,7 +120,7 @@ This command will update the `codegen/addresses.ts` file with the deployed contr
 There is an example cli in the `cli` directory that you can run to interact with the deployed contracts.
 
 ```sh
-./cli/dao-hack.ts
+./cli/playground.ts
 ```
 
 # Learn more
