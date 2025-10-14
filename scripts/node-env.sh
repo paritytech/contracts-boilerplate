@@ -210,11 +210,11 @@ function revive_dev_stack() {
 	# Split the window horizontally to create two panes
 	tmux split-window -h
 
-	# Run dev-node in the first pane (left)
+	# Run dev-node in the first pane (top)
 	tmux select-pane -t 0
 	tmux send-keys "dev-node run" C-m
 
-	# Run eth-rpc in the second pane (right) with local node URL
+	# Run eth-rpc in the second pane (bottom) with local node URL
 	tmux select-pane -t 1
 	tmux send-keys "eth-rpc $mode ws://localhost:9944" C-m
 
