@@ -185,17 +185,13 @@ function eth-rpc() {
 
 # Runs the complete Revive development stack (dev-node + eth-rpc) in tmux panes
 # This starts both the development node and Ethereum RPC bridge in separate panes
-# Usage: revive_dev_stack [run|proxy]
-# Environment variables:
-#   REVIVE_DEV_STACK_MODE - Set the mode (run or proxy), can be overridden by argument
+# Usage: revive_dev_stack [proxy]
 # Examples:
-#   revive_dev_stack run                    - Run both services with pre-built binaries
+#   revive_dev_stack                        - Run both services with pre-built binaries
 #   revive_dev_stack proxy                  - Run both services with mitmproxy for traffic inspection
-#   REVIVE_DEV_STACK_MODE=proxy revive_dev_stack  - Use environment variable to set mode
-#   revive_dev_stack                        - Default: runs both services (respects env var)
 function revive_dev_stack() {
-	# Capture the mode from argument, env variable, or default to "run"
-	mode=${1:-${REVIVE_DEV_STACK_MODE:-run}}
+	# Capture the mode from argument or default to "run"
+	mode=${1:-run}
 
 	# Define the polkadot-sdk directory path
 	POLKADOT_SDK_DIR=~/polkadot-sdk
@@ -216,7 +212,7 @@ function revive_dev_stack() {
 
 	# Run dev-node in the first pane (left)
 	tmux select-pane -t 0
-	tmux send-keys "dev-node $mode" C-m
+	tmux send-keys "dev-node run" C-m
 
 	# Run eth-rpc in the second pane (right) with local node URL
 	tmux select-pane -t 1
