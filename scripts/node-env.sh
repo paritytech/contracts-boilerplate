@@ -29,6 +29,106 @@ function validate_polkadot_sdk_dir() {
 	return 0
 }
 
+# Installs mitmproxy fork from https://github.com/pgherveou/mitmproxy
+# Follows development setup from https://github.com/pgherveou/mitmproxy/blob/main/CONTRIBUTING.md
+# Usage: install_mitmproxy
+function install_mitmproxy() {
+	local mitmproxy_dir="$HOME/mitmproxy"
+
+	echo "Installing mitmproxy fork from https://github.com/pgherveou/mitmproxy..."
+
+	# Verify Python commands work
+	echo "Verifying Python environment..."
+	if ! python3 --version &> /dev/null; then
+		echo "Error: python3 command failed"
+		return 1
+	fi
+
+	if ! python3 -m pip --help &> /dev/null; then
+		echo "Error: pip is not available"
+		return 1
+	fi
+
+	if ! python3 -m venv --help &> /dev/null; then
+		echo "Error: venv module is not available"
+		return 1
+	fi
+
+	# Check if directory already exists
+	if [ -d "$mitmproxy_dir" ]; then
+		echo "Directory $mitmproxy_dir already exists"
+		read -p "Remove and reinstall? (y/N): " -n 1 -r
+		echo
+		if [[ $REPLY =~ ^[Yy]$ ]]; then
+			rm -rf "$mitmproxy_dir"
+		else
+			return 0
+		fi
+	fi
+
+	# Clone the fork
+	echo "Cloning repository..."
+	if ! git clone https://github.com/pgherveou/mitmproxy.git "$mitmproxy_dir"; then
+		echo "Error: Failed to clone repository"
+		return 1
+	fi
+
+	cd "$mitmproxy_dir" || return 1
+
+	# Create virtual environment
+	echo "Creating virtual environment..."
+	if ! python3 -m venv venv; then
+		echo "Error: Failed to create virtual environment"
+		return 1
+	fi
+
+	# Install mitmproxy in development mode
+	echo "Installing mitmproxy..."
+	if ! venv/bin/pip install -e ".[dev]"; then
+		echo "Error: Installation failed"
+		return 1
+	fi
+
+	# Verify installation
+	if venv/bin/mitmdump --version &> /dev/null; then
+		echo ""
+		echo "Successfully installed mitmproxy fork!"
+		echo "Installation directory: $mitmproxy_dir"
+		echo "To use mitmproxy, activate the virtual environment:"
+		echo "  source $mitmproxy_dir/venv/bin/activate"
+		echo ""
+		echo "Or add to your shell profile:"
+		echo "  export PATH=\"$mitmproxy_dir/venv/bin:\$PATH\""
+		return 0
+	else
+		echo "Error: mitmproxy installation verification failed"
+		return 1
+	fi
+}
+
+# Starts mitmproxy in a new tmux window
+# Usage: start_mitmproxy [listen_port:proxy_port]
+# Examples:
+#   start_mitmproxy              - Start with default ports 8000:8545
+#   start_mitmproxy 9944:8844    - Start listening on 9944, proxying to 8844
+function start_mitmproxy() {
+	local ports="${1:-8000:8545}"
+	IFS=":" read listen_port proxy_port <<< "$ports"
+
+	pkill -f mitmproxy
+
+	# Check if tmux is installed
+	if ! command -v tmux &> /dev/null; then
+		echo "tmux is not installed. Please run this command in a new terminal:"
+		echo ""
+		echo "cd $HOME/mitmproxy && source venv/bin/activate && mitmproxy --listen-port $listen_port --mode reverse:http://localhost:${proxy_port} -s $HOME/mitmproxy/scripts/json-rpc.py"
+		echo ""
+		return 0
+	fi
+
+	tmux new-window -d -n mitmproxy "cd $HOME/mitmproxy; source venv/bin/activate; mitmproxy --listen-port $listen_port --mode reverse:http://localhost:${proxy_port} -s $HOME/mitmproxy/scripts/json-rpc.py; tmux wait-for -S mitmproxy-done"
+}
+
 # Manages the Polkadot Revive development node with various build and run options
 # Usage: dev-node [bacon|build|proxy|run] [additional-args]
 # Examples:

@@ -113,6 +113,10 @@ This command will update the `codegen/addresses.ts` file with the deployed contr
 
 > Note: You can also test against `geth`, the deployment code, will detect the chain and deploy the right bytecode (evm or pvm).
 
+#### Testing with Block Explorer
+
+For testing and debugging, you can use an in-browser block explorer at https://polkadotevm-explorer.netlify.app/ to inspect transactions, contracts, and blockchain state.
+
 # Run cli
 
 There is an example cli in the `cli` directory that you can run to interact with the deployed contracts.
