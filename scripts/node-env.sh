@@ -20,12 +20,6 @@ function validate_polkadot_sdk_dir() {
 	local git_remote
 	git_remote=$(git -C "$sdk_dir" remote get-url origin 2>/dev/null || echo "")
 
-	if [[ ! "$git_remote" =~ github\.com[/:]paritytech/polkadot-sdk ]]; then
-		echo "Error: $sdk_dir is not a checkout of https://github.com/paritytech/polkadot-sdk"
-		echo "Found remote: $git_remote"
-		return 1
-	fi
-
 	return 0
 }
 
