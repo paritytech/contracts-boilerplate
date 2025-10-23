@@ -7,9 +7,9 @@ import { Storage } from '../codegen/addresses.ts'
 {
     const { request } = await env.wallet.simulateContract({
         address: Storage,
-        abi: abis.UsernameRegistry,
-        functionName: 'registerUsername',
-        args: ['foo'],
+        abi: abis.Storage,
+        functionName: 'store',
+        args: [42n],
     })
 
     const result = await env.wallet.writeContract(request)
@@ -19,9 +19,9 @@ import { Storage } from '../codegen/addresses.ts'
 {
     const result = await env.wallet.readContract({
         address: Storage,
-        abi: abis.UsernameRegistry,
-        functionName: 'getUsername',
-        args: [env.wallet.account.address],
+        abi: abis.Storage,
+        functionName: 'retrieve',
+        args: [],
     })
     console.log({ result })
 }
