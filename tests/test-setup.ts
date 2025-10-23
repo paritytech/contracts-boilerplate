@@ -75,7 +75,7 @@ function waitForHealth(url: string, timeout = 30_000) {
 export default async function setup(project: TestProject) {
     project.provide(
         'privateKey',
-        '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133',
+        '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133'
     )
 
     const port = Deno.env.get('RPC_PORT') ?? '8545'
@@ -88,18 +88,18 @@ export default async function setup(project: TestProject) {
             '--http.api',
             'web3,eth,debug,personal,net',
             '--http.port',
-            '8545',
+            port,
             '--dev',
             '--verbosity',
             '0',
         ]
 
-        killProcessOnPort(8545)
+        killProcessOnPort(Number(port))
         const bin = Deno.env.get('GETH_BIN') ?? 'geth'
         ensureExec(bin)
         console.log('🚀 Starting geth...')
         const proc = spawn(bin, gethArgs)
-        await waitForHealth('http://localhost:8545').catch()
+        await waitForHealth(`http://localhost:${port}`).catch()
         return () => {
             proc.kill()
         }
@@ -120,14 +120,13 @@ export default async function setup(project: TestProject) {
     }
 
     if (Deno.env.get('START_ETH_RPC')) {
-        // Run eth-rpc on 8545
         const ethRpcArgs = [
             '--dev',
             '--node-rpc-url=ws://localhost:9944',
             '-l=rpc-metrics=debug,eth-rpc=debug',
         ]
 
-        killProcessOnPort(8545)
+        killProcessOnPort(Number(port))
         const bin = Deno.env.get('ETH_RPC_BIN') ?? 'eth-rpc'
         ensureExec(bin)
         console.log('🚀 Starting eth-rpc ...')
@@ -138,7 +137,7 @@ export default async function setup(project: TestProject) {
             await waitForHealth(rpcUrl, 1000)
         } catch {
             console.error(
-                `❌ NO RPC server running at ${rpcUrl}.\nstart one or use START_GETH=true or START_SUBSTRATE_NODE=true`,
+                `❌ NO RPC server running at ${rpcUrl}.\nstart one or use START_GETH=true or START_SUBSTRATE_NODE=true`
             )
             Deno.exit(1)
         }

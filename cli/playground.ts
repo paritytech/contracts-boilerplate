@@ -2,22 +2,26 @@
 
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
-import { Test } from '../codegen/addresses.ts'
+import { Storage } from '../codegen/addresses.ts'
 
 {
     const { request } = await env.wallet.simulateContract({
-        address: Test,
-        abi: abis.Test,
-        functionName: 'main',
+        address: Storage,
+        abi: abis.Storage,
+        functionName: 'store',
+        args: [42n],
+    })
+
+    const result = await env.wallet.writeContract(request)
+    console.log(result)
+}
+
+{
+    const result = await env.wallet.readContract({
+        address: Storage,
+        abi: abis.Storage,
+        functionName: 'retrieve',
         args: [],
     })
-
-    const hash = await env.wallet.writeContract(request)
-    console.log(hash)
-
-    const receipt = await env.wallet.waitForTransactionReceipt({
-        hash,
-    })
-
-    console.log(receipt)
+    console.log({ result })
 }

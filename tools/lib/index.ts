@@ -18,55 +18,11 @@ const { filter } = flags
 
 const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
-/**
- * Ensures that the specified value is a hex string.
- */
-export function assertHex(label: string, value: string): asserts value is Hex {
-    if (!value.startsWith('0x')) {
-        console.error(`${label} must start with 0x`)
-        Deno.exit(1)
-    }
-}
+const rpcUrl = Deno.env.get('RPC_URL') ?? 'http://localhost:8545'
 
-// The RPC URL to use
-const rpcUrl = (() => {
-    if (Deno.env.get('VITE_CHAIN') === 'local') {
-        if (!Deno.env.get('VITE_LOCAL_RPC_URL')) {
-            console.error(
-                'VITE_LOCAL_RPC_URL must be set when VITE_CHAIN is local'
-            )
-            Deno.exit(1)
-        }
-        return String(Deno.env.get('VITE_LOCAL_RPC_URL'))
-    } else if (Deno.env.get('VITE_CHAIN') === 'testnet') {
-        if (!Deno.env.get('VITE_TESTNET_RPC_URL')) {
-            console.error(
-                'VITE_TESTNET_RPC_URL must be set when VITE_CHAIN is testnet'
-            )
-            Deno.exit(1)
-        }
-        return String(Deno.env.get('VITE_TESTNET_RPC_URL'))
-    }
-
-    console.error('VITE_CHAIN must be set in the .env file')
-    Deno.exit(1)
-})()
-
-// Ensure that the DEPLOYER_PRIVATE_KEY env variable is set.
-const privateKeyName =
-    Deno.env.get('VITE_CHAIN') === 'local'
-        ? 'LOCAL_PRIVATE_KEY'
-        : 'TESTNET_PRIVATE_KEY'
-
-const privateKey = Deno.env.get(privateKeyName)
-if (!privateKey) {
-    console.error(
-        `Please provide a ${privateKeyName} env variable by specifying directly or adding it to the .env file`
-    )
-    Deno.exit(1)
-}
-
-assertHex(privateKeyName, privateKey)
+// default account is 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
+const privateKey = (Deno.env.get('PRIVATE_KEY') ??
+    '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133') as Hex
 
 export const env = await createEnv({
     rpcUrl,

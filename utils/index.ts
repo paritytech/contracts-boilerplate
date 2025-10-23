@@ -90,15 +90,13 @@ export async function createEnv({
         }
     })()
 
-    function getByteCode(name: string, bytecodeType?: 'evm' | 'polkavm'): Hex {
+    function getByteCode(
+        name: string,
+        bytecodeType: 'evm' | 'polkavm' = 'evm'
+    ): Hex {
         const codegenDir = join(import.meta.dirname!, '..', 'codegen')
-        const ext = bytecodeType
-            ? bytecodeType
-            : chainName == 'Geth'
-            ? 'evm'
-            : 'polkavm'
         const data = readFileSync(
-            join(codegenDir, 'bytecode', `${name}.${ext}`),
+            join(codegenDir, 'bytecode', `${name}.${bytecodeType}`)
         ).toString('hex')
         return `0x${data}`
     }
@@ -158,11 +156,10 @@ export async function createEnv({
         traceTransaction<Tracer extends TracerType>(
             txHash: Hex,
             tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer],
+            tracerConfig?: TracerConfig[Tracer]
         ) {
-            const params: Record<string, unknown> = tracer == null
-                ? tracerConfig ?? {}
-                : { tracer, tracerConfig }
+            const params: Record<string, unknown> =
+                tracer == null ? (tracerConfig ?? {}) : { tracer, tracerConfig }
 
             return client.request({
                 method: 'debug_traceTransaction' as never,
@@ -172,7 +169,7 @@ export async function createEnv({
         traceBlock<Tracer extends TracerType>(
             blockNumber: bigint,
             tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer],
+            tracerConfig?: TracerConfig[Tracer]
         ) {
             return client.request({
                 method: 'debug_traceBlockByNumber' as never,
@@ -186,11 +183,10 @@ export async function createEnv({
         traceCall<Tracer extends TracerType>(
             args: CallParameters,
             tracer: Tracer | null,
-            tracerConfig?: TracerConfig[Tracer],
+            tracerConfig?: TracerConfig[Tracer]
         ) {
-            const params: Record<string, unknown> = tracer == null
-                ? tracerConfig ?? {}
-                : { tracer, tracerConfig }
+            const params: Record<string, unknown> =
+                tracer == null ? (tracerConfig ?? {}) : { tracer, tracerConfig }
 
             return client.request({
                 method: 'debug_traceCall' as never,
