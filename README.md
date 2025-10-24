@@ -117,6 +117,13 @@ dev-node run
 eth-rpc run ws://localhost:9944
 ```
 
+To test contracts with Geth
+
+```sh
+# Run geth with mitmproxy in a tmux window
+geth_stack
+```
+
 # Learn more
 
 - [Asset Hub documentation](https://contracts.polkadot.io) to learn more about building Smart Contracts on Asset Hub.

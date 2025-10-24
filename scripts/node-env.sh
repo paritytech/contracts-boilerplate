@@ -374,7 +374,7 @@ function revive_dev_stack() {
 	tmux kill-window -t servers 2>/dev/null
 
 	# Parse arguments
-	use_proxy="true"
+	use_proxy="false"
 	build_type=""
 
 	for arg in "$@"; do
@@ -382,8 +382,8 @@ function revive_dev_stack() {
 		--release)
 			build_type="--release"
 			;;
-		false | no-proxy)
-			use_proxy="false"
+		proxy)
+			use_proxy="true"
 			;;
 		esac
 	done
@@ -648,22 +648,30 @@ function geth_stack() {
 
 # Runs the complete PAsset Hub stack (passet node + eth-rpc) in tmux window
 # This starts both the PAsset Hub node and Ethereum RPC bridge in separate panes
-# Usage: passet_stack [no-proxy|false]
+# Usage: passet_stack [proxy]
 # Examples:
-#   passet_stack          - Run both services with proxy
-#   passet_stack no-proxy - Run both services without proxy
+#   passet_stack       - Run both services without proxy
+#   passet_stack proxy - Run both services with proxy
 function passet_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
 
-	# Parse proxy argument
-	use_proxy="${1:-true}"
+	# Parse arguments
+	use_proxy="false"
+
+	for arg in "$@"; do
+		case "$arg" in
+		proxy)
+			use_proxy="true"
+			;;
+		esac
+	done
 
 	# Create new 'servers' window running passet node
 	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; passet run; exec \$SHELL'"
 
 	# Split the window and run eth-rpc with or without proxy
-	if [ "$use_proxy" = "false" ] || [ "$use_proxy" = "no-proxy" ]; then
+	if [ "$use_proxy" = "false" ]; then
 		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944; exec \$SHELL'"
 	else
 		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
@@ -675,22 +683,30 @@ function passet_stack() {
 
 # Runs the complete Westend Asset Hub stack (westend node + eth-rpc) in tmux window
 # This starts both the Westend node and Ethereum RPC bridge in separate panes
-# Usage: westend_stack [no-proxy|false]
+# Usage: westend_stack [proxy]
 # Examples:
-#   westend_stack          - Run both services with proxy
-#   westend_stack no-proxy - Run both services without proxy
+#   westend_stack       - Run both services without proxy
+#   westend_stack proxy - Run both services with proxy
 function westend_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
 
-	# Parse proxy argument
-	use_proxy="${1:-true}"
+	# Parse arguments
+	use_proxy="false"
+
+	for arg in "$@"; do
+		case "$arg" in
+		proxy)
+			use_proxy="true"
+			;;
+		esac
+	done
 
 	# Create new 'servers' window running westend node
 	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; westend run; exec \$SHELL'"
 
 	# Split the window and run eth-rpc with or without proxy
-	if [ "$use_proxy" = "false" ] || [ "$use_proxy" = "no-proxy" ]; then
+	if [ "$use_proxy" = "false" ]; then
 		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944; exec \$SHELL'"
 	else
 		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
