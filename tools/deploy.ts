@@ -23,13 +23,7 @@ import { deploy } from './lib/index.ts'
 // })
 
 await deploy({
-    name: 'Caller',
-    args: [],
-    // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
-})
-
-await deploy({
-    name: 'HostEvmOnly',
+    name: 'Storage',
     args: [],
     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })
