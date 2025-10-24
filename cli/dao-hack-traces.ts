@@ -60,7 +60,10 @@ function visitor(key: string, value: any) {
                 return value
             }
         case 'logs':
-            return parseEventLogs({ abi: (abis as Record<string, Abi>).Dao, logs: value })
+            return parseEventLogs({
+                abi: (abis as Record<string, Abi>).Dao,
+                logs: value,
+            })
         default: {
             if (typeof value === 'bigint') {
                 return value.toString()

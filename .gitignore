@@ -1,15 +1,25 @@
 # Logs
 logs
-codegen/*.ts
-codegen/abi/**
-!codegen/abi/.gitkeep
-
-codegen/bytecode/**
-!codegen/bytecode/.gitkeep
-
 *.log
 .env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+codegen/*.ts
+codegen/abi/*
+codegen/pvm/*
+codegen/evm/*
+*.sha256.txt
+
 node_modules
+dist
+dist-ssr
+*.local
+!.gitkeep
+src/samples
 
 # Editor directories and files
 .vscode/*
@@ -21,4 +31,5 @@ node_modules
 *.njsproj
 *.sln
 *.sw?
+
 

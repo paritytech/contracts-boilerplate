@@ -75,6 +75,8 @@ declare module 'solc' {
         }
     }
 
+    export function version(): string
+
     // Main exported functions
     export function compile(
         input: string | CompileInput,

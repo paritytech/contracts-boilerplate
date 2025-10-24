@@ -1,3 +1,21 @@
+#!/bin/bash
+
+# Environment variables for Polkadot and Ethereum RPC URLs
+export ETH_MAINNET_HTTP_URL=https://eth.llamarpc.com
+
+# Westend Substrate and Ethereum RPC endpoints
+export WESTEND_WS_URL="wss://westend-asset-hub-rpc.polkadot.io"
+export WESTEND_ETH_HTTP_URL="https://westend-asset-hub-eth-rpc.polkadot.io"
+export WESTEND_BLOCK_EXPLORER_URL="https://blockscout-asset-hub.parity-chains-scw.parity.io"
+
+# Passet Hub Substrate and Ethereum RPC endpoints
+export PASSET_HUB_WS_URL="wss://testnet-passet-hub.polkadot.io"
+export PASSET_HUB_ETH_HTTP_URL="https://testnet-passet-hub-eth-rpc.polkadot.io"
+
+# Kusama Asset Hub Substrate RPC endpoint
+export KSM_WS_URL="wss://kusama-asset-hub-rpc.polkadot.io"
+export KSM_ETH_HTTP_URL="https://kusama-asset-hub-eth-rpc.polkadot.io"
+
 # Validates that POLKADOT_SDK_DIR exists and is a valid polkadot-sdk checkout
 # Returns 0 if valid, 1 if invalid
 function validate_polkadot_sdk_dir() {
@@ -33,17 +51,17 @@ function install_mitmproxy() {
 
 	# Verify Python commands work
 	echo "Verifying Python environment..."
-	if ! python3 --version &> /dev/null; then
+	if ! python3 --version &>/dev/null; then
 		echo "Error: python3 command failed"
 		return 1
 	fi
 
-	if ! python3 -m pip --help &> /dev/null; then
+	if ! python3 -m pip --help &>/dev/null; then
 		echo "Error: pip is not available"
 		return 1
 	fi
 
-	if ! python3 -m venv --help &> /dev/null; then
+	if ! python3 -m venv --help &>/dev/null; then
 		echo "Error: venv module is not available"
 		return 1
 	fi
@@ -84,7 +102,7 @@ function install_mitmproxy() {
 	fi
 
 	# Verify installation
-	if venv/bin/mitmdump --version &> /dev/null; then
+	if venv/bin/mitmdump --version &>/dev/null; then
 		echo ""
 		echo "Successfully installed mitmproxy fork!"
 		echo "Installation directory: $mitmproxy_dir"
@@ -107,12 +125,12 @@ function install_mitmproxy() {
 #   start_mitmproxy 9944:8844    - Start listening on 9944, proxying to 8844
 function start_mitmproxy() {
 	local ports="${1:-8000:8545}"
-	IFS=":" read listen_port proxy_port <<< "$ports"
+	IFS=":" read listen_port proxy_port <<<"$ports"
 
 	pkill -f mitmproxy
 
 	# Check if tmux is installed
-	if ! command -v tmux &> /dev/null; then
+	if ! command -v tmux &>/dev/null; then
 		echo "tmux is not installed. Please run this command in a new terminal:"
 		echo ""
 		echo "cd $HOME/mitmproxy && source venv/bin/activate && mitmproxy --listen-port $listen_port --mode reverse:http://localhost:${proxy_port} -s $HOME/mitmproxy/scripts/json-rpc.py"
@@ -170,7 +188,10 @@ function dev-node() {
 		;;
 	build)
 		# Build the revive-dev-node package
-		cargo build --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p "revive-dev-node" "$@"
+		PS4='  '
+		set -x
+		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p "revive-dev-node" "$@"
+		{ set +x; } 2>/dev/null
 		;;
 	proxy)
 		# Run with mitmproxy for traffic inspection (9944->8844 port mapping)
@@ -178,12 +199,25 @@ function dev-node() {
 		pkill -f mitmproxy
 		start_mitmproxy "9944:8844"
 
+		if [ -n "$TMUX" ]; then
+			tmux rename-window "dev-node"
+		fi
+
 		# Start node with proxied port 8844
-		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8844 "$@"
+		PS4='  '
+		set -x
+		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8844 "${args[@]}"
+		{ set +x; } 2>/dev/null
 		;;
 	run)
+		if [ -n "$TMUX" ]; then
+			tmux rename-window "dev-node"
+		fi
 
-		"$POLKADOT_SDK_DIR/target/debug/revive-dev-node" --log="$RUST_LOG" --network-backend libp2p --no-prometheus --dev "$@"
+		PS4='  '
+		set -x
+		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --network-backend libp2p --no-prometheus --dev "${args[@]}"
+		{ set +x; } 2>/dev/null
 		;;
 	*)
 		# Default: build and run in one command using cargo run
@@ -225,18 +259,34 @@ function eth-rpc() {
 		;;
 	build)
 		# Build the eth-rpc binary
-		cargo build --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc --bin eth-rpc
+		shift # Strip "build"
+		PS4='  '
+		set -x
+		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc --bin eth-rpc "$@"
+		{ set +x; } 2>/dev/null
 		;;
 	proxy)
 		# Run with mitmproxy for traffic inspection (8545->8546 port mapping)
 		# Requires custom mitmproxy branch: https://github.com/pgherveou/mitmproxy
 		shift # Strip "proxy"
 
-		# Accept optional node RPC URL or use default
-		if [ -n "$1" ]; then
-			NODE_RPC_URL="$1"
-			shift # Remove the second argument if it's used
-		else
+		# Detect and handle "--release" and NODE_RPC_URL
+		bin_folder="debug"
+		NODE_RPC_URL=""
+		args=()
+
+		for var in "$@"; do
+			if [ "$var" = "--release" ]; then
+				bin_folder="release"
+			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
+				NODE_RPC_URL="$var"
+			else
+				args+=("$var")
+			fi
+		done
+
+		# Default NODE_RPC_URL if not provided
+		if [ -z "$NODE_RPC_URL" ]; then
 			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
 		fi
 
@@ -244,24 +294,45 @@ function eth-rpc() {
 		pkill -f mitmproxy
 		start_mitmproxy "8545:8546"
 
-		# Start eth-rpc with proxied port 8546
-		"$POLKADOT_SDK_DIR/target/debug/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8546 --node-rpc-url "$NODE_RPC_URL" "$@"
+		if [ -n "$TMUX" ]; then
+			tmux rename-window "eth-rpc"
+		fi
+
+		# Build and execute command with output redirection
+		PS4='  '
+		set -x
+		"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8546 --node-rpc-url "$NODE_RPC_URL" "${args[@]}" 2>&1 | tee /tmp/eth-rpc.log
+		{ set +x; } 2>/dev/null
 		;;
 	run)
-		# Run pre-built binary from target/debug
+		# Run pre-built binary from target/debug or target/release
 		shift # Strip "run"
 
-		# Accept optional node RPC URL or use default
-		if [ -n "$1" ]; then
-			NODE_RPC_URL="$1"
-			shift # Remove the second argument if it's used
-		else
+		# Detect and handle "--release" and NODE_RPC_URL
+		bin_folder="debug"
+		NODE_RPC_URL=""
+		args=()
+
+		for var in "$@"; do
+			if [ "$var" = "--release" ]; then
+				bin_folder="release"
+			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
+				NODE_RPC_URL="$var"
+			else
+				args+=("$var")
+			fi
+		done
+
+		# Default NODE_RPC_URL if not provided
+		if [ -z "$NODE_RPC_URL" ]; then
 			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
 		fi
 
-		# Echo the command for debugging purposes
-		echo "cmd: $POLKADOT_SDK_DIR/target/debug/eth-rpc --log=$RUST_LOG --no-prometheus --dev --node-rpc-url $NODE_RPC_URL" "$@"
-		"$POLKADOT_SDK_DIR/target/debug/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "$@"
+		# Build command
+		PS4='  '
+		set -x
+		"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "${args[@]}" 2>&1 | tee /tmp/eth-rpc.log
+		{ set +x; } 2>/dev/null
 		;;
 	*)
 		# Default: build and run in one command using cargo run
@@ -272,20 +343,106 @@ function eth-rpc() {
 		else
 			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
 		fi
-		cargo run --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc -- --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "$@"
+
+		# Build the command to display
+		PS4='  '
+		set -x
+		cargo run --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc -- --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "$@" 2>&1 | tee /tmp/eth-rpc.log
+		{ set +x; } 2>/dev/null
 		;;
 	esac
 }
 
-# Runs the complete Revive development stack (dev-node + eth-rpc) in tmux panes
+# Runs the complete Revive development stack (dev-node + eth-rpc) in tmux window
 # This starts both the development node and Ethereum RPC bridge in separate panes
-# Usage: revive_dev_stack [proxy]
+# Usage: revive_dev_stack [--release] [no-proxy|false]
 # Examples:
-#   revive_dev_stack                        - Run both services with pre-built binaries
-#   revive_dev_stack proxy                  - Run both services with mitmproxy for traffic inspection
+#   revive_dev_stack                        - Run both services with pre-built debug binaries and proxy
+#   revive_dev_stack --release              - Run both services with release binaries and proxy
+#   revive_dev_stack no-proxy               - Run both services with debug binaries without proxy
+#   revive_dev_stack --release no-proxy     - Run both services with release binaries without proxy
 function revive_dev_stack() {
-	# Capture the mode from argument or default to "run"
-	mode=${1:-run}
+	# Define the polkadot-sdk directory path
+	POLKADOT_SDK_DIR=~/polkadot-sdk
+
+	# Validate the polkadot-sdk directory
+	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
+		return 1
+	fi
+
+	# Kill existing 'servers' window if it exists
+	tmux kill-window -t servers 2>/dev/null
+
+	# Parse arguments
+	use_proxy="false"
+	build_type=""
+
+	for arg in "$@"; do
+		case "$arg" in
+		--release)
+			build_type="--release"
+			;;
+		proxy)
+			use_proxy="true"
+			;;
+		esac
+	done
+
+	# Create new 'servers' window in detached mode
+	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; dev-node run $build_type; exec \$SHELL'"
+
+	# Split the window, run eth-rpc with or without proxy
+	if [ "$use_proxy" = "false" ]; then
+		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944 $build_type; exec \$SHELL'"
+	else
+		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944 $build_type; exec \$SHELL'"
+	fi
+
+	# Select the first pane
+	tmux select-pane -t servers.1
+}
+
+# Helper function to endow development accounts in chain spec
+# This is shared between westend() and passet() functions
+# Usage: endow_dev_accounts <input_spec_path> <output_spec_path>
+function endow_dev_accounts() {
+	local input_spec="$1"
+	local output_spec="$2"
+
+	# Endow development accounts with funds
+	# Alith (Ethereum-compatible test account):
+	#   PassPhrase: bottom drive obey lake curtain smoke basket hold race lonely fit walk
+	#   H160: 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
+	#   SS58: 5CfCLa2N85aH2tUKT48LmRSGNx27DnJUayMXqvvcU97VN2sk
+	#   Private key (ecdsa): 0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
+	#
+	# Alice (Substrate test account):
+	#   SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+	#   Private key (sr25519): 0xe5be9a5092b81bca64be81d212e7f2f9eba183bb7a90954f7b76361f6edb5c0a
+	jq '.genesis.runtimeGenesis.patch.balances.balances = [
+	    ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", 1000000001000000000],
+			["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc", 1000000001000000000],
+			["5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ", 100000000000000001000000000],
+			["5CfCLa2N85aH2tUKT48LmRSGNx27DnJUayMXqvvcU97VN2sk", 1000000001000000000],
+			["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", 1000000001000000000],
+			["5Exhf8yKh5CUwVBucuPKmW66vpZr2BgoE1p8KgeHibCTY9nN", 1000000001000000000],
+			["5EHrjJ437hjWG28LA466LjGDgK4NbmAQkJnwmXwGXNZYhq5u", 1000000001000000000]
+		]
+		| .genesis.runtimeGenesis.patch.staking.devStakers = [0, 0]
+	' "$input_spec" >"$output_spec"
+}
+
+# Manages the Westend Asset Hub runtime for testing Polkadot Revive contracts
+# Builds a custom chain spec with development accounts endowed with funds
+# Usage: westend [bacon|build|run]
+# Examples:
+#   westend bacon    - Watch and rebuild the runtime on changes
+#   westend build    - Build the runtime and generate chain spec with endowed accounts
+#   westend run      - Run the already built runtime with polkadot-omni-node
+#   westend          - Build and run the runtime (default)
+function westend() {
+	# Capture the first argument as the command
+	arg=$1
 
 	# Define the polkadot-sdk directory path
 	POLKADOT_SDK_DIR=~/polkadot-sdk
@@ -295,23 +452,279 @@ function revive_dev_stack() {
 		return 1
 	fi
 
-	# Check if running in tmux
-	if [ -z "$TMUX" ]; then
-		echo "Error: revive_dev_stack must be run inside a tmux session"
+	# Set default logging levels (can be overridden by environment variable)
+	RUST_LOG="${RUST_LOG:-error,sc_rpc_server=info,runtime::revive=debug}"
+
+	# Build the runtime and create a chain spec with endowed dev accounts
+	build() {
+		# Build the asset-hub-westend-runtime
+		PS4='  '
+		set -x
+		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p asset-hub-westend-runtime
+		{ set +x; } 2>/dev/null
+
+		# Create chain spec using chain-spec-builder
+		chain-spec-builder -c /tmp/ah-westend-spec.json \
+			create \
+			--para-id 1000 \
+			--relay-chain dontcare \
+			--runtime "$POLKADOT_SDK_DIR/target/debug/wbuild/asset-hub-westend-runtime/asset_hub_westend_runtime.wasm" \
+			named-preset development
+
+		# Use helper function to endow accounts
+		endow_dev_accounts /tmp/ah-westend-spec.json ~/ah-westend-spec.json
+	}
+
+	# Run the polkadot-omni-node with the westend chain spec
+	run() {
+		polkadot-omni-node \
+			--tmp \
+			--log="$RUST_LOG" \
+			--dev-block-time 1000 \
+			--no-prometheus \
+			--chain ~/ah-westend-spec.json
+	}
+
+	# Execute the appropriate command based on the first argument
+	case "$arg" in
+	bacon)
+		# Compile and watch in the background using bacon (https://github.com/Canop/bacon)
+		# This provides continuous compilation feedback during development
+		(cd "$POLKADOT_SDK_DIR" && bacon -- -p "asset-hub-westend-runtime")
+		;;
+	build)
+		# Build the runtime and generate chain spec
+		build
+		;;
+	run)
+		# Run the already built runtime
+		run
+		;;
+	*)
+		# Default: build and run the runtime
+		build
+		run
+		;;
+	esac
+}
+
+# Configures cast environment for passet Hub testnet
+# Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
+# Usage: cast_passet
+# Example:
+#   cast_passet
+#   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
+function cast_passet() {
+	echo "Loading account 0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
+	echo "Setting ETH_RPC_URL to $PASSET_HUB_ETH_HTTP_URL"
+	export PRIVATE_KEY=2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
+	export ETH_RPC_URL=$PASSET_HUB_ETH_HTTP_URL
+}
+
+# Configures cast environment for westend Hub testnet
+# Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
+# Usage: cast_westend
+# Example:
+#   cast_westend
+#   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
+function cast_westend() {
+	echo "Loading account 0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
+	echo "Setting ETH_RPC_URL to $WESTEND_HUB_ETH_HTTP_URL"
+	export PRIVATE_KEY=2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
+	export ETH_RPC_URL=$WESTEND_HUB_ETH_HTTP_URL
+}
+
+# Configures cast environment for local development node
+# Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
+# Usage: cast_local
+# Example:
+#   cast_local
+#   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
+function cast_local() {
+	echo "Loading account 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
+	echo "Setting ETH_RPC_URL to localhost:8545"
+	export PRIVATE_KEY=5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
+	export ETH_RPC_URL=http://localhost:8545
+}
+
+# Manages the PAsset Hub runtime for testing (custom parachain)
+# Builds a custom chain spec with development accounts endowed with funds
+# Requires ~/github/passet-hub repository to be checked out
+# Usage: passet [build|run]
+# Examples:
+#   passet build    - Build the runtime and generate chain spec with endowed accounts
+#   passet run      - Run the already built runtime with polkadot-omni-node
+#   passet          - Build and run the runtime (default)
+function passet() {
+	# Capture the first argument as the command
+	arg=$1
+
+	# Define the passet-hub directory path
+	PASSET_HUB_DIR=~/github/passet-hub
+
+	# Check if directory exists
+	if [ ! -d "$PASSET_HUB_DIR" ]; then
+		echo "Error: PAsset Hub directory does not exist at $PASSET_HUB_DIR"
+		echo "Please clone the repository to ~/github/passet-hub"
 		return 1
 	fi
 
-	# Split the window horizontally to create two panes
-	tmux split-window -h
+	# Set default logging levels (can be overridden by environment variable)
+	RUST_LOG="${RUST_LOG:-error,sc_rpc_server=info,runtime::revive=debug}"
 
-	# Run dev-node in the first pane (top)
-	tmux select-pane -t 0
-	tmux send-keys "dev-node run" C-m
+	# Build the runtime and create a chain spec with endowed dev accounts
+	build() {
+		# Build the passet-hub-runtime
+		PS4='  '
+		set -x
+		cargo build --quiet --manifest-path "$PASSET_HUB_DIR/Cargo.toml" -p passet-hub-runtime
+		{ set +x; } 2>/dev/null
 
-	# Run eth-rpc in the second pane (bottom) with local node URL
-	tmux select-pane -t 1
-	tmux send-keys "eth-rpc $mode ws://localhost:9944" C-m
+		# Create chain spec using chain-spec-builder
+		chain-spec-builder -c /tmp/passet-spec.json \
+			create \
+			--para-id 1111 \
+			--relay-chain dontcare \
+			--runtime "$PASSET_HUB_DIR/target/debug/wbuild/passet-hub-runtime/passet_hub_runtime.wasm" \
+			named-preset development
 
-	# Return focus to the first pane
-	tmux select-pane -t 0
+		# Use helper function to endow accounts
+		endow_dev_accounts /tmp/passet-spec.json ~/passet-spec.json
+	}
+
+	# Run the polkadot-omni-node with the passet chain spec
+	run() {
+		polkadot-omni-node \
+			--dev \
+			--log="$RUST_LOG" \
+			--dev-block-time 1000 \
+			--no-prometheus \
+			--no-hardware-benchmarks \
+			--chain ~/passet-spec.json
+	}
+
+	# Execute the appropriate command based on the first argument
+	case "$arg" in
+	build)
+		# Build the runtime and generate chain spec
+		build
+		;;
+	run)
+		# Run the already built runtime
+		run
+		;;
+	*)
+		# Default: build and run the runtime
+		build
+		run
+		;;
+	esac
+}
+
+# Runs geth (Ethereum node) with mitmproxy for traffic inspection
+# Useful for debugging Ethereum RPC calls during development
+# Usage: geth-proxy [proxy_port] [server_port]
+# Examples:
+#   geth-proxy              - Use default ports (8546->8547)
+#   geth-proxy 8545 8546    - Listen on 8545, proxy to geth on 8546
+function geth-proxy() {
+	# Parse port arguments with defaults
+	proxy_port="${1:-8546}"
+	server_port="${2:-8547}"
+
+	# Kill any existing mitmproxy instances
+	pkill -f mitmproxy
+
+	# Start mitmproxy with specified port mapping
+	start_mitmproxy "${proxy_port}:${server_port}"
+
+	# Rename tmux window if running in tmux
+	if [ -n "$TMUX" ]; then
+		tmux rename-window "geth"
+	fi
+
+	# Start geth in development mode with HTTP RPC enabled
+	geth --http --http.api web3,eth,txpool,miner,debug,net --http.port "$server_port" --dev
+}
+
+# Runs geth with mitmproxy in a new tmux window
+# Provides a quick way to start an Ethereum development node with traffic inspection
+# Usage: geth_stack
+function geth_stack() {
+	# Kill existing 'servers' window if it exists
+	tmux kill-window -t servers 2>/dev/null
+
+	# Create new 'servers' window in detached mode
+	# Source shell config and run geth-proxy with default ports (8545->8546)
+	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; geth-proxy 8545 8546; exec \$SHELL'"
+}
+
+# Runs the complete PAsset Hub stack (passet node + eth-rpc) in tmux window
+# This starts both the PAsset Hub node and Ethereum RPC bridge in separate panes
+# Usage: passet_stack [proxy]
+# Examples:
+#   passet_stack       - Run both services without proxy
+#   passet_stack proxy - Run both services with proxy
+function passet_stack() {
+	# Kill existing 'servers' window if it exists
+	tmux kill-window -t servers 2>/dev/null
+
+	# Parse arguments
+	use_proxy="false"
+
+	for arg in "$@"; do
+		case "$arg" in
+		proxy)
+			use_proxy="true"
+			;;
+		esac
+	done
+
+	# Create new 'servers' window running passet node
+	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; passet run; exec \$SHELL'"
+
+	# Split the window and run eth-rpc with or without proxy
+	if [ "$use_proxy" = "false" ]; then
+		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944; exec \$SHELL'"
+	else
+		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
+	fi
+
+	# Select the first pane
+	tmux select-pane -t servers.1
+}
+
+# Runs the complete Westend Asset Hub stack (westend node + eth-rpc) in tmux window
+# This starts both the Westend node and Ethereum RPC bridge in separate panes
+# Usage: westend_stack [proxy]
+# Examples:
+#   westend_stack       - Run both services without proxy
+#   westend_stack proxy - Run both services with proxy
+function westend_stack() {
+	# Kill existing 'servers' window if it exists
+	tmux kill-window -t servers 2>/dev/null
+
+	# Parse arguments
+	use_proxy="false"
+
+	for arg in "$@"; do
+		case "$arg" in
+		proxy)
+			use_proxy="true"
+			;;
+		esac
+	done
+
+	# Create new 'servers' window running westend node
+	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; westend run; exec \$SHELL'"
+
+	# Split the window and run eth-rpc with or without proxy
+	if [ "$use_proxy" = "false" ]; then
+		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944; exec \$SHELL'"
+	else
+		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
+	fi
+
+	# Select the first pane
+	tmux select-pane -t servers.1
 }

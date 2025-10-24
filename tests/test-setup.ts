@@ -75,7 +75,7 @@ function waitForHealth(url: string, timeout = 30_000) {
 export default async function setup(project: TestProject) {
     project.provide(
         'privateKey',
-        '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133'
+        '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133',
     )
 
     const port = Deno.env.get('RPC_PORT') ?? '8545'
@@ -137,7 +137,7 @@ export default async function setup(project: TestProject) {
             await waitForHealth(rpcUrl, 1000)
         } catch {
             console.error(
-                `❌ NO RPC server running at ${rpcUrl}.\nstart one or use START_GETH=true or START_SUBSTRATE_NODE=true`
+                `❌ NO RPC server running at ${rpcUrl}.\nstart one or use START_GETH=true or START_SUBSTRATE_NODE=true`,
             )
             Deno.exit(1)
         }

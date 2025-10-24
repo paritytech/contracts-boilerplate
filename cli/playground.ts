@@ -2,26 +2,31 @@
 
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
-import { Storage } from '../codegen/addresses.ts'
-
-{
-    const { request } = await env.wallet.simulateContract({
-        address: Storage,
-        abi: abis.Storage,
-        functionName: 'store',
-        args: [42n],
-    })
-
-    const result = await env.wallet.writeContract(request)
-    console.log(result)
-}
+import { Caller } from '../codegen/addresses.ts'
+import { encodeFunctionData } from 'viem'
 
 {
     const result = await env.wallet.readContract({
-        address: Storage,
-        abi: abis.Storage,
-        functionName: 'retrieve',
+        address: Caller,
+        abi: abis.Caller,
+        functionName: 'staticCall',
         args: [],
     })
     console.log({ result })
+}
+
+{
+    const result = await env.debugClient.traceCall(
+        {
+            to: Caller,
+            data: encodeFunctionData({
+                abi: abis.Caller,
+                functionName: 'staticCall',
+                args: [],
+            }),
+        },
+        'callTracer',
+    )
+
+    console.log(result)
 }

@@ -66,7 +66,7 @@ export async function deploy<K extends keyof Abis>({
         console.log(
             `🔗 Chain: ${env.wallet.chain.name} - ${
                 env.wallet.chain.rpcUrls.default.http[0]
-            }`
+            }`,
         )
         console.log(`👤 Account: ${env.wallet.account.address}`)
         console.log(`💰 balance: ${formatEther(balance)}`)
@@ -137,12 +137,13 @@ export const chain = defineChain({
         let contracts = existsSync(contractsFile)
             ? readFileSync(contractsFile, 'utf8')
             : [
-                  `// prettier-ignore`,
-                  `import * as addresses from './addresses.ts'`,
-                  `import { abis } from './abis.ts'`,
-              ].join('\n')
+                `// prettier-ignore`,
+                `import * as addresses from './addresses.ts'`,
+                `import { abis } from './abis.ts'`,
+            ].join('\n')
 
-        const exportLine = `export const ${id} = { address: addresses.${id}, abi: abis.${id} }`
+        const exportLine =
+            `export const ${id} = { address: addresses.${id}, abi: abis.${id} }`
         const regex = new RegExp(`^export const ${id} = .*`, 'm')
 
         if (regex.test(contracts)) {
@@ -154,7 +155,7 @@ export const chain = defineChain({
     }
 
     console.log(
-        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`
+        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`,
     )
     return address
 }
