@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Get the directory where this script is located (works in both bash and zsh)
-if [ -n "$BASH_SOURCE" ]; then
-	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-else
-	# zsh
-	SCRIPT_DIR="$(cd "$(dirname "${(%):-%x}")" && pwd)"
-fi
-
 # Detect current shell and its RC file
 if [ -n "$ZSH_VERSION" ]; then
 	CURRENT_SHELL="zsh"
@@ -332,13 +324,13 @@ function eth-rpc() {
 				--dev \
 				--rpc-port 8546 \
 				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}" 2>&1 \
-				| tee /tmp/eth-rpc.log \
-				| tee >(grep --line-buffered 'recv=' \
-					| grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' \
-					| sed -u -E 's/.*recv="(.*)"/\1/' \
-					| sed -u 's/\\"/"/g' \
-					> /tmp/eth-rpc-requests.log)
+				"${args[@]}" 2>&1 |
+				tee /tmp/eth-rpc.log |
+				tee >(grep --line-buffered 'recv=' |
+					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+					sed -u -E 's/.*recv="(.*)"/\1/' |
+					sed -u 's/\\"/"/g' \
+						>/tmp/eth-rpc-requests.log)
 		else
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
@@ -386,13 +378,13 @@ function eth-rpc() {
 				--no-prometheus \
 				--dev \
 				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}" 2>&1 \
-				| tee /tmp/eth-rpc.log \
-				| tee >(grep --line-buffered 'recv=' \
-					| grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' \
-					| sed -u -E 's/.*recv="(.*)"/\1/' \
-					| sed -u 's/\\"/"/g' \
-					> /tmp/eth-rpc-requests.log)
+				"${args[@]}" 2>&1 |
+				tee /tmp/eth-rpc.log |
+				tee >(grep --line-buffered 'recv=' |
+					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+					sed -u -E 's/.*recv="(.*)"/\1/' |
+					sed -u 's/\\"/"/g' \
+						>/tmp/eth-rpc-requests.log)
 		else
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
@@ -437,13 +429,13 @@ function eth-rpc() {
 				--no-prometheus \
 				--dev \
 				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}" 2>&1 \
-				| tee /tmp/eth-rpc.log \
-				| tee >(grep --line-buffered 'recv=' \
-					| grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' \
-					| sed -u -E 's/.*recv="(.*)"/\1/' \
-					| sed -u 's/\\"/"/g' \
-					> /tmp/eth-rpc-requests.log)
+				"${args[@]}" 2>&1 |
+				tee /tmp/eth-rpc.log |
+				tee >(grep --line-buffered 'recv=' |
+					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+					sed -u -E 's/.*recv="(.*)"/\1/' |
+					sed -u 's/\\"/"/g' \
+						>/tmp/eth-rpc-requests.log)
 		else
 			cargo run \
 				--quiet \
