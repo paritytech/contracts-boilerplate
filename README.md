@@ -94,6 +94,12 @@ eth-rpc build
 
 These commands will compile the binaries into `~/polkadot-sdk/target/debug/`. The build process may take some time on the first run.
 
+> **Note**: The helper scripts use the `POLKADOT_SDK_DIR` environment variable to locate the Polkadot SDK repository. By default, it points to `~/polkadot-sdk`. If you cloned the repository to a different location, you can override this by setting the environment variable before sourcing the scripts:
+> ```sh
+> export POLKADOT_SDK_DIR=/path/to/your/polkadot-sdk
+> source scripts/node-env.sh
+> ```
+
 # Testing Tips
 
 ## Running the Revive Stack
