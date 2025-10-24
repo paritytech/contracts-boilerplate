@@ -13,6 +13,9 @@ else
 	SHELL_RC="$HOME/.${CURRENT_SHELL}rc"
 fi
 
+# Polkadot SDK directory path (can be overridden by environment variable)
+POLKADOT_SDK_DIR="${POLKADOT_SDK_DIR:-$HOME/polkadot-sdk}"
+
 # Environment variables for Polkadot and Ethereum RPC URLs
 export ETH_MAINNET_HTTP_URL=https://eth.llamarpc.com
 
@@ -173,9 +176,6 @@ function dev-node() {
 	# Set default logging levels (can be overridden by environment variable)
 	RUST_LOG="${RUST_LOG:-error,sc_rpc_server=info,runtime::revive=debug}"
 
-	# Define the polkadot-sdk directory path
-	POLKADOT_SDK_DIR=~/polkadot-sdk
-
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
 		return 1
@@ -255,9 +255,6 @@ function eth-rpc() {
 	# Set default logging levels (can be overridden by environment variable)
 	RUST_LOG="${RUST_LOG:-info,eth-rpc=debug,jsonrpsee-server=trace}"
 
-	# Define the polkadot-sdk directory path
-	POLKADOT_SDK_DIR=~/polkadot-sdk
-
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
 		return 1
@@ -316,8 +313,8 @@ function eth-rpc() {
 
 		# Build and execute command with optional output redirection
 		PS4='  '
-		set -x
 		if [ "$record_mode" = "true" ]; then
+			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
 				--no-prometheus \
@@ -331,7 +328,9 @@ function eth-rpc() {
 					sed -u -E 's/.*recv="(.*)"/\1/' |
 					sed -u 's/\\"/"/g' \
 						>/tmp/eth-rpc-requests.log)
+			{ set +x; } 2>/dev/null
 		else
+			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
 				--no-prometheus \
@@ -339,8 +338,8 @@ function eth-rpc() {
 				--rpc-port 8546 \
 				--node-rpc-url "$NODE_RPC_URL" \
 				"${args[@]}"
+			{ set +x; } 2>/dev/null
 		fi
-		{ set +x; } 2>/dev/null
 		;;
 	run)
 		# Run pre-built binary from target/debug or target/release
@@ -371,8 +370,8 @@ function eth-rpc() {
 
 		# Build and execute command with optional output redirection
 		PS4='  '
-		set -x
 		if [ "$record_mode" = "true" ]; then
+			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
 				--no-prometheus \
@@ -385,15 +384,17 @@ function eth-rpc() {
 					sed -u -E 's/.*recv="(.*)"/\1/' |
 					sed -u 's/\\"/"/g' \
 						>/tmp/eth-rpc-requests.log)
+			{ set +x; } 2>/dev/null
 		else
+			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
 				--no-prometheus \
 				--dev \
 				--node-rpc-url "$NODE_RPC_URL" \
 				"${args[@]}"
+			{ set +x; } 2>/dev/null
 		fi
-		{ set +x; } 2>/dev/null
 		;;
 	*)
 		# Default: build and run in one command using cargo run
@@ -419,8 +420,8 @@ function eth-rpc() {
 
 		# Build and execute command with optional output redirection
 		PS4='  '
-		set -x
 		if [ "$record_mode" = "true" ]; then
+			set -x
 			cargo run \
 				--quiet \
 				--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
@@ -436,7 +437,9 @@ function eth-rpc() {
 					sed -u -E 's/.*recv="(.*)"/\1/' |
 					sed -u 's/\\"/"/g' \
 						>/tmp/eth-rpc-requests.log)
+			{ set +x; } 2>/dev/null
 		else
+			set -x
 			cargo run \
 				--quiet \
 				--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
@@ -446,8 +449,8 @@ function eth-rpc() {
 				--dev \
 				--node-rpc-url "$NODE_RPC_URL" \
 				"${args[@]}"
+			{ set +x; } 2>/dev/null
 		fi
-		{ set +x; } 2>/dev/null
 		;;
 	esac
 }
@@ -461,9 +464,6 @@ function eth-rpc() {
 #   revive_dev_stack no-proxy               - Run both services with debug binaries without proxy
 #   revive_dev_stack --release no-proxy     - Run both services with release binaries without proxy
 function revive_dev_stack() {
-	# Define the polkadot-sdk directory path
-	POLKADOT_SDK_DIR=~/polkadot-sdk
-
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
 		return 1
@@ -542,9 +542,6 @@ function endow_dev_accounts() {
 function westend() {
 	# Capture the first argument as the command
 	arg=$1
-
-	# Define the polkadot-sdk directory path
-	POLKADOT_SDK_DIR=~/polkadot-sdk
 
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
