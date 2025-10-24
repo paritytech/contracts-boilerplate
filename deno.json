@@ -1,5 +1,6 @@
 {
     "tasks": {
+        "lint": "deno fmt --check && deno lint",
         "build": {
             "description": "Build contracts from the contracts directory and output bytecode and abi in the codegen directory",
             "command": "deno run --env-file --allow-all tools/build.ts"
