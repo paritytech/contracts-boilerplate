@@ -27,7 +27,7 @@ This does the following:
 Update `tools/deploy.ts` to include new contracts you want to deploy.
 Make sure to specify the constructor arguments and the value, if needed.
 
-Once you have the chain running (see [Running the Development Stack](#running-the-development-stack)), deploy the contracts by running:
+Once you have the chain running (see [Running the Revive Stack](#running-the-revive-stack)), deploy the contracts by running:
 
 ```sh
 deno task deploy [--filter <contract-name>]
@@ -94,9 +94,21 @@ eth-rpc build
 
 These commands will compile the binaries into `~/polkadot-sdk/target/debug/`. The build process may take some time on the first run.
 
-## Running the Development Stack
+# Testing Tips
 
-Once built, you can run the complete development stack in tmux:
+## Running the Revive Stack
+
+Once built, you can run each service individually:
+
+```sh
+# Run the development node
+dev-node run
+
+# In another terminal, run the Ethereum RPC bridge
+eth-rpc run ws://localhost:9944
+```
+
+Alternatively, you can run the complete development stack in tmux:
 
 ```sh
 # Run both services in separate tmux panes
@@ -107,22 +119,60 @@ revive_dev_stack
 revive_dev_stack proxy
 ```
 
-Alternatively, you can run each service individually:
+## Running the Geth Stack
+
+To test contracts against standard Ethereum with Geth:
 
 ```sh
-# Run the development node
-dev-node run
+# Run geth in development mode (default port 8545)
+geth-dev
 
-# In another terminal, run the Ethereum RPC bridge
-eth-rpc run ws://localhost:9944
+# Or specify a custom port
+geth-dev 8546
 ```
 
-To test contracts with Geth
+Alternatively, you can run geth with mitmproxy in a tmux window:
 
 ```sh
 # Run geth with mitmproxy in a tmux window
 geth_stack
 ```
+
+This will start a local Geth development node with HTTP RPC enabled, useful for comparing behavior between Revive and standard EVM environments.
+
+## Recording and Replaying RPC Requests
+
+### Recording RPC Requests
+
+When testing and debugging, you can record all `eth_sendRawTransaction` requests using the `--record` flag:
+
+```sh
+# Record requests when running eth-rpc
+eth-rpc run ws://localhost:9944 --record
+```
+
+When `--record` is enabled, eth-rpc will:
+
+- Log all output to console and `/tmp/eth-rpc.log`
+- Extract and save all `eth_sendRawTransaction` requests to `/tmp/eth-rpc-requests.log`
+
+### Replaying Recorded Requests
+
+You can replay recorded requests using the `scripts/run-all.sh` script:
+
+```sh
+# Replay all recorded requests against localhost:8545
+./scripts/run-all.sh
+```
+
+This script will:
+
+- Send each recorded transaction to the RPC endpoint
+- Wait for transaction receipts
+- Display status (✓ for success, ✗ for failure)
+- Report any errors or failed transactions at the end
+
+This is useful for regression testing - record a successful test session, then replay it against new builds to ensure compatibility.
 
 # Learn more
 

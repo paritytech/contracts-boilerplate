@@ -1,5 +1,6 @@
 {
     "tasks": {
+        "lint": "deno fmt --check && deno lint",
         "build": {
             "description": "Build contracts from the contracts directory and output bytecode and abi in the codegen directory",
             "command": "deno run --env-file --allow-all tools/build.ts"
@@ -20,7 +21,7 @@
         "react/jsx-runtime": "npm:react@^19.2.0/jsx-runtime",
         "solc": "npm:solc@^0.8.30",
         "viem": "npm:viem@^2.38.4",
-        "viem/accounts": "npm:viem@^2.38.4/accounts",
+        "viem/accounts": "npm:viem@^2.38.4/accounts"
     },
     "compilerOptions": {
         "strict": true,

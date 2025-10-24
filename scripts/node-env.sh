@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Detect current shell and its RC file
+if [ -n "$ZSH_VERSION" ]; then
+	CURRENT_SHELL="zsh"
+	SHELL_RC="$HOME/.zshrc"
+elif [ -n "$BASH_VERSION" ]; then
+	CURRENT_SHELL="bash"
+	SHELL_RC="$HOME/.bashrc"
+else
+	# Fallback to $SHELL environment variable
+	CURRENT_SHELL="$(basename "$SHELL")"
+	SHELL_RC="$HOME/.${CURRENT_SHELL}rc"
+fi
+
 # Environment variables for Polkadot and Ethereum RPC URLs
 export ETH_MAINNET_HTTP_URL=https://eth.llamarpc.com
 
@@ -240,7 +253,7 @@ function eth-rpc() {
 	arg=$1
 
 	# Set default logging levels (can be overridden by environment variable)
-	RUST_LOG="${RUST_LOG:-info,eth-rpc=debug}"
+	RUST_LOG="${RUST_LOG:-info,eth-rpc=debug,jsonrpsee-server=trace}"
 
 	# Define the polkadot-sdk directory path
 	POLKADOT_SDK_DIR=~/polkadot-sdk
@@ -270,14 +283,17 @@ function eth-rpc() {
 		# Requires custom mitmproxy branch: https://github.com/pgherveou/mitmproxy
 		shift # Strip "proxy"
 
-		# Detect and handle "--release" and NODE_RPC_URL
+		# Detect and handle "--release", "--record", and NODE_RPC_URL
 		bin_folder="debug"
 		NODE_RPC_URL=""
+		record_mode="false"
 		args=()
 
 		for var in "$@"; do
 			if [ "$var" = "--release" ]; then
 				bin_folder="release"
+			elif [ "$var" = "--record" ]; then
+				record_mode="true"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -287,7 +303,7 @@ function eth-rpc() {
 
 		# Default NODE_RPC_URL if not provided
 		if [ -z "$NODE_RPC_URL" ]; then
-			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
+			NODE_RPC_URL="wss://localhost:9944"
 		fi
 
 		# Kill any existing mitmproxy instances and start new one
@@ -298,24 +314,49 @@ function eth-rpc() {
 			tmux rename-window "eth-rpc"
 		fi
 
-		# Build and execute command with output redirection
+		# Build and execute command with optional output redirection
 		PS4='  '
 		set -x
-		"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8546 --node-rpc-url "$NODE_RPC_URL" "${args[@]}" 2>&1 | tee /tmp/eth-rpc.log
+		if [ "$record_mode" = "true" ]; then
+			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+				--log="$RUST_LOG" \
+				--no-prometheus \
+				--dev \
+				--rpc-port 8546 \
+				--node-rpc-url "$NODE_RPC_URL" \
+				"${args[@]}" 2>&1 |
+				tee /tmp/eth-rpc.log |
+				tee >(grep --line-buffered 'recv=' |
+					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+					sed -u -E 's/.*recv="(.*)"/\1/' |
+					sed -u 's/\\"/"/g' \
+						>/tmp/eth-rpc-requests.log)
+		else
+			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+				--log="$RUST_LOG" \
+				--no-prometheus \
+				--dev \
+				--rpc-port 8546 \
+				--node-rpc-url "$NODE_RPC_URL" \
+				"${args[@]}"
+		fi
 		{ set +x; } 2>/dev/null
 		;;
 	run)
 		# Run pre-built binary from target/debug or target/release
 		shift # Strip "run"
 
-		# Detect and handle "--release" and NODE_RPC_URL
+		# Detect and handle "--release", "--record", and NODE_RPC_URL
 		bin_folder="debug"
 		NODE_RPC_URL=""
+		record_mode="false"
 		args=()
 
 		for var in "$@"; do
 			if [ "$var" = "--release" ]; then
 				bin_folder="release"
+			elif [ "$var" = "--record" ]; then
+				record_mode="true"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -328,26 +369,84 @@ function eth-rpc() {
 			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
 		fi
 
-		# Build command
+		# Build and execute command with optional output redirection
 		PS4='  '
 		set -x
-		"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "${args[@]}" 2>&1 | tee /tmp/eth-rpc.log
+		if [ "$record_mode" = "true" ]; then
+			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+				--log="$RUST_LOG" \
+				--no-prometheus \
+				--dev \
+				--node-rpc-url "$NODE_RPC_URL" \
+				"${args[@]}" 2>&1 |
+				tee /tmp/eth-rpc.log |
+				tee >(grep --line-buffered 'recv=' |
+					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+					sed -u -E 's/.*recv="(.*)"/\1/' |
+					sed -u 's/\\"/"/g' \
+						>/tmp/eth-rpc-requests.log)
+		else
+			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+				--log="$RUST_LOG" \
+				--no-prometheus \
+				--dev \
+				--node-rpc-url "$NODE_RPC_URL" \
+				"${args[@]}"
+		fi
 		{ set +x; } 2>/dev/null
 		;;
 	*)
 		# Default: build and run in one command using cargo run
-		# Accept optional node RPC URL or use default
-		if [ -n "$1" ]; then
-			NODE_RPC_URL="$1"
-			shift
-		else
+		# Detect and handle "--record" and NODE_RPC_URL
+		NODE_RPC_URL=""
+		record_mode="false"
+		args=()
+
+		for var in "$@"; do
+			if [ "$var" = "--record" ]; then
+				record_mode="true"
+			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
+				NODE_RPC_URL="$var"
+			else
+				args+=("$var")
+			fi
+		done
+
+		# Default NODE_RPC_URL if not provided
+		if [ -z "$NODE_RPC_URL" ]; then
 			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
 		fi
 
-		# Build the command to display
+		# Build and execute command with optional output redirection
 		PS4='  '
 		set -x
-		cargo run --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc -- --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "$@" 2>&1 | tee /tmp/eth-rpc.log
+		if [ "$record_mode" = "true" ]; then
+			cargo run \
+				--quiet \
+				--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
+				-p pallet-revive-eth-rpc -- \
+				--log="$RUST_LOG" \
+				--no-prometheus \
+				--dev \
+				--node-rpc-url "$NODE_RPC_URL" \
+				"${args[@]}" 2>&1 |
+				tee /tmp/eth-rpc.log |
+				tee >(grep --line-buffered 'recv=' |
+					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+					sed -u -E 's/.*recv="(.*)"/\1/' |
+					sed -u 's/\\"/"/g' \
+						>/tmp/eth-rpc-requests.log)
+		else
+			cargo run \
+				--quiet \
+				--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
+				-p pallet-revive-eth-rpc -- \
+				--log="$RUST_LOG" \
+				--no-prometheus \
+				--dev \
+				--node-rpc-url "$NODE_RPC_URL" \
+				"${args[@]}"
+		fi
 		{ set +x; } 2>/dev/null
 		;;
 	esac
@@ -389,13 +488,13 @@ function revive_dev_stack() {
 	done
 
 	# Create new 'servers' window in detached mode
-	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; dev-node run $build_type; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; dev-node run $build_type; exec \$SHELL'"
 
 	# Split the window, run eth-rpc with or without proxy
 	if [ "$use_proxy" = "false" ]; then
-		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944 $build_type; exec \$SHELL'"
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc run ws://localhost:9944 $build_type; exec \$SHELL'"
 	else
-		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944 $build_type; exec \$SHELL'"
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc proxy ws://localhost:9944 $build_type; exec \$SHELL'"
 	fi
 
 	# Select the first pane
@@ -621,6 +720,25 @@ function passet() {
 	esac
 }
 
+# Runs geth (Ethereum node) in development mode
+# Useful for testing contracts against standard Ethereum
+# Usage: geth-dev [port]
+# Examples:
+#   geth-dev         - Use default port 8545
+#   geth-dev 8546    - Use custom port 8546
+function geth-dev() {
+	# Parse port argument with default
+	port="${1:-8545}"
+
+	# Rename tmux window if running in tmux
+	if [ -n "$TMUX" ]; then
+		tmux rename-window "geth"
+	fi
+
+	# Start geth in development mode with HTTP RPC enabled
+	geth --http --http.api web3,eth,txpool,miner,debug,net --http.port "$port" --dev
+}
+
 # Runs geth (Ethereum node) with mitmproxy for traffic inspection
 # Useful for debugging Ethereum RPC calls during development
 # Usage: geth-proxy [proxy_port] [server_port]
@@ -656,7 +774,7 @@ function geth_stack() {
 
 	# Create new 'servers' window in detached mode
 	# Source shell config and run geth-proxy with default ports (8545->8546)
-	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; geth-proxy 8545 8546; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; geth-proxy 8545 8546; exec \$SHELL'"
 }
 
 # Runs the complete PAsset Hub stack (passet node + eth-rpc) in tmux window
@@ -681,13 +799,13 @@ function passet_stack() {
 	done
 
 	# Create new 'servers' window running passet node
-	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; passet run; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; passet run; exec \$SHELL'"
 
 	# Split the window and run eth-rpc with or without proxy
 	if [ "$use_proxy" = "false" ]; then
-		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944; exec \$SHELL'"
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc run ws://localhost:9944; exec \$SHELL'"
 	else
-		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
 	fi
 
 	# Select the first pane
@@ -716,13 +834,13 @@ function westend_stack() {
 	done
 
 	# Create new 'servers' window running westend node
-	tmux new-window -d -n servers "zsh -c 'source $HOME/.zshrc; westend run; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; westend run; exec \$SHELL'"
 
 	# Split the window and run eth-rpc with or without proxy
 	if [ "$use_proxy" = "false" ]; then
-		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc run ws://localhost:9944; exec \$SHELL'"
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc run ws://localhost:9944; exec \$SHELL'"
 	else
-		tmux split-window -t servers -d "zsh -c 'source $HOME/.zshrc; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
 	fi
 
 	# Select the first pane
