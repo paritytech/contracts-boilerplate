@@ -188,7 +188,8 @@ function dev-node() {
 		;;
 	build)
 		# Build the revive-dev-node package
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p "revive-dev-node" "$@"
 		{ set +x; } 2>/dev/null
 		;;
@@ -203,7 +204,8 @@ function dev-node() {
 		fi
 
 		# Start node with proxied port 8844
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8844 "${args[@]}"
 		{ set +x; } 2>/dev/null
 		;;
@@ -212,7 +214,8 @@ function dev-node() {
 			tmux rename-window "dev-node"
 		fi
 
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --network-backend libp2p --no-prometheus --dev "${args[@]}"
 		{ set +x; } 2>/dev/null
 		;;
@@ -257,7 +260,8 @@ function eth-rpc() {
 	build)
 		# Build the eth-rpc binary
 		shift # Strip "build"
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc --bin eth-rpc "$@"
 		{ set +x; } 2>/dev/null
 		;;
@@ -295,7 +299,8 @@ function eth-rpc() {
 		fi
 
 		# Build and execute command with output redirection
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8546 --node-rpc-url "$NODE_RPC_URL" "${args[@]}" 2>&1 | tee /tmp/eth-rpc.log
 		{ set +x; } 2>/dev/null
 		;;
@@ -324,7 +329,8 @@ function eth-rpc() {
 		fi
 
 		# Build command
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "${args[@]}" 2>&1 | tee /tmp/eth-rpc.log
 		{ set +x; } 2>/dev/null
 		;;
@@ -339,7 +345,8 @@ function eth-rpc() {
 		fi
 
 		# Build the command to display
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		cargo run --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc -- --log="$RUST_LOG" --no-prometheus --dev --node-rpc-url "$NODE_RPC_URL" "$@" 2>&1 | tee /tmp/eth-rpc.log
 		{ set +x; } 2>/dev/null
 		;;
@@ -451,7 +458,8 @@ function westend() {
 	# Build the runtime and create a chain spec with endowed dev accounts
 	build() {
 		# Build the asset-hub-westend-runtime
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p asset-hub-westend-runtime
 		{ set +x; } 2>/dev/null
 
@@ -554,7 +562,8 @@ function passet() {
 	# Build the runtime and create a chain spec with endowed dev accounts
 	build() {
 		# Build the passet-hub-runtime
-		PS4='  ' set -x
+		PS4='  '
+		set -x
 		cargo build --quiet --manifest-path "$PASSET_HUB_DIR/Cargo.toml" -p passet-hub-runtime
 		{ set +x; } 2>/dev/null
 
