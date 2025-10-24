@@ -25,7 +25,7 @@ import { encodeFunctionData } from 'viem'
                 args: [],
             }),
         },
-        'callTracer'
+        'callTracer',
     )
 
     console.log(result)
