@@ -9,10 +9,8 @@ import {
     parseEther,
 } from 'viem'
 import { Abis, abis } from '../codegen/abis.ts'
-import { join } from 'node:path'
 import { createWalletClient, Hex, http, publicActions } from 'viem'
 import { nonceManager, privateKeyToAccount } from 'viem/accounts'
-import { readFileSync } from 'node:fs'
 
 type TracerType = 'callTracer' | 'prestateTracer' | 'opcodeTracer'
 type TracerConfig = {
@@ -94,11 +92,13 @@ export async function createEnv({
         name: string,
         bytecodeType: 'evm' | 'polkavm' = 'evm'
     ): Hex {
-        const codegenDir = join(import.meta.dirname!, '..', 'codegen')
-        const data = readFileSync(
-            join(codegenDir, 'bytecode', `${name}.${bytecodeType}`)
-        ).toString('hex')
-        return `0x${data}`
+        const bytecode =
+            bytecodeType == 'evm'
+                ? Deno.readFileSync(`codegen/evm/${name}.bin`)
+                : Deno.readFileSync(`codegen/pvm/${name}.polkavm`)
+        return `0x${Array.from(bytecode)
+            .map((b: number) => b.toString(16).padStart(2, '0'))
+            .join('')}` as Hex
     }
 
     const chain = defineChain({

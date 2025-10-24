@@ -13,6 +13,8 @@
         "@openzeppelin/contracts": "npm:@openzeppelin/contracts@^5.4.0",
         "@parity/resolc": "npm:@parity/resolc@0.1.0-dev.16",
         "@std/cli": "jsr:@std/cli@^1.0.23",
+        "@std/path": "jsr:@std/path@^1.1.2",
+        "@std/log": "jsr:@std/log@^0.224",
         "ink": "npm:ink@^6.3.1",
         "react": "npm:react@^19.2.0",
         "react/jsx-runtime": "npm:react@^19.2.0/jsx-runtime",

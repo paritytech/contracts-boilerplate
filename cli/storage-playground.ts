@@ -17,7 +17,7 @@ import type { Abi } from 'viem'
             }),
         },
         'prestateTracer',
-        { diffMode: false }
+        { diffMode: false },
     )
     console.log(res)
 }

@@ -57,7 +57,7 @@ const App = () => {
     }, [])
 
     return (
-        <Box flexDirection="column">
+        <Box flexDirection='column'>
             <Text>🏴‍☠️ Attacker balance: {formatEther(attacker)}</Text>
             <Text>🏛️ DAO balance: {formatEther(dao)}</Text>
         </Box>
