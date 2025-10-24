@@ -202,7 +202,7 @@ for (const file of input) {
         }
         writeCachedHash(pvmSourceMarkerFile, sourceHash)
     } else if (!solcOnly) {
-        logger.logger.debug(
+        logger.debug(
             `⏭️  Skipping PVM compilation for ${file.name} (unchanged)`
         )
     }
