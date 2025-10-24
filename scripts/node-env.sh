@@ -508,12 +508,12 @@ function westend() {
 	esac
 }
 
-# Configures cast environment for PAsset Hub testnet
+# Configures cast environment for passet Hub testnet
 # Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
 # Usage: cast_passet
 # Example:
 #   cast_passet
-#   cast send --value 0.1ether 0x...
+#   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_passet() {
 	echo "Loading account 0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
 	echo "Setting ETH_RPC_URL to $PASSET_HUB_ETH_HTTP_URL"
@@ -521,12 +521,25 @@ function cast_passet() {
 	export ETH_RPC_URL=$PASSET_HUB_ETH_HTTP_URL
 }
 
+# Configures cast environment for westend Hub testnet
+# Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
+# Usage: cast_westend
+# Example:
+#   cast_westend
+#   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
+function cast_westend() {
+	echo "Loading account 0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
+	echo "Setting ETH_RPC_URL to $WESTEND_HUB_ETH_HTTP_URL"
+	export PRIVATE_KEY=2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
+	export ETH_RPC_URL=$WESTEND_HUB_ETH_HTTP_URL
+}
+
 # Configures cast environment for local development node
 # Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
 # Usage: cast_local
 # Example:
 #   cast_local
-#   cast send --value 0.1ether 0x...
+#   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_local() {
 	echo "Loading account 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
 	echo "Setting ETH_RPC_URL to localhost:8545"
