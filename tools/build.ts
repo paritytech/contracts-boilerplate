@@ -108,7 +108,7 @@ async function pvmCompile(file: Deno.DirEntry, sources: CompileInput) {
                             args: ['--version'],
                             stdout: 'piped',
                         }).output()
-                    ).stdout
+                    ).stdout,
                 )
                 .trim()
         }
@@ -140,7 +140,7 @@ function evmCompile(file: Deno.DirEntry, sources: CompileInput) {
     return solc.compile(JSON.stringify(input), {
         import: (relativePath: string) => {
             const source = Deno.readTextFileSync(
-                resolc.tryResolveImport(relativePath)
+                resolc.tryResolveImport(relativePath),
             )
             return { contents: source }
         },
@@ -176,8 +176,8 @@ for (const file of input) {
     // Create marker files to track if this source has been compiled
     const pvmSourceMarkerFile = join(pvmDir, `.${name}.sha256.txt`)
     const pvmSourceMarkerHash = readCachedHash(pvmSourceMarkerFile)
-    const needsPvmCompilation =
-        !solcOnly && (force || pvmSourceMarkerHash !== sourceHash)
+    const needsPvmCompilation = !solcOnly &&
+        (force || pvmSourceMarkerHash !== sourceHash)
 
     const evmSourceMarkerFile = join(evmDir, `.${name}.sha256.txt`)
     const evmSourceMarkerHash = readCachedHash(evmSourceMarkerFile)
@@ -194,7 +194,7 @@ for (const file of input) {
                     const bytecode = new Uint8Array(
                         contract.evm.bytecode.object
                             .match(/.{1,2}/g)!
-                            .map((byte) => parseInt(byte, 16))
+                            .map((byte) => parseInt(byte, 16)),
                     )
                     Deno.writeFileSync(pvmFile, bytecode)
                 }
@@ -203,19 +203,19 @@ for (const file of input) {
         writeCachedHash(pvmSourceMarkerFile, sourceHash)
     } else if (!solcOnly) {
         logger.logger.debug(
-            `⏭️  Skipping PVM compilation for ${file.name} (unchanged)`
+            `⏭️  Skipping PVM compilation for ${file.name} (unchanged)`,
         )
     }
 
     if (!needsEvmCompilation) {
         logger.debug(
-            `⏭️  Skipping EVM compilation for ${file.name} (unchanged)`
+            `⏭️  Skipping EVM compilation for ${file.name} (unchanged)`,
         )
         continue
     }
 
     const evmOut = JSON.parse(
-        evmCompile(file, inputSources)
+        evmCompile(file, inputSources),
     ) as resolc.SolcOutput
 
     if (evmOut.errors) {
@@ -245,7 +245,7 @@ for (const file of input) {
                     const bytecode = new Uint8Array(
                         bytecodeHex
                             .match(/.{1,2}/g)!
-                            .map((byte) => parseInt(byte, 16))
+                            .map((byte) => parseInt(byte, 16)),
                     )
                     Deno.writeFileSync(evmFile, bytecode)
                 }
@@ -254,11 +254,13 @@ for (const file of input) {
             logger.info(`📜 Add ABI ${name}`)
             const abi = contract.abi
             const abiName = `${name}Abi`
-            const tsContent = `export const ${abiName} = ${JSON.stringify(
-                abi,
-                null,
-                2
-            )} as const\n`
+            const tsContent = `export const ${abiName} = ${
+                JSON.stringify(
+                    abi,
+                    null,
+                    2,
+                )
+            } as const\n`
             Deno.writeTextFileSync(abiFile, tsContent)
             generateAbiIndex = true
         }
@@ -289,19 +291,20 @@ if (generateAbiIndex) {
         for (const abiFile of abiFiles) {
             const contractName = basename(abiFile.name, '.ts')
             const abiName = `${contractName}Abi`
-            const importStatement = `import { ${abiName} } from './abi/${contractName}.ts'`
+            const importStatement =
+                `import { ${abiName} } from './abi/${contractName}.ts'`
             indexCode.unshift(importStatement)
             indexCode.push(`${contractName}: ${abiName},`)
         }
     } catch (error) {
         logger.warn(
-            `⚠️  Could not read ABI directory (it may not exist yet): ${error}`
+            `⚠️  Could not read ABI directory (it may not exist yet): ${error}`,
         )
     }
 
     indexCode.push('}')
     Deno.writeFileSync(
         join(codegenDir, `abis.ts`),
-        await format(indexCode.join('\n'))
+        await format(indexCode.join('\n')),
     )
 }

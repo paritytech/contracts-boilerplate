@@ -152,6 +152,7 @@ eth-rpc run ws://localhost:9944 --record
 ```
 
 When `--record` is enabled, eth-rpc will:
+
 - Log all output to console and `/tmp/eth-rpc.log`
 - Extract and save all `eth_sendRawTransaction` requests to `/tmp/eth-rpc-requests.log`
 
@@ -165,6 +166,7 @@ You can replay recorded requests using the `scripts/run-all.sh` script:
 ```
 
 This script will:
+
 - Send each recorded transaction to the RPC endpoint
 - Wait for transaction receipts
 - Display status (✓ for success, ✗ for failure)

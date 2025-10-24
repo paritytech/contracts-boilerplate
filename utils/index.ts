@@ -90,15 +90,16 @@ export async function createEnv({
 
     function getByteCode(
         name: string,
-        bytecodeType: 'evm' | 'polkavm' = 'evm'
+        bytecodeType: 'evm' | 'polkavm' = 'evm',
     ): Hex {
-        const bytecode =
-            bytecodeType == 'evm'
-                ? Deno.readFileSync(`codegen/evm/${name}.bin`)
-                : Deno.readFileSync(`codegen/pvm/${name}.polkavm`)
-        return `0x${Array.from(bytecode)
-            .map((b: number) => b.toString(16).padStart(2, '0'))
-            .join('')}` as Hex
+        const bytecode = bytecodeType == 'evm'
+            ? Deno.readFileSync(`codegen/evm/${name}.bin`)
+            : Deno.readFileSync(`codegen/pvm/${name}.polkavm`)
+        return `0x${
+            Array.from(bytecode)
+                .map((b: number) => b.toString(16).padStart(2, '0'))
+                .join('')
+        }` as Hex
     }
 
     const chain = defineChain({
@@ -156,10 +157,11 @@ export async function createEnv({
         traceTransaction<Tracer extends TracerType>(
             txHash: Hex,
             tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer]
+            tracerConfig?: TracerConfig[Tracer],
         ) {
-            const params: Record<string, unknown> =
-                tracer == null ? (tracerConfig ?? {}) : { tracer, tracerConfig }
+            const params: Record<string, unknown> = tracer == null
+                ? (tracerConfig ?? {})
+                : { tracer, tracerConfig }
 
             return client.request({
                 method: 'debug_traceTransaction' as never,
@@ -169,7 +171,7 @@ export async function createEnv({
         traceBlock<Tracer extends TracerType>(
             blockNumber: bigint,
             tracer: Tracer,
-            tracerConfig?: TracerConfig[Tracer]
+            tracerConfig?: TracerConfig[Tracer],
         ) {
             return client.request({
                 method: 'debug_traceBlockByNumber' as never,
@@ -183,10 +185,11 @@ export async function createEnv({
         traceCall<Tracer extends TracerType>(
             args: CallParameters,
             tracer: Tracer | null,
-            tracerConfig?: TracerConfig[Tracer]
+            tracerConfig?: TracerConfig[Tracer],
         ) {
-            const params: Record<string, unknown> =
-                tracer == null ? (tracerConfig ?? {}) : { tracer, tracerConfig }
+            const params: Record<string, unknown> = tracer == null
+                ? (tracerConfig ?? {})
+                : { tracer, tracerConfig }
 
             return client.request({
                 method: 'debug_traceCall' as never,
