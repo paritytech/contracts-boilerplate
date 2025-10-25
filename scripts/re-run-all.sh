@@ -23,7 +23,16 @@ errored_txs=()
 # Read each line from the log file
 while IFS= read -r line; do
 	tx_count=$((tx_count + 1))
-	printf "Sending tx %4d" "$tx_count"
+
+	# Extract the raw transaction data from the JSON-RPC request
+	raw_tx=$(echo "$line" | jq -r '.params[0]')
+
+	# Decode the transaction once to get nonce and signer
+	decoded=$(cast decode-tx "$raw_tx" --json)
+	tx_from=$(echo "$decoded" | jq -r '.signer')
+	tx_nonce=$(echo "$decoded" | jq -r '.nonce')
+
+	printf "%4d - Sending from: %-42s nonce: %4d" "$tx_count" "$tx_from" "$tx_nonce"
 
 	# Send the raw transaction
 	response=$(curl -s -X POST \

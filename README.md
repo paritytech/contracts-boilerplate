@@ -95,6 +95,7 @@ eth-rpc build
 These commands will compile the binaries into `~/polkadot-sdk/target/debug/`. The build process may take some time on the first run.
 
 > **Note**: The helper scripts use the `POLKADOT_SDK_DIR` environment variable to locate the Polkadot SDK repository. By default, it points to `~/polkadot-sdk`. If you cloned the repository to a different location, you can override this by setting the environment variable before sourcing the scripts:
+>
 > ```sh
 > export POLKADOT_SDK_DIR=/path/to/your/polkadot-sdk
 > source scripts/node-env.sh
@@ -150,17 +151,23 @@ This will start a local Geth development node with HTTP RPC enabled, useful for 
 
 ### Recording RPC Requests
 
-When testing and debugging, you can record all `eth_sendRawTransaction` requests using the `--record` flag:
+When testing and debugging, you can record all `eth_sendRawTransaction` requests using the `--record` flag. This works with both `eth-rpc` and `revive_dev_stack`:
 
 ```sh
 # Record requests when running eth-rpc
 eth-rpc run ws://localhost:9944 --record
+
+# Or specify a custom path for the recorded requests
+eth-rpc run ws://localhost:9944 --record=/path/to/requests.log
+
+# Record requests when running the full stack in tmux
+revive_dev_stack --record
 ```
 
 When `--record` is enabled, eth-rpc will:
 
 - Log all output to console and `/tmp/eth-rpc.log`
-- Extract and save all `eth_sendRawTransaction` requests to `/tmp/eth-rpc-requests.log`
+- Extract and save all `eth_sendRawTransaction` requests to `/tmp/eth-rpc-requests.log` (or your custom path)
 
 ### Replaying Recorded Requests
 
@@ -179,6 +186,64 @@ This script will:
 - Report any errors or failed transactions at the end
 
 This is useful for regression testing - record a successful test session, then replay it against new builds to ensure compatibility.
+
+## Additional Testing Utilities
+
+The `node-env.sh` script provides several other useful functions for testing and development:
+
+### Differential Testing
+
+Run differential tests against the local dev node using the [revive-differential-tests](https://github.com/paritytech/revive-differential-tests) repository:
+
+```sh
+# Build the dev-node and generate the chainspec required by retester
+dev-node build --retester
+# Start the revive-dev-stack with the chainspec required by retester
+revive_dev_stack --retester
+# Run a specific differential test
+retester_test "./resolc-compiler-tests/fixtures/solidity/complex/create/create2_many/test.json"
+```
+
+> **Note**: Requires the `revive-differential-tests` repository to be cloned. By default, it looks for the repository at `~/github/revive-differential-tests`. You can override this by setting the `RETESTER_DIR` environment variable:
+>
+> ```sh
+> export RETESTER_DIR=/path/to/revive-differential-tests
+> ```
+
+### Cast Configuration Helpers
+
+Quickly configure `cast` CLI tool for different environments:
+
+```sh
+# Configure for local development
+cast_local
+
+# Configure for Westend Asset Hub testnet
+cast_westend
+
+# Configure for Passet Hub testnet
+cast_passet
+```
+
+These functions set up the `PRIVATE_KEY` and `ETH_RPC_URL` environment variables, allowing you to use `cast` commands without repeatedly specifying credentials.
+
+### Testing Against Westend/Passet Hub
+
+Build and run custom chain specs for testing on Westend Asset Hub or Passet Hub:
+
+```sh
+# Build and run Westend Asset Hub runtime locally
+westend build    # Build runtime and generate chain spec
+westend run      # Run with polkadot-omni-node
+
+# Run the full Westend stack in tmux
+westend_stack
+
+# Similarly for Passet Hub (requires https://github.com/paseo-network/passet-hub  checkout under ~/github/passet-hub-
+passet build
+passet run
+passet_stack
+```
 
 # Learn more
 
