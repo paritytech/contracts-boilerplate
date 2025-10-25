@@ -95,6 +95,7 @@ eth-rpc build
 These commands will compile the binaries into `~/polkadot-sdk/target/debug/`. The build process may take some time on the first run.
 
 > **Note**: The helper scripts use the `POLKADOT_SDK_DIR` environment variable to locate the Polkadot SDK repository. By default, it points to `~/polkadot-sdk`. If you cloned the repository to a different location, you can override this by setting the environment variable before sourcing the scripts:
+>
 > ```sh
 > export POLKADOT_SDK_DIR=/path/to/your/polkadot-sdk
 > source scripts/node-env.sh
@@ -161,7 +162,6 @@ eth-rpc run ws://localhost:9944 --record=/path/to/requests.log
 
 # Record requests when running the full stack in tmux
 revive_dev_stack --record
-
 ```
 
 When `--record` is enabled, eth-rpc will:
@@ -205,6 +205,7 @@ retester_test "./resolc-compiler-tests/fixtures/solidity/complex/create/create2_
 ```
 
 > **Note**: Requires the `revive-differential-tests` repository to be cloned. By default, it looks for the repository at `~/github/revive-differential-tests`. You can override this by setting the `RETESTER_DIR` environment variable:
+>
 > ```sh
 > export RETESTER_DIR=/path/to/revive-differential-tests
 > ```
