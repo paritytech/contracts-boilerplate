@@ -1,20 +1,39 @@
 #!/bin/bash
 
-# Detect current shell and its RC file
+# Set PS4 for cleaner trace output
+PS4='  '
+
+# Detect current shell, RC file, and script directory
 if [ -n "$ZSH_VERSION" ]; then
 	CURRENT_SHELL="zsh"
 	SHELL_RC="$HOME/.zshrc"
+	SCRIPT_DIR="${0:A:h}"
 elif [ -n "$BASH_VERSION" ]; then
 	CURRENT_SHELL="bash"
 	SHELL_RC="$HOME/.bashrc"
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 else
 	# Fallback to $SHELL environment variable
 	CURRENT_SHELL="$(basename "$SHELL")"
 	SHELL_RC="$HOME/.${CURRENT_SHELL}rc"
+	SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 fi
 
 # Polkadot SDK directory path (can be overridden by environment variable)
 POLKADOT_SDK_DIR="${POLKADOT_SDK_DIR:-$HOME/polkadot-sdk}"
+
+# Sets environment variables for Hardhat to use the built binaries
+# Usage: set_hardhat_env [release|debug]
+# Examples:
+#   set_hardhat_env release   - Use release binaries
+#   set_hardhat_env debug     - Use debug binaries
+function set_hardhat_env() {
+	local build_type="${1:-${HARDHAT_ENV:-debug}}"
+	set -x
+	export REVIVE_DEV_NODE_BIN="$POLKADOT_SDK_DIR/target/$build_type/revive-dev-node"
+	export ETC_RPC_BIN="$POLKADOT_SDK_DIR/target/$build_type/eth-rpc"
+	{ set +x; } 2>/dev/null
+}
 
 # Environment variables for Polkadot and Ethereum RPC URLs
 export ETH_MAINNET_HTTP_URL=https://eth.llamarpc.com
@@ -33,7 +52,6 @@ export KSM_WS_URL="wss://kusama-asset-hub-rpc.polkadot.io"
 export KSM_ETH_HTTP_URL="https://kusama-asset-hub-eth-rpc.polkadot.io"
 
 # Validates that POLKADOT_SDK_DIR exists and is a valid polkadot-sdk checkout
-# Returns 0 if valid, 1 if invalid
 function validate_polkadot_sdk_dir() {
 	local sdk_dir="$1"
 
@@ -49,10 +67,6 @@ function validate_polkadot_sdk_dir() {
 		echo "Error: $sdk_dir is not a git repository"
 		return 1
 	fi
-
-	# Check if it's the correct repository by examining the remote URL
-	local git_remote
-	git_remote=$(git -C "$sdk_dir" remote get-url origin 2>/dev/null || echo "")
 
 	return 0
 }
@@ -166,13 +180,6 @@ function start_mitmproxy() {
 #   dev-node run                - Run pre-built debug binary
 #   dev-node                    - Build and run with cargo
 function dev-node() {
-	# Capture the first argument as the command
-	arg=$1
-	if [ -n "$arg" ]; then
-		arg=$1
-		shift
-	fi
-
 	# Set default logging levels (can be overridden by environment variable)
 	RUST_LOG="${RUST_LOG:-error,sc_rpc_server=info,runtime::revive=debug}"
 
@@ -181,12 +188,19 @@ function dev-node() {
 		return 1
 	fi
 
-	# Parse arguments to detect --release flag and set binary folder accordingly
+	# Parse arguments to detect --release and --retester flags
 	bin_folder="debug"
+	retester_spec="false"
 	args=()
+	arg=""
+
 	for var in "$@"; do
 		if [ "$var" = "--release" ]; then
 			bin_folder="release"
+		elif [ "$var" = "--retester" ]; then
+			retester_spec="true"
+		elif [ -z "$arg" ] && [[ "$var" =~ ^(bacon|build|proxy|run)$ ]]; then
+			arg="$var"
 		else
 			args+=("$var")
 		fi
@@ -201,10 +215,24 @@ function dev-node() {
 		;;
 	build)
 		# Build the revive-dev-node package
-		PS4='  '
 		set -x
-		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p "revive-dev-node" "$@"
+		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p "revive-dev-node"
 		{ set +x; } 2>/dev/null
+
+		# Generate chain spec if --retester flag was provided
+		if [ "$retester_spec" = "true" ]; then
+			mkdir -p "$HOME/.revive"
+			set -x
+			"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" build-spec --dev >"$HOME/.revive/revive-dev-node-chainspec-base.json"
+			{ set +x; } 2>/dev/null
+
+			# Apply patch from retester-chainspec-patch.json
+			jq -s '.[0] * .[1]' \
+				"$HOME/.revive/revive-dev-node-chainspec-base.json" \
+				"$SCRIPT_DIR/retester-chainspec-patch.json" \
+				>"$HOME/.revive/revive-dev-node-chainspec.json"
+			rm -f "$HOME/.revive/revive-dev-node-chainspec-base.json"
+		fi
 		;;
 	proxy)
 		# Run with mitmproxy for traffic inspection (9944->8844 port mapping)
@@ -216,8 +244,12 @@ function dev-node() {
 			tmux rename-window "dev-node"
 		fi
 
+		# Add --chain argument if --retester is passed
+		if [ "$retester_spec" = "true" ]; then
+			args+=("--chain" "$HOME/.revive/revive-dev-node-chainspec.json")
+		fi
+
 		# Start node with proxied port 8844
-		PS4='  '
 		set -x
 		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --no-prometheus --dev --rpc-port 8844 "${args[@]}"
 		{ set +x; } 2>/dev/null
@@ -227,14 +259,19 @@ function dev-node() {
 			tmux rename-window "dev-node"
 		fi
 
-		PS4='  '
+		# Add --chain argument if --retester is passed
+		if [ "$retester_spec" = "true" ]; then
+			args+=("--chain" "$HOME/.revive/revive-dev-node-chainspec.json")
+		fi
+
 		set -x
 		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --network-backend libp2p --no-prometheus --dev "${args[@]}"
 		{ set +x; } 2>/dev/null
 		;;
 	*)
-		# Default: build and run in one command using cargo run
-		cargo run --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p revive-dev-node -- --no-prometheus --network-backend libp2p --log="$RUST_LOG" --dev "$@"
+		set -x
+		cargo run --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p revive-dev-node -- --no-prometheus --network-backend libp2p --log="$RUST_LOG" --dev "${args[@]}"
+		{ set +x; } 2>/dev/null
 		;;
 	esac
 }
@@ -270,7 +307,6 @@ function eth-rpc() {
 	build)
 		# Build the eth-rpc binary
 		shift # Strip "build"
-		PS4='  '
 		set -x
 		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc --bin eth-rpc "$@"
 		{ set +x; } 2>/dev/null
@@ -284,6 +320,7 @@ function eth-rpc() {
 		bin_folder="debug"
 		NODE_RPC_URL=""
 		record_mode="false"
+		record_path="/tmp/eth-rpc-requests.log"
 		args=()
 
 		for var in "$@"; do
@@ -291,6 +328,9 @@ function eth-rpc() {
 				bin_folder="release"
 			elif [ "$var" = "--record" ]; then
 				record_mode="true"
+			elif [[ "$var" =~ ^--record=(.+)$ ]]; then
+				record_mode="true"
+				record_path="${BASH_REMATCH[1]}"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -312,7 +352,6 @@ function eth-rpc() {
 		fi
 
 		# Build and execute command with optional output redirection
-		PS4='  '
 		if [ "$record_mode" = "true" ]; then
 			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
@@ -327,7 +366,7 @@ function eth-rpc() {
 					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
 					sed -u -E 's/.*recv="(.*)"/\1/' |
 					sed -u 's/\\"/"/g' \
-						>/tmp/eth-rpc-requests.log)
+						>"$record_path")
 			{ set +x; } 2>/dev/null
 		else
 			set -x
@@ -349,6 +388,7 @@ function eth-rpc() {
 		bin_folder="debug"
 		NODE_RPC_URL=""
 		record_mode="false"
+		record_path="/tmp/eth-rpc-requests.log"
 		args=()
 
 		for var in "$@"; do
@@ -356,6 +396,9 @@ function eth-rpc() {
 				bin_folder="release"
 			elif [ "$var" = "--record" ]; then
 				record_mode="true"
+			elif [[ "$var" =~ ^--record=(.+)$ ]]; then
+				record_mode="true"
+				record_path="${BASH_REMATCH[1]}"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -369,7 +412,6 @@ function eth-rpc() {
 		fi
 
 		# Build and execute command with optional output redirection
-		PS4='  '
 		if [ "$record_mode" = "true" ]; then
 			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
@@ -383,7 +425,7 @@ function eth-rpc() {
 					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
 					sed -u -E 's/.*recv="(.*)"/\1/' |
 					sed -u 's/\\"/"/g' \
-						>/tmp/eth-rpc-requests.log)
+						>"$record_path")
 			{ set +x; } 2>/dev/null
 		else
 			set -x
@@ -401,11 +443,15 @@ function eth-rpc() {
 		# Detect and handle "--record" and NODE_RPC_URL
 		NODE_RPC_URL=""
 		record_mode="false"
+		record_path="/tmp/eth-rpc-requests.log"
 		args=()
 
 		for var in "$@"; do
 			if [ "$var" = "--record" ]; then
 				record_mode="true"
+			elif [[ "$var" =~ ^--record=(.+)$ ]]; then
+				record_mode="true"
+				record_path="${BASH_REMATCH[1]}"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -419,7 +465,6 @@ function eth-rpc() {
 		fi
 
 		# Build and execute command with optional output redirection
-		PS4='  '
 		if [ "$record_mode" = "true" ]; then
 			set -x
 			cargo run \
@@ -436,7 +481,7 @@ function eth-rpc() {
 					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
 					sed -u -E 's/.*recv="(.*)"/\1/' |
 					sed -u 's/\\"/"/g' \
-						>/tmp/eth-rpc-requests.log)
+						>"$record_path")
 			{ set +x; } 2>/dev/null
 		else
 			set -x
@@ -457,12 +502,14 @@ function eth-rpc() {
 
 # Runs the complete Revive development stack (dev-node + eth-rpc) in tmux window
 # This starts both the development node and Ethereum RPC bridge in separate panes
-# Usage: revive_dev_stack [--release] [no-proxy|false]
-# Examples:
-#   revive_dev_stack                        - Run both services with pre-built debug binaries and proxy
-#   revive_dev_stack --release              - Run both services with release binaries and proxy
-#   revive_dev_stack no-proxy               - Run both services with debug binaries without proxy
-#   revive_dev_stack --release no-proxy     - Run both services with release binaries without proxy
+# Usage: revive_dev_stack [--release] [--retester] [--proxy] [--record[=path]]
+# Flags:
+#   --release        Use release binaries instead of debug
+#   --retester       Use retester chainspec
+#   --proxy          Enable mitmproxy for traffic inspection
+#   --record[=path]  Record eth_sendRawTransaction requests (default: /tmp/eth-rpc-requests.log)
+# Example:
+#   revive_dev_stack --release --proxy --retester --record=/my/custom/path.log
 function revive_dev_stack() {
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
@@ -475,30 +522,102 @@ function revive_dev_stack() {
 	# Parse arguments
 	use_proxy="false"
 	build_type=""
+	retester_flag=""
+	record_arg=""
 
 	for arg in "$@"; do
 		case "$arg" in
+		--proxy)
+			use_proxy="true"
+			;;
 		--release)
 			build_type="--release"
 			;;
-		proxy)
-			use_proxy="true"
+		--retester)
+			retester_flag="--retester"
+			;;
+		--record)
+			record_arg="--record"
+			;;
+		--record=*)
+			record_arg="$arg"
 			;;
 		esac
 	done
 
-	# Create new 'servers' window in detached mode
-	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; dev-node run $build_type; exec \$SHELL'"
-
-	# Split the window, run eth-rpc with or without proxy
-	if [ "$use_proxy" = "false" ]; then
-		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc run ws://localhost:9944 $build_type; exec \$SHELL'"
+	# Determine which mode to use for dev-node and eth-rpc
+	if [ "$use_proxy" = "true" ]; then
+		mode="proxy"
 	else
-		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc proxy ws://localhost:9944 $build_type; exec \$SHELL'"
+		mode="run"
 	fi
+
+	# Create new 'servers' window in detached mode
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; dev-node run $build_type $retester_flag; exec \$SHELL'"
+
+	# Split the window, run eth-rpc with the same mode
+	tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc $mode ws://localhost:9944 $build_type $record_arg; exec \$SHELL'"
 
 	# Select the first pane
 	tmux select-pane -t servers.1
+
+	# Poll and wait for connection to be live
+	echo "Waiting for eth-rpc to be ready..."
+	local max_attempts=45
+	local attempt=0
+	local eth_rpc_url="http://localhost:8545"
+
+	while [ $attempt -lt $max_attempts ]; do
+		if curl -s -X POST -H "Content-Type: application/json" \
+			--data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
+			"$eth_rpc_url" >/dev/null 2>&1; then
+			echo "eth-rpc is ready!"
+			return 0
+		fi
+		attempt=$((attempt + 1))
+		sleep 1
+	done
+
+	echo "Warning: eth JSON-RPC did not become ready after ${max_attempts} seconds"
+	return 1
+}
+
+# Runs revive differential tests against a local dev node
+# Requires ~/github/revive-differential-tests repository to be checked out
+# Usage: retester_test <test_path>
+# Example:
+#   retester_test "./resolc-compiler-tests/fixtures/solidity/complex/create/create2_many/test.json"
+function retester_test() {
+	local test_path="$1"
+
+	# Check if test path was provided
+	if [ -z "$test_path" ]; then
+		echo "Error: Test path is required"
+		echo "Usage: retester_test <test_path>"
+		return 1
+	fi
+
+	# Define the revive-differential-tests directory path
+	RETESTER_DIR=~/github/revive-differential-tests
+
+	# Check if directory exists
+	if [ ! -d "$RETESTER_DIR" ]; then
+		echo "Error: revive-differential-tests directory does not exist at $RETESTER_DIR"
+		echo "Please clone the repository to ~/github/revive-differential-tests"
+		return 1
+	fi
+
+	# Resolve test path relative to RETESTER_DIR
+	local full_test_path="$RETESTER_DIR/$test_path"
+
+	# Run the test
+	set -x
+	cargo run --quiet --release --manifest-path "$RETESTER_DIR/Cargo.toml" -- test \
+		--platform revive-dev-node-revm-solc \
+		--profile debug \
+		--revive-dev-node.existing-rpc-url "http://localhost:8545" \
+		--test "$full_test_path"
+	{ set +x; } 2>/dev/null
 }
 
 # Helper function to endow development accounts in chain spec
@@ -554,7 +673,6 @@ function westend() {
 	# Build the runtime and create a chain spec with endowed dev accounts
 	build() {
 		# Build the asset-hub-westend-runtime
-		PS4='  '
 		set -x
 		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p asset-hub-westend-runtime
 		{ set +x; } 2>/dev/null
@@ -671,7 +789,6 @@ function passet() {
 	# Build the runtime and create a chain spec with endowed dev accounts
 	build() {
 		# Build the passet-hub-runtime
-		PS4='  '
 		set -x
 		cargo build --quiet --manifest-path "$PASSET_HUB_DIR/Cargo.toml" -p passet-hub-runtime
 		{ set +x; } 2>/dev/null
