@@ -597,8 +597,8 @@ function retester_test() {
 		return 1
 	fi
 
-	# Define the revive-differential-tests directory path
-	RETESTER_DIR=~/github/revive-differential-tests
+	# Define the revive-differential-tests directory path (can be overridden by environment variable)
+	RETESTER_DIR="${RETESTER_DIR:-$HOME/github/revive-differential-tests}"
 
 	# Check if directory exists
 	if [ ! -d "$RETESTER_DIR" ]; then
@@ -761,7 +761,7 @@ function cast_local() {
 	export ETH_RPC_URL=http://localhost:8545
 }
 
-# Manages the PAsset Hub runtime for testing (custom parachain)
+# Manages the Passet Hub runtime for testing (custom parachain)
 # Builds a custom chain spec with development accounts endowed with funds
 # Requires ~/github/passet-hub repository to be checked out
 # Usage: passet [build|run]
@@ -778,7 +778,7 @@ function passet() {
 
 	# Check if directory exists
 	if [ ! -d "$PASSET_HUB_DIR" ]; then
-		echo "Error: PAsset Hub directory does not exist at $PASSET_HUB_DIR"
+		echo "Error: Passet Hub directory does not exist at $PASSET_HUB_DIR"
 		echo "Please clone the repository to ~/github/passet-hub"
 		return 1
 	fi
@@ -891,12 +891,12 @@ function geth_stack() {
 	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; geth-proxy 8545 8546; exec \$SHELL'"
 }
 
-# Runs the complete PAsset Hub stack (passet node + eth-rpc) in tmux window
-# This starts both the PAsset Hub node and Ethereum RPC bridge in separate panes
-# Usage: passet_stack [proxy]
+# Runs the complete Passet Hub stack (passet node + eth-rpc) in tmux window
+# This starts both the Passet Hub node and Ethereum RPC bridge in separate panes
+# Usage: passet_stack [--proxy]
 # Examples:
-#   passet_stack       - Run both services without proxy
-#   passet_stack proxy - Run both services with proxy
+#   passet_stack         - Run both services without proxy
+#   passet_stack --proxy - Run both services with proxy
 function passet_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
@@ -906,7 +906,7 @@ function passet_stack() {
 
 	for arg in "$@"; do
 		case "$arg" in
-		proxy)
+		--proxy)
 			use_proxy="true"
 			;;
 		esac
@@ -928,10 +928,10 @@ function passet_stack() {
 
 # Runs the complete Westend Asset Hub stack (westend node + eth-rpc) in tmux window
 # This starts both the Westend node and Ethereum RPC bridge in separate panes
-# Usage: westend_stack [proxy]
+# Usage: westend_stack [--proxy]
 # Examples:
-#   westend_stack       - Run both services without proxy
-#   westend_stack proxy - Run both services with proxy
+#   westend_stack         - Run both services without proxy
+#   westend_stack --proxy - Run both services with proxy
 function westend_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
@@ -941,7 +941,7 @@ function westend_stack() {
 
 	for arg in "$@"; do
 		case "$arg" in
-		proxy)
+		--proxy)
 			use_proxy="true"
 			;;
 		esac
