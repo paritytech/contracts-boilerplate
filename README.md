@@ -153,17 +153,15 @@ This will start a local Geth development node with HTTP RPC enabled, useful for 
 When testing and debugging, you can record all `eth_sendRawTransaction` requests using the `--record` flag. This works with both `eth-rpc` and `revive_dev_stack`:
 
 ```sh
-# Record requests when running eth-rpc standalone
+# Record requests when running eth-rpc
 eth-rpc run ws://localhost:9944 --record
 
 # Or specify a custom path for the recorded requests
 eth-rpc run ws://localhost:9944 --record=/path/to/requests.log
 
 # Record requests when running the full stack in tmux
-evive_dev_stack --record
+revive_dev_stack --record
 
-# Or with a custom path
-revive_dev_stack --record=/path/to/requests.log
 ```
 
 When `--record` is enabled, eth-rpc will:
@@ -240,7 +238,7 @@ westend run      # Run with polkadot-omni-node
 # Run the full Westend stack in tmux
 westend_stack
 
-# Similarly for Passet Hub (requires https://github.com/paseo-network/passet-hub  checkout under ~/github/passet-hub)
+# Similarly for Passet Hub (requires https://github.com/paseo-network/passet-hub  checkout under ~/github/passet-hub-
 passet build
 passet run
 passet_stack
