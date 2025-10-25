@@ -330,7 +330,8 @@ function eth-rpc() {
 				record_mode="true"
 			elif [[ "$var" =~ ^--record=(.+)$ ]]; then
 				record_mode="true"
-				record_path="${BASH_REMATCH[1]}"
+				# Extract the path after --record=
+				record_path="${var#--record=}"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -365,8 +366,7 @@ function eth-rpc() {
 				tee >(grep --line-buffered 'recv=' |
 					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
 					sed -u -E 's/.*recv="(.*)"/\1/' |
-					sed -u 's/\\"/"/g' \
-						>"$record_path")
+					sed -u 's/\\"/"/g' >"$record_path")
 			{ set +x; } 2>/dev/null
 		else
 			set -x
@@ -398,7 +398,8 @@ function eth-rpc() {
 				record_mode="true"
 			elif [[ "$var" =~ ^--record=(.+)$ ]]; then
 				record_mode="true"
-				record_path="${BASH_REMATCH[1]}"
+				# Extract the path after --record=
+				record_path="${var#--record=}"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -424,8 +425,7 @@ function eth-rpc() {
 				tee >(grep --line-buffered 'recv=' |
 					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
 					sed -u -E 's/.*recv="(.*)"/\1/' |
-					sed -u 's/\\"/"/g' \
-						>"$record_path")
+					sed -u 's/\\"/"/g' >"$record_path")
 			{ set +x; } 2>/dev/null
 		else
 			set -x
@@ -451,7 +451,8 @@ function eth-rpc() {
 				record_mode="true"
 			elif [[ "$var" =~ ^--record=(.+)$ ]]; then
 				record_mode="true"
-				record_path="${BASH_REMATCH[1]}"
+				# Extract the path after --record=
+				record_path="${var#--record=}"
 			elif [ -z "$NODE_RPC_URL" ] && [[ "$var" =~ ^wss?:// ]]; then
 				NODE_RPC_URL="$var"
 			else
@@ -480,8 +481,7 @@ function eth-rpc() {
 				tee >(grep --line-buffered 'recv=' |
 					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
 					sed -u -E 's/.*recv="(.*)"/\1/' |
-					sed -u 's/\\"/"/g' \
-						>"$record_path")
+					sed -u 's/\\"/"/g' >"$record_path")
 			{ set +x; } 2>/dev/null
 		else
 			set -x
