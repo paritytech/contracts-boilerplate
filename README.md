@@ -123,7 +123,7 @@ revive_dev_stack
 
 # Or run with mitmproxy for traffic inspection
 # Note: Requires mitmproxy setup first - https://github.com/pgherveou/mitmproxy
-revive_dev_stack proxy
+revive_dev_stack --proxy
 ```
 
 ## Running the Geth Stack
