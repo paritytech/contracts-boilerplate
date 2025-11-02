@@ -244,10 +244,6 @@ function dev-node() {
 		pkill -f mitmproxy
 		start_mitmproxy "9944:8844"
 
-		if [ -n "$TMUX" ]; then
-			tmux rename-window "dev-node"
-		fi
-
 		# Add --chain argument if --retester is passed
 		if [ "$retester_spec" = "true" ]; then
 			args+=("--chain" "$HOME/.revive/revive-dev-node-chainspec.json")
@@ -259,18 +255,22 @@ function dev-node() {
 		{ set +x; } 2>/dev/null
 		;;
 	run)
-		if [ -n "$TMUX" ]; then
-			tmux rename-window "dev-node"
-		fi
 
 		# Add --chain argument if --retester is passed
 		if [ "$retester_spec" = "true" ]; then
 			args+=("--chain" "$HOME/.revive/revive-dev-node-chainspec.json")
 		fi
 
-		set -x
-		"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --network-backend libp2p --no-prometheus --dev "${args[@]}"
-		{ set +x; } 2>/dev/null
+		# Check if lnav is installed and pipe output to it if available
+		if command -v lnav &>/dev/null; then
+			set -x
+			"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --network-backend libp2p --no-prometheus --dev "${args[@]}" 2>&1 | lnav
+			{ set +x; } 2>/dev/null
+		else
+			set -x
+			"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" --log="$RUST_LOG" --network-backend libp2p --no-prometheus --dev "${args[@]}"
+			{ set +x; } 2>/dev/null
+		fi
 		;;
 	*)
 		set -x
@@ -364,12 +364,9 @@ function eth-rpc() {
 		pkill -f mitmproxy
 		start_mitmproxy "8545:8546"
 
-		if [ -n "$TMUX" ]; then
-			tmux rename-window "eth-rpc"
-		fi
-
 		# Build and execute command with optional output redirection
 		if [ "$record_mode" = "true" ]; then
+			echo "recording requests to $record_path"
 			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
@@ -430,6 +427,7 @@ function eth-rpc() {
 
 		# Build and execute command with optional output redirection
 		if [ "$record_mode" = "true" ]; then
+			echo "recording requests to $record_path"
 			set -x
 			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
 				--log="$RUST_LOG" \
@@ -534,6 +532,8 @@ function revive_dev_stack() {
 
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
+	# Kill existing 'mitmproxy' window if it exists
+	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Parse arguments
 	use_proxy="false"
@@ -588,6 +588,12 @@ function revive_dev_stack() {
 			--data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
 			"$eth_rpc_url" >/dev/null 2>&1; then
 			echo "eth-rpc is ready!"
+
+			# Check if dunst is installed and send notification
+			if command -v notify-send &>/dev/null; then
+				notify-send -t 3000 "eth-rpc is ready!"
+			fi
+
 			return 0
 		fi
 		attempt=$((attempt + 1))
@@ -901,6 +907,8 @@ function geth-proxy() {
 function geth_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
+	# Kill existing 'mitmproxy' window if it exists
+	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Create new 'servers' window in detached mode
 	# Source shell config and run geth-proxy with default ports (8545->8546)
@@ -916,6 +924,8 @@ function geth_stack() {
 function passet_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
+	# Kill existing 'mitmproxy' window if it exists
+	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Parse arguments
 	use_proxy="false"
@@ -951,6 +961,8 @@ function passet_stack() {
 function westend_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
+	# Kill existing 'mitmproxy' window if it exists
+	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Parse arguments
 	use_proxy="false"
