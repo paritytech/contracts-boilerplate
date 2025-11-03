@@ -577,31 +577,8 @@ function revive_dev_stack() {
 	# Select the first pane
 	tmux select-pane -t servers.1
 
-	# Poll and wait for connection to be live
-	echo "Waiting for eth-rpc to be ready..."
-	local max_attempts=45
-	local attempt=0
-	local eth_rpc_url="http://localhost:8545"
-
-	while [ $attempt -lt $max_attempts ]; do
-		if curl -s -X POST -H "Content-Type: application/json" \
-			--data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-			"$eth_rpc_url" >/dev/null 2>&1; then
-			echo "eth-rpc is ready!"
-
-			# Check if dunst is installed and send notification
-			if command -v notify-send &>/dev/null; then
-				notify-send -t 3000 "eth-rpc is ready!"
-			fi
-
-			return 0
-		fi
-		attempt=$((attempt + 1))
-		sleep 1
-	done
-
-	echo "Warning: eth JSON-RPC did not become ready after ${max_attempts} seconds"
-	return 1
+	# Wait for eth-rpc to be ready
+	wait_for_eth_rpc
 }
 
 # Runs revive differential tests against a local dev node
@@ -672,6 +649,40 @@ function endow_dev_accounts() {
 	' "$input_spec" >"$output_spec"
 }
 
+# Helper function to wait for eth-rpc to be ready
+# Polls the eth-rpc endpoint until it responds or times out
+# Usage: wait_for_eth_rpc [url]
+# Examples:
+#   wait_for_eth_rpc                      - Use default URL http://localhost:8545
+#   wait_for_eth_rpc http://localhost:8546 - Use custom URL
+function wait_for_eth_rpc() {
+	local eth_rpc_url="${1:-http://localhost:8545}"
+
+	echo "Waiting for eth-rpc to be ready..."
+	local max_attempts=45
+	local attempt=0
+
+	while [ $attempt -lt $max_attempts ]; do
+		if curl -s -X POST -H "Content-Type: application/json" \
+			--data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
+			"$eth_rpc_url" >/dev/null 2>&1; then
+			echo "eth-rpc is ready!"
+
+			# Check if dunst is installed and send notification
+			if command -v notify-send &>/dev/null; then
+				notify-send -t 3000 "eth-rpc is ready!"
+			fi
+
+			return 0
+		fi
+		attempt=$((attempt + 1))
+		sleep 1
+	done
+
+	echo "Warning: eth JSON-RPC did not become ready after ${max_attempts} seconds"
+	return 1
+}
+
 # Manages the Westend Asset Hub runtime for testing Polkadot Revive contracts
 # Builds a custom chain spec with development accounts endowed with funds
 # Usage: westend [bacon|build|run]
@@ -713,12 +724,26 @@ function westend() {
 
 	# Run the polkadot-omni-node with the westend chain spec
 	run() {
-		polkadot-omni-node \
-			--tmp \
-			--log="$RUST_LOG" \
-			--dev-block-time 1000 \
-			--no-prometheus \
-			--chain ~/ah-westend-spec.json
+		# Check if lnav is installed and pipe output to it if available
+		if command -v lnav &>/dev/null; then
+			set -x
+			polkadot-omni-node \
+				--tmp \
+				--log="$RUST_LOG" \
+				--dev-block-time 1000 \
+				--no-prometheus \
+				--chain ~/ah-westend-spec.json 2>&1 | lnav
+			{ set +x; } 2>/dev/null
+		else
+			set -x
+			polkadot-omni-node \
+				--tmp \
+				--log="$RUST_LOG" \
+				--dev-block-time 1000 \
+				--no-prometheus \
+				--chain ~/ah-westend-spec.json
+			{ set +x; } 2>/dev/null
+		fi
 	}
 
 	# Execute the appropriate command based on the first argument
@@ -829,13 +854,28 @@ function passet() {
 
 	# Run the polkadot-omni-node with the passet chain spec
 	run() {
-		polkadot-omni-node \
-			--dev \
-			--log="$RUST_LOG" \
-			--dev-block-time 1000 \
-			--no-prometheus \
-			--no-hardware-benchmarks \
-			--chain ~/passet-spec.json
+		# Check if lnav is installed and pipe output to it if available
+		if command -v lnav &>/dev/null; then
+			set -x
+			polkadot-omni-node \
+				--dev \
+				--log="$RUST_LOG" \
+				--dev-block-time 1000 \
+				--no-prometheus \
+				--no-hardware-benchmarks \
+				--chain ~/passet-spec.json 2>&1 | lnav
+			{ set +x; } 2>/dev/null
+		else
+			set -x
+			polkadot-omni-node \
+				--dev \
+				--log="$RUST_LOG" \
+				--dev-block-time 1000 \
+				--no-prometheus \
+				--no-hardware-benchmarks \
+				--chain ~/passet-spec.json
+			{ set +x; } 2>/dev/null
+		fi
 	}
 
 	# Execute the appropriate command based on the first argument
@@ -950,6 +990,9 @@ function passet_stack() {
 
 	# Select the first pane
 	tmux select-pane -t servers.1
+
+	# Wait for eth-rpc to be ready
+	wait_for_eth_rpc
 }
 
 # Runs the complete Westend Asset Hub stack (westend node + eth-rpc) in tmux window
@@ -987,4 +1030,7 @@ function westend_stack() {
 
 	# Select the first pane
 	tmux select-pane -t servers.1
+
+	# Wait for eth-rpc to be ready
+	wait_for_eth_rpc
 }
