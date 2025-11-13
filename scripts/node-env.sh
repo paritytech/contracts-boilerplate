@@ -22,6 +22,9 @@ fi
 # Polkadot SDK directory path (can be overridden by environment variable)
 POLKADOT_SDK_DIR="${POLKADOT_SDK_DIR:-$HOME/polkadot-sdk}"
 
+# Define the revive-differential-tests directory path (can be overridden by environment variable)
+RETESTER_DIR="${RETESTER_DIR:-$HOME/github/revive-differential-tests}"
+
 # Sets environment variables for Hardhat to use the built binaries
 # Usage: set_hardhat_env [release|debug]
 # Examples:
@@ -357,7 +360,7 @@ function eth-rpc() {
 
 		# Default NODE_RPC_URL if not provided
 		if [ -z "$NODE_RPC_URL" ]; then
-			NODE_RPC_URL="wss://localhost:9944"
+			NODE_RPC_URL="ws://localhost:9944"
 		fi
 
 		# Kill any existing mitmproxy instances and start new one
@@ -422,7 +425,7 @@ function eth-rpc() {
 
 		# Default NODE_RPC_URL if not provided
 		if [ -z "$NODE_RPC_URL" ]; then
-			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
+			NODE_RPC_URL="ws://localhost:9944"
 		fi
 
 		# Build and execute command with optional output redirection
@@ -476,7 +479,7 @@ function eth-rpc() {
 
 		# Default NODE_RPC_URL if not provided
 		if [ -z "$NODE_RPC_URL" ]; then
-			NODE_RPC_URL="wss://westend-asset-hub-rpc.polkadot.io"
+			NODE_RPC_URL="ws://localhost:9944"
 		fi
 
 		# Build and execute command with optional output redirection
@@ -595,9 +598,6 @@ function retester_test() {
 		echo "Usage: retester_test <test_path>"
 		return 1
 	fi
-
-	# Define the revive-differential-tests directory path (can be overridden by environment variable)
-	RETESTER_DIR="${RETESTER_DIR:-$HOME/github/revive-differential-tests}"
 
 	# Check if directory exists
 	if [ ! -d "$RETESTER_DIR" ]; then
@@ -898,61 +898,166 @@ function passet() {
 
 # Runs geth (Ethereum node) in development mode
 # Useful for testing contracts against standard Ethereum
-# Usage: geth-dev [port]
+# Usage: geth-dev [proxy|run] [--retester] [--port <port>]
 # Examples:
-#   geth-dev         - Use default port 8545
-#   geth-dev 8546    - Use custom port 8546
+#   geth-dev                     - Use default run mode on port 8545
+#   geth-dev run --port 8546     - Run on custom port 8546
+#   geth-dev proxy               - Run with mitmproxy (8545->8546)
+#   geth-dev proxy --port 9000   - Run with mitmproxy (9000->9001)
+#   geth-dev --retester          - Use retester genesis spec
+#   geth-dev proxy --retester    - Use proxy with retester genesis spec
 function geth-dev() {
-	# Parse port argument with default
-	port="${1:-8545}"
+	# Parse arguments
+	local mode="run"
+	local port="8545"
+	local retester_flag="false"
 
-	# Rename tmux window if running in tmux
-	if [ -n "$TMUX" ]; then
-		tmux rename-window "geth"
+	# Check if first arg is mode
+	if [[ "$1" =~ ^(proxy|run)$ ]]; then
+		mode="$1"
+		shift
 	fi
 
-	# Start geth in development mode with HTTP RPC enabled
-	geth --http --http.api web3,eth,txpool,miner,debug,net --http.port "$port" --dev
+	# Parse remaining arguments
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--retester)
+			retester_flag="true"
+			shift
+			;;
+		--port)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				port="$2"
+				shift 2
+			else
+				echo "Error: --port requires a numeric argument"
+				return 1
+			fi
+			;;
+		*)
+			echo "Unknown argument: $1"
+			return 1
+			;;
+		esac
+	done
+
+	# Helper function to generate genesis spec
+	generate_genesis_spec() {
+		local geth_spec_path="$HOME/.revive/geth_spec.json"
+
+		if [ ! -f "$geth_spec_path" ]; then
+			# Check if retester directory exists
+			if [ ! -d "$RETESTER_DIR" ]; then
+				echo "Error: RETESTER_DIR does not exist at $RETESTER_DIR"
+				echo "Please clone the repository: git clone https://github.com/paritytech/revive-differential-tests.git $RETESTER_DIR"
+				return 1
+			fi
+
+			echo "Generating geth genesis spec at $geth_spec_path..."
+			mkdir -p "$HOME/.revive"
+			set -x
+			cargo run --quiet --release --manifest-path "$RETESTER_DIR/Cargo.toml" -- \
+				export-genesis geth-evm-solc \
+				--revive-dev-node.path "$POLKADOT_SDK_DIR/target/debug/revive-dev-node" \
+				>"$HOME/.revive/geth_spec_base.json"
+			{ set +x; } 2>/dev/null
+
+			if [ ! -f "$HOME/.revive/geth_spec_base.json" ]; then
+				echo "Error: Failed to generate geth genesis spec"
+				return 1
+			fi
+
+			# Patch the alloc section to give Alith account the same balance as others
+			jq '.alloc["0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"].balance = "0x785ee10d5da46d900f436a000000000"
+			    | .alloc["0x71562b71999873db5b286df957af199ec94617f7"].balance = "0x785ee10d5da46d900f436a000000000"' \
+				"$HOME/.revive/geth_spec_base.json" >"$geth_spec_path"
+			rm -f "$HOME/.revive/geth_spec_base.json"
+
+			echo "Successfully generated geth genesis spec at $geth_spec_path"
+		else
+			echo "Using existing geth genesis spec at $geth_spec_path"
+		fi
+	}
+
+	# Helper function to start geth
+	start_geth() {
+		local geth_port="$1"
+
+		if [ "$retester_flag" = "true" ]; then
+			local geth_data_dir="/tmp/geth-retester-data"
+			rm -rf "$geth_data_dir"
+			mkdir -p "$geth_data_dir"
+
+			set -x
+			geth init --datadir "$geth_data_dir" "$HOME/.revive/geth_spec.json"
+			geth --datadir "$geth_data_dir" --http --http.api web3,eth,txpool,miner,debug,net --http.port "$geth_port" --dev
+			{ set +x; } 2>/dev/null
+		else
+			set -x
+			geth --http --http.api web3,eth,txpool,miner,debug,net --http.port "$geth_port" --dev
+			{ set +x; } 2>/dev/null
+		fi
+	}
+
+	# Generate genesis spec if needed
+	if [ "$retester_flag" = "true" ]; then
+		generate_genesis_spec || return 1
+	fi
+
+	# Execute based on mode
+	case "$mode" in
+	proxy)
+		# Calculate server port (port + 1)
+		local server_port=$((port + 1))
+
+		# Kill any existing mitmproxy instances
+		pkill -f mitmproxy
+
+		# Start mitmproxy
+		start_mitmproxy "${port}:${server_port}"
+
+		# Start geth on server port
+		start_geth "$server_port"
+		;;
+	run)
+		# Start geth directly
+		start_geth "$port"
+		;;
+	esac
 }
 
-# Runs geth (Ethereum node) with mitmproxy for traffic inspection
-# Useful for debugging Ethereum RPC calls during development
-# Usage: geth-proxy [proxy_port] [server_port]
+# Runs geth in a new tmux window
+# Provides a quick way to start an Ethereum development node
+# Usage: geth_stack [--proxy] [--retester]
 # Examples:
-#   geth-proxy              - Use default ports (8546->8547)
-#   geth-proxy 8545 8546    - Listen on 8545, proxy to geth on 8546
-function geth-proxy() {
-	# Parse port arguments with defaults
-	proxy_port="${1:-8546}"
-	server_port="${2:-8547}"
-
-	# Kill any existing mitmproxy instances
-	pkill -f mitmproxy
-
-	# Start mitmproxy with specified port mapping
-	start_mitmproxy "${proxy_port}:${server_port}"
-
-	# Rename tmux window if running in tmux
-	if [ -n "$TMUX" ]; then
-		tmux rename-window "geth"
-	fi
-
-	# Start geth in development mode with HTTP RPC enabled
-	geth --http --http.api web3,eth,txpool,miner,debug,net --http.port "$server_port" --dev
-}
-
-# Runs geth with mitmproxy in a new tmux window
-# Provides a quick way to start an Ethereum development node with traffic inspection
-# Usage: geth_stack
+#   geth_stack                - Run geth without proxy
+#   geth_stack --proxy        - Run geth with proxy
+#   geth_stack --retester     - Run geth with retester genesis spec
+#   geth_stack --proxy --retester - Run geth with proxy and retester genesis spec
 function geth_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
 	# Kill existing 'mitmproxy' window if it exists
 	tmux kill-window -t mitmproxy 2>/dev/null
 
+	# Parse arguments
+	mode="run"
+	retester_flag=""
+
+	for arg in "$@"; do
+		case "$arg" in
+		--proxy)
+			mode="proxy"
+			;;
+		--retester)
+			retester_flag="--retester"
+			;;
+		esac
+	done
+
 	# Create new 'servers' window in detached mode
-	# Source shell config and run geth-proxy with default ports (8545->8546)
-	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; geth-proxy 8545 8546; exec \$SHELL'"
+	# Source shell config and run geth with specified mode
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; geth-dev $mode $retester_flag; exec \$SHELL'"
 }
 
 # Runs the complete Passet Hub stack (passet node + eth-rpc) in tmux window
