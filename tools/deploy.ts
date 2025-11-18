@@ -23,7 +23,7 @@ import { deploy } from './lib/index.ts'
 // })
 
 await deploy({
-    name: 'Storage',
+    name: 'Test',
     args: [],
     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })

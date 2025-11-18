@@ -129,6 +129,10 @@ function evmCompile(file: Deno.DirEntry, sources: CompileInput) {
         language: 'Solidity',
         sources,
         settings: {
+            optimizer: {
+                enabled: true,
+            },
+            viaIR: true, // <-- THIS activates the Y+ pipeline
             outputSelection: {
                 '*': {
                     '*': ['*'],
