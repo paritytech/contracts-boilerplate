@@ -618,14 +618,15 @@ function eth-rpc() {
 
 # Runs the complete Revive development stack (dev-node + eth-rpc) in tmux window
 # This starts both the development node and Ethereum RPC bridge in separate panes
-# Usage: revive_dev_stack [--release] [--retester] [--proxy] [--record[=path]]
+# Usage: revive_dev_stack [--release] [--retester] [--proxy] [--record[=path]] [--build]
 # Flags:
 #   --release        Use release binaries instead of debug
 #   --retester       Use retester chainspec
 #   --proxy          Enable mitmproxy for traffic inspection
 #   --record[=path]  Record eth_sendRawTransaction requests (default: /tmp/eth-rpc-requests.log)
+#   --build          Build dev-node and eth-rpc before starting
 # Example:
-#   revive_dev_stack --release --proxy --retester --record=/my/custom/path.log
+#   revive_dev_stack --release --proxy --retester --record=/my/custom/path.log --build
 function revive_dev_stack() {
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
@@ -640,6 +641,7 @@ function revive_dev_stack() {
 	build_type=""
 	retester_flag=""
 	record_arg=""
+	build_flag="false"
 
 	for arg in "$@"; do
 		case "$arg" in
@@ -658,8 +660,18 @@ function revive_dev_stack() {
 		--record=*)
 			record_arg="$arg"
 			;;
+		--build)
+			build_flag="true"
+			;;
 		esac
 	done
+
+	# Build binaries if requested
+	if [ "$build_flag" = "true" ]; then
+		echo "Building dev-node and eth-rpc..."
+		dev-node build $build_type $retester_flag
+		eth-rpc build $build_type
+	fi
 
 	# Determine which mode to use for dev-node and eth-rpc
 	if [ "$use_proxy" = "true" ]; then
@@ -717,6 +729,38 @@ function retester_test() {
 }
 
 function retester_ci {
+	# Parse arguments
+	local num_nodes=10
+	local num_threads=10
+
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--nodes)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				num_nodes="$2"
+				shift 2
+			else
+				echo "Error: --nodes requires a numeric argument"
+				return 1
+			fi
+			;;
+		--threads)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				num_threads="$2"
+				shift 2
+			else
+				echo "Error: --threads requires a numeric argument"
+				return 1
+			fi
+			;;
+		*)
+			echo "Unknown argument: $1"
+			return 1
+			;;
+		esac
+	done
+
+	find "$RETESTER_DIR/workdir" -maxdepth 1 -name "*.json" -type f -delete 2>/dev/null
 
 	set -x
 	cargo run --quiet --release --manifest-path "$RETESTER_DIR/Cargo.toml" -- test \
@@ -724,8 +768,8 @@ function retester_ci {
 		--test "$RETESTER_DIR/resolc-compiler-tests/fixtures/solidity/simple" \
 		--test "$RETESTER_DIR/resolc-compiler-tests/fixtures/solidity/complex" \
 		--test "$RETESTER_DIR/resolc-compiler-tests/fixtures/solidity/translated_semantic_tests" \
-		--concurrency.number-of-nodes 10 \
-		--concurrency.number-of-threads 10 \
+		--concurrency.number-of-nodes "$num_nodes" \
+		--concurrency.number-of-threads "$num_threads" \
 		--concurrency.number-of-concurrent-tasks 1000 \
 		--working-directory "$RETESTER_DIR/workdir" \
 		--revive-dev-node.consensus instant-seal \
@@ -734,6 +778,16 @@ function retester_ci {
 		--resolc.path "$HOME/.cargo/bin/resolc"
 
 	{ set +x; } 2>/dev/null
+
+	# Find the JSON report file and move it
+	json_file=$(find "$RETESTER_DIR/workdir" -maxdepth 1 -name "*.json" -type f | head -n 1)
+	if [ -n "$json_file" ]; then
+		mv "$json_file" report.json
+		python3 "$POLKADOT_SDK_DIR/.github/scripts/process-differential-tests-report.py" report.json revive-solc
+	else
+		echo "Error: No JSON report file found in $RETESTER_DIR/workdir"
+		return 1
+	fi
 }
 
 # Helper function to endow development accounts in chain spec
