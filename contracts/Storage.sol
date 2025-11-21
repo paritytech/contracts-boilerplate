@@ -4,6 +4,10 @@ pragma solidity ^0.8.9;
 contract Storage {
     uint256 private storedNumber;
 
+    constructor() payable {
+        storedNumber = 0;
+    }
+
     function store(uint256 num) public {
         storedNumber = num;
     }

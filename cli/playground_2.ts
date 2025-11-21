@@ -2,12 +2,13 @@
 
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
-import { Storage } from '../codegen/addresses.ts'
+import { TerminateTest } from '../codegen/addresses.ts'
 import { encodeFunctionData } from 'viem'
 import { parseArgs } from '@std/cli/parse-args'
 
 const flags = parseArgs(Deno.args, {
     string: ['action'],
+    boolean: ['redeploy'],
     alias: {
         a: 'action',
     },
@@ -18,10 +19,10 @@ const { action } = flags
 switch (action) {
     case 'execute': {
         const { request } = await env.wallet.simulateContract({
-            address: Storage,
-            abi: abis.Storage,
-            functionName: 'store',
-            args: [42n],
+            address: TerminateTest,
+            abi: abis.TerminateTest,
+            functionName: 'tryCallAfterTerminate',
+            args: [flags.redeploy],
         })
 
         const hash = await env.wallet.writeContract(request)
@@ -40,10 +41,23 @@ switch (action) {
 
     case 'estimate': {
         const res = await env.wallet.estimateContractGas({
-            address: Storage,
-            abi: abis.Storage,
-            functionName: 'store',
-            args: [42n],
+            address: TerminateTest,
+            abi: abis.TerminateTest,
+            functionName: 'tryCallAfterTerminate',
+            args: [flags.redeploy],
+        })
+
+        console.log(res)
+        break
+    }
+
+    case 'call': {
+        console.log({ redeploy: flags.redeploy })
+        const res = await env.wallet.readContract({
+            address: TerminateTest,
+            abi: abis.TerminateTest,
+            functionName: 'tryCallAfterTerminate',
+            args: [flags.redeploy],
         })
 
         console.log(res)
@@ -54,12 +68,11 @@ switch (action) {
         const res = await env.debugClient.traceCall(
             {
                 account: env.wallet.account,
-                to: Storage,
-                from: Storage,
+                to: TerminateTest,
                 data: encodeFunctionData({
-                    abi: abis.Storage,
-                    functionName: 'store',
-                    args: [42n],
+                    abi: abis.TerminateTest,
+                    functionName: 'tryCallAfterTerminate',
+                    args: [flags.redeploy],
                 }),
             },
             'callTracer',

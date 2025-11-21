@@ -1,5 +1,6 @@
 //! Call with deno task deploy [--filter <filter>]
 
+import { parseEther } from 'viem'
 import { deploy } from './lib/index.ts'
 
 /**
@@ -25,5 +26,13 @@ import { deploy } from './lib/index.ts'
 await deploy({
     name: 'Storage',
     args: [],
+    value: parseEther('1'),
+    // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+})
+
+await deploy({
+    name: 'TerminateTest',
+    args: [],
+    value: parseEther('10'),
     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })
