@@ -52,15 +52,18 @@ switch (action) {
     }
 
     case 'call': {
-        console.log({ redeploy: flags.redeploy })
-        const res = await env.wallet.readContract({
-            address: TerminateTest,
-            abi: abis.TerminateTest,
-            functionName: 'tryCallAfterTerminate',
-            args: [flags.redeploy],
-        })
+        try {
+            const res = await env.wallet.readContract({
+                address: TerminateTest,
+                abi: abis.TerminateTest,
+                functionName: 'tryCallAfterTerminate',
+                args: [flags.redeploy],
+            })
+            console.log(res)
+        } catch (err) {
+            console.log(`Error: ${err}`)
+        }
 
-        console.log(res)
         break
     }
 
