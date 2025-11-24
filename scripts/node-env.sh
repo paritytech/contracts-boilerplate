@@ -171,6 +171,7 @@ function start_mitmproxy() {
 		return 0
 	fi
 
+	tmux kill-window -t mitmproxy 2>/dev/null
 	tmux new-window -d -n mitmproxy "cd $HOME/mitmproxy; source venv/bin/activate; mitmproxy --listen-port $listen_port --mode reverse:http://localhost:${proxy_port} -s $HOME/mitmproxy/scripts/json-rpc.py; tmux wait-for -S mitmproxy-done"
 }
 
@@ -370,30 +371,62 @@ function eth-rpc() {
 		# Build and execute command with optional output redirection
 		if [ "$record_mode" = "true" ]; then
 			echo "recording requests to $record_path"
-			set -x
-			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
-				--log="$RUST_LOG" \
-				--no-prometheus \
-				--dev \
-				--rpc-port 8546 \
-				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}" 2>&1 |
-				tee /tmp/eth-rpc.log |
-				tee >(grep --line-buffered 'recv=' |
-					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
-					sed -u -E 's/.*recv="(.*)"/\1/' |
-					sed -u 's/\\"/"/g' >"$record_path")
-			{ set +x; } 2>/dev/null
+			# Check if lnav is installed and pipe output to it if available
+			if command -v lnav &>/dev/null; then
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--rpc-port 8546 \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 |
+					tee /tmp/eth-rpc.log |
+					tee >(grep --line-buffered 'recv=' |
+						grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+						sed -u -E 's/.*recv="(.*)"/\1/' |
+						sed -u 's/\\"/"/g' >"$record_path") |
+					lnav
+				{ set +x; } 2>/dev/null
+			else
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--rpc-port 8546 \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 |
+					tee /tmp/eth-rpc.log |
+					tee >(grep --line-buffered 'recv=' |
+						grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+						sed -u -E 's/.*recv="(.*)"/\1/' |
+						sed -u 's/\\"/"/g' >"$record_path")
+				{ set +x; } 2>/dev/null
+			fi
 		else
-			set -x
-			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
-				--log="$RUST_LOG" \
-				--no-prometheus \
-				--dev \
-				--rpc-port 8546 \
-				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}"
-			{ set +x; } 2>/dev/null
+			# Check if lnav is installed and pipe output to it if available
+			if command -v lnav &>/dev/null; then
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--rpc-port 8546 \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 | lnav
+				{ set +x; } 2>/dev/null
+			else
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--rpc-port 8546 \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}"
+				{ set +x; } 2>/dev/null
+			fi
 		fi
 		;;
 	run)
@@ -431,28 +464,58 @@ function eth-rpc() {
 		# Build and execute command with optional output redirection
 		if [ "$record_mode" = "true" ]; then
 			echo "recording requests to $record_path"
-			set -x
-			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
-				--log="$RUST_LOG" \
-				--no-prometheus \
-				--dev \
-				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}" 2>&1 |
-				tee /tmp/eth-rpc.log |
-				tee >(grep --line-buffered 'recv=' |
-					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
-					sed -u -E 's/.*recv="(.*)"/\1/' |
-					sed -u 's/\\"/"/g' >"$record_path")
-			{ set +x; } 2>/dev/null
+			# Check if lnav is installed and pipe output to it if available
+			if command -v lnav &>/dev/null; then
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 |
+					tee /tmp/eth-rpc.log |
+					tee >(grep --line-buffered 'recv=' |
+						grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+						sed -u -E 's/.*recv="(.*)"/\1/' |
+						sed -u 's/\\"/"/g' >"$record_path") |
+					lnav
+				{ set +x; } 2>/dev/null
+			else
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 |
+					tee /tmp/eth-rpc.log |
+					tee >(grep --line-buffered 'recv=' |
+						grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+						sed -u -E 's/.*recv="(.*)"/\1/' |
+						sed -u 's/\\"/"/g' >"$record_path")
+				{ set +x; } 2>/dev/null
+			fi
 		else
-			set -x
-			"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
-				--log="$RUST_LOG" \
-				--no-prometheus \
-				--dev \
-				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}"
-			{ set +x; } 2>/dev/null
+			# Check if lnav is installed and pipe output to it if available
+			if command -v lnav &>/dev/null; then
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 | lnav
+				{ set +x; } 2>/dev/null
+			else
+				set -x
+				"$POLKADOT_SDK_DIR/target/$bin_folder/eth-rpc" \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}"
+				{ set +x; } 2>/dev/null
+			fi
 		fi
 		;;
 	*)
@@ -484,34 +547,70 @@ function eth-rpc() {
 
 		# Build and execute command with optional output redirection
 		if [ "$record_mode" = "true" ]; then
-			set -x
-			cargo run \
-				--quiet \
-				--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
-				-p pallet-revive-eth-rpc -- \
-				--log="$RUST_LOG" \
-				--no-prometheus \
-				--dev \
-				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}" 2>&1 |
-				tee /tmp/eth-rpc.log |
-				tee >(grep --line-buffered 'recv=' |
-					grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
-					sed -u -E 's/.*recv="(.*)"/\1/' |
-					sed -u 's/\\"/"/g' >"$record_path")
-			{ set +x; } 2>/dev/null
+			# Check if lnav is installed and pipe output to it if available
+			if command -v lnav &>/dev/null; then
+				set -x
+				cargo run \
+					--quiet \
+					--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
+					-p pallet-revive-eth-rpc -- \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 |
+					tee /tmp/eth-rpc.log |
+					tee >(grep --line-buffered 'recv=' |
+						grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+						sed -u -E 's/.*recv="(.*)"/\1/' |
+						sed -u 's/\\"/"/g' >"$record_path") |
+					lnav
+				{ set +x; } 2>/dev/null
+			else
+				set -x
+				cargo run \
+					--quiet \
+					--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
+					-p pallet-revive-eth-rpc -- \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 |
+					tee /tmp/eth-rpc.log |
+					tee >(grep --line-buffered 'recv=' |
+						grep --line-buffered '\\"method\\":\\"eth_sendRawTransaction\\"' |
+						sed -u -E 's/.*recv="(.*)"/\1/' |
+						sed -u 's/\\"/"/g' >"$record_path")
+				{ set +x; } 2>/dev/null
+			fi
 		else
-			set -x
-			cargo run \
-				--quiet \
-				--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
-				-p pallet-revive-eth-rpc -- \
-				--log="$RUST_LOG" \
-				--no-prometheus \
-				--dev \
-				--node-rpc-url "$NODE_RPC_URL" \
-				"${args[@]}"
-			{ set +x; } 2>/dev/null
+			# Check if lnav is installed and pipe output to it if available
+			if command -v lnav &>/dev/null; then
+				set -x
+				cargo run \
+					--quiet \
+					--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
+					-p pallet-revive-eth-rpc -- \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}" 2>&1 | lnav
+				{ set +x; } 2>/dev/null
+			else
+				set -x
+				cargo run \
+					--quiet \
+					--manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" \
+					-p pallet-revive-eth-rpc -- \
+					--log="$RUST_LOG" \
+					--no-prometheus \
+					--dev \
+					--node-rpc-url "$NODE_RPC_URL" \
+					"${args[@]}"
+				{ set +x; } 2>/dev/null
+			fi
 		fi
 		;;
 	esac
@@ -519,14 +618,15 @@ function eth-rpc() {
 
 # Runs the complete Revive development stack (dev-node + eth-rpc) in tmux window
 # This starts both the development node and Ethereum RPC bridge in separate panes
-# Usage: revive_dev_stack [--release] [--retester] [--proxy] [--record[=path]]
+# Usage: revive_dev_stack [--release] [--retester] [--proxy] [--record[=path]] [--build]
 # Flags:
 #   --release        Use release binaries instead of debug
 #   --retester       Use retester chainspec
 #   --proxy          Enable mitmproxy for traffic inspection
 #   --record[=path]  Record eth_sendRawTransaction requests (default: /tmp/eth-rpc-requests.log)
+#   --build          Build dev-node and eth-rpc before starting
 # Example:
-#   revive_dev_stack --release --proxy --retester --record=/my/custom/path.log
+#   revive_dev_stack --release --proxy --retester --record=/my/custom/path.log --build
 function revive_dev_stack() {
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
@@ -535,14 +635,13 @@ function revive_dev_stack() {
 
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
-	# Kill existing 'mitmproxy' window if it exists
-	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Parse arguments
 	use_proxy="false"
 	build_type=""
 	retester_flag=""
 	record_arg=""
+	build_flag="false"
 
 	for arg in "$@"; do
 		case "$arg" in
@@ -561,8 +660,18 @@ function revive_dev_stack() {
 		--record=*)
 			record_arg="$arg"
 			;;
+		--build)
+			build_flag="true"
+			;;
 		esac
 	done
+
+	# Build binaries if requested
+	if [ "$build_flag" = "true" ]; then
+		echo "Building dev-node and eth-rpc..."
+		dev-node build $build_type $retester_flag
+		eth-rpc build $build_type
+	fi
 
 	# Determine which mode to use for dev-node and eth-rpc
 	if [ "$use_proxy" = "true" ]; then
@@ -617,6 +726,68 @@ function retester_test() {
 		--revive-dev-node.existing-rpc-url "http://localhost:8545" \
 		--test "$full_test_path"
 	{ set +x; } 2>/dev/null
+}
+
+function retester_ci {
+	# Parse arguments
+	local num_nodes=10
+	local num_threads=10
+
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--nodes)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				num_nodes="$2"
+				shift 2
+			else
+				echo "Error: --nodes requires a numeric argument"
+				return 1
+			fi
+			;;
+		--threads)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				num_threads="$2"
+				shift 2
+			else
+				echo "Error: --threads requires a numeric argument"
+				return 1
+			fi
+			;;
+		*)
+			echo "Unknown argument: $1"
+			return 1
+			;;
+		esac
+	done
+
+	find "$RETESTER_DIR/workdir" -maxdepth 1 -name "*.json" -type f -delete 2>/dev/null
+
+	set -x
+	cargo run --quiet --release --manifest-path "$RETESTER_DIR/Cargo.toml" -- test \
+		--platform revive-dev-node-revm-solc \
+		--test "$RETESTER_DIR/resolc-compiler-tests/fixtures/solidity/simple" \
+		--test "$RETESTER_DIR/resolc-compiler-tests/fixtures/solidity/complex" \
+		--test "$RETESTER_DIR/resolc-compiler-tests/fixtures/solidity/translated_semantic_tests" \
+		--concurrency.number-of-nodes "$num_nodes" \
+		--concurrency.number-of-threads "$num_threads" \
+		--concurrency.number-of-concurrent-tasks 1000 \
+		--working-directory "$RETESTER_DIR/workdir" \
+		--revive-dev-node.consensus instant-seal \
+		--revive-dev-node.path "$POLKADOT_SDK_DIR/target/debug/revive-dev-node" \
+		--eth-rpc.path "$POLKADOT_SDK_DIR/target/debug/eth-rpc" \
+		--resolc.path "$HOME/.cargo/bin/resolc"
+
+	{ set +x; } 2>/dev/null
+
+	# Find the JSON report file and move it
+	json_file=$(find "$RETESTER_DIR/workdir" -maxdepth 1 -name "*.json" -type f | head -n 1)
+	if [ -n "$json_file" ]; then
+		mv "$json_file" report.json
+		python3 "$POLKADOT_SDK_DIR/.github/scripts/process-differential-tests-report.py" report.json revive-solc
+	else
+		echo "Error: No JSON report file found in $RETESTER_DIR/workdir"
+		return 1
+	fi
 }
 
 # Helper function to endow development accounts in chain spec
@@ -730,7 +901,7 @@ function westend() {
 			polkadot-omni-node \
 				--tmp \
 				--log="$RUST_LOG" \
-				--dev-block-time 1000 \
+				--instant-seal \
 				--no-prometheus \
 				--chain ~/ah-westend-spec.json 2>&1 | lnav
 			{ set +x; } 2>/dev/null
@@ -739,7 +910,7 @@ function westend() {
 			polkadot-omni-node \
 				--tmp \
 				--log="$RUST_LOG" \
-				--dev-block-time 1000 \
+				--instant-seal \
 				--no-prometheus \
 				--chain ~/ah-westend-spec.json
 			{ set +x; } 2>/dev/null
@@ -860,7 +1031,7 @@ function passet() {
 			polkadot-omni-node \
 				--dev \
 				--log="$RUST_LOG" \
-				--dev-block-time 1000 \
+				--instant-seal \
 				--no-prometheus \
 				--no-hardware-benchmarks \
 				--chain ~/passet-spec.json 2>&1 | lnav
@@ -870,7 +1041,7 @@ function passet() {
 			polkadot-omni-node \
 				--dev \
 				--log="$RUST_LOG" \
-				--dev-block-time 1000 \
+				--instant-seal \
 				--no-prometheus \
 				--no-hardware-benchmarks \
 				--chain ~/passet-spec.json
@@ -1037,8 +1208,6 @@ function geth-dev() {
 function geth_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
-	# Kill existing 'mitmproxy' window if it exists
-	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Parse arguments
 	mode="run"
@@ -1069,8 +1238,6 @@ function geth_stack() {
 function passet_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
-	# Kill existing 'mitmproxy' window if it exists
-	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Parse arguments
 	use_proxy="false"
@@ -1109,8 +1276,6 @@ function passet_stack() {
 function westend_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
-	# Kill existing 'mitmproxy' window if it exists
-	tmux kill-window -t mitmproxy 2>/dev/null
 
 	# Parse arguments
 	use_proxy="false"
