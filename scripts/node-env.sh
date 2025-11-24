@@ -223,7 +223,7 @@ function dev-node() {
 			release_flag="--release"
 		fi
 		set -x
-		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p "revive-dev-node" $release_flag
+		cargo build --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p "revive-dev-node" $release_flag
 		{ set +x; } 2>/dev/null
 
 		# Generate chain spec if --retester flag was provided
@@ -327,7 +327,7 @@ function eth-rpc() {
 		done
 
 		set -x
-		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc --bin eth-rpc $release_flag "${build_args[@]}"
+		cargo build --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p pallet-revive-eth-rpc --bin eth-rpc $release_flag "${build_args[@]}"
 		{ set +x; } 2>/dev/null
 		;;
 	proxy)
