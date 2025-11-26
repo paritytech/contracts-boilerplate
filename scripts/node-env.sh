@@ -797,27 +797,34 @@ function endow_dev_accounts() {
 	local input_spec="$1"
 	local output_spec="$2"
 
-	# Endow development accounts with funds
-	# Alith (Ethereum-compatible test account):
+	# Endow 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
 	#   PassPhrase: bottom drive obey lake curtain smoke basket hold race lonely fit walk
-	#   H160: 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
-	#   SS58: 5CfCLa2N85aH2tUKT48LmRSGNx27DnJUayMXqvvcU97VN2sk
+	#   SS58: 5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ
 	#   Private key (ecdsa): 0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
-	#
-	# Alice (Substrate test account):
-	#   SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
-	#   Private key (sr25519): 0xe5be9a5092b81bca64be81d212e7f2f9eba183bb7a90954f7b76361f6edb5c0a
-	jq '.genesis.runtimeGenesis.patch.balances.balances = [
-	    ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", 1000000001000000000],
-			["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc", 1000000001000000000],
-			["5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ", 100000000000000001000000000],
-			["5CfCLa2N85aH2tUKT48LmRSGNx27DnJUayMXqvvcU97VN2sk", 1000000001000000000],
-			["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", 1000000001000000000],
-			["5Exhf8yKh5CUwVBucuPKmW66vpZr2BgoE1p8KgeHibCTY9nN", 1000000001000000000],
-			["5EHrjJ437hjWG28LA466LjGDgK4NbmAQkJnwmXwGXNZYhq5u", 1000000001000000000]
+	jq '.genesis.runtimeGenesis.patch.balances.balances += [
+			["5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ", 100000000000000001000000000]
 		]
 		| .genesis.runtimeGenesis.patch.staking.devStakers = [0, 0]
 	' "$input_spec" >"$output_spec"
+}
+
+# Helper function to send desktop notifications
+# Supports both Linux (notify-send) and macOS (osascript)
+# Usage: notify <message> [timeout_ms]
+# Examples:
+#   notify "Build complete"
+#   notify "eth-rpc is ready!" 3000
+function notify() {
+	local message="$1"
+	local timeout="${2:-3000}"
+
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		# macOS
+		osascript -e "display notification \"$message\" with title \"Notification\""
+	elif command -v notify-send &>/dev/null; then
+		# Linux with notify-send
+		notify-send -t "$timeout" "$message"
+	fi
 }
 
 # Helper function to wait for eth-rpc to be ready
@@ -838,12 +845,7 @@ function wait_for_eth_rpc() {
 			--data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
 			"$eth_rpc_url" >/dev/null 2>&1; then
 			echo "eth-rpc is ready!"
-
-			# Check if dunst is installed and send notification
-			if command -v notify-send &>/dev/null; then
-				notify-send -t 3000 "eth-rpc is ready!"
-			fi
-
+			notify "eth-rpc is ready!" 3000
 			return 0
 		fi
 		attempt=$((attempt + 1))
@@ -899,7 +901,7 @@ function westend() {
 		if command -v lnav &>/dev/null; then
 			set -x
 			polkadot-omni-node \
-				--tmp \
+				--dev \
 				--log="$RUST_LOG" \
 				--instant-seal \
 				--no-prometheus \
@@ -908,7 +910,7 @@ function westend() {
 		else
 			set -x
 			polkadot-omni-node \
-				--tmp \
+				--dev \
 				--log="$RUST_LOG" \
 				--instant-seal \
 				--no-prometheus \
