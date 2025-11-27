@@ -22,6 +22,9 @@ fi
 # Polkadot SDK directory path (can be overridden by environment variable)
 POLKADOT_SDK_DIR="${POLKADOT_SDK_DIR:-$HOME/polkadot-sdk}"
 
+# anvil directory path (can be overridden by environment variable)
+FOUNDRY_DIR="${FOUNDRY_DIR:-$HOME/github/foundry-polkadot}"
+
 # Define the revive-differential-tests directory path (can be overridden by environment variable)
 RETESTER_DIR="${RETESTER_DIR:-$HOME/github/revive-differential-tests}"
 
@@ -1305,4 +1308,106 @@ function westend_stack() {
 
 	# Wait for eth-rpc to be ready
 	wait_for_eth_rpc
+}
+
+# Runs anvil (Ethereum node) in development mode
+# Useful for testing contracts against standard Ethereum
+# Usage: anvil-dev [proxy|run] [--port <port>]
+# Examples:
+#   anvil-dev                     - Use default run mode on port 8545
+#   anvil-dev run --port 8546     - Run on custom port 8546
+#   anvil-dev proxy               - Run with mitmproxy (8545->8546)
+#   anvil-dev proxy --port 9000   - Run with mitmproxy (9000->9001)
+function anvil-dev() {
+	# Parse arguments
+	local mode="run"
+	local port="8545"
+
+	# Check if first arg is mode
+	if [[ "$1" =~ ^(proxy|run)$ ]]; then
+		mode="$1"
+		shift
+	fi
+
+	# Parse remaining arguments
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--port)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				port="$2"
+				shift 2
+			else
+				echo "Error: --port requires a numeric argument"
+				return 1
+			fi
+			;;
+		--build)
+			cargo build --manifest-path $FOUNDRY_DIR/Cargo.toml --release -p anvil-polkadot
+			;;
+		*)
+			echo "Unknown argument: $1"
+			return 1
+			;;
+		esac
+	done
+
+	# Helper function to start anvil
+	start_anvil() {
+		local port="$1"
+		set -x
+		"$FOUNDRY_DIR/target/release/anvil-polkadot" -p "$port"
+		{ set +x; } 2>/dev/null
+	}
+
+	# Execute based on mode
+	case "$mode" in
+	proxy)
+		# Calculate server port (port + 1)
+		local server_port=$((port + 1))
+
+		# Kill any existing mitmproxy instances
+		pkill -f mitmproxy
+
+		# Start mitmproxy
+		start_mitmproxy "${port}:${server_port}"
+
+		# Start anvil on server port
+		start_anvil "$server_port"
+		;;
+	run)
+		# Start anvil directly
+		start_anvil "$port"
+		;;
+	esac
+}
+
+# Runs anvil in a new tmux window
+# Provides a quick way to start an Ethereum development node
+# Usage: anvil_stack [--proxy] [--build]
+# Examples:
+#   anvil_stack                - Run anvil without proxy
+#   anvil_stack --proxy        - Run anvil with proxy
+#   anvil_stack --build        - Build then Run anvil
+function anvil_stack() {
+	# Kill existing 'servers' window if it exists
+	tmux kill-window -t servers 2>/dev/null
+
+	# Parse arguments
+	mode="run"
+	build_flag=""
+
+	for arg in "$@"; do
+		case "$arg" in
+		--proxy)
+			mode="proxy"
+			;;
+		--build)
+			build_flag="--build"
+			;;
+		esac
+	done
+
+	# Create new 'servers' window in detached mode
+	# Source shell config and run anvil with specified mode
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; anvil-dev $mode $build_flag; exec \$SHELL'"
 }
