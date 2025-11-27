@@ -1342,7 +1342,10 @@ function anvil-dev() {
 			fi
 			;;
 		--build)
-			cargo build --manifest-path $FOUNDRY_DIR/Cargo.toml --release -p anvil-polkadot
+			set -x
+			SQLX_OFFLINE=true cargo build --manifest-path "$FOUNDRY_DIR/Cargo.toml" --release -p anvil-polkadot
+			{ set +x; } 2>/dev/null
+			shift 1
 			;;
 		*)
 			echo "Unknown argument: $1"
@@ -1410,4 +1413,10 @@ function anvil_stack() {
 	# Create new 'servers' window in detached mode
 	# Source shell config and run anvil with specified mode
 	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; anvil-dev $mode $build_flag; exec \$SHELL'"
+
+	wait_for_eth_rpc
+
+	# fund our default address
+	cast rpc anvil_setBalance "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac" "0x3635C9ADC5DEA00000" 2>/dev/null
+
 }
