@@ -1323,6 +1323,8 @@ function anvil-dev() {
 	local mode="run"
 	local port="8545"
 
+	RUST_LOG="${RUST_LOG:-runtime=debug,pallet_revive=debug}"
+
 	# Check if first arg is mode
 	if [[ "$1" =~ ^(proxy|run)$ ]]; then
 		mode="$1"
@@ -1358,7 +1360,7 @@ function anvil-dev() {
 	start_anvil() {
 		local port="$1"
 		set -x
-		"$FOUNDRY_DIR/target/release/anvil-polkadot" -p "$port"
+		RUST_LOG=$RUST_LOG "$FOUNDRY_DIR/target/release/anvil-polkadot" -p "$port"
 		{ set +x; } 2>/dev/null
 	}
 
