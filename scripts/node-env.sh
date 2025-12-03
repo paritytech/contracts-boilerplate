@@ -840,7 +840,7 @@ function wait_for_eth_rpc() {
 	local eth_rpc_url="${1:-http://localhost:8545}"
 
 	echo "Waiting for eth-rpc to be ready..."
-	local max_attempts=45
+	local max_attempts=120
 	local attempt=0
 
 	while [ $attempt -lt $max_attempts ]; do
@@ -1202,6 +1202,66 @@ function geth-dev() {
 	esac
 }
 
+# Runs eth_anvil
+function eth_anvil() {
+	local mode="run"
+	local port="8545"
+
+	# Check if first arg is mode
+	if [[ "$1" =~ ^(proxy|run)$ ]]; then
+		mode="$1"
+		shift
+	fi
+
+	# Parse remaining arguments
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--port)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				port="$2"
+				shift 2
+			else
+				echo "Error: --port requires a numeric argument"
+				return 1
+			fi
+			;;
+		*)
+			echo "Unknown argument: $1"
+			return 1
+			;;
+		esac
+	done
+
+	# Helper function to start geth
+	start_anvil() {
+		local anvil_port="$1"
+		set -x
+		anvil --port "$anvil_port"
+		{ set +x; } 2>/dev/null
+	}
+
+	# Execute based on mode
+	case "$mode" in
+	proxy)
+		# Calculate server port (port + 1)
+		local server_port=$((port + 1))
+
+		# Kill any existing mitmproxy instances
+		pkill -f mitmproxy
+
+		# Start mitmproxy
+		start_mitmproxy "${port}:${server_port}"
+
+		# Start geth on server port
+		start_anvil "$server_port"
+		;;
+	run)
+		# Start geth directly
+		start_anvil "$port"
+		;;
+	esac
+}
+
 # Runs geth in a new tmux window
 # Provides a quick way to start an Ethereum development node
 # Usage: geth_stack [--proxy] [--retester]
@@ -1323,7 +1383,7 @@ function anvil-dev() {
 	local mode="run"
 	local port="8545"
 
-	RUST_LOG="${RUST_LOG:-runtime=debug,pallet_revive=debug}"
+	RUST_LOG="${RUST_LOG:-error,runtime::revive=debug}"
 
 	# Check if first arg is mode
 	if [[ "$1" =~ ^(proxy|run)$ ]]; then
@@ -1343,11 +1403,17 @@ function anvil-dev() {
 				return 1
 			fi
 			;;
-		--build)
+		build)
 			set -x
 			SQLX_OFFLINE=true cargo build --manifest-path "$FOUNDRY_DIR/Cargo.toml" --release -p anvil-polkadot
 			{ set +x; } 2>/dev/null
-			shift 1
+			return 0
+			;;
+		bacon)
+			set -x
+			(cd "$FOUNDRY_DIR" && SQLX_OFFLINE=true bacon -- -p anvil-polkadot)
+			{ set +x; } 2>/dev/null
+			return 0
 			;;
 		*)
 			echo "Unknown argument: $1"
@@ -1407,18 +1473,24 @@ function anvil_stack() {
 			mode="proxy"
 			;;
 		--build)
-			build_flag="--build"
+			build_flag="true"
 			;;
 		esac
 	done
 
+	# Build binaries if requested
+	if [ "$build_flag" = "true" ]; then
+		echo "Building anvil..."
+		anvil-dev build
+	fi
+
 	# Create new 'servers' window in detached mode
 	# Source shell config and run anvil with specified mode
-	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; anvil-dev $mode $build_flag; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; anvil-dev $mode; exec \$SHELL'"
 
 	wait_for_eth_rpc
 
 	# fund our default address
-	cast rpc anvil_setBalance "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac" "0x3635C9ADC5DEA00000" 2>/dev/null
+	cast rpc anvil_setBalance "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac" "0x3635C9ADC5DEA00000" >/dev/null
 
 }
