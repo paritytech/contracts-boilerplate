@@ -124,6 +124,9 @@ revive_dev_stack
 # Or run with mitmproxy for traffic inspection
 # Note: Requires mitmproxy setup first - https://github.com/pgherveou/mitmproxy
 revive_dev_stack --proxy
+
+# Run with custom consensus mode (e.g., manual-seal with 12 second block time)
+revive_dev_stack --consensus manual-seal-12000
 ```
 
 ## Running the Geth Stack
