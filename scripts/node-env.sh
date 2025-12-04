@@ -621,15 +621,16 @@ function eth-rpc() {
 
 # Runs the complete Revive development stack (dev-node + eth-rpc) in tmux window
 # This starts both the development node and Ethereum RPC bridge in separate panes
-# Usage: revive_dev_stack [--release] [--retester] [--proxy] [--record[=path]] [--build]
+# Usage: revive_dev_stack [--release] [--retester] [--proxy] [--record[=path]] [--build] [--consensus <mode>]
 # Flags:
 #   --release        Use release binaries instead of debug
 #   --retester       Use retester chainspec
 #   --proxy          Enable mitmproxy for traffic inspection
 #   --record[=path]  Record eth_sendRawTransaction requests (default: /tmp/eth-rpc-requests.log)
 #   --build          Build dev-node and eth-rpc before starting
+#   --consensus      Consensus mode for dev-node (e.g., manual-seal-12000)
 # Example:
-#   revive_dev_stack --release --proxy --retester --record=/my/custom/path.log --build
+#   revive_dev_stack --release --proxy --retester --record=/my/custom/path.log --build --consensus manual-seal-12000
 function revive_dev_stack() {
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
@@ -645,26 +646,45 @@ function revive_dev_stack() {
 	retester_flag=""
 	record_arg=""
 	build_flag="false"
+	consensus_arg=""
 
-	for arg in "$@"; do
-		case "$arg" in
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
 		--proxy)
 			use_proxy="true"
+			shift
 			;;
 		--release)
 			build_type="--release"
+			shift
 			;;
 		--retester)
 			retester_flag="--retester"
+			shift
 			;;
 		--record)
 			record_arg="--record"
+			shift
 			;;
 		--record=*)
-			record_arg="$arg"
+			record_arg="$1"
+			shift
 			;;
 		--build)
 			build_flag="true"
+			shift
+			;;
+		--consensus)
+			shift
+			consensus_arg="--consensus $1"
+			shift
+			;;
+		--consensus=*)
+			consensus_arg="--consensus ${1#--consensus=}"
+			shift
+			;;
+		*)
+			shift
 			;;
 		esac
 	done
@@ -684,7 +704,7 @@ function revive_dev_stack() {
 	fi
 
 	# Create new 'servers' window in detached mode
-	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; dev-node run $build_type $retester_flag; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; dev-node run $build_type $retester_flag $consensus_arg; exec \$SHELL'"
 
 	# Split the window, run eth-rpc with the same mode
 	tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc $mode ws://localhost:9944 $build_type $record_arg; exec \$SHELL'"
@@ -978,8 +998,9 @@ function cast_westend() {
 #   cast_local
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_local() {
-	echo "Loading account 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
+	echo "Loading account ETH_FROM = 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
 	echo "Setting ETH_RPC_URL to localhost:8545"
+	export ETH_FROM="0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
 	export PRIVATE_KEY=5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
 	export ETH_RPC_URL=http://localhost:8545
 }
@@ -1198,6 +1219,126 @@ function geth-dev() {
 	run)
 		# Start geth directly
 		start_geth "$port"
+		;;
+	esac
+}
+
+# Runs eth_anvil
+function eth_anvil() {
+	local mode="run"
+	local port="8545"
+
+	# Check if first arg is mode
+	if [[ "$1" =~ ^(proxy|run)$ ]]; then
+		mode="$1"
+		shift
+	fi
+
+	# Parse remaining arguments
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--port)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				port="$2"
+				shift 2
+			else
+				echo "Error: --port requires a numeric argument"
+				return 1
+			fi
+			;;
+		*)
+			echo "Unknown argument: $1"
+			return 1
+			;;
+		esac
+	done
+
+	# Helper function to start geth
+	start_anvil() {
+		local anvil_port="$1"
+		set -x
+		anvil --port "$anvil_port"
+		{ set +x; } 2>/dev/null
+	}
+
+	# Execute based on mode
+	case "$mode" in
+	proxy)
+		# Calculate server port (port + 1)
+		local server_port=$((port + 1))
+
+		# Kill any existing mitmproxy instances
+		pkill -f mitmproxy
+
+		# Start mitmproxy
+		start_mitmproxy "${port}:${server_port}"
+
+		# Start geth on server port
+		start_anvil "$server_port"
+		;;
+	run)
+		# Start geth directly
+		start_anvil "$port"
+		;;
+	esac
+}
+
+# Runs hardhat node
+function eth_hardhat() {
+	local mode="run"
+	local port="8545"
+
+	# Check if first arg is mode
+	if [[ "$1" =~ ^(proxy|run)$ ]]; then
+		mode="$1"
+		shift
+	fi
+
+	# Parse remaining arguments
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--port)
+			if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+				port="$2"
+				shift 2
+			else
+				echo "Error: --port requires a numeric argument"
+				return 1
+			fi
+			;;
+		*)
+			echo "Unknown argument: $1"
+			return 1
+			;;
+		esac
+	done
+
+	# Helper function to start hardhat
+	start_hardhat() {
+		local hardhat_port="$1"
+		set -x
+		(cd "$SCRIPT_DIR/hardhat-playground" && npx hardhat node --port "$hardhat_port")
+		{ set +x; } 2>/dev/null
+	}
+
+	# Execute based on mode
+	case "$mode" in
+	proxy)
+		# Calculate server port (port + 1)
+		local server_port=$((port + 1))
+
+		# Kill any existing mitmproxy instances
+		pkill -f mitmproxy
+
+		# Start mitmproxy
+		start_mitmproxy "${port}:${server_port}"
+
+		# Start hardhat on server port
+		start_hardhat "$server_port"
+		;;
+	run)
+		# Start hardhat directly
+		start_hardhat "$port"
 		;;
 	esac
 }

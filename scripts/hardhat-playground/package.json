@@ -1,0 +1,7 @@
+{
+    "name": "hardhat-playground",
+    "version": "1.0.0",
+    "devDependencies": {
+        "hardhat": "^2.27.1"
+    }
+}
