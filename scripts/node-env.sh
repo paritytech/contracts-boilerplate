@@ -237,12 +237,10 @@ function dev-node() {
 			"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" build-spec --dev >"$HOME/.revive/revive-dev-node-chainspec-base.json"
 			{ set +x; } 2>/dev/null
 
-			# Apply patch from retester-chainspec-patch.json
-			jq -s '.[0] * .[1]' \
+			# Apply retester patch
+			apply_retester_patch \
 				"$HOME/.revive/revive-dev-node-chainspec-base.json" \
-				"$SCRIPT_DIR/retester-chainspec-patch.json" \
-				>"$HOME/.revive/revive-dev-node-chainspec.json"
-			rm -f "$HOME/.revive/revive-dev-node-chainspec-base.json"
+				"$HOME/.revive/revive-dev-node-chainspec.json"
 		fi
 		;;
 	proxy)
@@ -813,6 +811,20 @@ function retester_ci {
 	fi
 }
 
+# Helper function to apply retester chainspec patch
+# This is shared between dev-node() and westend() functions
+# Usage: apply_retester_patch <base_spec_path> <output_spec_path>
+function apply_retester_patch() {
+	local base_spec="$1"
+	local output_spec="$2"
+
+	jq -s '.[0] * .[1]' \
+		"$base_spec" \
+		"$SCRIPT_DIR/retester-chainspec-patch.json" \
+		>"$output_spec"
+	rm -f "$base_spec"
+}
+
 # Helper function to endow development accounts in chain spec
 # This is shared between westend() and passet() functions
 # Usage: endow_dev_accounts <input_spec_path> <output_spec_path>
@@ -927,18 +939,16 @@ function westend() {
 			polkadot-omni-node chain-spec-builder \
 				--chain-spec-path "$HOME/.revive/ah-westend-spec-base.json" \
 				create \
-				--relay-chain westend \
+				--relay-chain dontcare \
 				--para-id 1000 \
 				--runtime "$POLKADOT_SDK_DIR/target/debug/wbuild/asset-hub-westend-runtime/asset_hub_westend_runtime.wasm" \
-				default
+				named-preset development
 			{ set +x; } 2>/dev/null
 
-			# Apply patch from retester-chainspec-patch.json
-			jq -s '.[0] * .[1]' \
+			# Apply retester patch
+			apply_retester_patch \
 				"$HOME/.revive/ah-westend-spec-base.json" \
-				"$SCRIPT_DIR/retester-chainspec-patch.json" \
-				>"$HOME/.revive/ah-westend-spec.json"
-			rm -f "$HOME/.revive/ah-westend-spec-base.json"
+				"$HOME/.revive/ah-westend-spec.json"
 		else
 			# Build the asset-hub-westend-runtime
 			set -x
