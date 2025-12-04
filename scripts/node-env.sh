@@ -1284,7 +1284,7 @@ function eth_anvil() {
 }
 
 # Runs hardhat node
-function hardhat() {
+function eth_hardhat() {
 	local mode="run"
 	local port="8545"
 
