@@ -1,5 +1,6 @@
 //! Call with deno task deploy [--filter <filter>]
 
+import { readBytecode } from '../utils/index.ts'
 import { deploy } from './lib/index.ts'
 
 /**
@@ -23,7 +24,18 @@ import { deploy } from './lib/index.ts'
 // })
 
 await deploy({
-    name: 'Storage',
+    name: { name: 'MyToken', mappedTo: 'MyTokenPvm' },
     args: [],
-    // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+    bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+})
+
+await deploy({
+    name: { name: 'MyToken', mappedTo: 'MyTokenEvm' },
+    args: [],
+})
+
+await deploy({
+    name: { name: 'MyToken', mappedTo: 'MyTokenInk' },
+    args: [],
+    bytecode: readBytecode('./ink/ink_erc20/target/ink/ink_erc20.polkavm'),
 })

@@ -92,14 +92,9 @@ export async function createEnv({
         name: string,
         bytecodeType: 'evm' | 'polkavm' = 'evm',
     ): Hex {
-        const bytecode = bytecodeType == 'evm'
-            ? Deno.readFileSync(`codegen/evm/${name}.bin`)
-            : Deno.readFileSync(`codegen/pvm/${name}.polkavm`)
-        return `0x${
-            Array.from(bytecode)
-                .map((b: number) => b.toString(16).padStart(2, '0'))
-                .join('')
-        }` as Hex
+        return bytecodeType == 'evm'
+            ? readBytecode(`codegen/evm/${name}.bin`)
+            : readBytecode(`codegen/pvm/${name}.polkavm`)
     }
 
     const chain = defineChain({
@@ -118,7 +113,11 @@ export async function createEnv({
         testnet: true,
     })
 
-    const transport = http(rpcUrl)
+    const transport = http(rpcUrl, {
+        // enable batching
+        // timeout: 60_000,
+        // batch: { wait: 100 },
+    })
     const [account] = await createWalletClient({
         transport,
         chain,
@@ -168,6 +167,16 @@ export async function createEnv({
                 params: [txHash, params],
             })
         },
+        postDispatchWeight(
+            transactionHash: Hex,
+        ) {
+            return client.request({
+                method: 'substrate_postDispatchWeight' as never,
+                params: [
+                    transactionHash,
+                ],
+            })
+        },
         traceBlock<Tracer extends TracerType>(
             blockNumber: bigint,
             tracer: Tracer,
@@ -203,15 +212,17 @@ export async function createEnv({
         args,
         value,
         bytecodeType,
+        bytecode,
     }: {
         name: K
         args: ContractConstructorArgs<Abis[K]>
         value?: bigint
         bytecodeType?: 'evm' | 'polkavm'
+        bytecode?: Hex
     }) {
         const hash = await wallet.deployContract({
             abi: abis[name] as Abi,
-            bytecode: getByteCode(name, bytecodeType),
+            bytecode: bytecode ?? getByteCode(name, bytecodeType),
             args: args as readonly unknown[],
             value,
         })
@@ -220,4 +231,14 @@ export async function createEnv({
     }
 
     return { chain, deploy, getByteCode, wallet, debugClient }
+}
+
+export function readBytecode(
+    filepath: string,
+): Hex {
+    return `0x${
+        Array.from(Deno.readFileSync(filepath))
+            .map((b: number) => b.toString(16).padStart(2, '0'))
+            .join('')
+    }` as Hex
 }

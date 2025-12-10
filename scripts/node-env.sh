@@ -238,9 +238,7 @@ function dev-node() {
 			{ set +x; } 2>/dev/null
 
 			# Apply retester patch
-			apply_retester_patch \
-				"$HOME/.revive/revive-dev-node-chainspec-base.json" \
-				"$HOME/.revive/revive-dev-node-chainspec.json"
+			patch_chain_spec "$HOME/.revive/revive-dev-node-chainspec-base.json" "$HOME/.revive/revive-dev-node-chainspec.json" --retester
 		fi
 		;;
 	proxy)
@@ -811,36 +809,87 @@ function retester_ci {
 	fi
 }
 
-# Helper function to apply retester chainspec patch
-# This is shared between dev-node() and westend() functions
-# Usage: apply_retester_patch <base_spec_path> <output_spec_path>
-function apply_retester_patch() {
-	local base_spec="$1"
-	local output_spec="$2"
-
-	jq -s '.[0] * .[1]' \
-		"$base_spec" \
-		"$SCRIPT_DIR/retester-chainspec-patch.json" \
-		>"$output_spec"
-	rm -f "$base_spec"
-}
-
-# Helper function to endow development accounts in chain spec
-# This is shared between westend() and passet() functions
-# Usage: endow_dev_accounts <input_spec_path> <output_spec_path>
-function endow_dev_accounts() {
+# Helper function to apply various chain spec patches
+# Usage: patch_chain_spec <input_spec> <output_spec> [--retester] [--dev-balance] [--dev-stakers]
+# Examples:
+#   patch_chain_spec input.json output.json --retester
+#   patch_chain_spec input.json output.json --dev-balance --dev-stakers
+#   patch_chain_spec input.json output.json --retester --dev-balance --dev-stakers
+#
+# Account details for --dev-balance:
+#   Endow 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
+#   PassPhrase: bottom drive obey lake curtain smoke basket hold race lonely fit walk
+#   SS58: 5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ
+#   Private key (ecdsa): 0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
+function patch_chain_spec() {
 	local input_spec="$1"
 	local output_spec="$2"
+	shift 2
 
-	# Endow 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
-	#   PassPhrase: bottom drive obey lake curtain smoke basket hold race lonely fit walk
-	#   SS58: 5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ
-	#   Private key (ecdsa): 0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
-	jq '.genesis.runtimeGenesis.patch.balances.balances += [
-			["5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ", 100000000000000001000000000]
-		]
-		| .genesis.runtimeGenesis.patch.staking.devStakers = [0, 0]
-	' "$input_spec" >"$output_spec"
+	# Parse flags
+	local apply_retester="false"
+	local apply_dev_balance="false"
+	local apply_dev_stakers="false"
+
+	for arg in "$@"; do
+		case "$arg" in
+		--retester)
+			apply_retester="true"
+			;;
+		--dev-balance)
+			apply_dev_balance="true"
+			;;
+		--dev-stakers)
+			apply_dev_stakers="true"
+			;;
+		*)
+			echo "Unknown flag: $arg"
+			return 1
+			;;
+		esac
+	done
+
+	local temp_spec="$input_spec"
+
+	# Apply retester patch if requested (requires merge with external file)
+	if [ "$apply_retester" = "true" ]; then
+		echo "Applying retester patch"
+		local retester_temp="${input_spec}.retester.tmp"
+		jq -s '.[0] * .[1]' \
+			"$temp_spec" \
+			"$SCRIPT_DIR/retester-chainspec-patch.json" \
+			>"$retester_temp"
+		if [ "$temp_spec" != "$input_spec" ]; then
+			rm -f "$temp_spec"
+		fi
+		temp_spec="$retester_temp"
+	fi
+
+	# Build jq filter for remaining patches
+	local jq_filter='.'
+
+	if [ "$apply_dev_balance" = "true" ]; then
+		echo "Endowing dev accounts"
+		jq_filter+=' | .genesis.runtimeGenesis.patch.balances.balances += [["5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ", 100000000000000001000000000]]'
+	fi
+
+	if [ "$apply_dev_stakers" = "true" ]; then
+		echo "Setting dev stakers"
+		jq_filter+=' | .genesis.runtimeGenesis.patch.staking.devStakers = [0, 0]'
+	fi
+
+	# Apply jq filter if any patches were requested
+	if [ "$jq_filter" != "." ]; then
+		jq "$jq_filter" "$temp_spec" >"$output_spec"
+		if [ "$temp_spec" != "$input_spec" ]; then
+			rm -f "$temp_spec"
+		fi
+	else
+		# No patches to apply, just move/copy the result
+		if [ "$temp_spec" != "$output_spec" ]; then
+			mv -f "$temp_spec" "$output_spec"
+		fi
+	fi
 }
 
 # Helper function to send desktop notifications
@@ -937,7 +986,7 @@ function westend() {
 			mkdir -p "$HOME/.revive"
 			set -x
 			polkadot-omni-node chain-spec-builder \
-				--chain-spec-path "$HOME/.revive/ah-westend-spec-base.json" \
+				--chain-spec-path "/tmp/ah-westend-spec-base.json" \
 				create \
 				--relay-chain dontcare \
 				--para-id 1000 \
@@ -945,10 +994,7 @@ function westend() {
 				named-preset development
 			{ set +x; } 2>/dev/null
 
-			# Apply retester patch
-			apply_retester_patch \
-				"$HOME/.revive/ah-westend-spec-base.json" \
-				"$HOME/.revive/ah-westend-spec.json"
+			patch_chain_spec "/tmp/ah-westend-spec-base.json" "$HOME/.revive/ah-westend-spec.json" --retester --dev-stakers
 		else
 			# Build the asset-hub-westend-runtime
 			set -x
@@ -964,7 +1010,7 @@ function westend() {
 				named-preset development
 
 			# Use helper function to endow accounts
-			endow_dev_accounts /tmp/ah-westend-spec.json ~/ah-westend-spec.json
+			patch_chain_spec /tmp/ah-westend-spec.json ~/ah-westend-spec.json --dev-balance --dev-stakers
 		fi
 	}
 
@@ -1104,7 +1150,7 @@ function passet() {
 			named-preset development
 
 		# Use helper function to endow accounts
-		endow_dev_accounts /tmp/passet-spec.json ~/passet-spec.json
+		patch_chain_spec /tmp/passet-spec.json ~/passet-spec.json --dev-balance --dev-stakers
 	}
 
 	# Run the polkadot-omni-node with the passet chain spec
