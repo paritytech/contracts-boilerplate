@@ -11,20 +11,17 @@ use pallet_revive_uapi::{HostFn, HostFnImpl as api, ReturnFlags, StorageFlags};
 extern crate alloc;
 use alloc::vec;
 
-sol!("../contracts/MyToken.sol");
+sol!("contract.sol");
 use crate::MyToken::transferCall;
 
 #[global_allocator]
-static ALLOCATOR: simplealloc::SimpleAlloc<1024> = simplealloc::SimpleAlloc::new();
+static mut ALLOC: picoalloc::Mutex<picoalloc::Allocator<picoalloc::ArrayPointer<1024>>> = {
+    static mut ARRAY: picoalloc::Array<1024> = picoalloc::Array([0u8; 1024]);
 
-// #[global_allocator]
-// static mut ALLOC: picoalloc::Mutex<picoalloc::Allocator<picoalloc::ArrayPointer<1024>>> = {
-//     static mut ARRAY: picoalloc::Array<1024> = picoalloc::Array([0u8; 1024]);
-//
-//     picoalloc::Mutex::new(picoalloc::Allocator::new(unsafe {
-//         picoalloc::ArrayPointer::new(&raw mut ARRAY)
-//     }))
-// };
+    picoalloc::Mutex::new(picoalloc::Allocator::new(unsafe {
+        picoalloc::ArrayPointer::new(&raw mut ARRAY)
+    }))
+};
 
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
