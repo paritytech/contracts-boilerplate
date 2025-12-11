@@ -9,7 +9,7 @@ import {
     MyTokenRustWithAlloc,
 } from '../codegen/addresses.ts'
 import { Hex, parseEther } from 'viem'
-import Table from 'npm:cli-table3'
+import Table from 'cli-table3'
 
 const recipient: Hex = '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63'
 

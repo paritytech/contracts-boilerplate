@@ -21,6 +21,7 @@
         "@std/cli": "jsr:@std/cli@^1.0.24",
         "@std/path": "jsr:@std/path@^1.1.3",
         "@std/log": "jsr:@std/log@^0.224.14",
+        "cli-table3": "npm:cli-table3@^0.6.5",
         "ink": "npm:ink@^6.5.1",
         "react": "npm:react@^19.2.1",
         "react/jsx-runtime": "npm:react@^19.2.1/jsx-runtime",
