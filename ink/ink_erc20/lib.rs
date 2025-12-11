@@ -15,9 +15,6 @@ mod ink_erc20 {
         total_supply: U256,
         /// Mapping from owner to number of owned token.
         balances: Mapping<Address, U256>,
-        /// Mapping of the token amount which an account is allowed to withdraw
-        /// from another account.
-        allowances: Mapping<(Address, Address), U256>,
     }
 
     /// Event emitted when a token transfer occurs.

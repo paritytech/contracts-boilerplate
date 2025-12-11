@@ -1,7 +1,13 @@
 #!/usr/bin/env -S deno run --env-file --allow-all
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
-import { MyTokenEvm, MyTokenInk, MyTokenPvm } from '../codegen/addresses.ts'
+import {
+    MyTokenEvm,
+    MyTokenInk,
+    MyTokenPvm,
+    MyTokenRustNoAlloc,
+    MyTokenRustWithAlloc,
+} from '../codegen/addresses.ts'
 import { Hex, parseEther } from 'viem'
 import Table from 'npm:cli-table3'
 
@@ -26,6 +32,8 @@ const addresses = [
     { address: MyTokenEvm, name: 'EVM - solidity' },
     { address: MyTokenPvm, name: 'PVM - solidity' },
     { address: MyTokenInk, name: 'PVM - Ink!' },
+    { address: MyTokenRustWithAlloc, name: 'PVM - Rust with alloc' },
+    { address: MyTokenRustNoAlloc, name: 'PVM - Rust no alloc' },
 ] as const
 
 type CodeSizeEntry = {

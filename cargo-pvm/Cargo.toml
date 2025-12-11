@@ -1,0 +1,14 @@
+[package]
+name = "cargo-pvm"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "cargo-pvm"
+path = "src/main.rs"
+
+[dependencies]
+polkavm-linker = "0.30.0"
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
