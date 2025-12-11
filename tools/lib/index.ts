@@ -117,9 +117,9 @@ export const chain = defineChain({
 
         writeFileSync(join(codegenDir, 'chain.ts'), chain, 'utf8')
     }
-    console.log(`🚀 Deploying ${contractName}`)
-
     const id = mappedTo ?? contractName
+    console.log(`🚀 Deploying ${id}`)
+
     const receipt = await env.deploy({
         name: contractName,
         args,
@@ -176,7 +176,7 @@ export const chain = defineChain({
     }
 
     console.log(
-        `✅ ${contractName} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`,
+        `✅ ${id} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`,
     )
     return address
 }
