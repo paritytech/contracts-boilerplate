@@ -237,12 +237,8 @@ function dev-node() {
 			"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" build-spec --dev >"$HOME/.revive/revive-dev-node-chainspec-base.json"
 			{ set +x; } 2>/dev/null
 
-			# Apply patch from retester-chainspec-patch.json
-			jq -s '.[0] * .[1]' \
-				"$HOME/.revive/revive-dev-node-chainspec-base.json" \
-				"$SCRIPT_DIR/retester-chainspec-patch.json" \
-				>"$HOME/.revive/revive-dev-node-chainspec.json"
-			rm -f "$HOME/.revive/revive-dev-node-chainspec-base.json"
+			# Apply retester patch
+			patch_chain_spec "$HOME/.revive/revive-dev-node-chainspec-base.json" "$HOME/.revive/revive-dev-node-chainspec.json" --retester
 		fi
 		;;
 	proxy)
@@ -813,22 +809,87 @@ function retester_ci {
 	fi
 }
 
-# Helper function to endow development accounts in chain spec
-# This is shared between westend() and passet() functions
-# Usage: endow_dev_accounts <input_spec_path> <output_spec_path>
-function endow_dev_accounts() {
+# Helper function to apply various chain spec patches
+# Usage: patch_chain_spec <input_spec> <output_spec> [--retester] [--dev-balance] [--dev-stakers]
+# Examples:
+#   patch_chain_spec input.json output.json --retester
+#   patch_chain_spec input.json output.json --dev-balance --dev-stakers
+#   patch_chain_spec input.json output.json --retester --dev-balance --dev-stakers
+#
+# Account details for --dev-balance:
+#   Endow 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
+#   PassPhrase: bottom drive obey lake curtain smoke basket hold race lonely fit walk
+#   SS58: 5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ
+#   Private key (ecdsa): 0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
+function patch_chain_spec() {
 	local input_spec="$1"
 	local output_spec="$2"
+	shift 2
 
-	# Endow 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
-	#   PassPhrase: bottom drive obey lake curtain smoke basket hold race lonely fit walk
-	#   SS58: 5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ
-	#   Private key (ecdsa): 0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
-	jq '.genesis.runtimeGenesis.patch.balances.balances += [
-			["5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ", 100000000000000001000000000]
-		]
-		| .genesis.runtimeGenesis.patch.staking.devStakers = [0, 0]
-	' "$input_spec" >"$output_spec"
+	# Parse flags
+	local apply_retester="false"
+	local apply_dev_balance="false"
+	local apply_dev_stakers="false"
+
+	for arg in "$@"; do
+		case "$arg" in
+		--retester)
+			apply_retester="true"
+			;;
+		--dev-balance)
+			apply_dev_balance="true"
+			;;
+		--dev-stakers)
+			apply_dev_stakers="true"
+			;;
+		*)
+			echo "Unknown flag: $arg"
+			return 1
+			;;
+		esac
+	done
+
+	local temp_spec="$input_spec"
+
+	# Apply retester patch if requested (requires merge with external file)
+	if [ "$apply_retester" = "true" ]; then
+		echo "Applying retester patch"
+		local retester_temp="${input_spec}.retester.tmp"
+		jq -s '.[0] * .[1]' \
+			"$temp_spec" \
+			"$SCRIPT_DIR/retester-chainspec-patch.json" \
+			>"$retester_temp"
+		if [ "$temp_spec" != "$input_spec" ]; then
+			rm -f "$temp_spec"
+		fi
+		temp_spec="$retester_temp"
+	fi
+
+	# Build jq filter for remaining patches
+	local jq_filter='.'
+
+	if [ "$apply_dev_balance" = "true" ]; then
+		echo "Endowing dev accounts"
+		jq_filter+=' | .genesis.runtimeGenesis.patch.balances.balances += [["5HYRCKHYJN9z5xUtfFkyMj4JUhsAwWyvuU8vKB1FcnYTf9ZQ", 100000000000000001000000000]]'
+	fi
+
+	if [ "$apply_dev_stakers" = "true" ]; then
+		echo "Setting dev stakers"
+		jq_filter+=' | .genesis.runtimeGenesis.patch.staking.devStakers = [0, 0]'
+	fi
+
+	# Apply jq filter if any patches were requested
+	if [ "$jq_filter" != "." ]; then
+		jq "$jq_filter" "$temp_spec" >"$output_spec"
+		if [ "$temp_spec" != "$input_spec" ]; then
+			rm -f "$temp_spec"
+		fi
+	else
+		# No patches to apply, just move/copy the result
+		if [ "$temp_spec" != "$output_spec" ]; then
+			mv -f "$temp_spec" "$output_spec"
+		fi
+	fi
 }
 
 # Helper function to send desktop notifications
@@ -881,16 +942,15 @@ function wait_for_eth_rpc() {
 
 # Manages the Westend Asset Hub runtime for testing Polkadot Revive contracts
 # Builds a custom chain spec with development accounts endowed with funds
-# Usage: westend [bacon|build|run]
+# Usage: westend [bacon|build|run] [--retester]
 # Examples:
-#   westend bacon    - Watch and rebuild the runtime on changes
-#   westend build    - Build the runtime and generate chain spec with endowed accounts
-#   westend run      - Run the already built runtime with polkadot-omni-node
-#   westend          - Build and run the runtime (default)
+#   westend bacon              - Watch and rebuild the runtime on changes
+#   westend build              - Build the runtime and generate chain spec with endowed accounts
+#   westend build --retester   - Build and generate retester chain spec using polkadot-omni-node
+#   westend run                - Run the already built runtime with polkadot-omni-node
+#   westend run --retester     - Run with retester chain spec
+#   westend                    - Build and run the runtime (default)
 function westend() {
-	# Capture the first argument as the command
-	arg=$1
-
 	# Validate the polkadot-sdk directory
 	if ! validate_polkadot_sdk_dir "$POLKADOT_SDK_DIR"; then
 		return 1
@@ -899,27 +959,71 @@ function westend() {
 	# Set default logging levels (can be overridden by environment variable)
 	RUST_LOG="${RUST_LOG:-error,sc_rpc_server=info,runtime::revive=debug}"
 
+	# Parse arguments to detect --retester flag
+	retester_spec="false"
+	args=()
+	arg=""
+
+	for var in "$@"; do
+		if [ "$var" = "--retester" ]; then
+			retester_spec="true"
+		elif [ -z "$arg" ] && [[ "$var" =~ ^(bacon|build|run)$ ]]; then
+			arg="$var"
+		else
+			args+=("$var")
+		fi
+	done
+
 	# Build the runtime and create a chain spec with endowed dev accounts
 	build() {
-		# Build the asset-hub-westend-runtime
-		set -x
-		cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p asset-hub-westend-runtime
-		{ set +x; } 2>/dev/null
+		if [ "$retester_spec" = "true" ]; then
+			# Build using polkadot-omni-node for retester
+			set -x
+			cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p asset-hub-westend-runtime
+			{ set +x; } 2>/dev/null
 
-		# Create chain spec using chain-spec-builder
-		chain-spec-builder -c /tmp/ah-westend-spec.json \
-			create \
-			--para-id 1000 \
-			--relay-chain dontcare \
-			--runtime "$POLKADOT_SDK_DIR/target/debug/wbuild/asset-hub-westend-runtime/asset_hub_westend_runtime.wasm" \
-			named-preset development
+			# Generate base chain spec using polkadot-omni-node
+			mkdir -p "$HOME/.revive"
+			set -x
+			polkadot-omni-node chain-spec-builder \
+				--chain-spec-path "/tmp/ah-westend-spec-base.json" \
+				create \
+				--relay-chain dontcare \
+				--para-id 1000 \
+				--runtime "$POLKADOT_SDK_DIR/target/debug/wbuild/asset-hub-westend-runtime/asset_hub_westend_runtime.wasm" \
+				named-preset development
+			{ set +x; } 2>/dev/null
 
-		# Use helper function to endow accounts
-		endow_dev_accounts /tmp/ah-westend-spec.json ~/ah-westend-spec.json
+			patch_chain_spec "/tmp/ah-westend-spec-base.json" "$HOME/.revive/ah-westend-spec.json" --retester --dev-stakers
+		else
+			# Build the asset-hub-westend-runtime
+			set -x
+			cargo build --quiet --manifest-path "$POLKADOT_SDK_DIR/Cargo.toml" -p asset-hub-westend-runtime
+			{ set +x; } 2>/dev/null
+
+			# Create chain spec using chain-spec-builder
+			chain-spec-builder -c /tmp/ah-westend-spec.json \
+				create \
+				--para-id 1000 \
+				--relay-chain dontcare \
+				--runtime "$POLKADOT_SDK_DIR/target/debug/wbuild/asset-hub-westend-runtime/asset_hub_westend_runtime.wasm" \
+				named-preset development
+
+			# Use helper function to endow accounts
+			patch_chain_spec /tmp/ah-westend-spec.json ~/ah-westend-spec.json --dev-balance --dev-stakers
+		fi
 	}
 
 	# Run the polkadot-omni-node with the westend chain spec
 	run() {
+		# Determine which chain spec to use
+		local chain_spec
+		if [ "$retester_spec" = "true" ]; then
+			chain_spec="$HOME/.revive/ah-westend-spec.json"
+		else
+			chain_spec="$HOME/ah-westend-spec.json"
+		fi
+
 		# Check if lnav is installed and pipe output to it if available
 		if command -v lnav &>/dev/null; then
 			set -x
@@ -928,7 +1032,7 @@ function westend() {
 				--log="$RUST_LOG" \
 				--instant-seal \
 				--no-prometheus \
-				--chain ~/ah-westend-spec.json 2>&1 | lnav
+				--chain "$chain_spec" "${args[@]}" 2>&1 | lnav
 			{ set +x; } 2>/dev/null
 		else
 			set -x
@@ -937,7 +1041,7 @@ function westend() {
 				--log="$RUST_LOG" \
 				--instant-seal \
 				--no-prometheus \
-				--chain ~/ah-westend-spec.json
+				--chain "$chain_spec" "${args[@]}"
 			{ set +x; } 2>/dev/null
 		fi
 	}
@@ -1046,7 +1150,7 @@ function passet() {
 			named-preset development
 
 		# Use helper function to endow accounts
-		endow_dev_accounts /tmp/passet-spec.json ~/passet-spec.json
+		patch_chain_spec /tmp/passet-spec.json ~/passet-spec.json --dev-balance --dev-stakers
 	}
 
 	# Run the polkadot-omni-node with the passet chain spec
@@ -1415,27 +1519,45 @@ function passet_stack() {
 
 # Runs the complete Westend Asset Hub stack (westend node + eth-rpc) in tmux window
 # This starts both the Westend node and Ethereum RPC bridge in separate panes
-# Usage: westend_stack [--proxy]
+# Usage: westend_stack [--proxy] [--build] [--retester]
 # Examples:
-#   westend_stack         - Run both services without proxy
-#   westend_stack --proxy - Run both services with proxy
+#   westend_stack                - Run both services without proxy
+#   westend_stack --proxy        - Run both services with proxy
+#   westend_stack --build        - Build westend and eth-rpc before starting
+#   westend_stack --retester     - Use retester chainspec
+#   westend_stack --build --retester - Build with retester and run
 function westend_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
 
 	# Parse arguments
 	use_proxy="false"
+	build_flag="false"
+	retester_flag=""
 
 	for arg in "$@"; do
 		case "$arg" in
 		--proxy)
 			use_proxy="true"
 			;;
+		--build)
+			build_flag="true"
+			;;
+		--retester)
+			retester_flag="--retester"
+			;;
 		esac
 	done
 
+	# Build binaries if requested
+	if [ "$build_flag" = "true" ]; then
+		echo "Building westend and eth-rpc..."
+		westend build $retester_flag
+		eth-rpc build
+	fi
+
 	# Create new 'servers' window running westend node
-	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; westend run; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; westend run $retester_flag; exec \$SHELL'"
 
 	# Split the window and run eth-rpc with or without proxy
 	if [ "$use_proxy" = "false" ]; then

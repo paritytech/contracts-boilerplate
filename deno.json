@@ -8,20 +8,26 @@
         "deploy": {
             "description": "Deploy contracts to the network specified in the .env file, and update addresses in the codegen directory",
             "command": "deno run --env-file --allow-all tools/deploy.ts"
+        },
+        "token_benchmark": {
+            "description": "Deploy various contracts and compare execution costs for common token operations",
+            "command": "./scripts/build_tokens.sh && deno run --env-file --allow-all cli/token_deploy.ts && deno run --env-file --allow-all cli/token_execute.ts"
         }
     },
+
     "imports": {
         "@openzeppelin/contracts": "npm:@openzeppelin/contracts@^5.4.0",
-        "@parity/resolc": "npm:@parity/resolc@0.4.1",
-        "@std/cli": "jsr:@std/cli@^1.0.23",
-        "@std/path": "jsr:@std/path@^1.1.2",
+        "@parity/resolc": "npm:@parity/resolc@0.5.0",
+        "@std/cli": "jsr:@std/cli@^1.0.24",
+        "@std/path": "jsr:@std/path@^1.1.3",
         "@std/log": "jsr:@std/log@^0.224.14",
-        "ink": "npm:ink@^6.3.1",
-        "react": "npm:react@^19.2.0",
-        "react/jsx-runtime": "npm:react@^19.2.0/jsx-runtime",
-        "solc": "npm:solc@^0.8.30",
-        "viem": "npm:viem@^2.38.4",
-        "viem/accounts": "npm:viem@^2.38.4/accounts"
+        "cli-table3": "npm:cli-table3@^0.6.5",
+        "ink": "npm:ink@^6.5.1",
+        "react": "npm:react@^19.2.1",
+        "react/jsx-runtime": "npm:react@^19.2.1/jsx-runtime",
+        "solc": "npm:solc@^0.8.31",
+        "viem": "npm:viem@^2.41.2",
+        "viem/accounts": "npm:viem@^2.41.2/accounts"
     },
     "compilerOptions": {
         "strict": true,

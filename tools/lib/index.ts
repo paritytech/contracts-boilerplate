@@ -46,25 +46,36 @@ let firstDeploy = true
  * This function deploys a contract identified by its name, with the specified
  * arguments and optional value, and updates the addresses file with the contract's address.
  *
- * @param  options.name - The name of the contract to deploy.
- * @param [options.id] - An optional identifier that will be used to identify the contract in the generated addresses file, default to [options.name].
+ * @param options.name - The name of the contract to deploy, or an object with name and mappedTo.
  * @param options.args - The arguments required by the contract's constructor.
  * @param [options.value] - An optional value (in wei) to send with the deployment.
+ * @param [options.bytecodeType] - The type of bytecode to deploy ('evm' or 'polkavm').
  */
 export async function deploy<K extends keyof Abis>({
-    id,
     name,
     args,
     value,
     bytecodeType,
+    bytecode,
 }: {
-    id?: string
-    name: K
+    name: K | { name: K; mappedTo: string }
     args: ContractConstructorArgs<Abis[K]>
     value?: bigint
     bytecodeType?: 'evm' | 'polkavm'
+    bytecode?: Hex
 }): Promise<Hex> {
-    if (filter && !name.toLowerCase().includes(filter.toLowerCase())) {
+    let contractName: K
+    let mappedTo: string | undefined
+
+    if (typeof name === 'string') {
+        contractName = name
+        mappedTo = undefined
+    } else {
+        contractName = name.name
+        mappedTo = name.mappedTo
+    }
+
+    if (filter && !contractName.toLowerCase().includes(filter.toLowerCase())) {
         return '0x'
     }
 
@@ -106,18 +117,19 @@ export const chain = defineChain({
 
         writeFileSync(join(codegenDir, 'chain.ts'), chain, 'utf8')
     }
-    console.log(`🚀 Deploying ${name}`)
+    const id = mappedTo ?? contractName
+    console.log(`🚀 Deploying ${id}`)
 
-    id ??= name
     const receipt = await env.deploy({
-        name,
+        name: contractName,
         args,
         value,
         bytecodeType,
+        bytecode,
     })
 
     if (receipt.status === 'reverted') {
-        console.error(`❌ Contract "${name}" reverted`)
+        console.error(`❌ Contract "${contractName}" reverted`)
         Deno.exit(1)
     }
     const address = receipt.contractAddress
@@ -152,7 +164,7 @@ export const chain = defineChain({
             ].join('\n')
 
         const exportLine =
-            `export const ${id} = { address: addresses.${id}, abi: abis.${id} }`
+            `export const ${id} = { address: addresses.${id}, abi: abis.${contractName} }`
         const regex = new RegExp(`^export const ${id} = .*`, 'm')
 
         if (regex.test(contracts)) {
@@ -164,7 +176,7 @@ export const chain = defineChain({
     }
 
     console.log(
-        `✅ ${name} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`,
+        `✅ ${id} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`,
     )
     return address
 }

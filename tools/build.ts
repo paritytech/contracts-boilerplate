@@ -1,12 +1,30 @@
 /// <reference path="./solc.d.ts" />
 
-import * as resolc from '@parity/resolc'
 import solc from 'solc'
 import { basename, join } from '@std/path'
 import * as log from '@std/log'
 import { parseArgs } from '@std/cli'
 
-type CompileInput = Parameters<typeof resolc.compile>[0]
+type CompileInput = Record<string, { content: string }>
+
+interface SolcOutput {
+    errors?: Array<{
+        severity: string
+        formattedMessage: string
+    }>
+    contracts: Record<
+        string,
+        Record<string, {
+            evm?: {
+                bytecode?: {
+                    object: string
+                }
+            }
+            abi: unknown
+        }>
+    >
+}
+
 const LOG_LEVEL = (Deno.env.get('LOG_LEVEL')?.toUpperCase() ??
     'INFO') as log.LevelName
 log.setup({
@@ -95,28 +113,202 @@ function writeCachedHash(hashFile: string, hash: string): void {
     Deno.writeTextFileSync(hashFile, hash)
 }
 
+let resolcBin = Deno.env.get('RESOLC_BIN') || ''
 let resolcVersion = ''
-async function pvmCompile(file: Deno.DirEntry, sources: CompileInput) {
-    if (resolcVersion === '') {
-        if (Deno.env.get('REVIVE_BIN') === undefined) {
-            resolcVersion = ` @parity/resolc: ${resolc.version().trim()}`
-        } else {
-            resolcVersion = new TextDecoder()
-                .decode(
-                    (
-                        await new Deno.Command('resolc', {
-                            args: ['--version'],
-                            stdout: 'piped',
-                        }).output()
-                    ).stdout,
-                )
-                .trim()
+
+async function checkResolcExists() {
+    // If no RESOLC_BIN specified, find it in PATH
+    if (!resolcBin) {
+        // Try to find resolc, preferring cargo/system installations over node_modules
+        const pathsToCheck = [
+            `${Deno.env.get('HOME')}/.cargo/bin/resolc`,
+            '/usr/local/bin/resolc',
+            '/usr/bin/resolc',
+        ]
+
+        for (const path of pathsToCheck) {
+            try {
+                await Deno.stat(path)
+                resolcBin = path
+                break
+            } catch {
+                // Continue to next path
+            }
+        }
+
+        // If not found in standard locations, use which command
+        if (!resolcBin) {
+            try {
+                const whichCommand = new Deno.Command('which', {
+                    args: ['resolc'],
+                    stdout: 'piped',
+                    stderr: 'piped',
+                })
+                const whichOutput = await whichCommand.output()
+                if (whichOutput.success) {
+                    const foundPath = new TextDecoder().decode(
+                        whichOutput.stdout,
+                    ).trim()
+                    // Skip if it's in node_modules
+                    if (!foundPath.includes('node_modules')) {
+                        resolcBin = foundPath
+                    }
+                }
+            } catch {
+                // Continue
+            }
+        }
+
+        if (!resolcBin) {
+            logger.error(
+                `Could not find resolc executable. Please install resolc or set RESOLC_BIN environment variable.`,
+            )
+            Deno.exit(1)
         }
     }
-    logger.info(`Compiling ${file.name} with revive ${resolcVersion}`)
-    return await resolc.compile(sources, {
-        bin: Deno.env.get('REVIVE_BIN'),
+
+    try {
+        const command = new Deno.Command(resolcBin, {
+            args: ['--version'],
+            stdout: 'piped',
+            stderr: 'piped',
+        })
+        const output = await command.output()
+        if (!output.success) {
+            logger.error(
+                `Failed to run ${resolcBin}: ${
+                    new TextDecoder().decode(output.stderr)
+                }`,
+            )
+            Deno.exit(1)
+        }
+        resolcVersion = new TextDecoder().decode(output.stdout).trim()
+    } catch (error) {
+        logger.error(
+            `Could not find ${resolcBin} executable. Please install resolc or set RESOLC_BIN environment variable.`,
+        )
+        logger.error(`Error: ${error}`)
+        Deno.exit(1)
+    }
+}
+
+async function pvmCompile(file: Deno.DirEntry, sources: CompileInput) {
+    if (resolcVersion === '') {
+        await checkResolcExists()
+    }
+    logger.info(`Compiling ${file.name} with ${resolcBin} ${resolcVersion}`)
+    logger.debug(`Using resolc binary: ${resolcBin}`)
+
+    const input = {
+        language: 'Solidity',
+        sources,
+        settings: {
+            optimizer: {
+                enabled: true,
+                mode: 'z',
+            },
+            remappings: [
+                `@openzeppelin/=${
+                    join(rootDir, 'node_modules/@openzeppelin/')
+                }/`,
+            ],
+            outputSelection: {
+                '*': {
+                    '*': [
+                        'abi',
+                        'metadata',
+                        'evm.bytecode',
+                        'evm.deployedBytecode',
+                    ],
+                },
+            },
+        },
+    }
+
+    const command = new Deno.Command(resolcBin, {
+        args: ['--standard-json'],
+        stdin: 'piped',
+        stdout: 'piped',
+        stderr: 'piped',
     })
+
+    const child = command.spawn()
+    const writer = child.stdin.getWriter()
+    await writer.write(new TextEncoder().encode(JSON.stringify(input)))
+    await writer.close()
+
+    const { stdout, stderr, success } = await child.output()
+    const stderrText = new TextDecoder().decode(stderr)
+    const stdoutText = new TextDecoder().decode(stdout)
+
+    if (stderrText.trim().length > 0) {
+        logger.error(`resolc stderr: ${stderrText}`)
+    }
+
+    if (!success) {
+        logger.error(`resolc command failed with exit code`)
+        Deno.exit(1)
+    }
+
+    try {
+        const result = JSON.parse(stdoutText)
+
+        // Check for errors in the compilation output
+        if (result.errors) {
+            for (const error of result.errors) {
+                if (error.severity === 'error') {
+                    logger.error(error.formattedMessage || error.message)
+                } else if (error.severity === 'warning') {
+                    logger.warn(error.formattedMessage || error.message)
+                }
+            }
+
+            if (
+                result.errors.some((err: { severity: string }) =>
+                    err.severity === 'error'
+                )
+            ) {
+                Deno.exit(1)
+            }
+        }
+
+        return result
+    } catch (e) {
+        logger.error(`Failed to parse resolc output: ${e}`)
+        logger.error(`Output was: ${stdoutText}`)
+        Deno.exit(1)
+    }
+}
+
+function tryResolveImport(importPath: string): string {
+    // Try node_modules first for package imports
+    if (importPath.startsWith('@')) {
+        const nodeModulesPath = join(rootDir, 'node_modules', importPath)
+        try {
+            Deno.statSync(nodeModulesPath)
+            return nodeModulesPath
+        } catch {
+            // Continue to other resolution strategies
+        }
+    }
+
+    // Try relative to contracts directory
+    const contractsPath = join(contractsDir, importPath)
+    try {
+        Deno.statSync(contractsPath)
+        return contractsPath
+    } catch {
+        // Continue to other resolution strategies
+    }
+
+    // Try relative to root directory
+    const rootPath = join(rootDir, importPath)
+    try {
+        Deno.statSync(rootPath)
+        return rootPath
+    } catch {
+        throw new Error(`Could not resolve import: ${importPath}`)
+    }
 }
 
 let solcVersion = ''
@@ -129,6 +321,10 @@ function evmCompile(file: Deno.DirEntry, sources: CompileInput) {
         language: 'Solidity',
         sources,
         settings: {
+            optimizer: {
+                enabled: true,
+                runs: 200,
+            },
             outputSelection: {
                 '*': {
                     '*': ['*'],
@@ -140,7 +336,7 @@ function evmCompile(file: Deno.DirEntry, sources: CompileInput) {
     return solc.compile(JSON.stringify(input), {
         import: (relativePath: string) => {
             const source = Deno.readTextFileSync(
-                resolc.tryResolveImport(relativePath),
+                tryResolveImport(relativePath),
             )
             return { contents: source }
         },
@@ -216,7 +412,7 @@ for (const file of input) {
 
     const evmOut = JSON.parse(
         evmCompile(file, inputSources),
-    ) as resolc.SolcOutput
+    ) as SolcOutput
 
     if (evmOut.errors) {
         for (const error of evmOut.errors) {
