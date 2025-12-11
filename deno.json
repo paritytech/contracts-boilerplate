@@ -8,7 +8,7 @@
         "deploy": {
             "description": "Deploy contracts to the network specified in the .env file, and update addresses in the codegen directory",
             "command": "deno run --env-file --allow-all tools/deploy.ts"
-        }
+        },
         "token_benchmark": {
             "description": "Deploy various contracts and compare execution costs for common token operations",
             "command": "./scripts/build_tokens.sh && deno run --env-file --allow-all cli/token_deploy.ts && deno run --env-file --allow-all cli/token_execute.ts"

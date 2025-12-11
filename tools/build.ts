@@ -12,14 +12,17 @@ interface SolcOutput {
         severity: string
         formattedMessage: string
     }>
-    contracts: Record<string, Record<string, {
-        evm?: {
-            bytecode?: {
-                object: string
+    contracts: Record<
+        string,
+        Record<string, {
+            evm?: {
+                bytecode?: {
+                    object: string
+                }
             }
-        }
-        abi: unknown
-    }>>
+            abi: unknown
+        }>
+    >
 }
 
 const LOG_LEVEL = (Deno.env.get('LOG_LEVEL')?.toUpperCase() ??
@@ -143,7 +146,9 @@ async function checkResolcExists() {
                 })
                 const whichOutput = await whichCommand.output()
                 if (whichOutput.success) {
-                    const foundPath = new TextDecoder().decode(whichOutput.stdout).trim()
+                    const foundPath = new TextDecoder().decode(
+                        whichOutput.stdout,
+                    ).trim()
                     // Skip if it's in node_modules
                     if (!foundPath.includes('node_modules')) {
                         resolcBin = foundPath
@@ -155,7 +160,9 @@ async function checkResolcExists() {
         }
 
         if (!resolcBin) {
-            logger.error(`Could not find resolc executable. Please install resolc or set RESOLC_BIN environment variable.`)
+            logger.error(
+                `Could not find resolc executable. Please install resolc or set RESOLC_BIN environment variable.`,
+            )
             Deno.exit(1)
         }
     }
@@ -168,12 +175,18 @@ async function checkResolcExists() {
         })
         const output = await command.output()
         if (!output.success) {
-            logger.error(`Failed to run ${resolcBin}: ${new TextDecoder().decode(output.stderr)}`)
+            logger.error(
+                `Failed to run ${resolcBin}: ${
+                    new TextDecoder().decode(output.stderr)
+                }`,
+            )
             Deno.exit(1)
         }
         resolcVersion = new TextDecoder().decode(output.stdout).trim()
     } catch (error) {
-        logger.error(`Could not find ${resolcBin} executable. Please install resolc or set RESOLC_BIN environment variable.`)
+        logger.error(
+            `Could not find ${resolcBin} executable. Please install resolc or set RESOLC_BIN environment variable.`,
+        )
         logger.error(`Error: ${error}`)
         Deno.exit(1)
     }
@@ -195,11 +208,18 @@ async function pvmCompile(file: Deno.DirEntry, sources: CompileInput) {
                 mode: 'z',
             },
             remappings: [
-                `@openzeppelin/=${join(rootDir, 'node_modules/@openzeppelin/')}/`,
+                `@openzeppelin/=${
+                    join(rootDir, 'node_modules/@openzeppelin/')
+                }/`,
             ],
             outputSelection: {
                 '*': {
-                    '*': ['abi', 'metadata', 'evm.bytecode', 'evm.deployedBytecode'],
+                    '*': [
+                        'abi',
+                        'metadata',
+                        'evm.bytecode',
+                        'evm.deployedBytecode',
+                    ],
                 },
             },
         },
@@ -243,7 +263,11 @@ async function pvmCompile(file: Deno.DirEntry, sources: CompileInput) {
                 }
             }
 
-            if (result.errors.some((err: { severity: string }) => err.severity === 'error')) {
+            if (
+                result.errors.some((err: { severity: string }) =>
+                    err.severity === 'error'
+                )
+            ) {
                 Deno.exit(1)
             }
         }
