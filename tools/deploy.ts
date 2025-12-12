@@ -22,8 +22,13 @@ import { deploy } from './lib/index.ts'
 //     args: [],
 // })
 
+// await deploy({
+//     name: 'Storage',
+//     args: [],
+//     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+// })
+
 await deploy({
-    name: 'Storage',
+    name: { name: 'MyToken', mappedTo: 'MyTokenEvm' },
     args: [],
-    // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })
