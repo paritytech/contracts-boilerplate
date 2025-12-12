@@ -45,7 +45,7 @@ const tokenAddresses = [
 const fibAddresses = [
     { address: FibonacciEvm, name: 'Fibonacci - EVM - solidity' },
     { address: FibonacciPvm, name: 'Fibonacci - PVM - solidity' },
-    { address: FibonacciRust, name: 'Fibonacci - PVM - Rust' },
+    { address: FibonacciRust, name: 'Fibonacci u32 - PVM - Rust' },
     { address: FibonacciRustU128, name: 'Fibonacci u128 - PVM - Rust' },
     { address: FibonacciRustU256, name: 'Fibonacci u256 - PVM - Rust' },
     { address: FibonacciInk, name: 'Fibonacci - PVM - Ink!' },

@@ -10,7 +10,7 @@ path = "src/erc20_no_alloc.rs"
 
 [[bin]]
 name = "erc20_with_alloc"
-path = "src/erc20_no_alloc.rs"
+path = "src/erc20_with_alloc.rs"
 
 [[bin]]
 name = "fibonacci"

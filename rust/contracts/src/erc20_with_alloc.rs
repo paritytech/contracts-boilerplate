@@ -11,7 +11,7 @@ use pallet_revive_uapi::{HostFn, HostFnImpl as api, ReturnFlags, StorageFlags};
 extern crate alloc;
 use alloc::vec;
 
-sol!("contract.sol");
+sol!("MyToken.sol");
 use crate::MyToken::transferCall;
 
 #[global_allocator]
