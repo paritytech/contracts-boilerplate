@@ -2,6 +2,12 @@
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import {
+    FibonacciEvm,
+    FibonacciInk,
+    FibonacciPvm,
+    FibonacciRust,
+    FibonacciRustU128,
+    FibonacciRustU256,
     MyTokenEvm,
     MyTokenInk,
     MyTokenPvm,
@@ -28,12 +34,21 @@ const recipient: Hex = '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63'
     }
 }
 
-const addresses = [
-    { address: MyTokenEvm, name: 'EVM - solidity' },
-    { address: MyTokenPvm, name: 'PVM - solidity' },
-    { address: MyTokenInk, name: 'PVM - Ink!' },
-    { address: MyTokenRustWithAlloc, name: 'PVM - Rust with alloc' },
-    { address: MyTokenRustNoAlloc, name: 'PVM - Rust no alloc' },
+const tokenAddresses = [
+    { address: MyTokenEvm, name: 'Token - EVM - solidity' },
+    { address: MyTokenPvm, name: 'Token - PVM - solidity' },
+    { address: MyTokenInk, name: 'Token - PVM - Ink!' },
+    { address: MyTokenRustWithAlloc, name: 'Token - PVM - Rust with alloc' },
+    { address: MyTokenRustNoAlloc, name: 'Token - PVM - Rust no alloc' },
+] as const
+
+const fibAddresses = [
+    { address: FibonacciEvm, name: 'Fibonacci - EVM - solidity' },
+    { address: FibonacciPvm, name: 'Fibonacci - PVM - solidity' },
+    { address: FibonacciRust, name: 'Fibonacci - PVM - Rust' },
+    { address: FibonacciRustU128, name: 'Fibonacci u128 - PVM - Rust' },
+    { address: FibonacciRustU256, name: 'Fibonacci u256 - PVM - Rust' },
+    { address: FibonacciInk, name: 'Fibonacci - PVM - Ink!' },
 ] as const
 
 type CodeSizeEntry = {
@@ -45,25 +60,39 @@ type StatEntry = {
     operation: string
     gas: bigint
     weight: { ref_time: bigint; proof_size: bigint }
+    status: 'success' | 'reverted'
 }
 
-const codeSizes: CodeSizeEntry[] = []
+const tokenCodeSizes: CodeSizeEntry[] = []
+const fibCodeSizes: CodeSizeEntry[] = []
 const stats: StatEntry[] = []
 
-for (const { name, address } of addresses) {
+for (const { name, address } of tokenAddresses) {
     const code = await env.wallet.getCode({ address })
     if (!code) {
         console.error(`Deploy contract first with "deno task deploy"`)
         Deno.exit(1)
     }
-    codeSizes.push({
+    tokenCodeSizes.push({
+        name,
+        size: code.length / 2 - 1,
+    })
+}
+
+for (const { name, address } of fibAddresses) {
+    const code = await env.wallet.getCode({ address })
+    if (!code) {
+        console.error(`Deploy contract first with "deno task deploy"`)
+        Deno.exit(1)
+    }
+    fibCodeSizes.push({
         name,
         size: code.length / 2 - 1,
     })
 }
 
 // mint token
-for (const { name, address } of addresses) {
+for (const { name, address } of tokenAddresses) {
     const { request } = await env.wallet.simulateContract({
         address,
         abi: abis.MyToken,
@@ -82,11 +111,12 @@ for (const { name, address } of addresses) {
         operation: `mint (${name})`,
         gas: receipt.gasUsed,
         weight,
+        status: receipt.status,
     })
 }
 
 // transfer token
-for (const { name, address } of addresses) {
+for (const { name, address } of tokenAddresses) {
     const { request } = await env.wallet.simulateContract({
         address,
         abi: abis.MyToken,
@@ -102,43 +132,72 @@ for (const { name, address } of addresses) {
         operation: `transfer (${name})`,
         gas: receipt.gasUsed,
         weight,
+        status: receipt.status,
     })
 }
 
-// Separate mint and transfer operations
+// fibonacci calls
+for (const { name, address } of fibAddresses) {
+    const { request } = await env.wallet.simulateContract({
+        address,
+        abi: abis.Fibonacci,
+        functionName: 'fibonacci',
+        args: [20],
+    })
+
+    const hash = await env.wallet.writeContract(request)
+    const receipt = await env.wallet.waitForTransactionReceipt({ hash })
+    const weight = await env.debugClient.postDispatchWeight(hash)
+
+    stats.push({
+        operation: `fibonacci (${name})`,
+        gas: receipt.gasUsed,
+        weight,
+        status: receipt.status,
+    })
+}
+
+// Separate mint, transfer, and fibonacci operations
 const mintStats = stats.filter((s) => s.operation.includes('mint'))
 const transferStats = stats.filter((s) => s.operation.includes('transfer'))
+const fibonacciStats = stats.filter((s) => s.operation.includes('fibonacci'))
 
 function createOperationTable(operationStats: StatEntry[], title: string) {
-    const minGas = operationStats.reduce(
+    // Sort by ref_time (ascending)
+    const sortedStats = [...operationStats].sort((a, b) =>
+        Number(a.weight.ref_time - b.weight.ref_time)
+    )
+
+    const minGas = sortedStats.reduce(
         (min, s) => s.gas < min ? s.gas : min,
-        operationStats[0].gas,
+        sortedStats[0].gas,
     )
-    const minRefTime = operationStats.reduce(
+    const minRefTime = sortedStats.reduce(
         (min, s) => s.weight.ref_time < min ? s.weight.ref_time : min,
-        operationStats[0].weight.ref_time,
+        sortedStats[0].weight.ref_time,
     )
-    const minProofSize = operationStats.reduce(
+    const minProofSize = sortedStats.reduce(
         (min, s) => s.weight.proof_size < min ? s.weight.proof_size : min,
-        operationStats[0].weight.proof_size,
+        sortedStats[0].weight.proof_size,
     )
 
     const table = new Table({
         head: [
             'Implementation',
-            'Gas Used',
-            'Gas %',
+            'Success',
             'Ref Time',
             'Ref Time %',
             'Proof Size',
             'Proof Size %',
+            'Gas Used',
+            'Gas %',
         ],
         style: {
             head: ['cyan'],
         },
     })
 
-    for (const stat of operationStats) {
+    for (const stat of sortedStats) {
         const gasPercent = ((Number(stat.gas) / Number(minGas)) * 100).toFixed(
             1,
         )
@@ -156,12 +215,13 @@ function createOperationTable(operationStats: StatEntry[], title: string) {
 
         table.push([
             implName,
-            stat.gas.toString(),
-            `${gasPercent}%`,
+            stat.status === 'success' ? '✓' : '✗',
             stat.weight.ref_time.toString(),
             `${refTimePercent}%`,
             stat.weight.proof_size.toString(),
             `${proofSizePercent}%`,
+            stat.gas.toString(),
+            `${gasPercent}%`,
         ])
     }
 
@@ -171,27 +231,58 @@ function createOperationTable(operationStats: StatEntry[], title: string) {
 
 createOperationTable(mintStats, 'Mint Operation')
 createOperationTable(transferStats, 'Transfer Operation')
+createOperationTable(fibonacciStats, 'Fibonacci(20) Operation')
 
-// Output code size table
-const minCodeSize = codeSizes.reduce(
+// Output token code size table
+const sortedTokenCodeSizes = [...tokenCodeSizes].sort((a, b) => a.size - b.size)
+
+const minTokenCodeSize = sortedTokenCodeSizes.reduce(
     (min, c) => c.size < min ? c.size : min,
-    codeSizes[0].size,
+    sortedTokenCodeSizes[0].size,
 )
 
-const codeSizeTable = new Table({
+const tokenCodeSizeTable = new Table({
     head: ['Implementation', 'Code Size (bytes)', 'Size %'],
     style: {
         head: ['cyan'],
     },
 })
 
-for (const entry of codeSizes) {
-    const sizePercent = ((entry.size / minCodeSize) * 100).toFixed(1)
-    codeSizeTable.push([
+for (const entry of sortedTokenCodeSizes) {
+    const sizePercent = ((entry.size / minTokenCodeSize) * 100).toFixed(1)
+    tokenCodeSizeTable.push([
         entry.name,
         entry.size.toString(),
         `${sizePercent}%`,
     ])
 }
 
-console.log('\n' + codeSizeTable.toString())
+console.log('\n## Token Code Size\n')
+console.log(tokenCodeSizeTable.toString())
+
+// Output fibonacci code size table
+const sortedFibCodeSizes = [...fibCodeSizes].sort((a, b) => a.size - b.size)
+
+const minFibCodeSize = sortedFibCodeSizes.reduce(
+    (min, c) => c.size < min ? c.size : min,
+    sortedFibCodeSizes[0].size,
+)
+
+const fibCodeSizeTable = new Table({
+    head: ['Implementation', 'Code Size (bytes)', 'Size %'],
+    style: {
+        head: ['cyan'],
+    },
+})
+
+for (const entry of sortedFibCodeSizes) {
+    const sizePercent = ((entry.size / minFibCodeSize) * 100).toFixed(1)
+    fibCodeSizeTable.push([
+        entry.name,
+        entry.size.toString(),
+        `${sizePercent}%`,
+    ])
+}
+
+console.log('\n## Fibonacci Code Size\n')
+console.log(fibCodeSizeTable.toString())

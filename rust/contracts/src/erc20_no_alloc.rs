@@ -26,7 +26,7 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 }
 
 /// Storage key for totalSupply (slot 0)
-#[inline]
+#[inline(always)]
 fn total_supply_key() -> [u8; 32] {
     [0u8; 32] // Slot 0
 }
@@ -60,7 +60,7 @@ fn get_total_supply() -> u128 {
     }
 }
 
-// #[inline(always)]
+#[inline(always)]
 fn to_word(v: u128) -> [u8; 32] {
     let mut out = [0u8; 32];
     out[16..].copy_from_slice(&v.to_be_bytes());
@@ -68,7 +68,6 @@ fn to_word(v: u128) -> [u8; 32] {
 }
 
 /// Set totalSupply in storage
-#[inline]
 fn set_total_supply(amount: u128) {
     let key = total_supply_key();
     let bytes = amount.to_be_bytes();
@@ -76,7 +75,6 @@ fn set_total_supply(amount: u128) {
 }
 
 /// Get the balance for a given address from storage
-#[inline]
 fn get_balance(addr: &[u8; 20]) -> u128 {
     let key = balance_key(addr);
     let mut balance_bytes = [0u8; 16];
@@ -89,7 +87,7 @@ fn get_balance(addr: &[u8; 20]) -> u128 {
 }
 
 /// Set the balance for a given address in storage
-#[inline]
+#[inline(always)]
 fn set_balance(addr: &[u8; 20], amount: u128) {
     let key = balance_key(addr);
     let bytes = amount.to_be_bytes();
@@ -97,7 +95,6 @@ fn set_balance(addr: &[u8; 20], amount: u128) {
 }
 
 /// Emit a Transfer event
-#[inline]
 fn emit_transfer(from: &[u8; 20], to: &[u8; 20], value: u128) {
     let mut from_topic = [0u8; 32];
     from_topic[12..32].copy_from_slice(from);
@@ -111,13 +108,13 @@ fn emit_transfer(from: &[u8; 20], to: &[u8; 20], value: u128) {
 }
 
 /// Revert with an InsufficientBalance error
-#[inline]
+#[inline(always)]
 fn revert_insufficient_balance() -> ! {
     api::return_value(ReturnFlags::REVERT, &INSUFFICIENT_BALANCE_ERROR);
 }
 
 /// Get the caller's address
-#[inline]
+#[inline(always)]
 fn get_caller() -> [u8; 20] {
     let mut caller = [0u8; 20];
     api::caller(&mut caller);
