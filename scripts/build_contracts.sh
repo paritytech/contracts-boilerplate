@@ -14,7 +14,7 @@ fi
 
 # Build ink token contract
 echo "Building ink token contract..."
-cd ink/ink_erc20
+cd ink/simple_token
 pop build --release
 cd ../..
 
@@ -32,7 +32,7 @@ fi
 # Build PVM contracts
 echo "Building PVM contracts"
 cd rust/contracts
-cargo pvm-contract build -b erc20_no_alloc
+cargo pvm-contract build -b simple_token_no_alloc
 cargo pvm-contract build -b erc20_with_alloc
 cargo pvm-contract build -b fibonacci
 cargo pvm-contract build -b fibonacci_u128

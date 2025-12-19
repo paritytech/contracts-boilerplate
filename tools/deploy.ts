@@ -1,5 +1,3 @@
-//! Call with deno task deploy [--filter <filter>]
-
 import { deploy } from './lib/index.ts'
 
 /**
@@ -25,10 +23,15 @@ import { deploy } from './lib/index.ts'
 // await deploy({
 //     name: 'Storage',
 //     args: [],
-//     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+//     bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 // })
-
 await deploy({
-    name: { name: 'MyToken', mappedTo: 'MyTokenEvm' },
+    name: 'EnumTestChild',
     args: [],
+    bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+})
+await deploy({
+    name: 'EnumTest',
+    args: [],
+    bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })

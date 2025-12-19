@@ -2,27 +2,17 @@
 
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
-import { Storage } from '../codegen/addresses.ts'
-
-{
-    const { request } = await env.wallet.simulateContract({
-        address: Storage,
-        abi: abis.Storage,
-        functionName: 'store',
-        args: [42n],
-    })
-
-    const result = await env.wallet.writeContract(request)
-    console.log('store tx', result)
-}
+import { EnumTest } from '../codegen/addresses.ts'
 
 {
     const result = await env.wallet.readContract(
         {
-            address: Storage,
-            abi: abis.Storage,
-            functionName: 'retrieve',
+            address: EnumTest,
+            abi: abis.EnumTest,
+            functionName: 'callTestEnum',
+            args: [2],
         },
     )
-    console.log('retrieve:', result)
+
+    console.log('tx', result)
 }

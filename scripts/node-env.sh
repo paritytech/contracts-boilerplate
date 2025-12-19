@@ -378,6 +378,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-port 8546 \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -394,6 +395,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-port 8546 \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -412,6 +414,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-port 8546 \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 | lnav
 				{ set +x; } 2>/dev/null
@@ -422,6 +425,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-port 8546 \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}"
 				{ set +x; } 2>/dev/null
@@ -470,6 +474,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -485,6 +490,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -502,6 +508,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 | lnav
 				{ set +x; } 2>/dev/null
@@ -511,6 +518,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-response-size 50 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}"
 				{ set +x; } 2>/dev/null

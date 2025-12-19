@@ -1,8 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
 #[ink::contract]
-mod ink_erc20 {
-    use ink::{U256, storage::Mapping};
+mod simple_token {
+    use ink::{storage::Mapping, U256};
 
     /// The zero address, used in minting and burning operations.
     const ZERO_ADDRESS: Address = Address::repeat_byte(0);

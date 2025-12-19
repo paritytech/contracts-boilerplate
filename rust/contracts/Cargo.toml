@@ -5,8 +5,8 @@ edition = "2021"
 publish = false
 
 [[bin]]
-name = "erc20_no_alloc"
-path = "src/erc20_no_alloc.rs"
+name = "simple_token_no_alloc"
+path = "src/simple_token_no_alloc.rs"
 
 [[bin]]
 name = "erc20_with_alloc"
