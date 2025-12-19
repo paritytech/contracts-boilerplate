@@ -75,7 +75,22 @@ async function generateOpcodeAnalysis() {
             (row) => `${row.contract_name}:${row.transaction_name}`,
         )
 
-        for (const opcodes of Object.values(byTransaction)) {
+        // Sort entries by contract_id, then transaction_name
+        const sortedEntries = Object.entries(byTransaction).sort((a, b) => {
+            const txA = a[1]?.[0]
+            const txB = b[1]?.[0]
+            if (!txA || !txB) return 0
+
+            // First sort by contract_id
+            if (txA.contract_id !== txB.contract_id) {
+                return txA.contract_id.localeCompare(txB.contract_id)
+            }
+
+            // Then by transaction_name
+            return txA.transaction_name.localeCompare(txB.transaction_name)
+        })
+
+        for (const [, opcodes] of sortedEntries) {
             if (!opcodes) continue
 
             const tx = opcodes[0]
