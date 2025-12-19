@@ -1,6 +1,5 @@
 import {
     Abi,
-    CallParameters,
     ContractConstructorArgs,
     createClient,
     defineChain,
@@ -207,6 +206,7 @@ export async function createEnv({
             txHash: Hex,
         ): Promise<{ ref_time: bigint; proof_size: bigint }> {
             return client.request({
+                // deno-lint-ignore no-explicit-any
                 method: 'polkadot_postDispatchWeight' as any,
                 params: [txHash] as never,
             })
