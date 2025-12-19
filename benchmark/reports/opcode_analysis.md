@@ -322,6 +322,7 @@ Generated on: 2025-12-19
 ### simple_token_ink - mint
 
 - **Total Gas Used:** 474,948
+
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
 - **Total Weight:** ref_time=1,731,583,752, proof_size=57,968
 - **Weight Consumed:** ref_time=818,076,430 (47.2% of total), proof_size=49,437
