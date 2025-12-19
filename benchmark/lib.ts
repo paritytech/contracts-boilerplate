@@ -1,4 +1,4 @@
-import { Hex } from 'viem'
+import { Hex, TransactionReceipt } from 'viem'
 import { env } from '../tools/lib/index.ts'
 import { Abis } from '../codegen/abis.ts'
 import { readBytecode } from '../utils/index.ts'
@@ -149,7 +149,11 @@ export function rust(name: string): ContractInfo {
 export type Artifacts = Array<{
     id: string
     srcs: ContractInfo[]
-    deploy: (id: keyof Abis, name: string, bytecode: Hex) => Promise<Hex>
+    deploy: (
+        id: keyof Abis,
+        name: string,
+        bytecode: Hex,
+    ) => Promise<TransactionReceipt>
     calls: Array<{
         name: string
         exec: (address: Hex) => Promise<Hex>
@@ -194,13 +198,18 @@ export async function deploy(contracts: Artifacts) {
             const contract = src.getName()
             logger.debug(`Deploying ${contract}...`)
 
-            const hash = await artifact.deploy(
+            const receipt = await artifact.deploy(
                 artifact.id as keyof Abis,
                 contract,
                 src.getBytecode(),
             )
 
-            await updateStats(artifact.id, contract, 'deploy', hash)
+            await updateStats(
+                artifact.id,
+                contract,
+                'deploy',
+                receipt.transactionHash,
+            )
         }
     }
 }

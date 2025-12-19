@@ -2,15 +2,15 @@
 
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
-import { EnumTest } from '../codegen/addresses.ts'
+import { Storage } from '../codegen/addresses.ts'
 
 {
-    const result = await env.wallet.readContract(
+    const result = await env.wallet.writeContract(
         {
-            address: EnumTest,
-            abi: abis.EnumTest,
-            functionName: 'callTestEnum',
-            args: [2],
+            address: Storage,
+            abi: abis.Storage,
+            functionName: 'store',
+            args: [42n],
         },
     )
 

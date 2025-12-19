@@ -1,9 +1,9 @@
 #!/usr/bin/env -S deno run --env-file --allow-all
-import { Hex } from 'viem'
 import { deploy as deployContract, env } from '../tools/lib/index.ts'
-import { Abis, abis } from '../codegen/abis.ts'
+import { abis } from '../codegen/abis.ts'
 import { logger } from '../utils/logger.ts'
 import {
+    Artifacts,
     build,
     deleteChainData,
     deploy,
@@ -14,7 +14,7 @@ import {
 } from './lib.ts'
 import { parseArgs } from '@std/cli'
 
-export const contracts = [
+export const contracts: Artifacts = [
     {
         id: 'Fibonacci',
         srcs: [
@@ -22,29 +22,23 @@ export const contracts = [
             rust('fibonacci'),
             ...solidity('fibonacci.sol', 'Fibonacci'),
         ],
-        deploy: async (
-            id: keyof Abis,
-            name: string,
-            bytecode: Hex,
-        ): Promise<Hex> => {
-            const receipt = await deployContract({
+        deploy: (id, name, bytecode) => {
+            return deployContract({
                 name: { id, name },
                 bytecode,
                 args: [],
             })
-            return receipt.transactionHash!
         },
         calls: [
             {
                 name: 'fib_10',
-                exec: async (address: Hex): Promise<Hex> => {
-                    const { request } = await env.wallet.simulateContract({
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
                         address,
                         abi: abis.Fibonacci,
                         functionName: 'fibonacci',
                         args: [10],
                     })
-                    return await env.wallet.writeContract(request)
                 },
             },
         ],
@@ -56,23 +50,18 @@ export const contracts = [
             rust('simple_token_no_alloc'),
             ...solidity('simple_token.sol', 'SimpleToken'),
         ],
-        deploy: async (
-            id: keyof Abis,
-            name: string,
-            bytecode: Hex,
-        ): Promise<Hex> => {
-            const receipt = await deployContract({
+        deploy: (id, name, bytecode) => {
+            return deployContract({
                 name: { id, name },
                 bytecode,
                 args: [],
             })
-            return receipt.transactionHash!
         },
         calls: [
             {
                 name: 'mint',
-                exec: async (address: Hex): Promise<Hex> => {
-                    const { request } = await env.wallet.simulateContract({
+                exec: (address) => {
+                    return env.wallet.writeContract({
                         address,
                         abi: abis.SimpleToken,
                         functionName: 'mint',
@@ -81,7 +70,6 @@ export const contracts = [
                             10_000_000_000_000_000_000_000_000n,
                         ],
                     })
-                    return await env.wallet.writeContract(request)
                 },
             },
         ],
