@@ -13,6 +13,7 @@ import {
     solidity,
 } from './lib.ts'
 import { parseArgs } from '@std/cli'
+import { parseEther } from 'viem'
 
 export const contracts: Artifacts = [
     {
@@ -20,6 +21,8 @@ export const contracts: Artifacts = [
         srcs: [
             ink('fibonacci'),
             rust('fibonacci'),
+            rust('fibonacci_u128'),
+            rust('fibonacci_u256'),
             ...solidity('fibonacci.sol', 'Fibonacci'),
         ],
         deploy: (id, name, bytecode) => {
@@ -67,6 +70,26 @@ export const contracts: Artifacts = [
                         functionName: 'mint',
                         args: [
                             env.wallet.account.address,
+                            10_000_000_000_000_000_000_000_000n,
+                        ],
+                    })
+                },
+            },
+            {
+                name: 'transfer',
+                exec: async (address) => {
+                    // fund destination first
+                    await env.wallet.sendTransaction({
+                        to: '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63',
+                        value: parseEther('1'),
+                    })
+
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.SimpleToken,
+                        functionName: 'transfer',
+                        args: [
+                            '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63',
                             10_000_000_000_000_000_000_000_000n,
                         ],
                     })
