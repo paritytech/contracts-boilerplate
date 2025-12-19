@@ -125,6 +125,36 @@ Generated on: 2025-12-19
 | RETURN    | 0         | 1          | 0.0          | 0        | 0          | 0.0%          | 0.0%            |
 
 
+### Fibonacci_pvm - deploy
+
+- **Total Gas Used:** 12,465,075
+- **Base Call Weight:** ref_time=1,560,414,913, proof_size=6,934
+- **Total Weight:** ref_time=1,570,958,680, proof_size=6,934
+- **Weight Consumed:** ref_time=10,543,767 (0.7% of total), proof_size=0
+
+| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
+| ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
+| seal_return       | 11        | 1          | 11.0         | 529,465  | 0          | 5.0%          | 0.0%            |
+| call_data_copy    | 10        | 1          | 10.0         | 496,576  | 0          | 4.7%          | 0.0%            |
+| call_data_size    | 6         | 1          | 6.0          | 330,000  | 0          | 3.1%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 3.0%          | 0.0%            |
+
+
+### fibonacci_ink - deploy
+
+- **Total Gas Used:** 10,792,216
+- **Base Call Weight:** ref_time=1,547,200,203, proof_size=6,934
+- **Total Weight:** ref_time=1,732,998,392, proof_size=17,191
+- **Weight Consumed:** ref_time=185,798,189 (10.7% of total), proof_size=10,257
+
+| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage       | 47,412    | 1          | 47412.0      | 170,582,310 | 10,257     | 91.8%         | 100.0%          |
+| call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 1.3%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.3%          | 0.0%            |
+| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.2%          | 0.0%            |
+
+
 ### Fibonacci_evm - fib_10
 
 - **Total Gas Used:** 350,587
@@ -156,21 +186,6 @@ Generated on: 2025-12-19
 | POP          | 1         | 1          | 1.0          | 30,560     | 0          | 0.0%          | 0.0%            |
 
 
-### Fibonacci_pvm - deploy
-
-- **Total Gas Used:** 12,465,075
-- **Base Call Weight:** ref_time=1,560,414,913, proof_size=6,934
-- **Total Weight:** ref_time=1,570,958,680, proof_size=6,934
-- **Weight Consumed:** ref_time=10,543,767 (0.7% of total), proof_size=0
-
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 529,465  | 0          | 5.0%          | 0.0%            |
-| call_data_copy    | 10        | 1          | 10.0         | 496,576  | 0          | 4.7%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 330,000  | 0          | 3.1%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 3.0%          | 0.0%            |
-
-
 ### Fibonacci_pvm - fib_10
 
 - **Total Gas Used:** 352,303
@@ -185,21 +200,6 @@ Generated on: 2025-12-19
 | call_data_load    | 7         | 1          | 7.0          | 343,000    | 0          | 0.0%          | 0.0%            |
 | value_transferred | 7         | 1          | 7.0          | 319,000    | 0          | 0.0%          | 0.0%            |
 | call_data_size    | 6         | 1          | 6.0          | 330,000    | 0          | 0.0%          | 0.0%            |
-
-
-### fibonacci_ink - deploy
-
-- **Total Gas Used:** 10,792,216
-- **Base Call Weight:** ref_time=1,547,200,203, proof_size=6,934
-- **Total Weight:** ref_time=1,732,998,392, proof_size=17,191
-- **Weight Consumed:** ref_time=185,798,189 (10.7% of total), proof_size=10,257
-
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 47,412    | 1          | 47412.0      | 170,582,310 | 10,257     | 91.8%         | 100.0%          |
-| call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 1.3%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.3%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.2%          | 0.0%            |
 
 
 ### fibonacci_ink - fib_10
@@ -255,6 +255,36 @@ Generated on: 2025-12-19
 | RETURN    | 0         | 1          | 0.0          | 0        | 0          | 0.0%          | 0.0%            |
 
 
+### SimpleToken_pvm - deploy
+
+- **Total Gas Used:** 17,673,493
+- **Base Call Weight:** ref_time=1,600,407,215, proof_size=6,934
+- **Total Weight:** ref_time=1,610,852,522, proof_size=6,934
+- **Weight Consumed:** ref_time=10,445,307 (0.6% of total), proof_size=0
+
+| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
+| ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
+| seal_return       | 11        | 1          | 11.0         | 529,465  | 0          | 5.1%          | 0.0%            |
+| call_data_copy    | 10        | 1          | 10.0         | 496,576  | 0          | 4.8%          | 0.0%            |
+| call_data_size    | 7         | 1          | 7.0          | 330,000  | 0          | 3.2%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 3.1%          | 0.0%            |
+
+
+### simple_token_ink - deploy
+
+- **Total Gas Used:** 24,123,203
+- **Base Call Weight:** ref_time=1,649,531,119, proof_size=6,934
+- **Total Weight:** ref_time=1,864,343,762, proof_size=17,191
+- **Weight Consumed:** ref_time=214,812,643 (11.5% of total), proof_size=10,257
+
+| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage       | 53,812    | 1          | 53812.0      | 170,600,294 | 10,257     | 79.4%         | 100.0%          |
+| call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 1.1%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.2%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+
+
 ### SimpleToken_evm - mint
 
 - **Total Gas Used:** 520,147
@@ -286,21 +316,6 @@ Generated on: 2025-12-19
 | JUMPDEST     | 1         | 1          | 1.0          | 15,280      | 0          | 0.0%          | 0.0%            |
 
 
-### SimpleToken_pvm - deploy
-
-- **Total Gas Used:** 17,673,493
-- **Base Call Weight:** ref_time=1,600,407,215, proof_size=6,934
-- **Total Weight:** ref_time=1,610,852,522, proof_size=6,934
-- **Weight Consumed:** ref_time=10,445,307 (0.6% of total), proof_size=0
-
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 529,465  | 0          | 5.1%          | 0.0%            |
-| call_data_copy    | 10        | 1          | 10.0         | 496,576  | 0          | 4.8%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000  | 0          | 3.2%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 3.1%          | 0.0%            |
-
-
 ### SimpleToken_pvm - mint
 
 - **Total Gas Used:** 521,464
@@ -318,21 +333,6 @@ Generated on: 2025-12-19
 | call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
-
-
-### simple_token_ink - deploy
-
-- **Total Gas Used:** 24,123,203
-- **Base Call Weight:** ref_time=1,649,531,119, proof_size=6,934
-- **Total Weight:** ref_time=1,864,343,762, proof_size=17,191
-- **Weight Consumed:** ref_time=214,812,643 (11.5% of total), proof_size=10,257
-
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 53,812    | 1          | 53812.0      | 170,600,294 | 10,257     | 79.4%         | 100.0%          |
-| call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 1.1%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.2%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_ink - mint
