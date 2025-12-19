@@ -14,7 +14,12 @@ fi
 
 # Build ink token contract
 echo "Building ink token contract..."
-cd ink/ink_erc20
+cd ink/simple_token
+pop build --release
+cd ../..
+
+echo "Building ink fibonacci contract..."
+cd ink/fibonacci
 pop build --release
 cd ../..
 
@@ -25,18 +30,19 @@ if ! cargo pvm-contract --version &>/dev/null; then
 fi
 
 # Build PVM contracts
-echo "Building PVM contract without alloc..."
-cd rust/contract_no_alloc
-cargo pvm-contract build
+echo "Building PVM contracts"
+cd rust/contracts
+cargo pvm-contract build -b simple_token_no_alloc
+cargo pvm-contract build -b erc20_with_alloc
+cargo pvm-contract build -b fibonacci
+cargo pvm-contract build -b fibonacci_u128
+cargo pvm-contract build -b fibonacci_u256
 cd ../..
 
-echo "Building PVM contract with alloc..."
-cd rust/contract_with_alloc
-cargo pvm-contract build
-cd ../..
-
-# Build PVM and resolc contracts
+# Build Solidity EVM and resolc contracts
 echo "Building PVM and resolc contracts..."
 deno task build --filter MyToken
+deno task build --filter Fibonacci
+deno task build --filter Fibonacci
 
-echo "All token contracts built successfully!"
+echo "All contracts built successfully!"

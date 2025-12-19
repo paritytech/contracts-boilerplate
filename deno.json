@@ -17,17 +17,19 @@
 
     "imports": {
         "@openzeppelin/contracts": "npm:@openzeppelin/contracts@^5.4.0",
-        "@parity/resolc": "npm:@parity/resolc@0.5.0",
         "@std/cli": "jsr:@std/cli@^1.0.24",
+        "@std/collections": "jsr:@std/collections@^1.1.3",
+        "@std/fs": "jsr:@std/fs@^1.0.20",
         "@std/path": "jsr:@std/path@^1.1.3",
         "@std/log": "jsr:@std/log@^0.224.14",
         "cli-table3": "npm:cli-table3@^0.6.5",
         "ink": "npm:ink@^6.5.1",
-        "react": "npm:react@^19.2.1",
-        "react/jsx-runtime": "npm:react@^19.2.1/jsx-runtime",
+        "react": "npm:react@^19.2.3",
+        "react/jsx-runtime": "npm:react@^19.2.3/jsx-runtime",
         "solc": "npm:solc@^0.8.31",
-        "viem": "npm:viem@^2.41.2",
-        "viem/accounts": "npm:viem@^2.41.2/accounts"
+        "tablemark": "npm:tablemark@^4.1.0",
+        "viem": "npm:viem@^2.43.1",
+        "viem/accounts": "npm:viem@^2.43.1/accounts"
     },
     "compilerOptions": {
         "strict": true,
