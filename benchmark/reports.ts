@@ -80,7 +80,8 @@ async function generateOpcodeAnalysis() {
 
             const tx = opcodes[0]
             markdown += `### ${tx.contract_name} - ${tx.transaction_name}\n\n`
-            markdown += `**Total Gas Used:** ${tx.gas_used.toLocaleString()}\n`
+            markdown +=
+                `- **Total Gas Used:** ${tx.gas_used.toLocaleString()}\n`
 
             // Display weight metrics if available
             if (
@@ -94,16 +95,16 @@ async function generateOpcodeAnalysis() {
                         .toFixed(1)
 
                 markdown += [
-                    `**Base Call Weight:** ref_time=${tx.base_call_weight_ref_time.toLocaleString()}, proof_size=${
+                    `- **Base Call Weight:** ref_time=${tx.base_call_weight_ref_time.toLocaleString()}, proof_size=${
                         tx.base_call_weight_proof_size?.toLocaleString() ??
                             'N/A'
                     }`,
-                    `**Total Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${
+                    `- **Total Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${
                         ((tx.base_call_weight_proof_size ?? 0) +
                             (tx.weight_consumed_proof_size ?? 0))
                             .toLocaleString()
                     }`,
-                    `**Weight Consumed:** ref_time=${tx.weight_consumed_ref_time.toLocaleString()} (${weightConsumedPercent}% of total), proof_size=${
+                    `- **Weight Consumed:** ref_time=${tx.weight_consumed_ref_time.toLocaleString()} (${weightConsumedPercent}% of total), proof_size=${
                         (tx.weight_consumed_proof_size ?? 0).toLocaleString()
                     }`,
                 ].join('\n') + '\n'

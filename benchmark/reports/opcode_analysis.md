@@ -6,7 +6,7 @@ Generated on: 2025-12-19
 
 ### Fibonacci_evm - deploy
 
-**Total Gas Used:** 141,635
+- **Total Gas Used:** 141,635
 
 | Opcode    | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
 | --------- | --------- | ---------- | ------------ | ------------ | ----------- |
@@ -26,7 +26,7 @@ Generated on: 2025-12-19
 
 ### Fibonacci_evm - fib_10
 
-**Total Gas Used:** 62,284
+- **Total Gas Used:** 62,284
 
 | Opcode       | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
 | ------------ | --------- | ---------- | ------------ | ------------ | ----------- |
@@ -54,7 +54,7 @@ Generated on: 2025-12-19
 
 ### SimpleToken_evm - deploy
 
-**Total Gas Used:** 174,399
+- **Total Gas Used:** 174,399
 
 | Opcode    | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
 | --------- | --------- | ---------- | ------------ | ------------ | ----------- |
@@ -74,7 +74,7 @@ Generated on: 2025-12-19
 
 ### SimpleToken_evm - mint
 
-**Total Gas Used:** 68,273
+- **Total Gas Used:** 68,273
 
 | Opcode       | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
 | ------------ | --------- | ---------- | ------------ | ------------ | ----------- |
@@ -104,10 +104,10 @@ Generated on: 2025-12-19
 
 ### Fibonacci_evm - deploy
 
-**Total Gas Used:** 7,771,875
-**Base Call Weight:** ref_time=1,524,379,111, proof_size=6,934
-**Total Weight:** ref_time=1,525,942,458, proof_size=6,934
-**Weight Consumed:** ref_time=1,563,347 (0.1% of total), proof_size=0
+- **Total Gas Used:** 7,771,875
+- **Base Call Weight:** ref_time=1,524,379,111, proof_size=6,934
+- **Total Weight:** ref_time=1,525,942,458, proof_size=6,934
+- **Weight Consumed:** ref_time=1,563,347 (0.1% of total), proof_size=0
 
 | Opcode    | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | --------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
@@ -127,10 +127,10 @@ Generated on: 2025-12-19
 
 ### Fibonacci_evm - fib_10
 
-**Total Gas Used:** 350,587
-**Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-**Total Weight:** ref_time=1,533,530,869, proof_size=8,432
-**Weight Consumed:** ref_time=620,430,338 (40.5% of total), proof_size=0
+- **Total Gas Used:** 350,587
+- **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
+- **Total Weight:** ref_time=1,533,530,869, proof_size=8,432
+- **Weight Consumed:** ref_time=620,430,338 (40.5% of total), proof_size=0
 
 | Opcode       | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ------------ | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
@@ -158,10 +158,10 @@ Generated on: 2025-12-19
 
 ### Fibonacci_pvm - deploy
 
-**Total Gas Used:** 12,465,075
-**Base Call Weight:** ref_time=1,560,414,913, proof_size=6,934
-**Total Weight:** ref_time=1,570,958,680, proof_size=6,934
-**Weight Consumed:** ref_time=10,543,767 (0.7% of total), proof_size=0
+- **Total Gas Used:** 12,465,075
+- **Base Call Weight:** ref_time=1,560,414,913, proof_size=6,934
+- **Total Weight:** ref_time=1,570,958,680, proof_size=6,934
+- **Weight Consumed:** ref_time=10,543,767 (0.7% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
@@ -173,10 +173,10 @@ Generated on: 2025-12-19
 
 ### Fibonacci_pvm - fib_10
 
-**Total Gas Used:** 352,303
-**Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-**Total Weight:** ref_time=1,619,349,144, proof_size=11,146
-**Weight Consumed:** ref_time=706,248,613 (43.6% of total), proof_size=2,714
+- **Total Gas Used:** 352,303
+- **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
+- **Total Weight:** ref_time=1,619,349,144, proof_size=11,146
+- **Weight Consumed:** ref_time=706,248,613 (43.6% of total), proof_size=2,714
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
@@ -189,10 +189,10 @@ Generated on: 2025-12-19
 
 ### fibonacci_ink - deploy
 
-**Total Gas Used:** 10,792,216
-**Base Call Weight:** ref_time=1,547,200,203, proof_size=6,934
-**Total Weight:** ref_time=1,732,998,392, proof_size=17,191
-**Weight Consumed:** ref_time=185,798,189 (10.7% of total), proof_size=10,257
+- **Total Gas Used:** 10,792,216
+- **Base Call Weight:** ref_time=1,547,200,203, proof_size=6,934
+- **Total Weight:** ref_time=1,732,998,392, proof_size=17,191
+- **Weight Consumed:** ref_time=185,798,189 (10.7% of total), proof_size=10,257
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -204,10 +204,10 @@ Generated on: 2025-12-19
 
 ### fibonacci_ink - fib_10
 
-**Total Gas Used:** 347,176
-**Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-**Total Weight:** ref_time=1,362,985,528, proof_size=30,825
-**Weight Consumed:** ref_time=449,884,997 (33.0% of total), proof_size=22,393
+- **Total Gas Used:** 347,176
+- **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
+- **Total Weight:** ref_time=1,362,985,528, proof_size=30,825
+- **Weight Consumed:** ref_time=449,884,997 (33.0% of total), proof_size=22,393
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -221,10 +221,10 @@ Generated on: 2025-12-19
 
 ### fibonacci_rust - fib_10
 
-**Total Gas Used:** 340,383
-**Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-**Total Weight:** ref_time=1,023,353,284, proof_size=8,979
-**Weight Consumed:** ref_time=110,252,753 (10.8% of total), proof_size=547
+- **Total Gas Used:** 340,383
+- **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
+- **Total Weight:** ref_time=1,023,353,284, proof_size=8,979
+- **Weight Consumed:** ref_time=110,252,753 (10.8% of total), proof_size=547
 
 | Opcode         | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | -------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
@@ -234,10 +234,10 @@ Generated on: 2025-12-19
 
 ### SimpleToken_evm - deploy
 
-**Total Gas Used:** 8,082,983
-**Base Call Weight:** ref_time=1,526,768,837, proof_size=6,934
-**Total Weight:** ref_time=1,528,362,837, proof_size=6,934
-**Weight Consumed:** ref_time=1,594,000 (0.1% of total), proof_size=0
+- **Total Gas Used:** 8,082,983
+- **Base Call Weight:** ref_time=1,526,768,837, proof_size=6,934
+- **Total Weight:** ref_time=1,528,362,837, proof_size=6,934
+- **Weight Consumed:** ref_time=1,594,000 (0.1% of total), proof_size=0
 
 | Opcode    | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | --------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
@@ -257,10 +257,10 @@ Generated on: 2025-12-19
 
 ### SimpleToken_evm - mint
 
-**Total Gas Used:** 520,147
-**Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-**Total Weight:** ref_time=1,431,551,949, proof_size=49,623
-**Weight Consumed:** ref_time=518,044,627 (36.2% of total), proof_size=41,092
+- **Total Gas Used:** 520,147
+- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
+- **Total Weight:** ref_time=1,431,551,949, proof_size=49,623
+- **Weight Consumed:** ref_time=518,044,627 (36.2% of total), proof_size=41,092
 
 | Opcode       | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -288,10 +288,10 @@ Generated on: 2025-12-19
 
 ### SimpleToken_pvm - deploy
 
-**Total Gas Used:** 17,673,493
-**Base Call Weight:** ref_time=1,600,407,215, proof_size=6,934
-**Total Weight:** ref_time=1,610,852,522, proof_size=6,934
-**Weight Consumed:** ref_time=10,445,307 (0.6% of total), proof_size=0
+- **Total Gas Used:** 17,673,493
+- **Base Call Weight:** ref_time=1,600,407,215, proof_size=6,934
+- **Total Weight:** ref_time=1,610,852,522, proof_size=6,934
+- **Weight Consumed:** ref_time=10,445,307 (0.6% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
@@ -303,10 +303,10 @@ Generated on: 2025-12-19
 
 ### SimpleToken_pvm - mint
 
-**Total Gas Used:** 521,464
-**Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-**Total Weight:** ref_time=1,497,388,823, proof_size=54,800
-**Weight Consumed:** ref_time=583,881,501 (39.0% of total), proof_size=46,269
+- **Total Gas Used:** 521,464
+- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
+- **Total Weight:** ref_time=1,497,388,823, proof_size=54,800
+- **Weight Consumed:** ref_time=583,881,501 (39.0% of total), proof_size=46,269
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -322,10 +322,10 @@ Generated on: 2025-12-19
 
 ### simple_token_ink - deploy
 
-**Total Gas Used:** 24,123,203
-**Base Call Weight:** ref_time=1,649,531,119, proof_size=6,934
-**Total Weight:** ref_time=1,864,343,762, proof_size=17,191
-**Weight Consumed:** ref_time=214,812,643 (11.5% of total), proof_size=10,257
+- **Total Gas Used:** 24,123,203
+- **Base Call Weight:** ref_time=1,649,531,119, proof_size=6,934
+- **Total Weight:** ref_time=1,864,343,762, proof_size=17,191
+- **Weight Consumed:** ref_time=214,812,643 (11.5% of total), proof_size=10,257
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -337,10 +337,10 @@ Generated on: 2025-12-19
 
 ### simple_token_ink - mint
 
-**Total Gas Used:** 474,948
-**Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-**Total Weight:** ref_time=1,731,583,752, proof_size=57,968
-**Weight Consumed:** ref_time=818,076,430 (47.2% of total), proof_size=49,437
+- **Total Gas Used:** 474,948
+- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
+- **Total Weight:** ref_time=1,731,583,752, proof_size=57,968
+- **Weight Consumed:** ref_time=818,076,430 (47.2% of total), proof_size=49,437
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -354,10 +354,10 @@ Generated on: 2025-12-19
 
 ### simple_token_no_alloc_rust - mint
 
-**Total Gas Used:** 521,627
-**Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-**Total Weight:** ref_time=1,505,513,738, proof_size=53,929
-**Weight Consumed:** ref_time=592,006,416 (39.3% of total), proof_size=45,398
+- **Total Gas Used:** 521,627
+- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
+- **Total Weight:** ref_time=1,505,513,738, proof_size=53,929
+- **Weight Consumed:** ref_time=592,006,416 (39.3% of total), proof_size=45,398
 
 | Opcode          | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | --------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
