@@ -6,12 +6,12 @@ Generated on: 2025-12-19
 
 | Contract            | VM Type | Size (bytes) | vs Smallest |
 | ------------------- | ------- | ------------ | ----------- |
-| Fibonacci_evm       | EVM     | 437          | -           |
-| fibonacci_rust      | PVM     | 547          | +25.2%      |
-| fibonacci_u128_rust | PVM     | 733          | +67.7%      |
-| fibonacci_u256_rust | PVM     | 1,821        | +316.7%     |
-| fibonacci_ink       | PVM     | 1,879        | +330.0%     |
-| Fibonacci_pvm       | PVM     | 2,714        | +521.1%     |
+| fibonacci_rust      | PVM     | 220          | -           |
+| fibonacci_u128_rust | PVM     | 296          | +34.5%      |
+| Fibonacci_evm       | EVM     | 391          | +77.7%      |
+| fibonacci_u256_rust | PVM     | 698          | +217.3%     |
+| fibonacci_ink       | PVM     | 994          | +351.8%     |
+| Fibonacci_pvm       | PVM     | 1,890        | +759.1%     |
 
 
 ## SimpleToken Implementations
@@ -21,6 +21,6 @@ Generated on: 2025-12-19
 | SimpleToken_evm            | EVM     | 588          | -           |
 | simple_token_no_alloc_rust | PVM     | 4,370        | +643.2%     |
 | SimpleToken_pvm            | PVM     | 5,241        | +791.3%     |
-| simple_token_ink           | PVM     | 8,345        | +1319.2%    |
+| simple_token_ink           | PVM     | 7,008        | +1091.8%    |
 
 

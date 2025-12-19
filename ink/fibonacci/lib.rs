@@ -6,13 +6,6 @@ mod fibonacci {
     #[ink(storage)]
     pub struct Fibonacci;
 
-    #[ink(event)]
-    pub struct FibonacciComputed {
-        #[ink(topic)]
-        n: u32,
-        result: u32,
-    }
-
     impl Fibonacci {
         #[ink(constructor)]
         pub fn new() -> Self {
@@ -20,9 +13,12 @@ mod fibonacci {
         }
 
         #[ink(message)]
-        pub fn fibonacci(&mut self, n: u32) {
+        pub fn fibonacci(&mut self, n: u32) -> Result<(), ()> {
             let result = super::_fibonacci(n);
-            self.env().emit_event(FibonacciComputed { n, result });
+            if result == 0 {
+                return Err(());
+            }
+            Ok(())
         }
     }
 }

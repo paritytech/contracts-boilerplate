@@ -54,14 +54,6 @@ mod simple_token {
         /// Returns the account balance for the specified `owner`.
         ///
         /// Returns `0` if the account is non-existent.
-        #[ink(message)]
-        pub fn balance_of(&self, owner: Address) -> U256 {
-            self.balance_of_impl(&owner)
-        }
-
-        /// Returns the account balance for the specified `owner`.
-        ///
-        /// Returns `0` if the account is non-existent.
         ///
         /// # Note
         ///

@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 contract Fibonacci {
-    event FibonacciComputed(uint32 indexed n, uint32 result);
-
     function fibonacci(uint32 n) public {
         uint32 result = _fibonacci(n);
-        emit FibonacciComputed(n, result);
+        if (result  == 0) {
+            revert();
+        }
     }
 
     function _fibonacci(uint32 n) internal pure returns (uint32) {

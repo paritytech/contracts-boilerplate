@@ -25,3 +25,9 @@ await deploy({
     args: [],
     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })
+
+await deploy({
+    name: 'Fibonacci',
+    args: [],
+    // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+})

@@ -2,7 +2,7 @@
 #![no_std]
 
 use alloy_core::primitives::U256;
-use pallet_revive_uapi::{HostFn, HostFnImpl as api};
+use pallet_revive_uapi::{HostFn, HostFnImpl as api, ReturnFlags};
 
 #[global_allocator]
 static mut ALLOC: picoalloc::Mutex<picoalloc::Allocator<picoalloc::ArrayPointer<1024>>> = {
@@ -50,20 +50,9 @@ pub extern "C" fn call() {
     let n = U256::from_be_bytes(input);
     let result = _fibonacci(n);
 
-    // Emit FibonacciComputed event
-    // Event signature: keccak256("FibonacciComputed(uint256,uint256)")
-    // Topic 0: event signature
-    // Topic 1: indexed n (32 bytes)
-    // Data: result (32 bytes)
-    let event_signature: [u8; 32] = [
-        0x8f, 0x3e, 0x5a, 0x4c, 0x4b, 0x3d, 0x2e, 0x1f, 0x6c, 0x7d, 0x8e, 0x9f, 0x0a, 0x1b, 0x2c,
-        0x3d, 0x4e, 0x5f, 0x60, 0x71, 0x82, 0x93, 0xa4, 0xb5, 0xc6, 0xd7, 0xe8, 0xf9, 0x0a, 0x1b,
-        0x2c, 0x3d,
-    ];
-    let topic_n = n.to_be_bytes::<32>();
-    let event_data = result.to_be_bytes::<32>();
-
-    api::deposit_event(&[event_signature, topic_n], &event_data);
+    if result == 0 {
+        api::return_value(ReturnFlags::REVERT, &[0u8; 0]);
+    }
 }
 
 fn _fibonacci(n: U256) -> U256 {
