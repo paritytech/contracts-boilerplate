@@ -3,7 +3,6 @@
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import { Fibonacci } from '../codegen/addresses.ts'
-import { parseEther } from 'viem'
 
 // await env.wallet.sendTransaction({
 //     to: '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63',

@@ -9,6 +9,16 @@ You can install it by running:
 curl -fsSL https://deno.land/install.sh | sh
 ```
 
+## ink! notes
+
+If you are unable to compile ink contracts and encounter the following issue:
+
+```
+error: panic_immediate_abort is now a real panic strategy!
+```
+
+please try using Rust toolchain version 1.91.1, as newer toolchains may trigger this issue due to changes in panic strategy handling.
+
 # Building contracts
 
 We can now compile the contracts located in the `contracts/` directory:

@@ -23,7 +23,6 @@ Generated on: 2025-12-19
 | JUMPDEST  | 1         | 1          | 1.0          | 0.9%         | 0.0%        |
 | RETURN    | 0         | 1          | 0.0          | 0.0%         | 0.0%        |
 
-
 ### Fibonacci_evm - fib_10
 
 - **Total Gas Used:** 62,284
@@ -51,7 +50,6 @@ Generated on: 2025-12-19
 | PUSH1        | 3         | 1          | 3.0          | 0.2%         | 0.0%        |
 | PUSH2        | 3         | 1          | 3.0          | 0.2%         | 0.0%        |
 
-
 ### SimpleToken_evm - deploy
 
 - **Total Gas Used:** 174,399
@@ -70,7 +68,6 @@ Generated on: 2025-12-19
 | PUSH0     | 2         | 1          | 2.0          | 1.4%         | 0.0%        |
 | JUMPDEST  | 1         | 1          | 1.0          | 0.7%         | 0.0%        |
 | RETURN    | 0         | 1          | 0.0          | 0.0%         | 0.0%        |
-
 
 ### SimpleToken_evm - mint
 
@@ -99,7 +96,6 @@ Generated on: 2025-12-19
 | ISZERO       | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
 | LT           | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
 
-
 ## Chain: eth-rpc
 
 ### Fibonacci_evm - deploy
@@ -124,7 +120,6 @@ Generated on: 2025-12-19
 | MSTORE    | 0         | 1          | 0.0          | 45,840   | 0          | 2.9%          | 0.0%            |
 | RETURN    | 0         | 1          | 0.0          | 0        | 0          | 0.0%          | 0.0%            |
 
-
 ### Fibonacci_pvm - deploy
 
 - **Total Gas Used:** 10,767,375
@@ -139,7 +134,6 @@ Generated on: 2025-12-19
 | value_transferred | 7         | 1          | 7.0          | 319,000  | 0          | 3.0%          | 0.0%            |
 | call_data_size    | 6         | 1          | 6.0          | 330,000  | 0          | 3.1%          | 0.0%            |
 
-
 ### fibonacci_ink - deploy
 
 - **Total Gas Used:** 17,092,219
@@ -153,7 +147,6 @@ Generated on: 2025-12-19
 | call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 1.3%          | 0.0%            |
 | seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.3%          | 0.0%            |
 | value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.2%          | 0.0%            |
-
 
 ### Fibonacci_evm - fib_10
 
@@ -185,7 +178,6 @@ Generated on: 2025-12-19
 | POP          | 1         | 1          | 1.0          | 30,560   | 0          | 0.0%          | 0.0%            |
 | PUSH0        | 1         | 1          | 1.0          | 30,560   | 0          | 0.0%          | 0.0%            |
 
-
 ### Fibonacci_pvm - fib_10
 
 - **Total Gas Used:** 351,658
@@ -199,7 +191,6 @@ Generated on: 2025-12-19
 | call_data_load    | 7         | 1          | 7.0          | 343,000  | 0          | 0.1%          | 0.0%            |
 | value_transferred | 7         | 1          | 7.0          | 319,000  | 0          | 0.0%          | 0.0%            |
 | call_data_size    | 6         | 1          | 6.0          | 330,000  | 0          | 0.0%          | 0.0%            |
-
 
 ### fibonacci_ink - fib_10
 
@@ -215,7 +206,6 @@ Generated on: 2025-12-19
 | seal_return       | 10        | 1          | 10.0         | 529,465    | 0          | 0.2%          | 0.0%            |
 | value_transferred | 6         | 1          | 6.0          | 319,000    | 0          | 0.1%          | 0.0%            |
 
-
 ### fibonacci_rust - fib_10
 
 - **Total Gas Used:** 339,996
@@ -226,7 +216,6 @@ Generated on: 2025-12-19
 | Opcode         | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | -------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
 | call_data_copy | 10        | 1          | 10.0         | 497,028  | 0          | 0.5%          | 0.0%            |
-
 
 ### fibonacci_u128_rust - fib_10
 
@@ -239,7 +228,6 @@ Generated on: 2025-12-19
 | -------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
 | call_data_copy | 10        | 1          | 10.0         | 498,384  | 0          | 0.3%          | 0.0%            |
 
-
 ### fibonacci_u256_rust - fib_10
 
 - **Total Gas Used:** 370,173
@@ -250,7 +238,6 @@ Generated on: 2025-12-19
 | Opcode         | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | -------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
 | call_data_copy | 10        | 1          | 10.0         | 500,192  | 0          | 0.0%          | 0.0%            |
-
 
 ### SimpleToken_evm - deploy
 
@@ -274,7 +261,6 @@ Generated on: 2025-12-19
 | JUMPDEST  | 0         | 1          | 0.0          | 15,280   | 0          | 1.0%          | 0.0%            |
 | RETURN    | 0         | 1          | 0.0          | 0        | 0          | 0.0%          | 0.0%            |
 
-
 ### SimpleToken_pvm - deploy
 
 - **Total Gas Used:** 17,673,493
@@ -289,7 +275,6 @@ Generated on: 2025-12-19
 | call_data_size    | 7         | 1          | 7.0          | 330,000  | 0          | 3.2%          | 0.0%            |
 | value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 3.1%          | 0.0%            |
 
-
 ### simple_token_ink - deploy
 
 - **Total Gas Used:** 21,368,560
@@ -303,7 +288,6 @@ Generated on: 2025-12-19
 | call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 1.1%          | 0.0%            |
 | seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.2%          | 0.0%            |
 | value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
-
 
 ### SimpleToken_evm - mint
 
@@ -335,7 +319,6 @@ Generated on: 2025-12-19
 | ISZERO       | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
 | JUMPDEST     | 1         | 1          | 1.0          | 15,280      | 0          | 0.0%          | 0.0%            |
 
-
 ### SimpleToken_pvm - mint
 
 - **Total Gas Used:** 521,464
@@ -354,7 +337,6 @@ Generated on: 2025-12-19
 | call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
 
-
 ### simple_token_ink - mint
 
 - **Total Gas Used:** 474,068
@@ -371,7 +353,6 @@ Generated on: 2025-12-19
 | seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
 | value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
-
 ### simple_token_no_alloc_rust - mint
 
 - **Total Gas Used:** 521,627
@@ -387,7 +368,6 @@ Generated on: 2025-12-19
 | deposit_event   | 275       | 1          | 275.0        | 13,751,564  | 0          | 2.3%          | 0.0%            |
 | call_data_copy  | 10        | 1          | 10.0         | 504,260     | 0          | 0.1%          | 0.0%            |
 | call_data_size  | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-
 
 ### SimpleToken_evm - transfer
 
@@ -419,7 +399,6 @@ Generated on: 2025-12-19
 | EQ           | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
 | ISZERO       | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
 
-
 ### SimpleToken_pvm - transfer
 
 - **Total Gas Used:** 417,001
@@ -439,7 +418,6 @@ Generated on: 2025-12-19
 | call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
-
 ### simple_token_ink - transfer
 
 - **Total Gas Used:** 480,566
@@ -457,7 +435,6 @@ Generated on: 2025-12-19
 | caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
-
 ### simple_token_no_alloc_rust - transfer
 
 - **Total Gas Used:** 469,957
@@ -474,5 +451,3 @@ Generated on: 2025-12-19
 | call_data_copy  | 10        | 1          | 10.0         | 504,260     | 0          | 0.1%          | 0.0%            |
 | caller          | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size  | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-
-
