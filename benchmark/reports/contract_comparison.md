@@ -13,7 +13,7 @@ Comparison of gas usage across different contract implementations.
 | Fibonacci_evm       | 1,525,205,124 | +0.3%   | 0.1%      | 6,934  |
 | fibonacci_u256_rust | 1,528,558,927 | +0.5%   | 0.0%      | 6,934  |
 | Fibonacci_pvm       | 1,557,918,056 | +2.4%   | 0.7%      | 6,934  |
-| fibonacci_ink       | 1,718,992,382 | +13.0%  | 10.8%     | 17,191 |
+| fibonacci_ink       | 1,718,162,422 | +13.0%  | 10.8%     | 17,191 |
 
 
 ## Fibonacci - fib_10
@@ -22,7 +22,7 @@ Comparison of gas usage across different contract implementations.
 | ------------------- | ------------- | ------- | --------- | ------ |
 | fibonacci_rust      | 1,003,971,839 | -       | 9.1%      | 8,652  |
 | fibonacci_u128_rust | 1,096,536,651 | +9.2%   | 16.7%     | 8,728  |
-| fibonacci_ink       | 1,322,517,245 | +31.7%  | 31.0%     | 29,940 |
+| fibonacci_ink       | 1,149,918,571 | +14.5%  | 20.6%     | 19,643 |
 | Fibonacci_evm       | 1,519,150,709 | +51.3%  | 39.9%     | 8,432  |
 | Fibonacci_pvm       | 1,587,091,712 | +58.1%  | 42.5%     | 10,322 |
 | fibonacci_u256_rust | 2,512,824,851 | +150.3% | 63.7%     | 9,130  |

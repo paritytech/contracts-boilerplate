@@ -10,7 +10,7 @@ Generated on: 2025-12-19
 | fibonacci_u128_rust | PVM     | 296          | +34.5%      |
 | Fibonacci_evm       | EVM     | 391          | +77.7%      |
 | fibonacci_u256_rust | PVM     | 698          | +217.3%     |
-| fibonacci_ink       | PVM     | 994          | +351.8%     |
+| fibonacci_ink       | PVM     | 954          | +333.6%     |
 | Fibonacci_pvm       | PVM     | 1,890        | +759.1%     |
 
 

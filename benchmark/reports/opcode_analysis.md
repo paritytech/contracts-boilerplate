@@ -142,14 +142,14 @@ Generated on: 2025-12-19
 
 ### fibonacci_ink - deploy
 
-- **Total Gas Used:** 8,968,836
-- **Base Call Weight:** ref_time=1,533,194,193, proof_size=6,934
-- **Total Weight:** ref_time=1,718,992,382, proof_size=17,191
-- **Weight Consumed:** ref_time=185,798,189 (10.8% of total), proof_size=10,257
+- **Total Gas Used:** 17,092,219
+- **Base Call Weight:** ref_time=1,532,561,153, proof_size=6,934
+- **Total Weight:** ref_time=1,718,162,422, proof_size=17,191
+- **Weight Consumed:** ref_time=185,601,269 (10.8% of total), proof_size=10,257
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 47,411    | 1          | 47411.0      | 170,582,310 | 10,257     | 91.8%         | 100.0%          |
+| set_storage       | 47,412    | 1          | 47412.0      | 170,582,310 | 10,257     | 91.9%         | 100.0%          |
 | call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 1.3%          | 0.0%            |
 | seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.3%          | 0.0%            |
 | value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.2%          | 0.0%            |
@@ -203,18 +203,17 @@ Generated on: 2025-12-19
 
 ### fibonacci_ink - fib_10
 
-- **Total Gas Used:** 346,367
+- **Total Gas Used:** 342,915
 - **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-- **Total Weight:** ref_time=1,322,517,245, proof_size=29,940
-- **Weight Consumed:** ref_time=409,416,714 (31.0% of total), proof_size=21,508
+- **Total Weight:** ref_time=1,149,918,571, proof_size=19,643
+- **Weight Consumed:** ref_time=236,818,040 (20.6% of total), proof_size=11,211
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 3,412     | 1          | 3412.0       | 170,582,310 | 10,257     | 41.7%         | 47.7%           |
-| get_storage       | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 16.9%         | 47.7%           |
-| call_data_copy    | 47        | 1          | 47.0         | 2,347,968   | 0          | 0.6%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
+| ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
+| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511 | 10,257     | 29.2%         | 91.5%           |
+| call_data_copy    | 47        | 1          | 47.0         | 2,347,968  | 0          | 1.0%          | 0.0%            |
+| seal_return       | 10        | 1          | 10.0         | 529,465    | 0          | 0.2%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 319,000    | 0          | 0.1%          | 0.0%            |
 
 
 ### fibonacci_rust - fib_10
@@ -293,7 +292,7 @@ Generated on: 2025-12-19
 
 ### simple_token_ink - deploy
 
-- **Total Gas Used:** 30,783,160
+- **Total Gas Used:** 21,368,560
 - **Base Call Weight:** ref_time=1,628,371,757, proof_size=6,934
 - **Total Weight:** ref_time=1,843,184,400, proof_size=17,191
 - **Weight Consumed:** ref_time=214,812,643 (11.7% of total), proof_size=10,257

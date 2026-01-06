@@ -13,7 +13,7 @@ mod fibonacci {
         }
 
         #[ink(message)]
-        pub fn fibonacci(&mut self, n: u32) -> Result<(), ()> {
+        pub fn fibonacci(&self, n: u32) -> Result<(), ()> {
             let result = super::_fibonacci(n);
             if result == 0 {
                 return Err(());
