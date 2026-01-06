@@ -171,7 +171,7 @@ export async function createEnv({
             transactionHash: Hex,
         ) {
             return client.request({
-                method: 'substrate_postDispatchWeight' as never,
+                method: 'polkadot_postDispatchWeight' as never,
                 params: [
                     transactionHash,
                 ],
