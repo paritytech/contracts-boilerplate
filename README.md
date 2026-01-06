@@ -10,7 +10,9 @@ curl -fsSL https://deno.land/install.sh | sh
 ```
 
 ## ink! notes
+
 If you are unable to compile ink contracts and encounter the following issue:
+
 ```
 error: panic_immediate_abort is now a real panic strategy!
 ```
