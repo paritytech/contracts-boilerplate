@@ -2,7 +2,7 @@
 pragma solidity ^0.8.27;
 
 /// @title Minimal ERC-20-like token with only mint and transfer entry points.
-contract MyToken {
+contract SimpleToken {
     uint256 public totalSupply;
 
     mapping(address => uint256) private balances;

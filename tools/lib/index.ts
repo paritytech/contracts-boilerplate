@@ -1,24 +1,14 @@
 import { writeFileSync } from 'node:fs'
 import { createEnv } from '../../utils/index.ts'
-import { ContractConstructorArgs, formatEther } from 'viem'
+import { ContractConstructorArgs, formatEther, TransactionReceipt } from 'viem'
 import { Abis } from '../../codegen/abis.ts'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Hex } from 'viem'
-import { parseArgs } from '@std/cli/parse-args'
-
-const flags = parseArgs(Deno.args, {
-    string: ['filter'],
-    alias: {
-        f: 'filter',
-    },
-})
-
-const { filter } = flags
 
 const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
-const rpcUrl = Deno.env.get('RPC_URL') ?? 'http://localhost:8545'
+const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? 'http://localhost:8545'
 
 /// load private key, default account is 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
 function loadPrivateKey(): Hex {
@@ -46,7 +36,7 @@ let firstDeploy = true
  * This function deploys a contract identified by its name, with the specified
  * arguments and optional value, and updates the addresses file with the contract's address.
  *
- * @param options.name - The name of the contract to deploy, or an object with name and mappedTo.
+ * @param options.name - The name of the contract to deploy, or an object with id and name.
  * @param options.args - The arguments required by the contract's constructor.
  * @param [options.value] - An optional value (in wei) to send with the deployment.
  * @param [options.bytecodeType] - The type of bytecode to deploy ('evm' or 'polkavm').
@@ -58,12 +48,12 @@ export async function deploy<K extends keyof Abis>({
     bytecodeType,
     bytecode,
 }: {
-    name: K | { name: K; mappedTo: string }
+    name: K | { id: K; name: string }
     args: ContractConstructorArgs<Abis[K]>
     value?: bigint
     bytecodeType?: 'evm' | 'polkavm'
     bytecode?: Hex
-}): Promise<Hex> {
+}): Promise<TransactionReceipt> {
     let contractName: K
     let mappedTo: string | undefined
 
@@ -71,12 +61,8 @@ export async function deploy<K extends keyof Abis>({
         contractName = name
         mappedTo = undefined
     } else {
-        contractName = name.name
-        mappedTo = name.mappedTo
-    }
-
-    if (filter && !contractName.toLowerCase().includes(filter.toLowerCase())) {
-        return '0x'
+        contractName = name.id
+        mappedTo = name.name
     }
 
     if (firstDeploy) {
@@ -178,5 +164,5 @@ export const chain = defineChain({
     console.log(
         `✅ ${id} deployed: ${address} at block ${receipt.blockNumber}\n tx hash: ${receipt.transactionHash}`,
     )
-    return address
+    return receipt
 }

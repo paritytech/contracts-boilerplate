@@ -1,5 +1,3 @@
-//! Call with deno task deploy [--filter <filter>]
-
 import { deploy } from './lib/index.ts'
 
 /**
@@ -24,6 +22,12 @@ import { deploy } from './lib/index.ts'
 
 await deploy({
     name: 'Storage',
+    args: [],
+    // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
+})
+
+await deploy({
+    name: 'Fibonacci',
     args: [],
     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })

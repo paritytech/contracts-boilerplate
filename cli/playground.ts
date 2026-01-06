@@ -2,27 +2,22 @@
 
 import { env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
-import { Storage } from '../codegen/addresses.ts'
+import { Fibonacci } from '../codegen/addresses.ts'
+
+// await env.wallet.sendTransaction({
+//     to: '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63',
+//     value: parseEther('1'),
+// })
 
 {
-    const { request } = await env.wallet.simulateContract({
-        address: Storage,
-        abi: abis.Storage,
-        functionName: 'store',
-        args: [42n],
-    })
-
-    const result = await env.wallet.writeContract(request)
-    console.log('store tx', result)
-}
-
-{
-    const result = await env.wallet.readContract(
+    const result = await env.wallet.writeContract(
         {
-            address: Storage,
-            abi: abis.Storage,
-            functionName: 'retrieve',
+            address: Fibonacci,
+            abi: abis.Fibonacci,
+            functionName: 'fibonacci',
+            args: [5n],
         },
     )
-    console.log('retrieve:', result)
+
+    console.log('tx', result)
 }

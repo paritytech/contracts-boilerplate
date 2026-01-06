@@ -1,12 +1,28 @@
 [package]
-name = "contract_with_alloc"
+name = "contracts"
 version = "0.1.0"
 edition = "2021"
 publish = false
 
 [[bin]]
-name = "contract"
-path = "src/contract.rs"
+name = "simple_token_no_alloc"
+path = "src/simple_token_no_alloc.rs"
+
+[[bin]]
+name = "erc20_with_alloc"
+path = "src/erc20_with_alloc.rs"
+
+[[bin]]
+name = "fibonacci"
+path = "src/fibonacci.rs"
+
+[[bin]]
+name = "fibonacci_u128"
+path = "src/fibonacci_u128.rs"
+
+[[bin]]
+name = "fibonacci_u256"
+path = "src/fibonacci_u256.rs"
 
 [profile.release]
 opt-level = 3
@@ -18,6 +34,7 @@ polkavm-derive = { version = "0.30.0" }
 alloy-core = { version = "0.8.0", default-features = false, features = ["sol-types"] }
 picoalloc = "5.2.0"
 pallet-revive-uapi = { version = "0.9.0", default-features = false }
+
 
 
 

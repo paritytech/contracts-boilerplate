@@ -140,7 +140,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "contract_with_alloc"
+name = "contracts"
 version = "0.1.0"
 dependencies = [
  "alloy-core",

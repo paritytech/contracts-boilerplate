@@ -1,8 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
 #[ink::contract]
-mod ink_erc20 {
-    use ink::{U256, storage::Mapping};
+mod simple_token {
+    use ink::{storage::Mapping, U256};
 
     /// The zero address, used in minting and burning operations.
     const ZERO_ADDRESS: Address = Address::repeat_byte(0);
@@ -49,14 +49,6 @@ mod ink_erc20 {
         #[ink(message)]
         pub fn total_supply(&self) -> U256 {
             self.total_supply
-        }
-
-        /// Returns the account balance for the specified `owner`.
-        ///
-        /// Returns `0` if the account is non-existent.
-        #[ink(message)]
-        pub fn balance_of(&self, owner: Address) -> U256 {
-            self.balance_of_impl(&owner)
         }
 
         /// Returns the account balance for the specified `owner`.

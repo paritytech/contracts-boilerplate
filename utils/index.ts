@@ -1,26 +1,34 @@
 import {
     Abi,
-    CallParameters,
     ContractConstructorArgs,
     createClient,
     defineChain,
     formatTransactionRequest,
     hexToNumber,
     parseEther,
+    TransactionRequest,
 } from 'viem'
 import { Abis, abis } from '../codegen/abis.ts'
 import { createWalletClient, Hex, http, publicActions } from 'viem'
 import { nonceManager, privateKeyToAccount } from 'viem/accounts'
 
-type TracerType = 'callTracer' | 'prestateTracer' | 'opcodeTracer'
+type TracerType =
+    | 'callTracer'
+    | 'prestateTracer'
+    | 'opcodeTracer'
+    | 'syscallTracer'
 type TracerConfig = {
-    callTracer: { withLog?: boolean; onlyTopCall?: boolean }
+    syscallTracer: {
+        enableReturnData?: boolean
+    }
     opcodeTracer: {
-        disableStack?: boolean
+        limit?: number
         enableMemory?: boolean
+        disableStack?: boolean
         disableStorage?: boolean
         enableReturnData?: boolean
     }
+    callTracer: { withLog?: boolean; onlyTopCall?: boolean }
     prestateTracer: {
         diffMode?: boolean
         disableCode?: boolean
@@ -71,17 +79,7 @@ export async function createEnv({
                 }),
             })
             const { result } = await resp.json()
-            const id = String(result).split('/')[0] || 'Unknown'
-
-            if (id == 'Geth') {
-                return 'Geth'
-            } else if (chainId == 420_420_421) {
-                return 'Westend'
-            } else if (chainId == 420_420_420) {
-                return 'KitchenSink'
-            } else {
-                return 'Unknown'
-            }
+            return String(result).split('/')[0] || 'Unknown'
         } catch (e) {
             console.error(`Failed to get chain name from ${rpcUrl}`, e)
             Deno.exit(1)
@@ -157,52 +155,60 @@ export async function createEnv({
             txHash: Hex,
             tracer: Tracer,
             tracerConfig?: TracerConfig[Tracer],
-        ) {
-            const params: Record<string, unknown> = tracer == null
-                ? (tracerConfig ?? {})
-                : { tracer, tracerConfig }
-
+        ): Promise<unknown> {
             return client.request({
-                method: 'debug_traceTransaction' as never,
-                params: [txHash, params],
-            })
-        },
-        postDispatchWeight(
-            transactionHash: Hex,
-        ) {
-            return client.request({
-                method: 'polkadot_postDispatchWeight' as never,
+                method: 'debug_traceTransaction' as 'eth_chainId',
                 params: [
-                    transactionHash,
-                ],
+                    txHash,
+                    tracer == 'opcodeTracer'
+                        ? tracerConfig
+                        : { tracer, tracerConfig },
+                ] as never,
             })
         },
         traceBlock<Tracer extends TracerType>(
             blockNumber: bigint,
             tracer: Tracer,
             tracerConfig?: TracerConfig[Tracer],
-        ) {
+        ): Promise<unknown> {
             return client.request({
-                method: 'debug_traceBlockByNumber' as never,
+                method: 'debug_traceBlockByNumber' as 'eth_chainId',
                 params: [
                     `0x${blockNumber.toString(16)}`,
-                    { tracer, tracerConfig },
-                ],
+                    {
+                        tracer: tracer == 'opcodeTracer' ? null : tracer,
+                        tracerConfig,
+                    },
+                ] as never,
             })
         },
 
         traceCall<Tracer extends TracerType>(
-            args: CallParameters,
-            tracer: Tracer | null,
-            tracerConfig?: TracerConfig[Tracer],
-        ) {
-            const params: Record<string, unknown> = tracer == null
-                ? (tracerConfig ?? {})
-                : { tracer, tracerConfig }
-
+            args: TransactionRequest,
+            tracer: Tracer,
+            tracerConfig: TracerConfig[Tracer],
+            blockOrTag: 'latest' | Hex = 'latest',
+        ): Promise<unknown> {
             return client.request({
-                method: 'debug_traceCall' as never,
-                params: [formatTransactionRequest(args), 'latest', params],
+                method: 'debug_traceCall' as 'eth_chainId',
+                params: [
+                    formatTransactionRequest(args),
+                    blockOrTag,
+                    {
+                        tracer: tracer == 'opcodeTracer' ? null : tracer,
+                        tracerConfig,
+                    },
+                ] as never,
+            })
+        },
+
+        postDispatchWeight(
+            txHash: Hex,
+        ): Promise<{ ref_time: bigint; proof_size: bigint }> {
+            return client.request({
+                // deno-lint-ignore no-explicit-any
+                method: 'polkadot_postDispatchWeight' as any,
+                params: [txHash] as never,
             })
         },
     }))
