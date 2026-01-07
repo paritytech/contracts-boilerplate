@@ -722,16 +722,18 @@ function revive_dev_stack() {
 
 # Runs revive differential tests against a local dev node
 # Requires ~/github/revive-differential-tests repository to be checked out
-# Usage: retester_test <test_path>
-# Example:
+# Usage: retester_test <test_path> [--pvm]
+# Examples:
 #   retester_test "./resolc-compiler-tests/fixtures/solidity/complex/create/create2_many/test.json"
+#   retester_test "./resolc-compiler-tests/fixtures/solidity/complex/create/create2_many/test.json" --pvm
 function retester_test() {
 	local test_path="$1"
+	shift
 
 	# Check if test path was provided
 	if [ -z "$test_path" ]; then
 		echo "Error: Test path is required"
-		echo "Usage: retester_test <test_path>"
+		echo "Usage: retester_test <test_path> [--pvm]"
 		return 1
 	fi
 
@@ -742,13 +744,26 @@ function retester_test() {
 		return 1
 	fi
 
+	# Parse arguments to detect --pvm flag
+	local platform="revive-dev-node-revm-solc"
+	for arg in "$@"; do
+		if [ "$arg" = "--pvm" ]; then
+			platform="revive-dev-node-polkavm-resolc"
+		fi
+	done
+
+	# Prefix with ./resolc-compiler-tests/fixtures/ if path starts with complex or simple
+	if [[ "$test_path" =~ ^(complex|simple) ]]; then
+		test_path="resolc-compiler-tests/fixtures/solidity/$test_path"
+	fi
+
 	# Resolve test path relative to RETESTER_DIR
 	local full_test_path="$RETESTER_DIR/$test_path"
 
 	# Run the test
 	set -x
 	cargo run --quiet --release --manifest-path "$RETESTER_DIR/Cargo.toml" -- test \
-		--platform revive-dev-node-revm-solc \
+		--platform "$platform" \
 		--profile debug \
 		--revive-dev-node.existing-rpc-url "http://localhost:8545" \
 		--test "$full_test_path"
@@ -1084,10 +1099,12 @@ function westend() {
 #   cast_passet
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_passet() {
-	echo "Loading account 0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
-	echo "Setting ETH_RPC_URL to $PASSET_HUB_ETH_HTTP_URL"
+	export ETH_FROM="0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
 	export PRIVATE_KEY=2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
 	export ETH_RPC_URL=$PASSET_HUB_ETH_HTTP_URL
+
+	echo "Loading account $ETH_FROM"
+	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
 }
 
 # Configures cast environment for westend Hub testnet
@@ -1097,10 +1114,12 @@ function cast_passet() {
 #   cast_westend
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_westend() {
-	echo "Loading account 0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
-	echo "Setting ETH_RPC_URL to $WESTEND_HUB_ETH_HTTP_URL"
+	export ETH_FROM="0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
 	export PRIVATE_KEY=2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
 	export ETH_RPC_URL=$WESTEND_HUB_ETH_HTTP_URL
+
+	echo "Loading account $ETH_FROM"
+	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
 }
 
 # Configures cast environment for local development node
@@ -1110,11 +1129,17 @@ function cast_westend() {
 #   cast_local
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_local() {
-	echo "Loading account ETH_FROM = 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
-	echo "Setting ETH_RPC_URL to localhost:8545"
 	export ETH_FROM="0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
 	export PRIVATE_KEY=5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
 	export ETH_RPC_URL=http://localhost:8545
+	echo "Loading account $ETH_FROM"
+	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
+}
+
+# Configures cast environment for kusama
+function cast_kusama() {
+	export ETH_RPC_URL=$KSM_ETH_HTTP_URL
+	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
 }
 
 # Manages the Passet Hub runtime for testing (custom parachain)
