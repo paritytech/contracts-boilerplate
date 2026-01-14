@@ -97,6 +97,54 @@ export const contracts: Artifacts = [
             },
         ],
     },
+    {
+        id: 'TetherToken',
+        srcs: [
+            ...solidity('tether.sol', 'TetherToken'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [100000000000n, "Tether USD", "USDT", 6n], // follow the init tx args
+            })
+        },
+        calls: [
+            {
+                name: 'transfer',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.TetherToken,
+                        functionName: 'transfer',
+                        args: [env.serverWallet2.account.address, 10n],
+                    })
+                },
+            },
+            {
+                name: 'approve',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.TetherToken,
+                        functionName: 'approve',
+                        args: [env.serverWallet2.account.address, 100n],
+                    })
+                },
+            },
+            {
+                name: 'transferFrom',
+                exec: async (address) => {
+                    return await env.serverWallet2.writeContract({
+                        address,
+                        abi: abis.TetherToken,
+                        functionName: 'transferFrom',
+                        args: [env.serverWallet.account.address, env.serverWallet2.account.address, 10n],
+                    })
+                },
+            },
+        ],
+    },
 ]
 
 const cli = parseArgs(Deno.args, {
