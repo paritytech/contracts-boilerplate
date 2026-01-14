@@ -116,13 +116,24 @@ export async function createEnv({
         // timeout: 60_000,
         // batch: { wait: 100 },
     })
-    const [account] = await createWalletClient({
+    const [account, account2] = await createWalletClient({
         transport,
         chain,
     }).getAddresses()
+    if (!account2) {
+        console.warn(
+            'RPC only returned one account; wallet2 will reuse the first account.',
+        )
+    }
 
     const serverWallet = createWalletClient({
         account,
+        transport,
+        chain,
+    }).extend(publicActions)
+
+    const serverWallet2 = createWalletClient({
+        account: account2 ?? account,
         transport,
         chain,
     }).extend(publicActions)
@@ -236,7 +247,15 @@ export async function createEnv({
         return await wallet.waitForTransactionReceipt({ hash })
     }
 
-    return { chain, deploy, getByteCode, wallet, debugClient }
+    return {
+        chain,
+        deploy,
+        getByteCode,
+        wallet,
+        serverWallet,
+        serverWallet2,
+        debugClient,
+    }
 }
 
 export function readBytecode(
