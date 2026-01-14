@@ -39,10 +39,19 @@ type TracerConfig = {
 export async function createEnv({
     rpcUrl,
     privateKey,
+    privateKeys,
 }: {
     rpcUrl: string
-    privateKey: Hex
+    privateKey?: Hex
+    privateKeys?: readonly [Hex, Hex]
 }) {
+    const resolvedPrivateKeys =
+        privateKeys ?? (privateKey ? [privateKey, privateKey] : undefined)
+    if (!resolvedPrivateKeys) {
+        throw new Error('createEnv requires privateKeys or privateKey')
+    }
+    const [primaryPrivateKey, secondaryPrivateKey] = resolvedPrivateKeys
+
     const chainId = await (async () => {
         try {
             const resp = await fetch(rpcUrl, {
@@ -116,15 +125,10 @@ export async function createEnv({
         // timeout: 60_000,
         // batch: { wait: 100 },
     })
-    const [account, account2] = await createWalletClient({
+    const [account] = await createWalletClient({
         transport,
         chain,
     }).getAddresses()
-    if (!account2) {
-        console.warn(
-            'RPC only returned one account; wallet2 will reuse the first account.',
-        )
-    }
 
     const serverWallet = createWalletClient({
         account,
@@ -132,26 +136,28 @@ export async function createEnv({
         chain,
     }).extend(publicActions)
 
-    const serverWallet2 = createWalletClient({
-        account: account2 ?? account,
-        transport,
-        chain,
-    }).extend(publicActions)
+    console.log(primaryPrivateKey, secondaryPrivateKey)
 
     const wallet = createWalletClient({
-        account: privateKeyToAccount(privateKey, { nonceManager }),
+        account: privateKeyToAccount(primaryPrivateKey, { nonceManager }),
         transport,
         chain,
     }).extend(publicActions)
 
-    // On geth let's endow the account wallet with some funds, to match the eth-rpc setup
-    if (chainName == 'Geth') {
-        const endowment = parseEther('1000')
-        const balance = await serverWallet.getBalance(wallet.account)
+    const wallet2 = createWalletClient({
+        account: privateKeyToAccount(secondaryPrivateKey, { nonceManager }),
+        transport,
+        chain,
+    }).extend(publicActions)
+
+    const endowment = parseEther('1000')
+    for (const targetWallet of [wallet, wallet2]) {
+        const address = targetWallet.account.address
+        const balance = await serverWallet.getBalance(targetWallet.account)
         if (balance < endowment / 2n) {
             const hash = await serverWallet.sendTransaction({
                 account: serverWallet.account,
-                to: wallet.account.address,
+                to: address,
                 value: endowment,
             })
             await serverWallet.waitForTransactionReceipt({ hash })
@@ -252,8 +258,7 @@ export async function createEnv({
         deploy,
         getByteCode,
         wallet,
-        serverWallet,
-        serverWallet2,
+        wallet2,
         debugClient,
     }
 }

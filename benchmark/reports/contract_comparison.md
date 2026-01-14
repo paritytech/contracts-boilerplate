@@ -54,7 +54,7 @@ Comparison of gas usage across different contract implementations.
 | -------------------------- | ------------- | ------- | --------- | ------ |
 | SimpleToken_evm            | 1,461,245,351 | -       | 37.5%     | 49,655 |
 | SimpleToken_pvm            | 1,552,049,771 | +6.2%   | 41.1%     | 54,898 |
-| simple_token_no_alloc_rust | 1,562,094,984 | +6.9%   | 41.5%     | 53,951 |
+| simple_token_no_alloc_rust | 1,562,082,657 | +6.9%   | 41.5%     | 53,948 |
 | simple_token_ink           | 2,014,032,325 | +37.8%  | 54.6%     | 77,452 |
 
 
@@ -86,7 +86,39 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation  | ref_time      | vs Best | % metered | pov     |
 | --------------- | ------------- | ------- | --------- | ------- |
-| TetherToken_evm | 2,159,300,519 | -       | 57.7%     | 121,794 |
-| TetherToken_pvm | 2,422,120,558 | +12.2%  | 62.3%     | 175,402 |
+| TetherToken_evm | 2,159,349,827 | -       | 57.7%     | 121,806 |
+| TetherToken_pvm | 2,422,169,866 | +12.2%  | 62.3%     | 175,414 |
+
+
+## WETH9 - deploy
+
+| Implementation | ref_time      | vs Best | % metered | pov    |
+| -------------- | ------------- | ------- | --------- | ------ |
+| WETH9_evm      | 2,287,529,426 | -       | 32.1%     | 68,572 |
+| WETH9_pvm      | 2,560,284,227 | +11.9%  | 29.8%     | 68,476 |
+
+
+## WETH9 - deposit
+
+| Implementation | ref_time      | vs Best | % metered | pov    |
+| -------------- | ------------- | ------- | --------- | ------ |
+| WETH9_evm      | 1,186,865,805 | -       | 23.1%     | 28,906 |
+| WETH9_pvm      | 1,260,474,876 | +6.2%   | 27.6%     | 46,586 |
+
+
+## WETH9 - transfer
+
+| Implementation | ref_time      | vs Best | % metered | pov    |
+| -------------- | ------------- | ------- | --------- | ------ |
+| WETH9_evm      | 1,535,020,402 | -       | 40.5%     | 59,944 |
+| WETH9_pvm      | 1,656,462,407 | +7.9%   | 44.9%     | 77,624 |
+
+
+## WETH9 - withdraw
+
+| Implementation | ref_time      | vs Best | % metered | pov    |
+| -------------- | ------------- | ------- | --------- | ------ |
+| WETH9_evm      | 1,725,253,761 | -       | 47.1%     | 44,893 |
+| WETH9_pvm      | 1,815,003,975 | +5.2%   | 49.7%     | 62,605 |
 
 

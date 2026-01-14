@@ -117,7 +117,7 @@ export const contracts: Artifacts = [
                         address,
                         abi: abis.TetherToken,
                         functionName: 'transfer',
-                        args: [env.serverWallet2.account.address, 10n],
+                        args: [env.wallet2.account.address, 10n],
                     })
                 },
             },
@@ -128,18 +128,67 @@ export const contracts: Artifacts = [
                         address,
                         abi: abis.TetherToken,
                         functionName: 'approve',
-                        args: [env.serverWallet2.account.address, 100n],
+                        args: [env.wallet2.account.address, 100n],
                     })
                 },
             },
             {
                 name: 'transferFrom',
                 exec: async (address) => {
-                    return await env.serverWallet2.writeContract({
+                    return await env.wallet2.writeContract({
                         address,
                         abi: abis.TetherToken,
                         functionName: 'transferFrom',
-                        args: [env.serverWallet.account.address, env.serverWallet2.account.address, 10n],
+                        args: [env.wallet.account.address, env.wallet2.account.address, 10n],
+                    })
+                },
+            },
+        ],
+    },
+    {
+        id: 'WETH9',
+        srcs: [
+            ...solidity('weth.sol', 'WETH9'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [],
+            })
+        },
+        calls: [
+            {
+                name: 'deposit',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.WETH9,
+                        functionName: 'deposit',
+                        args: [],
+                        value: parseEther('1'),
+                    })
+                },
+            },
+            {
+                name: 'transfer',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.WETH9,
+                        functionName: 'transfer',
+                        args: [env.wallet2.account.address, 10n],
+                    })
+                },
+            },
+            {
+                name: 'withdraw',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.WETH9,
+                        functionName: 'withdraw',
+                        args: [10n],
                     })
                 },
             },

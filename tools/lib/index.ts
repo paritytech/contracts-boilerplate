@@ -10,22 +10,39 @@ const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
 const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? 'http://localhost:8545'
 
-/// load private key, default account is 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
-function loadPrivateKey(): Hex {
-    if (Deno.env.has('PRIVATE_KEY')) {
-        const privateKey = Deno.env.get('PRIVATE_KEY')
-        return privateKey!.startsWith('0x')
-            ? privateKey as Hex
-            : ('0x' + privateKey) as Hex
-    }
-    return '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133'
+function normalizePrivateKey(privateKey: string): Hex {
+    return privateKey.startsWith('0x')
+        ? privateKey as Hex
+        : ('0x' + privateKey) as Hex
 }
 
-const privateKey = loadPrivateKey()
+/// load private keys, default account is 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
+function loadPrivateKeys(): [Hex, Hex] {
+    const defaultKey =
+        '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133'
+    const defaultKeySecondary =
+        '0xe5be9a5092b81bca64be81d212e7f2f9eba183bb7a90954f7b76361f6edb5c0a'
+
+    const rawKeys = Deno.env.get('PRIVATE_KEYS')
+    if (rawKeys) {
+        const keys = rawKeys
+            .split(/[,\s]+/)
+            .map((key) => key.trim())
+            .filter(Boolean)
+        if (keys.length >= 2) {
+            return [normalizePrivateKey(keys[0]), normalizePrivateKey(keys[1])]
+        }
+    }
+    return [defaultKey, defaultKeySecondary]
+}
+
+console.log(loadPrivateKeys())
+
+const [privateKey, privateKey2] = loadPrivateKeys()
 
 export const env = await createEnv({
     rpcUrl,
-    privateKey,
+    privateKeys: [privateKey, privateKey2],
 })
 
 let firstDeploy = true

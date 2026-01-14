@@ -32,3 +32,11 @@ Generated on: 2026-01-14
 | TetherToken_pvm | PVM     | 53,640       | +815.4%     |
 
 
+## WETH9 Implementations
+
+| Contract  | VM Type | Size (bytes) | vs Smallest |
+| --------- | ------- | ------------ | ----------- |
+| WETH9_evm | EVM     | 2,204        | -           |
+| WETH9_pvm | PVM     | 17,712       | +703.6%     |
+
+
