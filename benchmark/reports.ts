@@ -204,18 +204,22 @@ async function generateContractComparison() {
     // Get all transactions with contract_id extracted in SQL
     const txRows = db.prepare(`
         SELECT
-            contract_id,
-            contract_name,
-            transaction_name,
-            gas_used,
-            weight_consumed_ref_time,
-            weight_consumed_proof_size,
-            base_call_weight_ref_time,
-            base_call_weight_proof_size
-        FROM transactions
-        WHERE chain_name == 'eth-rpc'
-        ORDER BY contract_id, transaction_name, (base_call_weight_ref_time + weight_consumed_ref_time) ASC
+            t.chain_name,
+            t.contract_id,
+            t.contract_name,
+            t.transaction_name,
+            t.gas_used,
+            t.weight_consumed_ref_time,
+            t.weight_consumed_proof_size,
+            t.base_call_weight_ref_time,
+            t.base_call_weight_proof_size,
+            SUM(s.gas_cost) as total_opcode_gas
+        FROM transactions t
+        LEFT JOIN transaction_steps s ON s.hash = t.hash AND s.chain_name = t.chain_name
+        GROUP BY t.hash, t.chain_name
+        ORDER BY t.chain_name, t.contract_id, t.transaction_name, t.gas_used ASC
     `).all() as Array<{
+        chain_name: string
         contract_name: string
         transaction_name: string
         gas_used: number
@@ -224,68 +228,134 @@ async function generateContractComparison() {
         weight_consumed_proof_size: number | null
         base_call_weight_ref_time: number | null
         base_call_weight_proof_size: number | null
+        total_opcode_gas: number | null
     }>
 
-    const groupedByContractAndTx = Object.groupBy(
-        txRows,
-        (row) => `${row.contract_id}:${row.transaction_name}`,
-    )
+    // Group by chain first
+    const byChain = Object.groupBy(txRows, (row) => row.chain_name)
 
-    // Generate one table per (contract_id, operation)
-    for (
-        const [groupKey, implementations] of Object.entries(
-            groupedByContractAndTx,
+    for (const [chainName, chainRows] of Object.entries(byChain)) {
+        if (!chainRows) continue
+
+        markdown += `## Chain: ${chainName}\n\n`
+
+        const groupedByContractAndTx = Object.groupBy(
+            chainRows,
+            (row) => `${row.contract_id}:${row.transaction_name}`,
         )
-    ) {
-        if (!implementations) continue
 
-        const [contract_id, transaction_name] = groupKey.split(':')
-        markdown += `## ${contract_id} - ${transaction_name}\n\n`
+        // Generate one table per (contract_id, operation)
+        for (
+            const [groupKey, implementations] of Object.entries(
+                groupedByContractAndTx,
+            )
+        ) {
+            if (!implementations) continue
 
-        // Find best (lowest) total weight ref_time
-        const bestRefTime = Math.min(
-            ...implementations
-                .filter((row) =>
+            const [contract_id, transaction_name] = groupKey.split(':')
+            markdown += `### ${contract_id} - ${transaction_name}\n\n`
+
+            // Check if this chain has weight data (eth-rpc) or just gas_used (Geth)
+            const hasWeightData = implementations.some(
+                (row) =>
                     row.weight_consumed_ref_time !== null &&
-                    row.base_call_weight_ref_time !== null
+                    row.base_call_weight_ref_time !== null,
+            )
+
+            if (hasWeightData) {
+                // For eth-rpc: show ref_time, vs Best, % metered, pov
+                // Find best (lowest) total weight ref_time
+                const bestRefTime = Math.min(
+                    ...implementations
+                        .filter((row) =>
+                            row.weight_consumed_ref_time !== null &&
+                            row.base_call_weight_ref_time !== null
+                        )
+                        .map((row) =>
+                            row.base_call_weight_ref_time! +
+                            row.weight_consumed_ref_time!
+                        ),
                 )
-                .map((row) =>
-                    row.base_call_weight_ref_time! +
-                    row.weight_consumed_ref_time!
-                ),
-        )
 
-        const tableData = implementations.map((row) => {
-            const result: Record<string, string> = {
-                'Implementation': row.contract_name,
+                // Sort by total ref_time
+                const sorted = [...implementations].sort((a, b) => {
+                    const aTotal = (a.base_call_weight_ref_time ?? 0) +
+                        (a.weight_consumed_ref_time ?? 0)
+                    const bTotal = (b.base_call_weight_ref_time ?? 0) +
+                        (b.weight_consumed_ref_time ?? 0)
+                    return aTotal - bTotal
+                })
+
+                const tableData = sorted.map((row) => {
+                    const result: Record<string, string> = {
+                        'Implementation': row.contract_name,
+                    }
+
+                    if (
+                        row.weight_consumed_ref_time !== null &&
+                        row.base_call_weight_ref_time !== null
+                    ) {
+                        const totalRefTime = row.base_call_weight_ref_time +
+                            row.weight_consumed_ref_time
+                        const totalProofSize =
+                            (row.base_call_weight_proof_size ?? 0) +
+                            (row.weight_consumed_proof_size ?? 0)
+                        const meterPercent =
+                            ((row.weight_consumed_ref_time / totalRefTime) *
+                                100)
+                                .toFixed(1)
+                        const vsBest = totalRefTime === bestRefTime
+                            ? '-'
+                            : `+${
+                                ((totalRefTime / bestRefTime - 1) * 100)
+                                    .toFixed(1)
+                            }%`
+
+                        result['ref_time'] = totalRefTime
+                            .toLocaleString()
+                        result['vs Best'] = vsBest
+                        result['% metered'] = `${meterPercent}%`
+                        result['pov'] = totalProofSize.toLocaleString()
+                    }
+
+                    return result
+                })
+
+                markdown += table(tableData) + '\n\n'
+            } else {
+                // For Geth: show gas_used, vs Best, % metered
+                const bestGasUsed = Math.min(
+                    ...implementations.map((row) => row.gas_used),
+                )
+
+                // Sort by gas_used
+                const sorted = [...implementations].sort((a, b) =>
+                    a.gas_used - b.gas_used
+                )
+
+                const tableData = sorted.map((row) => {
+                    const vsBest = row.gas_used === bestGasUsed
+                        ? '-'
+                        : `+${
+                            ((row.gas_used / bestGasUsed - 1) * 100).toFixed(1)
+                        }%`
+                    const meterPercent = row.total_opcode_gas
+                        ? ((row.total_opcode_gas / row.gas_used) * 100).toFixed(
+                            1,
+                        )
+                        : '0.0'
+
+                    return {
+                        'Implementation': row.contract_name,
+                        'gas_used': row.gas_used.toLocaleString(),
+                        'vs Best': vsBest,
+                        '% metered': `${meterPercent}%`,
+                    }
+                })
+
+                markdown += table(tableData) + '\n\n'
             }
-
-            if (
-                row.weight_consumed_ref_time !== null &&
-                row.base_call_weight_ref_time !== null
-            ) {
-                const totalRefTime = row.base_call_weight_ref_time +
-                    row.weight_consumed_ref_time
-                const totalProofSize = (row.base_call_weight_proof_size ?? 0) +
-                    (row.weight_consumed_proof_size ?? 0)
-                const meterPercent =
-                    ((row.weight_consumed_ref_time / totalRefTime) * 100)
-                        .toFixed(1)
-                const vsBest = totalRefTime === bestRefTime
-                    ? '-'
-                    : `+${((totalRefTime / bestRefTime - 1) * 100).toFixed(1)}%`
-
-                result['ref_time'] = totalRefTime
-                    .toLocaleString()
-                result['vs Best'] = vsBest
-                result['% metered'] = `${meterPercent}%`
-                result['pov'] = totalProofSize.toLocaleString()
-            }
-
-            return result
-        })
-
-        markdown += table(tableData) + '\n\n'
+        }
     }
 
     await Deno.writeTextFile(

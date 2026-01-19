@@ -2,6 +2,10 @@
 logs
 *.log
 .env
+out/
+contracts/out-evm/
+contracts/out-pvm/
+cache/
 
 npm-debug.log*
 yarn-debug.log*

@@ -40,6 +40,50 @@ if (clean) {
 logger.debug('Compiling contracts...')
 
 const contractsDir = join(rootDir, 'contracts')
+
+// Extract relative imports from a Solidity file (e.g., "./interfaces/Foo.sol")
+function extractRelativeImports(content: string): string[] {
+    const importRegex = /import\s+(?:{[^}]*}\s+from\s+)?["'](\.[^"']+)["']/g
+    const imports: string[] = []
+    let match
+    while ((match = importRegex.exec(content)) !== null) {
+        imports.push(match[1])
+    }
+    return imports
+}
+
+// Recursively collect all files needed for a contract
+function collectDependencies(
+    filePath: string,
+    contractsDir: string,
+    visited = new Set<string>(),
+): Map<string, string> {
+    if (visited.has(filePath)) {
+        return new Map()
+    }
+    visited.add(filePath)
+
+    const fullPath = join(contractsDir, filePath)
+    const content = Deno.readTextFileSync(fullPath)
+    const sources = new Map([[filePath, content]])
+
+    const imports = extractRelativeImports(content)
+    for (const importPath of imports) {
+        // Resolve relative import path
+        const dir = filePath.includes('/')
+            ? filePath.substring(0, filePath.lastIndexOf('/'))
+            : ''
+        const resolvedPath = join(dir, importPath).replace(/^\.\//, '')
+
+        const deps = collectDependencies(resolvedPath, contractsDir, visited)
+        for (const [path, content] of deps) {
+            sources.set(path, content)
+        }
+    }
+
+    return sources
+}
+
 const contracts = Array.from(Deno.readDirSync(contractsDir))
     .filter((f) => f.isFile && f.name.endsWith('.sol'))
     .filter((f) => !filter || f.name.includes(filter))
@@ -50,12 +94,18 @@ if (contracts.length === 0) {
 }
 
 for (const contract of contracts) {
-    const sourceFilePath = join(contractsDir, contract.name)
-    const sourceContent = Deno.readTextFileSync(sourceFilePath)
+    // Collect only the files needed for this contract
+    const sources = collectDependencies(contract.name, contractsDir)
+    const sourcesObj = Object.fromEntries(
+        Array.from(sources.entries()).map(([path, content]) => [
+            path,
+            { content },
+        ]),
+    )
 
     await compile({
         fileName: contract.name,
-        sourceContent,
+        sources: sourcesObj,
         rootDir,
         compiler: (Deno.env.get('SOLC_BIN') as 'solc') ?? 'solc',
         generateAbi: true,
@@ -64,7 +114,7 @@ for (const contract of contracts) {
     if (!solcOnly) {
         await compile({
             fileName: contract.name,
-            sourceContent,
+            sources: sourcesObj,
             rootDir,
             compiler: 'resolc',
         })

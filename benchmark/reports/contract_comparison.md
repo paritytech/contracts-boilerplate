@@ -1,10 +1,49 @@
 # Revive Contract Comparison
 
-Generated on: 2025-12-19
+Generated on: 2026-01-13
 
 Comparison of gas usage across different contract implementations.
 
-## Fibonacci - deploy
+## Chain: Geth
+
+### Fibonacci - deploy
+
+| Implementation | gas_used | vs Best | % metered |
+| -------------- | -------- | ------- | --------- |
+| Fibonacci_evm  | 112,683  | -       | 0.1%      |
+
+
+### Fibonacci - fib_10
+
+| Implementation | gas_used | vs Best | % metered |
+| -------------- | -------- | ------- | --------- |
+| Fibonacci_evm  | 47,664   | -       | 0.2%      |
+
+
+### SimpleToken - deploy
+
+| Implementation  | gas_used | vs Best | % metered |
+| --------------- | -------- | ------- | --------- |
+| SimpleToken_evm | 152,967  | -       | 0.1%      |
+
+
+### SimpleToken - mint
+
+| Implementation  | gas_used | vs Best | % metered |
+| --------------- | -------- | ------- | --------- |
+| SimpleToken_evm | 68,105   | -       | 35.3%     |
+
+
+### SimpleToken - transfer
+
+| Implementation  | gas_used | vs Best | % metered |
+| --------------- | -------- | ------- | --------- |
+| SimpleToken_evm | 46,257   | -       | 51.9%     |
+
+
+## Chain: eth-rpc
+
+### Fibonacci - deploy
 
 | Implementation      | ref_time      | vs Best | % metered | pov    |
 | ------------------- | ------------- | ------- | --------- | ------ |
@@ -15,7 +54,8 @@ Comparison of gas usage across different contract implementations.
 | Fibonacci_pvm       | 1,557,918,056 | +2.4%   | 0.7%      | 6,934  |
 | fibonacci_ink       | 1,718,162,422 | +13.0%  | 10.8%     | 17,191 |
 
-## Fibonacci - fib_10
+
+### Fibonacci - fib_10
 
 | Implementation      | ref_time      | vs Best | % metered | pov    |
 | ------------------- | ------------- | ------- | --------- | ------ |
@@ -26,7 +66,8 @@ Comparison of gas usage across different contract implementations.
 | Fibonacci_pvm       | 1,587,091,712 | +58.1%  | 42.5%     | 10,322 |
 | fibonacci_u256_rust | 2,512,824,851 | +150.3% | 63.7%     | 9,130  |
 
-## SimpleToken - deploy
+
+### SimpleToken - deploy
 
 | Implementation             | ref_time      | vs Best | % metered | pov    |
 | -------------------------- | ------------- | ------- | --------- | ------ |
@@ -35,7 +76,8 @@ Comparison of gas usage across different contract implementations.
 | SimpleToken_pvm            | 1,610,852,522 | +5.4%   | 0.6%      | 6,934  |
 | simple_token_ink           | 1,843,184,400 | +20.6%  | 11.7%     | 17,191 |
 
-## SimpleToken - mint
+
+### SimpleToken - mint
 
 | Implementation             | ref_time      | vs Best | % metered | pov    |
 | -------------------------- | ------------- | ------- | --------- | ------ |
@@ -44,7 +86,8 @@ Comparison of gas usage across different contract implementations.
 | simple_token_no_alloc_rust | 1,505,513,738 | +5.2%   | 39.3%     | 53,929 |
 | simple_token_ink           | 1,687,565,485 | +17.9%  | 45.9%     | 56,631 |
 
-## SimpleToken - transfer
+
+### SimpleToken - transfer
 
 | Implementation             | ref_time      | vs Best | % metered | pov    |
 | -------------------------- | ------------- | ------- | --------- | ------ |
@@ -52,3 +95,5 @@ Comparison of gas usage across different contract implementations.
 | SimpleToken_pvm            | 1,554,253,981 | +6.4%   | 41.2%     | 54,961 |
 | simple_token_no_alloc_rust | 1,562,060,164 | +6.9%   | 41.5%     | 53,961 |
 | simple_token_ink           | 2,012,500,642 | +37.7%  | 54.6%     | 77,209 |
+
+

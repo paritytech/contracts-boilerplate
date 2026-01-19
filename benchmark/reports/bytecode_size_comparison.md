@@ -6,7 +6,7 @@ Generated on: 2025-12-19
 
 | Contract            | VM Type | Size (bytes) | vs Smallest |
 | ------------------- | ------- | ------------ | ----------- |
-| fibonacci_rust      | PVM     | 220          | -           |
+| fibonacci_u32_rust  | PVM     | 220          | -           |
 | fibonacci_u128_rust | PVM     | 296          | +34.5%      |
 | Fibonacci_evm       | EVM     | 391          | +77.7%      |
 | fibonacci_u256_rust | PVM     | 698          | +217.3%     |

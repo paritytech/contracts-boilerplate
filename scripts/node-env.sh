@@ -53,6 +53,8 @@ export WESTEND_BLOCK_EXPLORER_URL="https://blockscout-asset-hub.parity-chains-sc
 export PASSET_HUB_WS_URL="wss://testnet-passet-hub.polkadot.io"
 export PASSET_HUB_ETH_HTTP_URL="https://testnet-passet-hub-eth-rpc.polkadot.io"
 
+export PASSEO_HUB_ETH_HTTP_URL=https://services.polkadothub-rpc.com/testnet
+
 # Kusama Asset Hub Substrate RPC endpoint
 export KSM_WS_URL="wss://kusama-asset-hub-rpc.polkadot.io"
 export KSM_ETH_HTTP_URL="https://kusama-asset-hub-eth-rpc.polkadot.io"
@@ -181,11 +183,17 @@ function start_mitmproxy() {
 # Manages the Polkadot Revive development node with various build and run options
 # Usage: dev-node [bacon|build|proxy|run] [additional-args]
 # Examples:
-#   dev-node bacon              - Watch and rebuild on changes
-#   dev-node build --release    - Build the node in release mode
-#   dev-node proxy              - Run with mitmproxy on port 8844
-#   dev-node run                - Run pre-built debug binary
-#   dev-node                    - Build and run with cargo
+#   dev-node bacon                             - Watch and rebuild on changes
+#   dev-node build --release                   - Build the node in release mode
+#   dev-node build --patch=/path/to/patch.json - Build with custom genesis patch
+#   dev-node proxy                             - Run with mitmproxy on port 8844
+#   dev-node run                               - Run pre-built debug binary
+#   dev-node run --patch=/path/to/patch.json   - Run with custom chainspec
+#   dev-node                                   - Build and run with cargo
+#
+# The --patch flag accepts a JSON file with genesis patch content that will be
+# wrapped into: { "genesis": { "runtimeGenesis": { "patch": { <content> } } } }
+# Note: --patch and --retester are mutually exclusive
 function dev-node() {
 	# Set default logging levels (can be overridden by environment variable)
 	RUST_LOG="${RUST_LOG:-error,sc_rpc_server=info,runtime::revive=debug}"
@@ -195,9 +203,10 @@ function dev-node() {
 		return 1
 	fi
 
-	# Parse arguments to detect --release and --retester flags
+	# Parse arguments to detect --release, --retester, and --patch flags
 	bin_folder="debug"
 	retester_spec="false"
+	genesis_patch_file=""
 	args=()
 	arg=""
 
@@ -206,12 +215,20 @@ function dev-node() {
 			bin_folder="release"
 		elif [ "$var" = "--retester" ]; then
 			retester_spec="true"
+		elif [[ "$var" =~ ^--patch=(.+)$ ]]; then
+			genesis_patch_file="${var#--patch=}"
 		elif [ -z "$arg" ] && [[ "$var" =~ ^(bacon|build|proxy|run)$ ]]; then
 			arg="$var"
 		else
 			args+=("$var")
 		fi
 	done
+
+	# Validate mutual exclusivity of --retester and --patch
+	if [ "$retester_spec" = "true" ] && [ -n "$genesis_patch_file" ]; then
+		echo "Error: --retester and --patch are mutually exclusive"
+		return 1
+	fi
 
 	# Execute the appropriate command based on the first argument
 	case "$arg" in
@@ -240,6 +257,29 @@ function dev-node() {
 			# Apply retester patch
 			patch_chain_spec "$HOME/.revive/revive-dev-node-chainspec-base.json" "$HOME/.revive/revive-dev-node-chainspec.json" --retester
 		fi
+
+		# Generate chain spec if --patch flag was provided
+		if [ -n "$genesis_patch_file" ]; then
+			# Validate patch file exists
+			if [ ! -f "$genesis_patch_file" ]; then
+				echo "Error: Patch file not found: $genesis_patch_file"
+				return 1
+			fi
+
+			mkdir -p "$HOME/.revive"
+			set -x
+			"$POLKADOT_SDK_DIR/target/$bin_folder/revive-dev-node" build-spec --dev >"$HOME/.revive/revive-dev-node-chainspec-base.json"
+			{ set +x; } 2>/dev/null
+
+			# Apply genesis patch - wrap content under .genesis.runtimeGenesis.patch.revive
+			jq --slurpfile patch "$genesis_patch_file" \
+				'.genesis.runtimeGenesis.patch.revive = (.genesis.runtimeGenesis.patch.revive // {}) * $patch[0]' \
+				"$HOME/.revive/revive-dev-node-chainspec-base.json" \
+				>"$HOME/.revive/revive-dev-node-chainspec.json"
+
+			rm -f "$HOME/.revive/revive-dev-node-chainspec-base.json"
+			echo "Generated chainspec with custom patch: $HOME/.revive/revive-dev-node-chainspec.json"
+		fi
 		;;
 	proxy)
 		# Run with mitmproxy for traffic inspection (9944->8844 port mapping)
@@ -247,8 +287,8 @@ function dev-node() {
 		pkill -f mitmproxy
 		start_mitmproxy "9944:8844"
 
-		# Add --chain argument if --retester is passed
-		if [ "$retester_spec" = "true" ]; then
+		# Add --chain argument if --retester or --patch is passed
+		if [ "$retester_spec" = "true" ] || [ -n "$genesis_patch_file" ]; then
 			args+=("--chain" "$HOME/.revive/revive-dev-node-chainspec.json")
 		fi
 
@@ -258,9 +298,8 @@ function dev-node() {
 		{ set +x; } 2>/dev/null
 		;;
 	run)
-
-		# Add --chain argument if --retester is passed
-		if [ "$retester_spec" = "true" ]; then
+		# Add --chain argument if --retester or --patch is passed
+		if [ "$retester_spec" = "true" ] || [ -n "$genesis_patch_file" ]; then
 			args+=("--chain" "$HOME/.revive/revive-dev-node-chainspec.json")
 		fi
 
@@ -948,10 +987,8 @@ function wait_for_eth_rpc() {
 	local attempt=0
 
 	while [ $attempt -lt $max_attempts ]; do
-		if curl -s -X POST -H "Content-Type: application/json" \
-			--data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-			"$eth_rpc_url" >/dev/null 2>&1; then
-			echo "eth-rpc is ready!"
+		if cast block --rpc-url "$eth_rpc_url" >/dev/null 2>&1; then
+			echo "eth-rpc is ready!!"
 			notify "eth-rpc is ready!" 3000
 			return 0
 		fi
@@ -1100,8 +1137,23 @@ function westend() {
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_passet() {
 	export ETH_FROM="0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
-	export PRIVATE_KEY=2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
+	export PRIVATE_KEY=0x2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
 	export ETH_RPC_URL=$PASSET_HUB_ETH_HTTP_URL
+
+	echo "Loading account $ETH_FROM"
+	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
+}
+
+# Configures cast environment for paseo Hub testnet
+# Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
+# Usage: cast_passet
+# Example:
+#   cast_passet
+#   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
+function cast_passet() {
+	export ETH_FROM="0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
+	export PRIVATE_KEY=0x2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
+	export ETH_RPC_URL=$PASSEO_HUB_ETH_HTTP_URL
 
 	echo "Loading account $ETH_FROM"
 	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
@@ -1115,7 +1167,7 @@ function cast_passet() {
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_westend() {
 	export ETH_FROM="0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
-	export PRIVATE_KEY=2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
+	export PRIVATE_KEY=0x2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
 	export ETH_RPC_URL=$WESTEND_HUB_ETH_HTTP_URL
 
 	echo "Loading account $ETH_FROM"
@@ -1130,7 +1182,7 @@ function cast_westend() {
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
 function cast_local() {
 	export ETH_FROM="0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
-	export PRIVATE_KEY=5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
+	export PRIVATE_KEY=0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133
 	export ETH_RPC_URL=http://localhost:8545
 	echo "Loading account $ETH_FROM"
 	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
@@ -1608,16 +1660,18 @@ function westend_stack() {
 
 # Runs anvil (Ethereum node) in development mode
 # Useful for testing contracts against standard Ethereum
-# Usage: anvil-dev [proxy|run] [--port <port>]
+# Usage: anvil-dev [proxy|run] [--port <port>] [--bin <path>]
 # Examples:
 #   anvil-dev                     - Use default run mode on port 8545
 #   anvil-dev run --port 8546     - Run on custom port 8546
 #   anvil-dev proxy               - Run with mitmproxy (8545->8546)
 #   anvil-dev proxy --port 9000   - Run with mitmproxy (9000->9001)
+#   anvil-dev --bin /path/to/anvil-polkadot - Use custom binary
 function anvil-dev() {
 	# Parse arguments
 	local mode="run"
 	local port="8545"
+	local bin_path="$FOUNDRY_DIR/target/release/anvil-polkadot"
 
 	RUST_LOG="${RUST_LOG:-runtime=debug,pallet_revive=debug}"
 
@@ -1639,6 +1693,15 @@ function anvil-dev() {
 				return 1
 			fi
 			;;
+		--bin)
+			if [[ -n "$2" ]]; then
+				bin_path="$2"
+				shift 2
+			else
+				echo "Error: --bin requires a path argument"
+				return 1
+			fi
+			;;
 		--build)
 			set -x
 			SQLX_OFFLINE=true cargo build --manifest-path "$FOUNDRY_DIR/Cargo.toml" --release -p anvil-polkadot
@@ -1655,8 +1718,9 @@ function anvil-dev() {
 	# Helper function to start anvil
 	start_anvil() {
 		local port="$1"
+		local bin="$2"
 		set -x
-		RUST_LOG=$RUST_LOG "$FOUNDRY_DIR/target/release/anvil-polkadot" -p "$port"
+		RUST_LOG=$RUST_LOG "$bin" -p "$port" --timestamp 0
 		{ set +x; } 2>/dev/null
 	}
 
@@ -1673,22 +1737,49 @@ function anvil-dev() {
 		start_mitmproxy "${port}:${server_port}"
 
 		# Start anvil on server port
-		start_anvil "$server_port"
+		start_anvil "$server_port" "$bin_path"
 		;;
 	run)
 		# Start anvil directly
-		start_anvil "$port"
+		start_anvil "$port" "$bin_path"
 		;;
 	esac
 }
 
+# Checks if an address contains PVM bytecode
+# Echoes "true" if the bytecode starts with PVM magic bytes (0x50564d00), "false" otherwise
+# Usage: cast_is_pvm <address>
+# Examples:
+#   cast_is_pvm 0x1234...
+function cast_is_pvm() {
+	local address="$1"
+
+	if [ -z "$address" ]; then
+		echo "Error: Address is required"
+		echo "Usage: cast_is_pvm <address>"
+		return 1
+	fi
+
+	# Get the bytecode at the address
+	local code
+	code=$(cast code "$address" 2>/dev/null)
+
+	# Check if bytecode starts with PVM magic bytes: 'P' 'V' 'M' '\0' = 0x50564d00
+	if [[ "$code" == 0x50564d00* ]]; then
+		echo "true"
+	else
+		echo "false"
+	fi
+}
+
 # Runs anvil in a new tmux window
 # Provides a quick way to start an Ethereum development node
-# Usage: anvil_stack [--proxy] [--build]
+# Usage: anvil_stack [--proxy] [--build] [--eth]
 # Examples:
 #   anvil_stack                - Run anvil without proxy
 #   anvil_stack --proxy        - Run anvil with proxy
 #   anvil_stack --build        - Build then Run anvil
+#   anvil_stack --eth          - Use system anvil from PATH instead of anvil-polkadot
 function anvil_stack() {
 	# Kill existing 'servers' window if it exists
 	tmux kill-window -t servers 2>/dev/null
@@ -1696,6 +1787,7 @@ function anvil_stack() {
 	# Parse arguments
 	mode="run"
 	build_flag=""
+	bin_flag=""
 
 	for arg in "$@"; do
 		case "$arg" in
@@ -1705,16 +1797,24 @@ function anvil_stack() {
 		--build)
 			build_flag="--build"
 			;;
+		--eth)
+			bin_flag="--bin \$(which anvil)"
+			;;
 		esac
 	done
 
 	# Create new 'servers' window in detached mode
 	# Source shell config and run anvil with specified mode
-	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; anvil-dev $mode $build_flag; exec \$SHELL'"
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; anvil-dev $mode $build_flag $bin_flag; exec \$SHELL'"
 
 	wait_for_eth_rpc
 
 	# fund our default address
+	echo "funding 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
 	cast rpc anvil_setBalance "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac" "0x3635C9ADC5DEA00000" 2>/dev/null
+
+	# set -x
+	# cast balance "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
+	# { set +x; } 2>/dev/null
 
 }

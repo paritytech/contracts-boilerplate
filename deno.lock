@@ -14,7 +14,8 @@
     "jsr:@std/path@*": "1.1.3",
     "jsr:@std/path@^1.1.1": "1.1.3",
     "jsr:@std/path@^1.1.3": "1.1.3",
-    "npm:@openzeppelin/contracts@^5.4.0": "5.4.0",
+    "npm:@openzeppelin/contracts-upgradeable@^5.1.0": "5.4.0_@openzeppelin+contracts@5.4.0",
+    "npm:@openzeppelin/contracts@^5.1.0": "5.4.0",
     "npm:cli-table3@*": "0.6.5",
     "npm:cli-table3@~0.6.5": "0.6.5",
     "npm:ink@^6.5.1": "6.5.1_react@19.2.3",
@@ -22,6 +23,7 @@
     "npm:solc@~0.8.31": "0.8.31",
     "npm:tablemark@*": "4.1.0",
     "npm:tablemark@^4.1.0": "4.1.0",
+    "npm:viem@*": "2.43.1_ws@8.18.3",
     "npm:viem@^2.43.1": "2.43.1_ws@8.18.3"
   },
   "jsr": {
@@ -97,6 +99,12 @@
     },
     "@noble/hashes@1.8.0": {
       "integrity": "sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A=="
+    },
+    "@openzeppelin/contracts-upgradeable@5.4.0_@openzeppelin+contracts@5.4.0": {
+      "integrity": "sha512-STJKyDzUcYuB35Zub1JpWW58JxvrFFVgQ+Ykdr8A9PGXgtq/obF5uoh07k2XmFyPxfnZdPdBdhkJ/n2YxJ87HQ==",
+      "dependencies": [
+        "@openzeppelin/contracts"
+      ]
     },
     "@openzeppelin/contracts@5.4.0": {
       "integrity": "sha512-eCYgWnLg6WO+X52I16TZt8uEjbtdkgLC0SUX/xnAksjjrQI4Xfn4iBRoI5j55dmlOhDv1Y7BoR3cU7e3WWhC6A=="
@@ -446,7 +454,8 @@
       "jsr:@std/fs@^1.0.20",
       "jsr:@std/log@~0.224.14",
       "jsr:@std/path@^1.1.3",
-      "npm:@openzeppelin/contracts@^5.4.0",
+      "npm:@openzeppelin/contracts-upgradeable@^5.1.0",
+      "npm:@openzeppelin/contracts@^5.1.0",
       "npm:cli-table3@~0.6.5",
       "npm:ink@^6.5.1",
       "npm:react@^19.2.3",

@@ -92,6 +92,7 @@ async function compileWithBinary(
         sources,
         settings: {
             optimizer: optimizerSettings,
+            viaIR: true,
             remappings: [
                 `@openzeppelin/=${
                     join(rootDir, 'node_modules/@openzeppelin/')
@@ -158,12 +159,12 @@ async function compileWithBinary(
 
 export async function compile(options: {
     fileName: string
-    sourceContent: string
+    sources: CompileInput
     rootDir: string
     compiler: 'solc' | 'resolc'
     generateAbi?: boolean
 }) {
-    const { fileName, sourceContent, rootDir, compiler, generateAbi = false } =
+    const { fileName, sources, rootDir, compiler, generateAbi = false } =
         options
 
     const codegenDir = join(rootDir, 'codegen')
@@ -171,12 +172,6 @@ export async function compile(options: {
     const outputDir = compiler.includes('resolc')
         ? join(codegenDir, 'pvm')
         : join(codegenDir, 'evm')
-
-    const sources = {
-        [fileName]: {
-            content: sourceContent,
-        },
-    }
 
     logger.info(`Compiling ${fileName} with ${compiler}...`)
     const output = await compileWithBinary(compiler, sources, rootDir)
