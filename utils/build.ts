@@ -2,26 +2,32 @@ import { join } from '@std/path'
 import { logger } from './logger.ts'
 
 export type CompileInput = Record<string, { content: string }>
+export type LibraryLink = Record<string, Record<string, string>>
+
+export type LibraryDependencies = Record<string, Record<string, string[]>>
+
+type LinkReferences = Record<
+    string,
+    Record<string, Array<{ start: number; length: number }>>
+>
+
+interface CompileContract {
+    evm?: {
+        bytecode?: {
+            object: string
+            linkReferences?: LinkReferences
+        }
+    }
+    abi: unknown
+    missingLibraries?: string[]
+}
 
 export interface CompileOutput {
     errors?: Array<{
         severity: string
         formattedMessage: string
     }>
-    contracts: Record<
-        string,
-        Record<
-            string,
-            {
-                evm?: {
-                    bytecode?: {
-                        object: string
-                    }
-                }
-                abi: unknown
-            }
-        >
-    >
+    contracts: Record<string, Record<string, CompileContract>>
 }
 
 async function format(code: string) {
@@ -41,6 +47,7 @@ async function format(code: string) {
 }
 
 const compilerVersions: Record<string, string> = {}
+const libraryDependencies: LibraryDependencies = {}
 
 async function checkCompilerExists(compiler: 'solc' | 'resolc') {
     if (compilerVersions[compiler]) return
@@ -79,6 +86,7 @@ async function compileWithBinary(
     compiler: 'solc' | 'resolc',
     sources: CompileInput,
     rootDir: string,
+    libraries?: LibraryLink,
 ): Promise<CompileOutput> {
     await checkCompilerExists(compiler)
     logger.info(`Compiling with ${compiler} ${compilerVersions[compiler]}`)
@@ -97,6 +105,7 @@ async function compileWithBinary(
                     join(rootDir, 'node_modules/@openzeppelin/')
                 }/`,
             ],
+            ...(libraries && { libraries }),
             outputSelection: {
                 '*': {
                     '*': ['abi', 'evm.bytecode', 'metadata'],
@@ -133,7 +142,6 @@ async function compileWithBinary(
     try {
         const result = JSON.parse(stdoutText) as CompileOutput
 
-        // Check for errors in the compilation output
         if (result.errors) {
             for (const error of result.errors) {
                 if (error.severity === 'error') {
@@ -156,14 +164,66 @@ async function compileWithBinary(
     }
 }
 
+function mergeLibraryDependencies(output: CompileOutput) {
+    for (const [sourceFile, contractsInFile] of Object.entries(
+        output.contracts ?? {},
+    )) {
+        for (const [contractName, contract] of Object.entries(contractsInFile)) {
+            const deps: Record<string, string[]> = {}
+            const linkReferences = contract.evm?.bytecode?.linkReferences
+            if (linkReferences) {
+                for (const [linkSource, libraries] of Object.entries(
+                    linkReferences,
+                )) {
+                    const names = Object.keys(libraries)
+                    if (names.length > 0) {
+                        deps[linkSource] = names
+                    }
+                }
+            }
+
+            if (Array.isArray(contract.missingLibraries)) {
+                if (contract.missingLibraries.length > 0) {
+                    const merged = new Set(deps[sourceFile] ?? [])
+                    for (const lib of contract.missingLibraries) {
+                        merged.add(lib)
+                    }
+                    deps[sourceFile] = Array.from(merged)
+                }
+            }
+
+            if (Object.keys(deps).length > 0) {
+                libraryDependencies[contractName] = deps
+            } else {
+                delete libraryDependencies[contractName]
+            }
+        }
+    }
+
+}
+
+async function writeLibraryDependenciesFile(rootDir: string) {
+    const codegenDir = join(rootDir, 'codegen')
+    const dependenciesFile = join(codegenDir, 'libraries.ts')
+    const output = [
+        `export type LibraryDependencies = Record<string, Record<string, string[]>>`,
+        `export const libraryDependencies: LibraryDependencies = ${
+            JSON.stringify(libraryDependencies, null, 2)
+        }`,
+    ].join('\n')
+
+    Deno.writeFileSync(dependenciesFile, await format(output))
+}
+
 export async function compile(options: {
     fileName: string
     sourceContent: string
     rootDir: string
     compiler: 'solc' | 'resolc'
     generateAbi?: boolean
+    libraries?: LibraryLink
 }) {
-    const { fileName, sourceContent, rootDir, compiler, generateAbi = false } =
+    const { fileName, sourceContent, rootDir, compiler, generateAbi = false, libraries } =
         options
 
     const codegenDir = join(rootDir, 'codegen')
@@ -179,7 +239,9 @@ export async function compile(options: {
     }
 
     logger.info(`Compiling ${fileName} with ${compiler}...`)
-    const output = await compileWithBinary(compiler, sources, rootDir)
+    const output = await compileWithBinary(compiler, sources, rootDir, libraries)
+    mergeLibraryDependencies(output)
+    await writeLibraryDependenciesFile(rootDir)
 
     for (const contracts of Object.values(output.contracts)) {
         for (const [contractName, contract] of Object.entries(contracts)) {

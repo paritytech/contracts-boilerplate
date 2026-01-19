@@ -2,7 +2,7 @@ import { Hex, TransactionReceipt } from 'viem'
 import { env } from '../tools/lib/index.ts'
 import { Abis } from '../codegen/abis.ts'
 import { readBytecode } from '../utils/index.ts'
-import { compile } from '../utils/build.ts'
+import { compile, LibraryLink } from '../utils/build.ts'
 import { join } from '@std/path'
 import { logger } from '../utils/logger.ts'
 import { Buffer } from 'node:buffer'
@@ -76,7 +76,15 @@ export function ink(name: string): ContractInfo {
     }
 }
 
-export function solidity(fileName: string, name: string): ContractInfo[] {
+type LibraryLinkResolver = (
+    bytecodeType: 'evm' | 'pvm',
+) => LibraryLink | undefined
+
+export function solidity(
+    fileName: string,
+    name: string,
+    libraries?: LibraryLink | LibraryLinkResolver,
+): ContractInfo[] {
     const bytecodes = { pvm: 'polkavm', evm: 'bin' } as const
     let buildRun = false
 
@@ -98,6 +106,10 @@ export function solidity(fileName: string, name: string): ContractInfo[] {
             const contractsDir = join(rootDir, 'contracts')
             const sourceFilePath = join(contractsDir, fileName)
             const sourceContent = Deno.readTextFileSync(sourceFilePath)
+            const resolveLibraries = (compiler: 'solc' | 'resolc') => {
+                if (typeof libraries !== 'function') return libraries
+                return libraries(compiler === 'solc' ? 'evm' : 'pvm')
+            }
 
             // Compile with resolc for PVM
             await compile({
@@ -105,6 +117,7 @@ export function solidity(fileName: string, name: string): ContractInfo[] {
                 sourceContent,
                 rootDir,
                 compiler: 'resolc',
+                libraries: resolveLibraries('resolc'),
             })
 
             // Compile with solc for EVM
@@ -114,6 +127,7 @@ export function solidity(fileName: string, name: string): ContractInfo[] {
                 rootDir,
                 compiler: 'solc',
                 generateAbi: true,
+                libraries: resolveLibraries('solc'),
             })
         },
     }))

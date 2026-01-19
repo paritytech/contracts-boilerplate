@@ -1,8 +1,80 @@
 # Revive Contract Comparison
 
-Generated on: 2026-01-14
+Generated on: 2026-01-19
 
 Comparison of gas usage across different contract implementations.
+
+## FiatTokenProxy - approve
+
+| Implementation     | ref_time      | vs Best | % metered | pov     |
+| ------------------ | ------------- | ------- | --------- | ------- |
+| FiatTokenProxy_evm | 1,469,933,402 | -       | 37.9%     | 54,554  |
+| FiatTokenProxy_pvm | 1,755,105,773 | +19.4%  | 48.0%     | 178,172 |
+
+
+## FiatTokenProxy - changeAdmin
+
+| Implementation     | ref_time      | vs Best | % metered | pov    |
+| ------------------ | ------------- | ------- | --------- | ------ |
+| FiatTokenProxy_evm | 1,255,619,457 | -       | 27.3%     | 39,299 |
+| FiatTokenProxy_pvm | 1,309,253,050 | +4.3%   | 30.3%     | 49,181 |
+
+
+## FiatTokenProxy - configureMinter
+
+| Implementation     | ref_time      | vs Best | % metered | pov     |
+| ------------------ | ------------- | ------- | --------- | ------- |
+| FiatTokenProxy_evm | 1,778,633,934 | -       | 48.6%     | 85,389  |
+| FiatTokenProxy_pvm | 2,068,187,649 | +16.3%  | 55.8%     | 208,975 |
+
+
+## FiatTokenProxy - deploy
+
+| Implementation     | ref_time      | vs Best | % metered | pov    |
+| ------------------ | ------------- | ------- | --------- | ------ |
+| FiatTokenProxy_evm | 1,958,835,632 | -       | 21.0%     | 31,458 |
+| FiatTokenProxy_pvm | 2,115,727,268 | +8.0%   | 20.9%     | 31,458 |
+
+
+## FiatTokenProxy - initialize
+
+| Implementation     | ref_time      | vs Best | % metered | pov     |
+| ------------------ | ------------- | ------- | --------- | ------- |
+| FiatTokenProxy_evm | 3,464,360,982 | -       | 73.5%     | 230,401 |
+| FiatTokenProxy_pvm | 3,945,064,229 | +13.9%  | 76.7%     | 353,731 |
+
+
+## FiatTokenProxy - mint
+
+| Implementation     | ref_time      | vs Best | % metered | pov     |
+| ------------------ | ------------- | ------- | --------- | ------- |
+| FiatTokenProxy_evm | 2,414,331,217 | -       | 62.2%     | 147,123 |
+| FiatTokenProxy_pvm | 2,850,296,502 | +18.1%  | 68.0%     | 270,581 |
+
+
+## FiatTokenProxy - transfer
+
+| Implementation     | ref_time      | vs Best | % metered | pov     |
+| ------------------ | ------------- | ------- | --------- | ------- |
+| FiatTokenProxy_evm | 2,248,246,340 | -       | 59.4%     | 136,866 |
+| FiatTokenProxy_pvm | 2,656,122,671 | +18.1%  | 65.6%     | 260,388 |
+
+
+## FiatTokenProxy - transferFrom
+
+| Implementation     | ref_time      | vs Best | % metered | pov     |
+| ------------------ | ------------- | ------- | --------- | ------- |
+| FiatTokenProxy_evm | 2,742,560,474 | -       | 66.7%     | 178,150 |
+| FiatTokenProxy_pvm | 3,269,424,235 | +19.2%  | 72.0%     | 301,768 |
+
+
+## FiatTokenV2_2 - deploy
+
+| Implementation    | ref_time      | vs Best | % metered | pov    |
+| ----------------- | ------------- | ------- | --------- | ------ |
+| FiatTokenV2_2_evm | 2,417,206,915 | -       | 27.1%     | 58,283 |
+| FiatTokenV2_2_pvm | 3,996,184,160 | +65.3%  | 17.0%     | 58,219 |
+
 
 ## Fibonacci - deploy
 
@@ -54,7 +126,7 @@ Comparison of gas usage across different contract implementations.
 | -------------------------- | ------------- | ------- | --------- | ------ |
 | SimpleToken_evm            | 1,461,245,351 | -       | 37.5%     | 49,655 |
 | SimpleToken_pvm            | 1,552,049,771 | +6.2%   | 41.1%     | 54,898 |
-| simple_token_no_alloc_rust | 1,562,082,657 | +6.9%   | 41.5%     | 53,948 |
+| simple_token_no_alloc_rust | 1,562,094,984 | +6.9%   | 41.5%     | 53,951 |
 | simple_token_ink           | 2,014,032,325 | +37.8%  | 54.6%     | 77,452 |
 
 

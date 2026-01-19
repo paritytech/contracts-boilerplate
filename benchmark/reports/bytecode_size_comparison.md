@@ -1,6 +1,6 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-01-14
+Generated on: 2026-01-19
 
 ## Fibonacci Implementations
 
@@ -38,5 +38,21 @@ Generated on: 2026-01-14
 | --------- | ------- | ------------ | ----------- |
 | WETH9_evm | EVM     | 2,204        | -           |
 | WETH9_pvm | PVM     | 17,712       | +703.6%     |
+
+
+## FiatTokenV2_2 Implementations
+
+| Contract          | VM Type | Size (bytes) | vs Smallest |
+| ----------------- | ------- | ------------ | ----------- |
+| FiatTokenV2_2_evm | EVM     | 15,400       | -           |
+| FiatTokenV2_2_pvm | PVM     | 113,736      | +638.5%     |
+
+
+## FiatTokenProxy Implementations
+
+| Contract           | VM Type | Size (bytes) | vs Smallest |
+| ------------------ | ------- | ------------ | ----------- |
+| FiatTokenProxy_evm | EVM     | 1,836        | -           |
+| FiatTokenProxy_pvm | PVM     | 9,882        | +438.2%     |
 
 
