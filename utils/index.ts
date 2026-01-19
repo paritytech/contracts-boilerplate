@@ -136,8 +136,6 @@ export async function createEnv({
         chain,
     }).extend(publicActions)
 
-    console.log(primaryPrivateKey, secondaryPrivateKey)
-
     const wallet = createWalletClient({
         account: privateKeyToAccount(primaryPrivateKey, { nonceManager }),
         transport,

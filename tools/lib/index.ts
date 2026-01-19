@@ -36,8 +36,6 @@ function loadPrivateKeys(): [Hex, Hex] {
     return [defaultKey, defaultKeySecondary]
 }
 
-console.log(loadPrivateKeys())
-
 const [privateKey, privateKey2] = loadPrivateKeys()
 
 export const env = await createEnv({
