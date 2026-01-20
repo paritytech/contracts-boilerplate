@@ -1,8 +1,64 @@
 # Opcode Analysis
 
-Generated on: 2026-01-19
+Generated on: 2026-01-20
 
 ## Chain: Geth
+
+### CoinTool_App_evm - deploy
+
+- **Total Gas Used:** 1,064,708
+
+| Opcode   | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
+| -------- | --------- | ---------- | ------------ | ------------ | ----------- |
+| SSTORE   | 20,000    | 1          | 20000.0      | 86.8%        | 1.9%        |
+| SLOAD    | 2,100     | 1          | 2100.0       | 9.1%         | 0.2%        |
+| CODECOPY | 892       | 1          | 892.0        | 3.9%         | 0.1%        |
+| ADD      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| AND      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP1     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP2     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| MLOAD    | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| MSTORE   | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| NOT      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| OR       | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| PUSH1    | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| PUSH2    | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| SHL      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| SUB      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| SWAP1    | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| ADDRESS  | 2         | 1          | 2.0          | 0.0%         | 0.0%        |
+| ORIGIN   | 2         | 1          | 2.0          | 0.0%         | 0.0%        |
+| PUSH0    | 2         | 1          | 2.0          | 0.0%         | 0.0%        |
+| RETURN   | 0         | 1          | 0.0          | 0.0%         | 0.0%        |
+
+
+### CoinTool_App_evm - t
+
+- **Total Gas Used:** 11,631,985
+
+| Opcode       | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
+| ------------ | --------- | ---------- | ------------ | ------------ | ----------- |
+| CALL         | 240,545   | 1          | 240545.0     | 45.6%        | 2.1%        |
+| DELEGATECALL | 232,900   | 1          | 232900.0     | 44.2%        | 2.0%        |
+| CREATE2      | 32,112    | 1          | 32112.0      | 6.1%         | 0.3%        |
+| SSTORE       | 20,000    | 1          | 20000.0      | 3.8%         | 0.2%        |
+| LOG2         | 1,637     | 1          | 1637.0       | 0.3%         | 0.0%        |
+| SLOAD        | 100       | 1          | 100.0        | 0.0%         | 0.0%        |
+| CODECOPY     | 45        | 1          | 45.0         | 0.0%         | 0.0%        |
+| KECCAK256    | 42        | 1          | 42.0         | 0.0%         | 0.0%        |
+| MCOPY        | 12        | 1          | 12.0         | 0.0%         | 0.0%        |
+| JUMPI        | 10        | 1          | 10.0         | 0.0%         | 0.0%        |
+| JUMP         | 8         | 1          | 8.0          | 0.0%         | 0.0%        |
+| CALLDATACOPY | 6         | 1          | 6.0          | 0.0%         | 0.0%        |
+| DIV          | 5         | 1          | 5.0          | 0.0%         | 0.0%        |
+| MUL          | 5         | 1          | 5.0          | 0.0%         | 0.0%        |
+| ADD          | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| AND          | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| CALLDATALOAD | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP1         | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP2         | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP3         | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+
 
 ### FiatTokenProxy_evm - approve
 
@@ -604,7 +660,146 @@ Generated on: 2026-01-19
 | GT           | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
 
 
+### XENCrypto_evm - deploy
+
+- **Total Gas Used:** 2,393,493
+
+| Opcode   | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
+| -------- | --------- | ---------- | ------------ | ------------ | ----------- |
+| SSTORE   | 20,000    | 1          | 20000.0      | 82.2%        | 0.8%        |
+| CODECOPY | 2,154     | 1          | 2154.0       | 8.9%         | 0.1%        |
+| SLOAD    | 2,100     | 1          | 2100.0       | 8.6%         | 0.1%        |
+| JUMPI    | 10        | 1          | 10.0         | 0.0%         | 0.0%        |
+| JUMP     | 8         | 1          | 8.0          | 0.0%         | 0.0%        |
+| ADD      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| AND      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP1     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP2     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP3     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP4     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP5     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| DUP6     | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| EQ       | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| GT       | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| ISZERO   | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| LT       | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| MLOAD    | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| MSTORE   | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+| NOT      | 3         | 1          | 3.0          | 0.0%         | 0.0%        |
+
+
 ## Chain: eth-rpc
+
+### CoinTool_App_evm - deploy
+
+- **Total Gas Used:** 25,461,161
+- **Base Call Weight:** ref_time=1,591,228,135, proof_size=6,934
+- **Total Weight:** ref_time=1,835,250,060, proof_size=27,480
+- **Weight Consumed:** ref_time=244,021,925 (13.3% of total), proof_size=20,546
+
+| Opcode   | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| SSTORE   | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 69.9%         | 49.9%           |
+| SLOAD    | 1,384     | 1          | 1384.0       | 69,164,719  | 10,289     | 28.3%         | 50.1%           |
+| CODECOPY | 28        | 1          | 28.0         | 1,419,552   | 0          | 0.6%          | 0.0%            |
+| ORIGIN   | 8         | 1          | 8.0          | 395,000     | 0          | 0.2%          | 0.0%            |
+| ADDRESS  | 7         | 1          | 7.0          | 349,000     | 0          | 0.1%          | 0.0%            |
+| ADD      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| AND      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP1     | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP2     | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| MLOAD    | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| MSTORE   | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| NOT      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| OR       | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| PUSH0    | 1         | 1          | 1.0          | 30,560      | 0          | 0.0%          | 0.0%            |
+| PUSH1    | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| PUSH2    | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| SHL      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| SUB      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| SWAP1    | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| RETURN   | 0         | 1          | 0.0          | 0           | 0          | 0.0%          | 0.0%            |
+
+
+### CoinTool_App_pvm - deploy
+
+- **Total Gas Used:** 85,031,858
+- **Base Call Weight:** ref_time=1,980,057,129, proof_size=6,934
+- **Total Weight:** ref_time=2,352,084,109, proof_size=27,448
+- **Weight Consumed:** ref_time=372,026,980 (15.8% of total), proof_size=20,514
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 45.9%         | 50.0%           |
+| set_immutable_data   | 2,049     | 1          | 2049.0       | 102,480,992 | 0          | 27.5%         | 0.0%            |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 18.6%         | 50.0%           |
+| call_data_copy       | 10        | 1          | 10.0         | 496,576     | 0          | 0.1%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| origin               | 8         | 1          | 8.0          | 395,000     | 0          | 0.1%          | 0.0%            |
+| address              | 7         | 1          | 7.0          | 349,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
+
+
+### CoinTool_App_evm - t
+
+- **Total Gas Used:** 361,211,056
+- **Base Call Weight:** ref_time=917,488,943, proof_size=9,500
+- **Total Weight:** ref_time=192,217,000,967, proof_size=9,138,203
+- **Weight Consumed:** ref_time=191,299,512,024 (99.5% of total), proof_size=9,128,703
+
+| Opcode       | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| ------------ | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| SSTORE       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 0.1%          | 0.1%            |
+| SLOAD        | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 0.0%          | 0.1%            |
+| LOG2         | 443       | 1          | 443.0        | 22,179,532  | 0          | 0.0%          | 0.0%            |
+| KECCAK256    | 303       | 1          | 303.0        | 15,109,884  | 0          | 0.0%          | 0.0%            |
+| GAS          | 38        | 1          | 38.0         | 1,929,000   | 0          | 0.0%          | 0.0%            |
+| CODECOPY     | 11        | 1          | 11.0         | 548,073     | 0          | 0.0%          | 0.0%            |
+| CALLDATACOPY | 10        | 1          | 10.0         | 489,203     | 0          | 0.0%          | 0.0%            |
+| RETURN       | 9         | 1          | 9.0          | 366,022,453 | 35,766     | 0.2%          | 0.4%            |
+| CALLER       | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| ORIGIN       | 8         | 1          | 8.0          | 395,000     | 0          | 0.0%          | 0.0%            |
+| ADDRESS      | 7         | 1          | 7.0          | 349,000     | 0          | 0.0%          | 0.0%            |
+| TIMESTAMP    | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
+| CALLVALUE    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| JUMPI        | 3         | 1          | 3.0          | 152,800     | 0          | 0.0%          | 0.0%            |
+| MCOPY        | 3         | 1          | 3.0          | 137,520     | 0          | 0.0%          | 0.0%            |
+| DIV          | 2         | 1          | 2.0          | 76,400      | 0          | 0.0%          | 0.0%            |
+| JUMP         | 2         | 1          | 2.0          | 122,240     | 0          | 0.0%          | 0.0%            |
+| ADD          | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| AND          | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| CALLDATALOAD | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+
+
+### CoinTool_App_pvm - t
+
+- **Total Gas Used:** 542,995,370
+- **Base Call Weight:** ref_time=917,488,943, proof_size=9,500
+- **Total Weight:** ref_time=119,832,667,856, proof_size=10,828,951
+- **Weight Consumed:** ref_time=118,915,178,913 (99.2% of total), proof_size=10,819,451
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time        | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | --------------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294     | 10,257     | 0.1%          | 0.1%            |
+| delegate_call_evm    | 2,241     | 1          | 2241.0       | 112,040,065     | 4,899      | 0.1%          | 0.0%            |
+| set_immutable_data   | 2,050     | 1          | 2050.0       | 102,480,992     | 0          | 0.1%          | 0.0%            |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511      | 10,257     | 0.1%          | 0.1%            |
+| get_immutable_data   | 635       | 1          | 635.0        | 31,769,885      | 3,801      | 0.0%          | 0.0%            |
+| hash_keccak_256      | 303       | 1          | 303.0        | 15,109,884      | 0          | 0.0%          | 0.0%            |
+| ref_time_left        | 39        | 1          | 39.0         | 1,929,000       | 0          | 0.0%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 529,465         | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 496,689         | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000         | 0          | 0.0%          | 0.0%            |
+| origin               | 8         | 1          | 8.0          | 395,000         | 0          | 0.0%          | 0.0%            |
+| address              | 7         | 1          | 7.0          | 349,000         | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000         | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000         | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 347,000         | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000         | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 6         | 1          | 6.0          | 319,000         | 0          | 0.0%          | 0.0%            |
+| call_evm             | 0         | 1          | 0.0          | 113,737,019     | 3,801      | 0.1%          | 0.0%            |
+| instantiate          | 0         | 1          | 0.0          | 116,289,884,100 | 10,554,518 | 97.8%         | 97.6%           |
+
 
 ### FiatTokenProxy_evm - approve
 
@@ -639,27 +834,27 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - approve
 
-- **Total Gas Used:** 473,818
+- **Total Gas Used:** 473,460
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,755,105,773, proof_size=178,172
-- **Weight Consumed:** ref_time=841,598,451 (48.0% of total), proof_size=169,641
+- **Total Weight:** ref_time=1,737,192,853, proof_size=167,787
+- **Weight Consumed:** ref_time=823,685,531 (47.4% of total), proof_size=159,256
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 20.3%         | 6.0%            |
-| get_storage       | 1,384     | 1          | 1384.0       | 69,164,719  | 10,289     | 8.2%          | 6.1%            |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 1.8%          | 0.0%            |
-| deposit_event     | 276       | 1          | 276.0        | 13,751,564  | 0          | 1.6%          | 0.0%            |
-| ref_time_left     | 39        | 1          | 39.0         | 1,929,000   | 0          | 0.2%          | 0.0%            |
-| call_data_copy    | 11        | 1          | 11.0         | 504,260     | 0          | 0.1%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 535,865     | 0          | 0.1%          | 0.0%            |
-| return_data_copy  | 10        | 1          | 10.0         | 495,496     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| return_data_size  | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| delegate_call     | 0         | 1          | 0.0          | 163,563,780 | 20,578     | 19.4%         | 12.1%           |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 20.7%         | 6.4%            |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 8.4%          | 6.5%            |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 1.8%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.7%          | 0.0%            |
+| ref_time_left        | 38        | 1          | 38.0         | 1,929,000   | 0          | 0.2%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.1%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 504,260     | 0          | 0.1%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 495,496     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| delegate_call_evm    | 0         | 1          | 0.0          | 162,677,640 | 20,578     | 19.7%         | 12.9%           |
 
 
 ### FiatTokenProxy_evm - changeAdmin
@@ -695,21 +890,21 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - changeAdmin
 
-- **Total Gas Used:** 346,101
+- **Total Gas Used:** 346,075
 - **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-- **Total Weight:** ref_time=1,309,253,050, proof_size=49,181
-- **Weight Consumed:** ref_time=396,152,519 (30.3% of total), proof_size=40,749
+- **Total Weight:** ref_time=1,307,939,666, proof_size=48,987
+- **Weight Consumed:** ref_time=394,839,135 (30.2% of total), proof_size=40,555
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 3,413     | 1          | 3413.0       | 170,624,806 | 10,289     | 43.1%         | 25.2%           |
-| get_storage       | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 17.5%         | 25.2%           |
-| deposit_event     | 444       | 1          | 444.0        | 22,179,532  | 0          | 5.6%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 3,412     | 1          | 3412.0       | 170,624,806 | 10,289     | 43.2%         | 25.4%           |
+| get_storage_or_zero  | 1,384     | 1          | 1384.0       | 69,164,719  | 10,289     | 17.5%         | 25.4%           |
+| deposit_event        | 444       | 1          | 444.0        | 22,179,532  | 0          | 5.6%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### FiatTokenProxy_evm - configureMinter
@@ -745,27 +940,27 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - configureMinter
 
-- **Total Gas Used:** 532,880
+- **Total Gas Used:** 532,541
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=2,068,187,649, proof_size=208,975
-- **Weight Consumed:** ref_time=1,154,680,327 (55.8% of total), proof_size=200,444
+- **Total Weight:** ref_time=2,051,259,329, proof_size=198,590
+- **Weight Consumed:** ref_time=1,137,752,007 (55.5% of total), proof_size=190,059
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 14.8%         | 5.1%            |
-| get_storage       | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 6.0%          | 5.1%            |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 1.3%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.2%          | 0.0%            |
-| ref_time_left     | 39        | 1          | 39.0         | 1,929,000   | 0          | 0.2%          | 0.0%            |
-| call_data_copy    | 11        | 1          | 11.0         | 504,260     | 0          | 0.0%          | 0.0%            |
-| return_data_copy  | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 535,865     | 0          | 0.0%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| return_data_size  | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| delegate_call     | 0         | 1          | 0.0          | 163,563,780 | 20,578     | 14.2%         | 10.3%           |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 15.0%         | 5.4%            |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 6.1%          | 5.4%            |
+| hash_keccak_256      | 305       | 1          | 305.0        | 15,219,717  | 0          | 1.3%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.2%          | 0.0%            |
+| ref_time_left        | 38        | 1          | 38.0         | 1,929,000   | 0          | 0.2%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 504,260     | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
+| caller               | 9         | 1          | 9.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| delegate_call_evm    | 0         | 1          | 0.0          | 162,677,640 | 20,578     | 14.3%         | 10.8%           |
 
 
 ### FiatTokenProxy_evm - deploy
@@ -801,20 +996,20 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - deploy
 
-- **Total Gas Used:** 37,403,051
-- **Base Call Weight:** ref_time=1,673,876,801, proof_size=6,934
-- **Total Weight:** ref_time=2,115,727,268, proof_size=31,458
-- **Weight Consumed:** ref_time=441,850,467 (20.9% of total), proof_size=24,524
+- **Total Gas Used:** 36,964,533
+- **Base Call Weight:** ref_time=1,670,806,557, proof_size=6,934
+- **Total Weight:** ref_time=2,111,820,114, proof_size=31,458
+- **Weight Consumed:** ref_time=441,013,557 (20.9% of total), proof_size=24,524
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 38.6%         | 41.8%           |
-| code_size         | 1,283     | 1          | 1283.0       | 64,148,000  | 4,010      | 14.5%         | 16.4%           |
-| call_data_copy    | 10        | 1          | 10.0         | 496,576     | 0          | 0.1%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 38.7%         | 41.8%           |
+| code_size            | 1,283     | 1          | 1283.0       | 64,148,000  | 4,010      | 14.5%         | 16.4%           |
+| call_data_copy       | 10        | 1          | 10.0         | 496,576     | 0          | 0.1%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### FiatTokenProxy_evm - initialize
@@ -850,25 +1045,25 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - initialize
 
-- **Total Gas Used:** 1,659,218
+- **Total Gas Used:** 1,658,411
 - **Base Call Weight:** ref_time=918,265,544, proof_size=9,689
-- **Total Weight:** ref_time=3,945,064,229, proof_size=353,731
-- **Weight Consumed:** ref_time=3,026,798,685 (76.7% of total), proof_size=344,042
+- **Total Weight:** ref_time=3,904,751,659, proof_size=343,346
+- **Weight Consumed:** ref_time=2,986,486,115 (76.5% of total), proof_size=333,657
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 3,412     | 1          | 3412.0       | 170,624,806 | 10,289     | 5.6%          | 3.0%            |
-| get_storage       | 1,384     | 1          | 1384.0       | 69,164,719  | 10,289     | 2.3%          | 3.0%            |
-| ref_time_left     | 39        | 1          | 39.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.0%          | 0.0%            |
-| call_data_copy    | 10        | 1          | 10.0         | 496,915     | 0          | 0.0%          | 0.0%            |
-| return_data_copy  | 10        | 1          | 10.0         | 489,000     | 0          | 0.0%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 6         | 1          | 6.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| return_data_size  | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| delegate_call     | 0         | 1          | 0.0          | 163,705,632 | 20,578     | 5.4%          | 6.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 3,413     | 1          | 3413.0       | 170,624,806 | 10,289     | 5.7%          | 3.1%            |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 2.3%          | 3.1%            |
+| ref_time_left        | 38        | 1          | 38.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 529,465     | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 496,915     | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 489,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 9         | 1          | 9.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| delegate_call_evm    | 0         | 1          | 0.0          | 162,819,492 | 20,578     | 5.5%          | 6.2%            |
 
 
 ### FiatTokenProxy_evm - mint
@@ -904,27 +1099,27 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - mint
 
-- **Total Gas Used:** 548,522
+- **Total Gas Used:** 495,236
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=2,850,296,502, proof_size=270,581
-- **Weight Consumed:** ref_time=1,936,789,180 (68.0% of total), proof_size=262,050
+- **Total Weight:** ref_time=2,825,972,306, proof_size=260,293
+- **Weight Consumed:** ref_time=1,912,464,984 (67.7% of total), proof_size=251,762
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 3,412     | 1          | 3412.0       | 170,624,806 | 10,289     | 8.8%          | 3.9%            |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 3.6%          | 3.9%            |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.8%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.7%          | 0.0%            |
-| ref_time_left     | 39        | 1          | 39.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
-| call_data_copy    | 11        | 1          | 11.0         | 504,260     | 0          | 0.0%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
-| return_data_copy  | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
-| caller            | 9         | 1          | 9.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| return_data_size  | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| delegate_call     | 0         | 1          | 0.0          | 163,563,780 | 20,578     | 8.4%          | 7.9%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 3.6%          | 4.1%            |
+| hash_keccak_256      | 305       | 1          | 305.0        | 15,219,717  | 0          | 0.8%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.7%          | 0.0%            |
+| ref_time_left        | 38        | 1          | 38.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 504,260     | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| delegate_call_evm    | 0         | 1          | 0.0          | 162,677,640 | 20,578     | 8.5%          | 8.2%            |
+| set_storage_or_clear | 0         | 1          | 0.0          | 172,779,550 | 10,386     | 9.0%          | 4.1%            |
 
 
 ### FiatTokenProxy_evm - transfer
@@ -960,27 +1155,27 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - transfer
 
-- **Total Gas Used:** 491,839
+- **Total Gas Used:** 491,315
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=2,656,122,671, proof_size=260,388
-- **Weight Consumed:** ref_time=1,742,615,349 (65.6% of total), proof_size=251,857
+- **Total Weight:** ref_time=2,629,939,111, proof_size=250,003
+- **Weight Consumed:** ref_time=1,716,431,789 (65.3% of total), proof_size=241,472
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 9.8%          | 4.1%            |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 4.0%          | 4.1%            |
-| hash_keccak_256   | 305       | 1          | 305.0        | 15,219,717  | 0          | 0.9%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.8%          | 0.0%            |
-| ref_time_left     | 39        | 1          | 39.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
-| call_data_copy    | 11        | 1          | 11.0         | 504,260     | 0          | 0.0%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
-| return_data_copy  | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| return_data_size  | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| delegate_call     | 0         | 1          | 0.0          | 163,563,780 | 20,578     | 9.4%          | 8.2%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 9.9%          | 4.2%            |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 4.0%          | 4.2%            |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.9%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.8%          | 0.0%            |
+| ref_time_left        | 38        | 1          | 38.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 504,260     | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| delegate_call_evm    | 0         | 1          | 0.0          | 162,677,640 | 20,578     | 9.5%          | 8.5%            |
 
 
 ### FiatTokenProxy_evm - transferFrom
@@ -1016,27 +1211,27 @@ Generated on: 2026-01-19
 
 ### FiatTokenProxy_pvm - transferFrom
 
-- **Total Gas Used:** 515,305
+- **Total Gas Used:** 514,706
 - **Base Call Weight:** ref_time=913,901,786, proof_size=8,627
-- **Total Weight:** ref_time=3,269,424,235, proof_size=301,768
-- **Weight Consumed:** ref_time=2,355,522,449 (72.0% of total), proof_size=293,141
+- **Total Weight:** ref_time=3,239,499,195, proof_size=291,383
+- **Weight Consumed:** ref_time=2,325,597,409 (71.8% of total), proof_size=282,756
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 3,412     | 1          | 3412.0       | 170,624,806 | 10,289     | 7.2%          | 3.5%            |
-| get_storage       | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 2.9%          | 3.5%            |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.6%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.6%          | 0.0%            |
-| ref_time_left     | 39        | 1          | 39.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
-| call_data_copy    | 11        | 1          | 11.0         | 507,876     | 0          | 0.0%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
-| return_data_copy  | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| return_data_size  | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| delegate_call     | 0         | 1          | 0.0          | 163,665,856 | 20,578     | 6.9%          | 7.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 3,413     | 1          | 3413.0       | 170,624,806 | 10,289     | 7.3%          | 3.6%            |
+| get_storage_or_zero  | 1,384     | 1          | 1384.0       | 69,164,719  | 10,289     | 3.0%          | 3.6%            |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.7%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.6%          | 0.0%            |
+| ref_time_left        | 38        | 1          | 38.0         | 1,929,000   | 0          | 0.1%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 507,876     | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 495,496     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| delegate_call_evm    | 0         | 1          | 0.0          | 162,779,716 | 20,578     | 7.0%          | 7.3%            |
 
 
 ### FiatTokenV2_2_evm - deploy
@@ -1072,20 +1267,20 @@ Generated on: 2026-01-19
 
 ### FiatTokenV2_2_pvm - deploy
 
-- **Total Gas Used:** 272,151,500
-- **Base Call Weight:** ref_time=3,317,449,085, proof_size=6,934
-- **Total Weight:** ref_time=3,996,184,160, proof_size=58,219
-- **Weight Consumed:** ref_time=678,735,075 (17.0% of total), proof_size=51,285
+- **Total Gas Used:** 249,011,072
+- **Base Call Weight:** ref_time=3,156,166,319, proof_size=6,934
+- **Total Weight:** ref_time=3,837,783,006, proof_size=58,477
+- **Weight Consumed:** ref_time=681,616,687 (17.8% of total), proof_size=51,543
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 25.1%         | 20.0%           |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 10.2%         | 20.0%           |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| call_data_copy    | 9         | 1          | 9.0          | 496,576     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 3,456     | 1          | 3456.0       | 172,779,550 | 10,386     | 25.3%         | 20.2%           |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 10.1%         | 19.9%           |
+| call_data_copy       | 10        | 1          | 10.0         | 496,576     | 0          | 0.1%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_evm - deploy
@@ -1113,17 +1308,17 @@ Generated on: 2026-01-19
 
 ### Fibonacci_pvm - deploy
 
-- **Total Gas Used:** 19,201,069
-- **Base Call Weight:** ref_time=1,547,659,157, proof_size=6,934
-- **Total Weight:** ref_time=1,558,645,994, proof_size=6,934
-- **Weight Consumed:** ref_time=10,986,837 (0.7% of total), proof_size=0
+- **Total Gas Used:** 18,382,827
+- **Base Call Weight:** ref_time=1,541,930,145, proof_size=6,934
+- **Total Weight:** ref_time=1,552,523,142, proof_size=6,934
+- **Weight Consumed:** ref_time=10,592,997 (0.7% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 529,465  | 0          | 4.8%          | 0.0%            |
-| call_data_copy    | 10        | 1          | 10.0         | 496,576  | 0          | 4.5%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000  | 0          | 3.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 2.9%          | 0.0%            |
+| call_data_copy    | 10        | 1          | 10.0         | 496,576  | 0          | 4.7%          | 0.0%            |
+| seal_return       | 10        | 1          | 10.0         | 529,465  | 0          | 5.0%          | 0.0%            |
+| value_transferred | 7         | 1          | 7.0          | 319,000  | 0          | 3.0%          | 0.0%            |
+| call_data_size    | 6         | 1          | 6.0          | 330,000  | 0          | 3.1%          | 0.0%            |
 
 
 ### fibonacci_ink - deploy
@@ -1174,17 +1369,17 @@ Generated on: 2026-01-19
 
 ### Fibonacci_pvm - fib_10
 
-- **Total Gas Used:** 351,657
+- **Total Gas Used:** 347,222
 - **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-- **Total Weight:** ref_time=1,587,019,190, proof_size=10,340
-- **Weight Consumed:** ref_time=673,918,659 (42.5% of total), proof_size=1,908
+- **Total Weight:** ref_time=1,365,307,158, proof_size=9,978
+- **Weight Consumed:** ref_time=452,206,627 (33.1% of total), proof_size=1,546
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
-| seal_return       | 10        | 1          | 10.0         | 529,465  | 0          | 0.1%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 529,465  | 0          | 0.1%          | 0.0%            |
 | call_data_load    | 7         | 1          | 7.0          | 343,000  | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000  | 0          | 0.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 0.0%          | 0.0%            |
+| call_data_size    | 6         | 1          | 6.0          | 330,000  | 0          | 0.1%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 0.1%          | 0.0%            |
 
 
 ### fibonacci_ink - fib_10
@@ -1240,7 +1435,7 @@ Generated on: 2026-01-19
 
 ### SimpleToken_evm - deploy
 
-- **Total Gas Used:** 16,207,983
+- **Total Gas Used:** 16,205,983
 - **Base Call Weight:** ref_time=1,526,768,837, proof_size=6,934
 - **Total Weight:** ref_time=1,528,362,837, proof_size=6,934
 - **Weight Consumed:** ref_time=1,594,000 (0.1% of total), proof_size=0
@@ -1263,17 +1458,17 @@ Generated on: 2026-01-19
 
 ### SimpleToken_pvm - deploy
 
-- **Total Gas Used:** 26,811,553
-- **Base Call Weight:** ref_time=1,600,945,299, proof_size=6,934
-- **Total Weight:** ref_time=1,611,833,676, proof_size=6,934
-- **Weight Consumed:** ref_time=10,888,377 (0.7% of total), proof_size=0
+- **Total Gas Used:** 26,354,961
+- **Base Call Weight:** ref_time=1,597,748,447, proof_size=6,934
+- **Total Weight:** ref_time=1,608,242,984, proof_size=6,934
+- **Weight Consumed:** ref_time=10,494,537 (0.7% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | -------- | ---------- | ------------- | --------------- |
-| seal_return       | 10        | 1          | 10.0         | 529,465  | 0          | 4.9%          | 0.0%            |
-| call_data_copy    | 9         | 1          | 9.0          | 496,576  | 0          | 4.6%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000  | 0          | 3.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 2.9%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 529,465  | 0          | 5.0%          | 0.0%            |
+| call_data_copy    | 10        | 1          | 10.0         | 496,576  | 0          | 4.7%          | 0.0%            |
+| call_data_size    | 7         | 1          | 7.0          | 330,000  | 0          | 3.1%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 319,000  | 0          | 3.0%          | 0.0%            |
 
 
 ### simple_token_ink - deploy
@@ -1324,21 +1519,21 @@ Generated on: 2026-01-19
 
 ### SimpleToken_pvm - mint
 
-- **Total Gas Used:** 521,471
+- **Total Gas Used:** 521,421
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,497,733,197, proof_size=54,834
-- **Weight Consumed:** ref_time=584,225,875 (39.0% of total), proof_size=46,303
+- **Total Weight:** ref_time=1,495,226,765, proof_size=54,632
+- **Weight Consumed:** ref_time=581,719,443 (38.9% of total), proof_size=46,101
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 29.2%         | 22.2%           |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 11.8%         | 22.2%           |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 2.6%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 2.4%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 29.3%         | 22.2%           |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 11.9%         | 22.2%           |
+| hash_keccak_256      | 305       | 1          | 305.0        | 15,219,717  | 0          | 2.6%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 2.4%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_ink - mint
@@ -1408,22 +1603,22 @@ Generated on: 2026-01-19
 
 ### SimpleToken_pvm - transfer
 
-- **Total Gas Used:** 469,757
+- **Total Gas Used:** 416,988
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,552,049,771, proof_size=54,898
-- **Weight Consumed:** ref_time=638,542,449 (41.1% of total), proof_size=46,367
+- **Total Weight:** ref_time=1,553,568,823, proof_size=54,793
+- **Weight Consumed:** ref_time=640,061,501 (41.2% of total), proof_size=46,262
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 26.7%         | 22.1%           |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 10.8%         | 22.1%           |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 2.4%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 2.2%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 3,412     | 1          | 3412.0       | 170,600,294 | 10,257     | 26.7%         | 22.2%           |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 10.8%         | 22.2%           |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 2.4%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 2.1%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_ink - transfer
@@ -1495,22 +1690,22 @@ Generated on: 2026-01-19
 
 ### TetherToken_pvm - approve
 
-- **Total Gas Used:** 468,249
+- **Total Gas Used:** 468,259
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,476,627,717, proof_size=92,974
-- **Weight Consumed:** ref_time=563,120,395 (38.1% of total), proof_size=84,443
+- **Total Weight:** ref_time=1,477,151,338, proof_size=93,921
+- **Weight Consumed:** ref_time=563,644,016 (38.2% of total), proof_size=85,390
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 30.3%         | 12.1%           |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 12.3%         | 12.1%           |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 2.7%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 2.4%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 30.3%         | 12.0%           |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 12.3%         | 12.0%           |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 2.7%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 2.4%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### TetherToken_evm - deploy
@@ -1546,21 +1741,21 @@ Generated on: 2026-01-19
 
 ### TetherToken_pvm - deploy
 
-- **Total Gas Used:** 137,169,948
-- **Base Call Weight:** ref_time=2,366,538,749, proof_size=6,934
-- **Total Weight:** ref_time=4,526,578,724, proof_size=150,564
-- **Weight Consumed:** ref_time=2,160,039,975 (47.7% of total), proof_size=143,630
+- **Total Gas Used:** 139,224,508
+- **Base Call Weight:** ref_time=2,382,032,403, proof_size=6,934
+- **Total Weight:** ref_time=4,547,576,316, proof_size=150,951
+- **Weight Consumed:** ref_time=2,165,543,913 (47.6% of total), proof_size=144,017
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 7.9%          | 7.1%            |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 3.2%          | 7.1%            |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.7%          | 0.0%            |
-| call_data_copy    | 10        | 1          | 10.0         | 496,576     | 0          | 0.0%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.0%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 3,456     | 1          | 3456.0       | 172,779,550 | 10,386     | 8.0%          | 7.2%            |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 3.2%          | 7.1%            |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.7%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 496,576     | 0          | 0.0%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### TetherToken_evm - transfer
@@ -1596,22 +1791,22 @@ Generated on: 2026-01-19
 
 ### TetherToken_pvm - transfer
 
-- **Total Gas Used:** 479,950
+- **Total Gas Used:** 479,823
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=2,061,683,989, proof_size=154,676
-- **Weight Consumed:** ref_time=1,148,176,667 (55.7% of total), proof_size=146,145
+- **Total Weight:** ref_time=2,055,313,454, proof_size=155,559
+- **Weight Consumed:** ref_time=1,141,806,132 (55.6% of total), proof_size=147,028
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 14.9%         | 7.0%            |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 6.0%          | 7.0%            |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 1.3%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.2%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.0%          | 0.0%            |
-| caller            | 9         | 1          | 9.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 14.9%         | 7.0%            |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 6.1%          | 7.0%            |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 1.3%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.2%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 529,465     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### TetherToken_evm - transferFrom
@@ -1647,22 +1842,22 @@ Generated on: 2026-01-19
 
 ### TetherToken_pvm - transferFrom
 
-- **Total Gas Used:** 498,360
+- **Total Gas Used:** 498,231
 - **Base Call Weight:** ref_time=913,901,786, proof_size=8,627
-- **Total Weight:** ref_time=2,422,169,866, proof_size=175,414
-- **Weight Consumed:** ref_time=1,508,268,080 (62.3% of total), proof_size=166,787
+- **Total Weight:** ref_time=2,415,750,101, proof_size=176,297
+- **Weight Consumed:** ref_time=1,501,848,315 (62.2% of total), proof_size=167,670
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 3,412     | 1          | 3412.0       | 170,624,806 | 10,289     | 11.3%         | 6.2%            |
-| get_storage       | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 4.6%          | 6.2%            |
-| hash_keccak_256   | 305       | 1          | 305.0        | 15,219,717  | 0          | 1.0%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.9%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.0%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 3,413     | 1          | 3413.0       | 170,624,806 | 10,289     | 11.4%         | 6.1%            |
+| get_storage_or_zero  | 1,384     | 1          | 1384.0       | 69,164,719  | 10,289     | 4.6%          | 6.1%            |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 1.0%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 0.9%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 529,465     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### WETH9_evm - deploy
@@ -1698,19 +1893,19 @@ Generated on: 2026-01-19
 
 ### WETH9_pvm - deploy
 
-- **Total Gas Used:** 55,104,542
-- **Base Call Weight:** ref_time=1,797,773,261, proof_size=6,934
-- **Total Weight:** ref_time=2,560,284,227, proof_size=68,476
-- **Weight Consumed:** ref_time=762,510,966 (29.8% of total), proof_size=61,542
+- **Total Gas Used:** 53,936,166
+- **Base Call Weight:** ref_time=1,789,607,045, proof_size=6,934
+- **Total Weight:** ref_time=2,549,508,821, proof_size=68,476
+- **Weight Consumed:** ref_time=759,901,776 (29.8% of total), proof_size=61,542
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 22.4%         | 16.7%           |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 9.1%          | 16.7%           |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| call_data_copy    | 9         | 1          | 9.0          | 496,576     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 22.5%         | 16.7%           |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 9.1%          | 16.7%           |
+| seal_return          | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 496,576     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### WETH9_evm - deposit
@@ -1746,22 +1941,22 @@ Generated on: 2026-01-19
 
 ### WETH9_pvm - deposit
 
-- **Total Gas Used:** 349,926
+- **Total Gas Used:** 349,907
 - **Base Call Weight:** ref_time=912,804,683, proof_size=8,360
-- **Total Weight:** ref_time=1,260,474,876, proof_size=46,586
-- **Weight Consumed:** ref_time=347,670,193 (27.6% of total), proof_size=38,226
+- **Total Weight:** ref_time=1,259,534,400, proof_size=46,070
+- **Weight Consumed:** ref_time=346,729,717 (27.5% of total), proof_size=37,710
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 49.1%         | 26.8%           |
-| get_storage       | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 19.9%         | 26.8%           |
-| hash_keccak_256   | 305       | 1          | 305.0        | 15,219,717  | 0          | 4.4%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 4.0%          | 0.0%            |
-| seal_return       | 10        | 1          | 10.0         | 529,465     | 0          | 0.2%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 330,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 49.2%         | 27.2%           |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 19.9%         | 27.2%           |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 4.4%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 4.0%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.2%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### WETH9_evm - transfer
@@ -1797,22 +1992,22 @@ Generated on: 2026-01-19
 
 ### WETH9_pvm - transfer
 
-- **Total Gas Used:** 471,845
+- **Total Gas Used:** 471,823
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,656,462,407, proof_size=77,624
-- **Weight Consumed:** ref_time=742,955,085 (44.9% of total), proof_size=69,093
+- **Total Weight:** ref_time=1,655,325,011, proof_size=77,108
+- **Weight Consumed:** ref_time=741,817,689 (44.8% of total), proof_size=68,577
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 23.0%         | 14.8%           |
-| get_storage       | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 9.3%          | 14.8%           |
-| hash_keccak_256   | 304       | 1          | 304.0        | 15,219,717  | 0          | 2.0%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.9%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 535,865     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 23.0%         | 15.0%           |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 9.3%          | 15.0%           |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 2.1%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.9%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 535,865     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### WETH9_evm - withdraw
@@ -1848,22 +2043,72 @@ Generated on: 2026-01-19
 
 ### WETH9_pvm - withdraw
 
-- **Total Gas Used:** 356,216
+- **Total Gas Used:** 356,206
 - **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-- **Total Weight:** ref_time=1,815,003,975, proof_size=62,605
-- **Weight Consumed:** ref_time=901,903,444 (49.7% of total), proof_size=54,173
+- **Total Weight:** ref_time=1,814,506,569, proof_size=62,089
+- **Weight Consumed:** ref_time=901,406,038 (49.7% of total), proof_size=53,657
 
-| Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ----------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| call              | 8,998     | 1          | 8998.0       | 449,944,465 | 5,594      | 49.9%         | 10.3%           |
-| set_storage       | 3,413     | 1          | 3413.0       | 170,624,806 | 10,289     | 18.9%         | 19.0%           |
-| get_storage       | 1,384     | 1          | 1384.0       | 69,164,719  | 10,289     | 7.7%          | 19.0%           |
-| hash_keccak_256   | 305       | 1          | 305.0        | 15,219,717  | 0          | 1.7%          | 0.0%            |
-| deposit_event     | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.5%          | 0.0%            |
-| seal_return       | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
-| caller            | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load    | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| call_evm             | 8,999     | 1          | 8999.0       | 449,944,465 | 5,594      | 49.9%         | 10.4%           |
+| set_storage_or_clear | 3,412     | 1          | 3412.0       | 170,624,806 | 10,289     | 18.9%         | 19.2%           |
+| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 7.7%          | 19.2%           |
+| hash_keccak_256      | 305       | 1          | 305.0        | 15,219,717  | 0          | 1.7%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,751,564  | 0          | 1.5%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 7         | 1          | 7.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+
+
+### XENCrypto_evm - deploy
+
+- **Total Gas Used:** 39,755,005
+- **Base Call Weight:** ref_time=1,691,280,107, proof_size=6,934
+- **Total Weight:** ref_time=2,360,462,436, proof_size=58,283
+- **Weight Consumed:** ref_time=669,182,329 (28.3% of total), proof_size=51,349
+
+| Opcode    | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| --------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| SSTORE    | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 25.5%         | 20.0%           |
+| SLOAD     | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 10.3%         | 20.0%           |
+| CODECOPY  | 52        | 1          | 52.0         | 2,617,049   | 0          | 0.4%          | 0.0%            |
+| TIMESTAMP | 7         | 1          | 7.0          | 347,000     | 0          | 0.1%          | 0.0%            |
+| CALLVALUE | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| JUMPI     | 3         | 1          | 3.0          | 152,800     | 0          | 0.0%          | 0.0%            |
+| JUMP      | 2         | 1          | 2.0          | 122,240     | 0          | 0.0%          | 0.0%            |
+| ADD       | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| AND       | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP1      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP2      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP3      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP4      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP5      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP6      | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| EQ        | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| GT        | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| ISZERO    | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| LT        | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| MLOAD     | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+
+
+### XENCrypto_pvm - deploy
+
+- **Total Gas Used:** 273,702,905
+- **Base Call Weight:** ref_time=3,300,230,397, proof_size=6,934
+- **Total Weight:** ref_time=4,190,424,438, proof_size=58,219
+- **Weight Consumed:** ref_time=890,194,041 (21.2% of total), proof_size=51,285
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 19.2%         | 20.0%           |
+| set_immutable_data   | 2,049     | 1          | 2049.0       | 102,480,992 | 0          | 11.5%         | 0.0%            |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 7.8%          | 20.0%           |
+| call_data_copy       | 10        | 1          | 10.0         | 496,576     | 0          | 0.1%          | 0.0%            |
+| seal_return          | 10        | 1          | 10.0         | 529,465     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
 
 

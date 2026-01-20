@@ -165,16 +165,22 @@ async function compileWithBinary(
 }
 
 function mergeLibraryDependencies(output: CompileOutput) {
-    for (const [sourceFile, contractsInFile] of Object.entries(
-        output.contracts ?? {},
-    )) {
-        for (const [contractName, contract] of Object.entries(contractsInFile)) {
+    for (
+        const [sourceFile, contractsInFile] of Object.entries(
+            output.contracts ?? {},
+        )
+    ) {
+        for (
+            const [contractName, contract] of Object.entries(contractsInFile)
+        ) {
             const deps: Record<string, string[]> = {}
             const linkReferences = contract.evm?.bytecode?.linkReferences
             if (linkReferences) {
-                for (const [linkSource, libraries] of Object.entries(
-                    linkReferences,
-                )) {
+                for (
+                    const [linkSource, libraries] of Object.entries(
+                        linkReferences,
+                    )
+                ) {
                     const names = Object.keys(libraries)
                     if (names.length > 0) {
                         deps[linkSource] = names
@@ -194,12 +200,9 @@ function mergeLibraryDependencies(output: CompileOutput) {
 
             if (Object.keys(deps).length > 0) {
                 libraryDependencies[contractName] = deps
-            } else {
-                delete libraryDependencies[contractName]
             }
         }
     }
-
 }
 
 async function writeLibraryDependenciesFile(rootDir: string) {
@@ -223,8 +226,14 @@ export async function compile(options: {
     generateAbi?: boolean
     libraries?: LibraryLink
 }) {
-    const { fileName, sourceContent, rootDir, compiler, generateAbi = false, libraries } =
-        options
+    const {
+        fileName,
+        sourceContent,
+        rootDir,
+        compiler,
+        generateAbi = false,
+        libraries,
+    } = options
 
     const codegenDir = join(rootDir, 'codegen')
     const abiDir = join(codegenDir, 'abi')
@@ -239,7 +248,12 @@ export async function compile(options: {
     }
 
     logger.info(`Compiling ${fileName} with ${compiler}...`)
-    const output = await compileWithBinary(compiler, sources, rootDir, libraries)
+    const output = await compileWithBinary(
+        compiler,
+        sources,
+        rootDir,
+        libraries,
+    )
     mergeLibraryDependencies(output)
     await writeLibraryDependenciesFile(rootDir)
 

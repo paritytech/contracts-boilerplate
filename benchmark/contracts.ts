@@ -2,7 +2,7 @@
 import { deploy as deployContract, env } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import { logger } from '../utils/logger.ts'
-import type { LibraryLink, LibraryDependencies } from '../utils/build.ts'
+import type { LibraryDependencies, LibraryLink } from '../utils/build.ts'
 import {
     Artifacts,
     build,
@@ -333,7 +333,7 @@ function createContracts(
                 ...solidity(
                     'usdc_proxy.sol',
                     'FiatTokenProxy',
-                    libraryLinks['FiatTokenV2_2'],
+                    libraryLinks['FiatTokenProxy'],
                 ),
             ],
             deploy: async (id, name, bytecode) => {
@@ -438,6 +438,71 @@ function createContracts(
                                 env.wallet.account.address,
                                 env.wallet2.account.address,
                                 10n,
+                            ],
+                        })
+                    },
+                },
+            ],
+        },
+        {
+            id: 'XENCrypto',
+            srcs: [
+                ...solidity(
+                    'xen_token.sol',
+                    'XENCrypto',
+                    libraryLinks['XENCrypto'],
+                ),
+            ],
+            deploy: (id, name, bytecode) => {
+                return deployContract({
+                    name: { id, name },
+                    bytecode,
+                    args: [],
+                })
+            },
+            calls: [],
+        },
+        {
+            id: 'CoinTool_App',
+            srcs: [
+                ...solidity('xen_minter.sol', 'CoinTool_App'),
+            ],
+            deploy: (id, name, bytecode) => {
+                return deployContract({
+                    name: { id, name },
+                    bytecode,
+                    args: [],
+                })
+            },
+            calls: [
+                {
+                    name: 't',
+                    exec: async (address) => {
+                        const addresses = await loadAddresses()
+                        let tokenAddress
+
+                        if (address === addresses.CoinTool_App_pvm) {
+                            tokenAddress = addresses.XENCrypto_pvm
+                        } else if (address === addresses.CoinTool_App_evm) {
+                            tokenAddress = addresses.XENCrypto_evm
+                        }
+
+                        if (!tokenAddress) {
+                            throw new Error('Missing XENCrypto address')
+                        }
+
+                        const tokenHex = tokenAddress.slice(2) // drop 0x
+                        const data = '0x59635f6f000000000000000000000000' +
+                            tokenHex +
+                            '000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000249ff054df000000000000000000000000000000000000000000000000000000000000004600000000000000000000000000000000000000000000000000000000'
+                        return await env.wallet.writeContract({
+                            address,
+                            abi: abis.CoinTool_App,
+                            functionName: 't',
+                            args: [
+                                50n,
+                                data,
+                                '0x01',
                             ],
                         })
                     },
