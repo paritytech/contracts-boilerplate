@@ -1,8 +1,8 @@
 import { Hex, TransactionReceipt } from 'viem'
-import { env } from '../tools/lib/index.ts'
-import { Abis } from '../codegen/abis.ts'
+import { deploy as deployContract, env } from '../tools/lib/index.ts'
+import type { Abis } from '../codegen/abis.ts'
 import { readBytecode } from '../utils/index.ts'
-import { compile } from '../utils/build.ts'
+import { compile, LinkReferences } from '../utils/build.ts'
 import { join } from '@std/path'
 import { logger } from '../utils/logger.ts'
 import { Buffer } from 'node:buffer'
@@ -78,45 +78,57 @@ export function ink(name: string): ContractInfo {
 
 export function solidity(fileName: string, name: string): ContractInfo[] {
     const bytecodes = { pvm: 'polkavm', evm: 'bin' } as const
-    let buildRun = false
+    const buildRun = { evm: false, pvm: false }
+    const libraryLinks = {
+        evm: undefined as LinkReferences | undefined,
+        pvm: undefined as LinkReferences | undefined,
+    }
 
-    return Object.entries(bytecodes).map(([type, ext]) => ({
-        supportEvm() {
-            return type == 'evm'
-        },
-        getName() {
-            return `${name}_${type}`
-        },
-        getBytecode() {
-            return readBytecode(`./codegen/${type}/${name}.${ext}`)
-        },
-        async build() {
-            if (buildRun) return
-            buildRun = true
+    return Object.entries(bytecodes).map(([type, ext]) => {
+        // Type-specific configuration
+        const buildType = type as 'evm' | 'pvm'
+        const isEvm = type === 'evm'
+        const compiler = isEvm ? 'solc' : 'resolc'
 
-            const rootDir = join(import.meta.dirname!, '..')
-            const contractsDir = join(rootDir, 'contracts')
-            const sourceFilePath = join(contractsDir, fileName)
-            const sourceContent = Deno.readTextFileSync(sourceFilePath)
+        const contract = {
+            supportEvm() {
+                return isEvm
+            },
+            getName() {
+                return `${name}_${type}`
+            },
+            getBytecode() {
+                return readBytecode(`./codegen/${type}/${name}.${ext}`)
+            },
+            async build() {
+                const libs = libraryLinks[buildType]
+                const shouldBuild = !buildRun[buildType] || libs
 
-            // Compile with resolc for PVM
-            await compile({
-                fileName,
-                sourceContent,
-                rootDir,
-                compiler: 'resolc',
-            })
+                if (!shouldBuild) return
 
-            // Compile with solc for EVM
-            await compile({
-                fileName,
-                sourceContent,
-                rootDir,
-                compiler: 'solc',
-                generateAbi: true,
-            })
-        },
-    }))
+                const rootDir = join(import.meta.dirname!, '..')
+                const contractsDir = join(rootDir, 'contracts')
+                const sourceFilePath = join(contractsDir, fileName)
+                const sourceContent = Deno.readTextFileSync(sourceFilePath)
+
+                await compile({
+                    fileName,
+                    sourceContent,
+                    rootDir,
+                    compiler,
+                    generateAbi: isEvm,
+                    libraries: libs,
+                })
+
+                buildRun[buildType] = true
+            },
+
+            setLibraries(libs: LinkReferences) {
+                libraryLinks[buildType] = libs
+            },
+        }
+        return contract
+    })
 }
 
 export function rust(name: string): ContractInfo {
@@ -188,7 +200,71 @@ export async function build(contracts: Artifacts) {
     }
 }
 
+async function resolveLibraryLinks(
+    src: ContractInfo,
+    deployedAddresses: Record<string, string>,
+) {
+    // currently we only support library linking for solidity contracts
+    const solidityContract = src as ContractInfo & {
+        setLibraries?: (libs: LinkReferences) => void
+    }
+    if (!solidityContract.setLibraries) return
+
+    const contractName = src.getName()
+    const match = contractName.match(/_(evm|pvm)$/)
+
+    const suffix = match?.[0] ?? ''
+    const baseName = suffix
+        ? contractName.slice(0, -suffix.length)
+        : contractName
+    const type = src.supportEvm() ? 'evm' : 'pvm'
+
+    // Load library dependencies
+    const { libs } = await import('../codegen/libs.ts')
+    if (!(baseName in libs)) return // contract does not require library linking
+
+    const lib = libs[baseName as keyof typeof libs]
+    const libRefs: LinkReferences = {}
+
+    for (const [libSrc, LibContracts] of Object.entries(lib)) {
+        for (const libName of LibContracts) {
+            let libAddress = deployedAddresses[`${libName}${suffix}`]
+            if (!libAddress) {
+                // not deployed library -> deploy it
+                const ext = src.supportEvm() ? 'bin' : 'polkavm'
+                const receipt = await deployContract({
+                    name: {
+                        id: libName as keyof Abis,
+                        name: `${libName}${suffix}`,
+                    },
+                    args: [],
+                    bytecode: readBytecode(
+                        `./codegen/${type}/${libName}.${ext}`,
+                    ),
+                })
+                if (!receipt.contractAddress) {
+                    throw new Error(
+                        `${contractName} library link: Unable to deploy library contract ${libName}`,
+                    )
+                }
+                libAddress = receipt.contractAddress
+                // Track deployed library to avoid redeployment
+                deployedAddresses[`${libName}${suffix}`] = libAddress
+            }
+            libRefs[libSrc] ??= {}
+            libRefs[libSrc][libName] = libAddress
+        }
+    }
+
+    // Set libraries and trigger recompilation
+    solidityContract.setLibraries(libRefs)
+    await src.build()
+}
+
 export async function deploy(contracts: Artifacts) {
+    // Track deployed libraries to avoid redeployment within this session
+    const deployedAddresses: Record<string, string> = {}
+
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
@@ -197,7 +273,7 @@ export async function deploy(contracts: Artifacts) {
         for (const src of srcs) {
             const contract = src.getName()
             logger.debug(`Deploying ${contract}...`)
-
+            await resolveLibraryLinks(src, deployedAddresses)
             const receipt = await artifact.deploy(
                 artifact.id as keyof Abis,
                 contract,

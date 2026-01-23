@@ -18,6 +18,7 @@ codegen/*.json
 codegen/abi/*
 codegen/pvm/*
 codegen/evm/*
+codegen/libs/*
 *.sha256.txt
 
 # Benchmark artifacts
