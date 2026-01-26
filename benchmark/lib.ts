@@ -291,10 +291,8 @@ export async function deploy(contracts: Artifacts) {
 }
 
 export async function execute(contracts: Artifacts) {
-    const addresses = await import('../codegen/addresses.ts') as Record<
-        string,
-        Hex
-    >
+    // Use loadAddresses to avoid module caching issues
+    const addresses = await loadAddresses()
 
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
@@ -417,6 +415,7 @@ INSERT OR REPLACE INTO transaction_steps (
 }
 
 export async function loadAddresses(): Promise<Record<string, Hex>> {
-    const mod = await import('../codegen/addresses.ts')
+    // Add cache busting to get fresh addresses
+    const mod = await import(`../codegen/addresses.ts?t=${Date.now()}`)
     return mod as Record<string, Hex>
 }

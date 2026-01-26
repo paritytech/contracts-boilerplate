@@ -1,5 +1,6 @@
 #!/usr/bin/env -S deno run --env-file --allow-all
 import { deploy as deployContract, env } from '../tools/lib/index.ts'
+import { uploadCodePVM } from '../tools/lib/pvm.ts'
 import { abis } from '../codegen/abis.ts'
 import { logger } from '../utils/logger.ts'
 import {
@@ -99,23 +100,6 @@ export const contracts: Artifacts = [
                 },
             },
         ],
-    },
-    {
-        id: 'FiatTokenV2_2',
-        srcs: [
-            ...solidity(
-                'usdc_implementation.sol',
-                'FiatTokenV2_2',
-            ),
-        ],
-        deploy: (id, name, bytecode) => {
-            return deployContract({
-                name: { id, name },
-                bytecode,
-                args: [],
-            })
-        },
-        calls: [],
     },
     {
         id: 'TetherToken',
@@ -381,6 +365,38 @@ export const contracts: Artifacts = [
             })
         },
         calls: [
+            {
+                name: 't',
+                exec: async (address) => {
+                    const addresses = await loadAddresses()
+                    let tokenAddress
+
+                    if (address === addresses.CoinTool_App_pvm) {
+                        tokenAddress = addresses.XENCrypto_pvm
+                    } else if (address === addresses.CoinTool_App_evm) {
+                        tokenAddress = addresses.XENCrypto_evm
+                    }
+
+                    if (!tokenAddress) {
+                        throw new Error('Missing XENCrypto address')
+                    }
+
+                    const tokenHex = tokenAddress.slice(2) // drop 0x
+                    const data = '0x59635f6f000000000000000000000000' +
+                        tokenHex +
+                        '000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000249ff054df000000000000000000000000000000000000000000000000000000000000004600000000000000000000000000000000000000000000000000000000'
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.CoinTool_App,
+                        functionName: 't',
+                        args: [
+                            50n,
+                            data,
+                            '0x01',
+                        ],
+                    })
+                }
+            }
         ],
     },
 ]
@@ -388,6 +404,10 @@ export const contracts: Artifacts = [
 const cli = parseArgs(Deno.args, {
     boolean: ['build', 'execute', 'report', 'clean'],
 })
+if (env.chain.name !== 'Geth') {
+    const code = env.getByteCode('CoinTool_Proxy', 'polkavm')
+    await uploadCodePVM(code)
+}
 
 if (cli.build) {
     logger.info(`Building contracts...`)
