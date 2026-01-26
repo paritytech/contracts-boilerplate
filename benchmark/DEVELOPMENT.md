@@ -22,6 +22,21 @@ cargo install --git https://github.com/paritytech/revive.git cargo-pvm --locked 
 
 ## Running Benchmarks
 
+Before running, start a development node:
+```sh
+# For Revive testing
+revive_dev_stack
+
+# For Geth testing (set RPC_URL=http://localhost:8545 in .env)
+geth-dev
+```
+
+And build the necessary metadata:
+
+```
+deno task build
+```
+
 ```sh
 # 1. Build all contracts (ink!, Rust, Solidity)
 ./benchmark/contracts.ts --build
@@ -36,14 +51,6 @@ cargo install --git https://github.com/paritytech/revive.git cargo-pvm --locked 
 ./benchmark/contracts.ts --build --execute --report
 ```
 
-Before running, start a development node:
-```sh
-# For Revive testing
-revive_dev_stack
-
-# For Geth testing (set RPC_URL=http://localhost:8545 in .env)
-geth-dev
-```
 
 ## Adding New Contracts
 
