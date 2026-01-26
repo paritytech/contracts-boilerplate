@@ -415,3 +415,8 @@ INSERT OR REPLACE INTO transaction_steps (
         throw error
     }
 }
+
+export async function loadAddresses(): Promise<Record<string, Hex>> {
+    const mod = await import('../codegen/addresses.ts')
+    return mod as Record<string, Hex>
+}
