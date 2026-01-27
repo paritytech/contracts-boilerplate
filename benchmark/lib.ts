@@ -113,7 +113,7 @@ export function solidity(fileName: string, name: string): ContractInfo[] {
 
                 await compile({
                     fileName,
-                    sourceContent,
+                    sources: { [fileName]: { content: sourceContent } },
                     rootDir,
                     compiler,
                     generateAbi: isEvm,
