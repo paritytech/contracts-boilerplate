@@ -45,8 +45,8 @@ export async function createEnv({
     privateKey?: Hex
     privateKeys?: readonly [Hex, Hex]
 }) {
-    const resolvedPrivateKeys =
-        privateKeys ?? (privateKey ? [privateKey, privateKey] : undefined)
+    const resolvedPrivateKeys = privateKeys ??
+        (privateKey ? [privateKey, privateKey] : undefined)
     if (!resolvedPrivateKeys) {
         throw new Error('createEnv requires privateKeys or privateKey')
     }

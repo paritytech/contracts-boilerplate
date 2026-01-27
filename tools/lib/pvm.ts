@@ -1,4 +1,4 @@
-import { ApiPromise, WsProvider, Keyring } from '@polkadot/api'
+import { ApiPromise, Keyring, WsProvider } from '@polkadot/api'
 import { Hex } from 'viem'
 import { logger } from '../../utils/logger.ts'
 
@@ -21,6 +21,7 @@ export async function uploadCodePVM(
     logger.info(`Uploading contract code to PVM...`)
     const api = await ApiPromise.create({
         provider: new WsProvider(wsUrl),
+        noInitWarn: true, // Suppress API initialization warnings
     })
     logger.debug(`Connected to ${wsUrl}`)
 

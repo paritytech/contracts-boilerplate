@@ -23,6 +23,7 @@ cargo install --git https://github.com/paritytech/revive.git cargo-pvm --locked 
 ## Running Benchmarks
 
 Before running, start a development node:
+
 ```sh
 # For Revive testing
 revive_dev_stack
@@ -50,7 +51,6 @@ deno task build
 # Or run all steps together
 ./benchmark/contracts.ts --build --execute --report
 ```
-
 
 ## Adding New Contracts
 

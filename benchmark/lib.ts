@@ -170,6 +170,7 @@ export type Artifacts = Array<{
         name: string
         exec: (address: Hex) => Promise<Hex>
     }>
+    setup?: () => Promise<void>
 }>
 
 export function deleteChainData(chainName: string) {
@@ -286,6 +287,11 @@ export async function deploy(contracts: Artifacts) {
                 'deploy',
                 receipt.transactionHash,
             )
+        }
+
+        if (artifact.setup) {
+            logger.debug(`Running setup for ${artifact.id}...`)
+            await artifact.setup()
         }
     }
 }
