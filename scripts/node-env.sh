@@ -53,11 +53,15 @@ export WESTEND_BLOCK_EXPLORER_URL="https://blockscout-asset-hub.parity-chains-sc
 export PASSET_HUB_WS_URL="wss://testnet-passet-hub.polkadot.io"
 export PASSET_HUB_ETH_HTTP_URL="https://testnet-passet-hub-eth-rpc.polkadot.io"
 
-export PASSEO_HUB_ETH_HTTP_URL=https://services.polkadothub-rpc.com/testnet
+export PASEO_HUB_WS_URL="wss://sys.ibp.network/asset-hub-paseo"
+export PASEO_HUB_ETH_HTTP_URL=https://services.polkadothub-rpc.com/testnet
 
 # Kusama Asset Hub Substrate RPC endpoint
 export KSM_WS_URL="wss://kusama-asset-hub-rpc.polkadot.io"
 export KSM_ETH_HTTP_URL="https://kusama-asset-hub-eth-rpc.polkadot.io"
+
+export POLKADOT_ETH_HTTP_URL="https://eth-rpc.polkadot.io"
+export POLKADOT_BLOCK_EXPLORER_URL="https://blockscout.polkadot.io"
 
 # Validates that POLKADOT_SDK_DIR exists and is a valid polkadot-sdk checkout
 function validate_polkadot_sdk_dir() {
@@ -83,7 +87,7 @@ function validate_polkadot_sdk_dir() {
 # Follows development setup from https://github.com/pgherveou/mitmproxy/blob/main/CONTRIBUTING.md
 # Usage: install_mitmproxy
 function install_mitmproxy() {
-	local mitmproxy_dir="$HOME/mitmproxy"
+	local mitmproxy_dir="$HOME/github/mitmproxy"
 
 	echo "Installing mitmproxy fork from https://github.com/pgherveou/mitmproxy..."
 
@@ -157,27 +161,45 @@ function install_mitmproxy() {
 }
 
 # Starts mitmproxy in a new tmux window
-# Usage: start_mitmproxy [listen_port:proxy_port]
+# Usage: start_mitmproxy [listen_port:target] ...
 # Examples:
-#   start_mitmproxy              - Start with default ports 8000:8545
-#   start_mitmproxy 9944:8844    - Start listening on 9944, proxying to 8844
+#   start_mitmproxy                                              - Start with default ports 8000:8545
+#   start_mitmproxy 9944:8844                                    - Start listening on 9944, proxying to localhost:8844
+#   start_mitmproxy 8545:https://example.com                     - Proxy to remote URL
+#   start_mitmproxy 8000:8545 8545:https://testnet.polkadot.io   - Multiple reverse proxies
 function start_mitmproxy() {
-	local ports="${1:-8000:8545}"
-	IFS=":" read listen_port proxy_port <<<"$ports"
+	pkill -f "python.*mitmproxy" 2>/dev/null || true
 
-	pkill -f mitmproxy
+	# Build mode arguments for each mapping
+	local mode_args=""
+	local mappings=("$@")
+	[[ ${#mappings[@]} -eq 0 ]] && mappings=("8000:8545")
+
+	for mapping in "${mappings[@]}"; do
+		local listen_port="${mapping%%:*}"
+		local target="${mapping#*:}"
+
+		# If target is just a number, assume localhost
+		if [[ "$target" =~ ^[0-9]+$ ]]; then
+			target="http://localhost:${target}"
+		fi
+
+		mode_args+=" --mode reverse:${target}@${listen_port}"
+	done
 
 	# Check if tmux is installed
 	if ! command -v tmux &>/dev/null; then
 		echo "tmux is not installed. Please run this command in a new terminal:"
 		echo ""
-		echo "cd $HOME/mitmproxy && source venv/bin/activate && mitmproxy --listen-port $listen_port --mode reverse:http://localhost:${proxy_port} -s $HOME/mitmproxy/scripts/json-rpc.py"
+		echo "cd $HOME/github/mitmproxy && source venv/bin/activate && mitmproxy${mode_args} -s $HOME/github/mitmproxy/scripts/json-rpc.py"
 		echo ""
 		return 0
 	fi
 
 	tmux kill-window -t mitmproxy 2>/dev/null
-	tmux new-window -d -n mitmproxy "cd $HOME/mitmproxy; source venv/bin/activate; mitmproxy --listen-port $listen_port --mode reverse:http://localhost:${proxy_port} -s $HOME/mitmproxy/scripts/json-rpc.py; tmux wait-for -S mitmproxy-done"
+	local cmd="cd $HOME/github/mitmproxy && source venv/bin/activate && mitmproxy${mode_args} -s scripts/json-rpc.py"
+	echo "Running: $cmd"
+	tmux new-window -d -n mitmproxy "$cmd"
 }
 
 # Manages the Polkadot Revive development node with various build and run options
@@ -1000,6 +1022,39 @@ function wait_for_eth_rpc() {
 	return 1
 }
 
+# Funds the default development address from the geth dev account
+# The default address (0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac) is used by the deploy scripts
+# This sends 1000 ETH from geth's pre-funded dev account to the default address
+# Usage: fund_default_address [url]
+# Examples:
+#   fund_default_address                      - Use default URL http://localhost:8545
+#   fund_default_address http://localhost:8546 - Use custom URL
+function fund_default_address() {
+	local eth_rpc_url="${1:-http://localhost:8545}"
+	local default_address="0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"
+	local endowment="1000ether"
+
+	echo "Funding default address $default_address with $endowment..."
+
+	# Get the geth dev account (first account, pre-funded)
+	local dev_account
+	dev_account=$(cast rpc eth_accounts --rpc-url "$eth_rpc_url" 2>/dev/null | jq -r '.[0]')
+
+	if [ -z "$dev_account" ] || [ "$dev_account" = "null" ]; then
+		echo "Warning: Could not get geth dev account"
+		return 1
+	fi
+
+	# Send funds from dev account to default address
+	# In geth --dev mode, the dev account can send transactions without unlocking
+	if cast send "$default_address" --value "$endowment" --from "$dev_account" --unlocked --rpc-url "$eth_rpc_url" >/dev/null 2>&1; then
+		echo "Successfully funded $default_address with $endowment"
+	else
+		echo "Warning: Failed to fund default address"
+		return 1
+	fi
+}
+
 # Manages the Westend Asset Hub runtime for testing Polkadot Revive contracts
 # Builds a custom chain spec with development accounts endowed with funds
 # Usage: westend [bacon|build|run] [--retester]
@@ -1150,10 +1205,10 @@ function cast_passet() {
 # Example:
 #   cast_passet
 #   cast send --value 0.1ether 0x... --private-key $PRIVATE_KEY
-function cast_passet() {
+function cast_paseo() {
 	export ETH_FROM="0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
 	export PRIVATE_KEY=0x2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
-	export ETH_RPC_URL=$PASSEO_HUB_ETH_HTTP_URL
+	export ETH_RPC_URL=$PASEO_HUB_ETH_HTTP_URL
 
 	echo "Loading account $ETH_FROM"
 	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
@@ -1191,6 +1246,11 @@ function cast_local() {
 # Configures cast environment for kusama
 function cast_kusama() {
 	export ETH_RPC_URL=$KSM_ETH_HTTP_URL
+	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
+}
+
+function cast_polkadot() {
+	export ETH_RPC_URL=$POLKADOT_ETH_HTTP_URL
 	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
 }
 
@@ -1562,6 +1622,10 @@ function geth_stack() {
 	# Create new 'servers' window in detached mode
 	# Source shell config and run geth with specified mode
 	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; geth-dev $mode $retester_flag; exec \$SHELL'"
+
+	# Wait for eth-rpc to be ready and fund the default address
+	wait_for_eth_rpc
+	fund_default_address
 }
 
 # Runs the complete Passet Hub stack (passet node + eth-rpc) in tmux window
