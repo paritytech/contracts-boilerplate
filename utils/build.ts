@@ -10,18 +10,39 @@ export interface CompileOutput {
     }>
     contracts: Record<
         string,
-        Record<
-            string,
-            {
-                evm?: {
-                    bytecode?: {
-                        object: string
-                    }
-                }
-                abi: unknown
-            }
-        >
+        Record<string, CompiledContract>
     >
+}
+
+export interface CompiledContract {
+    evm?: {
+        bytecode?: {
+            object: string
+            linkReferences?: LinkReferences
+        }
+    }
+    abi: unknown
+    missingLibraries?: string[]
+}
+
+export interface LinkReference {
+    start: number
+    length: number
+}
+
+export type LinkReferences = {
+    [fileName: string]: {
+        [libraryName: string]: LinkReference[] | string
+    }
+}
+
+export type LibraryLink = {
+    [fileName: string]: string[]
+}
+
+export interface CompileError {
+    severity: string
+    formattedMessage: string
 }
 
 async function format(code: string) {
@@ -74,11 +95,26 @@ async function checkCompilerExists(compiler: 'solc' | 'resolc') {
         Deno.exit(1)
     }
 }
+function getLibraries(
+    contract: CompiledContract,
+): LibraryLink {
+    const refs = contract.evm?.bytecode?.linkReferences
+    if (!refs) return {}
+
+    const result: LibraryLink = {}
+
+    for (const [sourceUnit, libraries] of Object.entries(refs)) {
+        result[sourceUnit] = Object.keys(libraries)
+    }
+
+    return result
+}
 
 async function compileWithBinary(
     compiler: 'solc' | 'resolc',
     sources: CompileInput,
     rootDir: string,
+    libraries?: LinkReferences,
 ): Promise<CompileOutput> {
     await checkCompilerExists(compiler)
     logger.info(`Compiling with ${compiler} ${compilerVersions[compiler]}`)
@@ -98,6 +134,7 @@ async function compileWithBinary(
                     join(rootDir, 'node_modules/@openzeppelin/')
                 }/`,
             ],
+            ...(libraries && { libraries }),
             outputSelection: {
                 '*': {
                     '*': ['abi', 'evm.bytecode', 'metadata'],
@@ -163,18 +200,31 @@ export async function compile(options: {
     rootDir: string
     compiler: 'solc' | 'resolc'
     generateAbi?: boolean
+    libraries?: LinkReferences
 }) {
-    const { fileName, sources, rootDir, compiler, generateAbi = false } =
-        options
+    const {
+        fileName,
+        sources,
+        rootDir,
+        compiler,
+        generateAbi = false,
+        libraries,
+    } = options
 
     const codegenDir = join(rootDir, 'codegen')
     const abiDir = join(codegenDir, 'abi')
+    const libsDir = join(codegenDir, 'libs')
     const outputDir = compiler.includes('resolc')
         ? join(codegenDir, 'pvm')
         : join(codegenDir, 'evm')
 
     logger.info(`Compiling ${fileName} with ${compiler}...`)
-    const output = await compileWithBinary(compiler, sources, rootDir)
+    const output = await compileWithBinary(
+        compiler,
+        sources,
+        rootDir,
+        libraries,
+    )
 
     for (const contracts of Object.values(output.contracts)) {
         for (const [contractName, contract] of Object.entries(contracts)) {
@@ -210,6 +260,22 @@ export async function compile(options: {
                     tsContent,
                 )
             }
+
+            const libs = getLibraries(contract)
+            if (Object.keys(libs).length == 0) continue
+            logger.info(`📜 Add libraries for ${contractName}`)
+            const libsName = `${contractName}Libs`
+            const tsContent = `export const ${libsName} = ${
+                JSON.stringify(
+                    libs,
+                    null,
+                    2,
+                )
+            } as const\n`
+            Deno.writeTextFileSync(
+                join(libsDir, `${contractName}.ts`),
+                tsContent,
+            )
         }
     }
 
@@ -250,6 +316,44 @@ export async function generateAbiIndex(rootDir: string) {
     indexCode.push('}')
     Deno.writeFileSync(
         join(codegenDir, `abis.ts`),
+        await format(indexCode.join('\n')),
+    )
+}
+
+export async function generateLibIndex(rootDir: string) {
+    const codegenDir = join(rootDir, 'codegen')
+    const libDir = join(codegenDir, 'libs')
+
+    logger.debug('📦 Generating Libs index file...')
+    const indexCode = [
+        `
+    export type Libs = typeof libs
+    export const libs = {
+    `.trimEnd(),
+    ]
+
+    try {
+        const libFiles = Array.from(Deno.readDirSync(libDir))
+            .filter((f) => f.isFile && f.name.endsWith('.ts'))
+            .sort((a, b) => a.name.localeCompare(b.name))
+
+        for (const libFile of libFiles) {
+            const contractName = libFile.name.replace('.ts', '')
+            const libName = `${contractName}Libs`
+            const importStatement =
+                `import { ${libName} } from './libs/${contractName}.ts'`
+            indexCode.unshift(importStatement)
+            indexCode.push(`${contractName}: ${libName},`)
+        }
+    } catch (error) {
+        logger.warn(
+            `⚠️ Could not generate lib: ${error}`,
+        )
+    }
+
+    indexCode.push('}')
+    Deno.writeFileSync(
+        join(codegenDir, `libs.ts`),
         await format(indexCode.join('\n')),
     )
 }
