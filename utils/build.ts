@@ -231,9 +231,9 @@ export async function compile(options: {
             if (contract?.evm?.bytecode?.object) {
                 const bytecodeHex = contract.evm.bytecode.object
                 if (bytecodeHex.length > 0) {
-                    const ext = compiler === 'resolc' ? 'polkavm' : 'bin'
+                    const ext = compiler.includes('resolc') ? 'polkavm' : 'bin'
                     const outputFile = join(outputDir, `${contractName}.${ext}`)
-                    const label = compiler === 'resolc' ? 'PVM' : 'EVM'
+                    const label = compiler.includes('resolc') ? 'PVM' : 'EVM'
                     logger.info(`📜 Add ${label} contract ${contractName}`)
                     const bytecode = new Uint8Array(
                         bytecodeHex
