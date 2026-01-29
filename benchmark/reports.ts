@@ -7,6 +7,104 @@ import { sumOf } from '@std/collections'
 
 const REPORTS_DIR = join(import.meta.dirname!, 'reports')
 
+// Opcode category mapping for EVM opcodes and PVM syscalls
+const OPCODE_CATEGORIES: Record<string, string[]> = {
+    'Arithmetic': ['ADD', 'SUB', 'MUL', 'DIV', 'MOD', 'SDIV', 'SMOD'],
+    'Bitwise': ['OR', 'XOR', 'AND', 'SHL', 'SHR', 'SAR', 'BYTE', 'NOT'],
+    'Comparison': ['LT', 'GT', 'EQ', 'ISZERO', 'SLT', 'SGT'],
+    'Math': ['ADDMOD', 'MULMOD', 'EXP', 'SIGNEXTEND'],
+    'Crypto': [
+        'KECCAK256', 'SHA3',
+        // PVM syscalls
+        'hash_keccak_256',
+    ],
+    'Memory': ['MLOAD', 'MSTORE', 'MSTORE8', 'MSIZE', 'MCOPY'],
+    'Storage': [
+        'SLOAD', 'SSTORE', 'TLOAD', 'TSTORE',
+        // PVM syscalls
+        'get_storage_or_zero', 'set_storage_or_clear',
+    ],
+    'Calldata': [
+        'CALLDATALOAD', 'CALLDATASIZE', 'CALLDATACOPY',
+        // PVM syscalls
+        'call_data_load', 'call_data_size', 'call_data_copy',
+    ],
+    'Context/Blockchain': [
+        'ADDRESS', 'CALLER', 'ORIGIN', 'CHAINID', 'GASPRICE', 'GASLIMIT',
+        'COINBASE', 'BLOCKHASH', 'NUMBER', 'TIMESTAMP', 'BASEFEE', 'PREVRANDAO',
+        'BLOBHASH', 'BLOBBASEFEE',
+        // PVM syscalls
+        'address', 'caller', 'origin', 'chain_id', 'gas_price', 'gas_limit',
+        'block_author', 'block_hash', 'block_number', 'now', 'base_fee',
+    ],
+    'Ether/Gas': [
+        'GAS', 'CALLVALUE', 'BALANCE', 'SELFBALANCE',
+        // PVM syscalls
+        'ref_time_left', 'value_transferred', 'balance', 'balance_of',
+    ],
+    'Events/Logs': [
+        'LOG0', 'LOG1', 'LOG2', 'LOG3', 'LOG4',
+        // PVM syscalls
+        'deposit_event',
+    ],
+    'Calls': [
+        'CALL', 'STATICCALL', 'DELEGATECALL', 'CALLCODE',
+        // PVM syscalls
+        'call_evm', 'delegate_call_evm',
+    ],
+    'Creation': [
+        'CREATE', 'CREATE2',
+        // PVM syscalls
+        'instantiate',
+    ],
+    'Return': [
+        'RETURN', 'REVERT', 'STOP', 'INVALID', 'SELFDESTRUCT',
+        // PVM syscalls
+        'seal_return', 'consume_all_gas', 'terminate',
+    ],
+    'Return Data': [
+        'RETURNDATASIZE', 'RETURNDATACOPY',
+        // PVM syscalls
+        'return_data_size', 'return_data_copy',
+    ],
+    'Code': [
+        'CODESIZE', 'CODECOPY', 'EXTCODESIZE', 'EXTCODECOPY', 'EXTCODEHASH',
+        // PVM syscalls
+        'code_size', 'code_hash',
+    ],
+    'Immutables': [
+        'LOADIMMUTABLE', 'SETIMMUTABLE',
+        // PVM syscalls
+        'get_immutable_data', 'set_immutable_data',
+    ],
+    'Stack': [
+        'POP', 'PUSH0', 'PUSH1', 'PUSH2', 'PUSH3', 'PUSH4', 'PUSH5', 'PUSH6',
+        'PUSH7', 'PUSH8', 'PUSH9', 'PUSH10', 'PUSH11', 'PUSH12', 'PUSH13',
+        'PUSH14', 'PUSH15', 'PUSH16', 'PUSH17', 'PUSH18', 'PUSH19', 'PUSH20',
+        'PUSH21', 'PUSH22', 'PUSH23', 'PUSH24', 'PUSH25', 'PUSH26', 'PUSH27',
+        'PUSH28', 'PUSH29', 'PUSH30', 'PUSH31', 'PUSH32',
+        'DUP1', 'DUP2', 'DUP3', 'DUP4', 'DUP5', 'DUP6', 'DUP7', 'DUP8',
+        'DUP9', 'DUP10', 'DUP11', 'DUP12', 'DUP13', 'DUP14', 'DUP15', 'DUP16',
+        'SWAP1', 'SWAP2', 'SWAP3', 'SWAP4', 'SWAP5', 'SWAP6', 'SWAP7', 'SWAP8',
+        'SWAP9', 'SWAP10', 'SWAP11', 'SWAP12', 'SWAP13', 'SWAP14', 'SWAP15', 'SWAP16',
+    ],
+    'Control Flow': ['JUMP', 'JUMPI', 'JUMPDEST', 'PC'],
+}
+
+// Build reverse mapping: opcode -> category (case-insensitive)
+const OPCODE_TO_CATEGORY: Record<string, string> = {}
+for (const [category, opcodes] of Object.entries(OPCODE_CATEGORIES)) {
+    for (const opcode of opcodes) {
+        // Store both original and uppercase for case-insensitive matching
+        OPCODE_TO_CATEGORY[opcode.toLowerCase()] = category
+    }
+}
+
+function getOpcodeCategory(opcode: string | null): string {
+    if (!opcode) return 'Unknown'
+    return OPCODE_TO_CATEGORY[opcode.toLowerCase()] ?? 'Other'
+}
+
 function table(data: Record<string, unknown>[]) {
     return tablemark(data, { align: undefined, headerCase: 'preserve' })
 }
@@ -14,6 +112,7 @@ function table(data: Record<string, unknown>[]) {
 export async function report(contracts: Artifacts) {
     await ensureDir(REPORTS_DIR)
     await generateOpcodeAnalysis()
+    await generateCategoryAnalysis()
     await generateContractComparison()
     await generateBytecodeComparison(contracts)
     logger.info(`Reports saved to ${REPORTS_DIR}`)
@@ -144,6 +243,7 @@ async function generateOpcodeAnalysis() {
                 )
 
                 const row: Record<string, string | null | undefined> = {
+                    'Category': getOpcodeCategory(opcode.op),
                     'Opcode': opcode.op,
                     'Total Gas': opcode.total_gas_cost?.toLocaleString(),
                     'Call Count': opcode.count.toLocaleString(),
@@ -191,6 +291,206 @@ async function generateOpcodeAnalysis() {
 
     await Deno.writeTextFile(
         join(REPORTS_DIR, 'opcode_analysis.md'),
+        markdown,
+    )
+}
+
+async function generateCategoryAnalysis() {
+    let markdown = `# Opcode Category Analysis\n\n`
+    markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
+    markdown += `Opcodes grouped by functional category.\n\n`
+
+    const allData = db.prepare(`
+        SELECT
+            t.chain_name,
+            t.contract_id,
+            t.contract_name,
+            t.transaction_name,
+            t.gas_used,
+            t.weight_consumed_ref_time,
+            t.weight_consumed_proof_size,
+            t.base_call_weight_ref_time,
+            t.base_call_weight_proof_size,
+            s.op,
+            SUM(s.gas_cost) as total_gas_cost,
+            COUNT(*) as count,
+            SUM(s.weight_cost_ref_time) as total_weight_cost_ref_time,
+            SUM(s.weight_cost_proof_size) as total_weight_cost_proof_size
+        FROM transactions AS t
+        JOIN
+            transaction_steps AS s ON s.hash = t.hash AND s.chain_name = t.chain_name
+        GROUP BY
+            t.hash, t.chain_name, s.op
+        ORDER BY
+            t.chain_name, t.contract_id, t.contract_name, t.transaction_name
+    `).all() as Array<{
+        chain_name: string
+        contract_id: string
+        contract_name: string
+        transaction_name: string
+        gas_used: number
+        weight_consumed_ref_time: number | null
+        weight_consumed_proof_size: number | null
+        base_call_weight_ref_time: number | null
+        base_call_weight_proof_size: number | null
+        op: string | null
+        total_gas_cost: number | null
+        count: number
+        total_weight_cost_ref_time: number | null
+        total_weight_cost_proof_size: number | null
+    }>
+
+    const byChain = Object.groupBy(allData, (row) => row.chain_name)
+
+    for (const [chainName, chainRows] of Object.entries(byChain)) {
+        if (!chainRows) continue
+
+        markdown += `## Chain: ${chainName}\n\n`
+
+        const byTransaction = Object.groupBy(
+            chainRows,
+            (row) => `${row.contract_name}:${row.transaction_name}`,
+        )
+
+        // Sort entries by contract_id, then transaction_name
+        const sortedEntries = Object.entries(byTransaction).sort((a, b) => {
+            const txA = a[1]?.[0]
+            const txB = b[1]?.[0]
+            if (!txA || !txB) return 0
+
+            if (txA.contract_id !== txB.contract_id) {
+                return txA.contract_id.localeCompare(txB.contract_id)
+            }
+            return txA.transaction_name.localeCompare(txB.transaction_name)
+        })
+
+        for (const [, opcodes] of sortedEntries) {
+            if (!opcodes) continue
+
+            const tx = opcodes[0]
+            markdown += `### ${tx.contract_name} - ${tx.transaction_name}\n\n`
+            markdown +=
+                `- **Total Gas Used:** ${tx.gas_used.toLocaleString()}\n`
+
+            if (
+                tx.weight_consumed_ref_time !== null &&
+                tx.base_call_weight_ref_time !== null
+            ) {
+                const totalRefTime = tx.base_call_weight_ref_time +
+                    tx.weight_consumed_ref_time
+                const weightConsumedPercent =
+                    ((tx.weight_consumed_ref_time / totalRefTime) * 100)
+                        .toFixed(1)
+
+                markdown += [
+                    `- **Base Call Weight:** ref_time=${tx.base_call_weight_ref_time.toLocaleString()}, proof_size=${
+                        tx.base_call_weight_proof_size?.toLocaleString() ??
+                            'N/A'
+                    }`,
+                    `- **Total Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${
+                        ((tx.base_call_weight_proof_size ?? 0) +
+                            (tx.weight_consumed_proof_size ?? 0))
+                            .toLocaleString()
+                    }`,
+                    `- **Weight Consumed:** ref_time=${tx.weight_consumed_ref_time.toLocaleString()} (${weightConsumedPercent}% of total), proof_size=${
+                        (tx.weight_consumed_proof_size ?? 0).toLocaleString()
+                    }`,
+                ].join('\n') + '\n'
+            }
+
+            markdown += '\n'
+
+            // Aggregate opcodes by category
+            const categoryData: Record<string, {
+                total_gas_cost: number
+                count: number
+                total_weight_cost_ref_time: number
+                total_weight_cost_proof_size: number
+                opcodes: string[]
+            }> = {}
+
+            for (const opcode of opcodes) {
+                const category = getOpcodeCategory(opcode.op)
+                if (!categoryData[category]) {
+                    categoryData[category] = {
+                        total_gas_cost: 0,
+                        count: 0,
+                        total_weight_cost_ref_time: 0,
+                        total_weight_cost_proof_size: 0,
+                        opcodes: [],
+                    }
+                }
+                categoryData[category].total_gas_cost += opcode.total_gas_cost ?? 0
+                categoryData[category].count += opcode.count
+                categoryData[category].total_weight_cost_ref_time +=
+                    opcode.total_weight_cost_ref_time ?? 0
+                categoryData[category].total_weight_cost_proof_size +=
+                    opcode.total_weight_cost_proof_size ?? 0
+                if (opcode.op && !categoryData[category].opcodes.includes(opcode.op)) {
+                    categoryData[category].opcodes.push(opcode.op)
+                }
+            }
+
+            const hasWeightCost = opcodes.some(
+                (op) => op.total_weight_cost_ref_time !== null,
+            )
+
+            // Sort categories by cost (descending)
+            const sortedCategories = Object.entries(categoryData).sort((a, b) => {
+                if (hasWeightCost) {
+                    return b[1].total_weight_cost_ref_time - a[1].total_weight_cost_ref_time
+                }
+                return b[1].total_gas_cost - a[1].total_gas_cost
+            })
+
+            const totalGasFromCategories = sumOf(
+                sortedCategories,
+                ([, data]) => data.total_gas_cost,
+            )
+
+            const tableData = sortedCategories.map(([category, data]) => {
+                const row: Record<string, string | null | undefined> = {
+                    'Category': category,
+                    'Opcodes Used': data.opcodes.sort().join(', '),
+                    'Total Gas': data.total_gas_cost.toLocaleString(),
+                    'Call Count': data.count.toLocaleString(),
+                }
+
+                if (hasWeightCost && tx.weight_consumed_ref_time) {
+                    const percentOfRefTime =
+                        ((data.total_weight_cost_ref_time /
+                            tx.weight_consumed_ref_time) * 100).toFixed(1)
+
+                    const percentOfProofSize = tx.weight_consumed_proof_size
+                        ? ((data.total_weight_cost_proof_size /
+                            tx.weight_consumed_proof_size) * 100).toFixed(1)
+                        : '0.0'
+
+                    row['ref time'] = data.total_weight_cost_ref_time
+                        .toLocaleString()
+                    row['proof size'] = data.total_weight_cost_proof_size
+                        .toLocaleString()
+                    row['% of ref time'] = `${percentOfRefTime}%`
+                    row['% of proof size'] = `${percentOfProofSize}%`
+                } else {
+                    const percentOfCategories =
+                        ((data.total_gas_cost / totalGasFromCategories) * 100)
+                            .toFixed(1)
+                    const percentOfTxGas =
+                        ((data.total_gas_cost / tx.gas_used) * 100).toFixed(1)
+                    row['% of opcodes'] = `${percentOfCategories}%`
+                    row['% of tx Gas'] = `${percentOfTxGas}%`
+                }
+
+                return row
+            })
+
+            markdown += table(tableData) + '\n\n'
+        }
+    }
+
+    await Deno.writeTextFile(
+        join(REPORTS_DIR, 'category_analysis.md'),
         markdown,
     )
 }
