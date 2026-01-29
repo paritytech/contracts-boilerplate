@@ -26,8 +26,9 @@ const emptyProof: Hex[] = []
 // Price: 50 tokens with 6 decimals (like USDC)
 const tokenPrice = 50n * 10n ** 6n
 
-// Track deployed mock token address and merkle roots (set in setup)
-let mockTokenAddress: Hex | null = null
+// Track deployed mock token addresses per W3S variant and merkle roots (set in setup)
+// Maps W3S contract address -> MockERC20 address
+const w3sToTokenMap: Map<Hex, Hex> = new Map()
 let staffMerkleRoot: Hex | null = null
 let freeMerkleRoot: Hex | null = null
 
@@ -44,17 +45,17 @@ export const w3sContracts: Artifacts = [
             })
         },
         setup: async () => {
-            // Deploy MockERC20 token for testing
+            // Deploy MockERC20 token for testing - one per W3S variant
             const { loadAddresses } = await import('../lib.ts')
             const { readBytecode: readBytecodeUtil } = await import('../../utils/index.ts')
             const addresses = await loadAddresses()
 
-            // Get all W3S contract addresses (both pvm and evm if they exist)
-            const w3sAddresses: Hex[] = []
-            if (addresses['W3S_pvm']) w3sAddresses.push(addresses['W3S_pvm'])
-            if (addresses['W3S_evm']) w3sAddresses.push(addresses['W3S_evm'])
+            // Get all W3S contract addresses with their variant type (pvm or evm)
+            const w3sVariants: { address: Hex; variant: 'pvm' | 'evm' }[] = []
+            if (addresses['W3S_pvm']) w3sVariants.push({ address: addresses['W3S_pvm'], variant: 'pvm' })
+            if (addresses['W3S_evm']) w3sVariants.push({ address: addresses['W3S_evm'], variant: 'evm' })
 
-            if (w3sAddresses.length === 0) {
+            if (w3sVariants.length === 0) {
                 throw new Error('W3S contract not deployed')
             }
 
@@ -63,31 +64,35 @@ export const w3sContracts: Artifacts = [
             staffMerkleRoot = merkleLeaf(env.wallet2.account.address)
             freeMerkleRoot = merkleLeaf(env.wallet2.account.address)
 
-            // Deploy MockERC20 (proper ERC20 with approve/transferFrom returning bool)
             const mintAmount = 1000000n * 10n ** 6n // 1M tokens with 6 decimals
-            const mockBytecode = readBytecodeUtil(
-                env.chain.name === 'Geth' ? './codegen/evm/MockERC20.bin' : './codegen/pvm/MockERC20.polkavm'
-            )
 
-            const deployHash = await env.wallet.deployContract({
-                abi: abis.MockERC20,
-                bytecode: mockBytecode,
-                args: ['Test USDT', 'USDT', 6],
-            })
-            const receipt = await env.wallet.waitForTransactionReceipt({ hash: deployHash })
-            mockTokenAddress = receipt.contractAddress!
+            // Deploy separate MockERC20 for each W3S variant (pvm or evm)
+            for (const { address: w3sAddress, variant } of w3sVariants) {
+                // Deploy MockERC20 with matching bytecode type
+                const mockBytecode = readBytecodeUtil(
+                    variant === 'evm' ? './codegen/evm/MockERC20.bin' : './codegen/pvm/MockERC20.polkavm'
+                )
 
-            // Mint tokens to wallet
-            let hash = await env.wallet.writeContract({
-                address: mockTokenAddress,
-                abi: abis.MockERC20,
-                functionName: 'mint',
-                args: [env.wallet.account.address, mintAmount],
-            })
-            await env.wallet.waitForTransactionReceipt({ hash })
+                const deployHash = await env.wallet.deployContract({
+                    abi: abis.MockERC20,
+                    bytecode: mockBytecode,
+                    args: ['Test USDT', 'USDT', 6],
+                })
+                const receipt = await env.wallet.waitForTransactionReceipt({ hash: deployHash })
+                const mockTokenAddress = receipt.contractAddress!
 
-            // Configure all W3S variants with the same token and settings
-            for (const w3sAddress of w3sAddresses) {
+                // Map this W3S address to its MockERC20 address
+                w3sToTokenMap.set(w3sAddress, mockTokenAddress)
+
+                // Mint tokens to wallet
+                let hash = await env.wallet.writeContract({
+                    address: mockTokenAddress,
+                    abi: abis.MockERC20,
+                    functionName: 'mint',
+                    args: [env.wallet.account.address, mintAmount],
+                })
+                await env.wallet.waitForTransactionReceipt({ hash })
+
                 // Configure payment token on W3S
                 hash = await env.wallet.writeContract({
                     address: w3sAddress,
@@ -178,14 +183,15 @@ export const w3sContracts: Artifacts = [
             {
                 name: 'buyTicket',
                 exec: async (address) => {
-                    if (!mockTokenAddress) {
-                        throw new Error('Mock token not deployed')
+                    const tokenAddress = w3sToTokenMap.get(address)
+                    if (!tokenAddress) {
+                        throw new Error(`Mock token not deployed for W3S at ${address}`)
                     }
                     return env.wallet.writeContract({
                         address,
                         abi: abis.W3S,
                         functionName: 'buyTicket',
-                        args: [mockTokenAddress],
+                        args: [tokenAddress],
                     })
                 },
             },
