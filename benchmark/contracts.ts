@@ -7,15 +7,24 @@ import { parseArgs } from '@std/cli'
 // Import contract definitions
 import { testContracts } from './contracts/test-contracts.ts'
 import { ethereumContracts } from './contracts/ethereum-contracts.ts'
+import { protocolCommonsContracts } from './contracts/protocol-commons-contracts.ts'
+import { hackm3Contracts } from './contracts/hackm3-contracts.ts'
+import { w3sContracts } from './contracts/w3s-contracts.ts'
 
 /**
  * Combined contracts array for benchmarking
  * - testContracts: Simple test contracts (Fibonacci, SimpleToken)
  * - ethereumContracts: Real Ethereum contracts (USDT, WETH, USDC, XEN)
+ * - protocolCommonsContracts: Protocol Commons contracts (Store, Log, NFC, FC, Escrow, DotNS, KeyRegistry)
+ * - hackm3Contracts: HackM3 contracts (DocumentAccessManagement)
+ * - w3sContracts: W3S Ticketing contracts (Web3 Summit 2026)
  */
 export const contracts = [
     ...testContracts,
     ...ethereumContracts,
+    ...protocolCommonsContracts,
+    ...hackm3Contracts,
+    ...w3sContracts,
 ]
 
 const cli = parseArgs(Deno.args, {
