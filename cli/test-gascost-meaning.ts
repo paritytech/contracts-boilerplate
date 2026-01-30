@@ -73,14 +73,16 @@ for (const r of results) {
 
 const COLD_COST = 2600
 const WARM_COST = 100
-// Verify EIP-150 1/64th rule: gas_forwarded = gas_available - gas_available/64
+
 console.log('\n=== Verifying EIP-2929 + EIP-150 1/64th rule ===')
-console.log('Formula: gasCost = gas - (gas - ACCOUNT_ACCESS)/64')
+console.log('Formula: delegateCall.gasCost = gas_left - floor(gas_left/64) + ACCOUNT_ACCESS_COST')
+console.log('         gas_left = delegateCall.gas - ACCOUNT_ACCESS_COST')
 console.log('')
 for (const r of results) {
-    const expected = r.gasBeforeCall - Math.floor((r.gasBeforeCall - COLD_COST) / 64)
+    const gas_left = r.gasBeforeCall - COLD_COST
+    const expected = gas_left - Math.floor(gas_left / 64) + COLD_COST
     console.log(`Gas limit: ${r.gasLimit}`)
-    console.log(`  gas - (gas - ACCOUNT_ACCESS)/64 = ${r.gasBeforeCall} - ${Math.floor((r.gasBeforeCall - COLD_COST) / 64)} = ${expected}`)
+    console.log(`  gas - (gas - ACCOUNT_ACCESS)/64 = ${gas_left} - ${Math.floor(gas_left / 64)} = ${expected}`)
     console.log(`  gasCost      = ${r.gasCost}`)
     console.log()
 }
