@@ -45,7 +45,7 @@ async function generateOpcodeAnalysis() {
         GROUP BY 
             t.hash, t.chain_name, s.op
         ORDER BY 
-            t.chain_name, t.contract_id, t.contract_name, t.transaction_name, total_gas_cost DESC
+            t.chain_name, t.contract_id, t.contract_name, t.transaction_name, total_weight_cost_ref_time DESC, total_weight_cost_proof_size DESC, total_gas_cost DESC
     `).all() as Array<{
         chain_name: string
         contract_id: string

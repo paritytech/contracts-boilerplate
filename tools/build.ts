@@ -1,6 +1,6 @@
 import { join } from '@std/path'
 import { parseArgs } from '@std/cli'
-import { compile, generateAbiIndex } from '../utils/build.ts'
+import { compile, generateAbiIndex, generateLibIndex } from '../utils/build.ts'
 import { logger } from '../utils/logger.ts'
 
 const { filter, solcOnly, clean } = parseArgs(Deno.args, {
@@ -116,11 +116,12 @@ for (const contract of contracts) {
             fileName: contract.name,
             sources: sourcesObj,
             rootDir,
-            compiler: 'resolc',
+            compiler: (Deno.env.get('RESOLC_BIN') as 'resolc') ?? 'resolc',
         })
     }
 }
 
 await generateAbiIndex(rootDir)
+await generateLibIndex(rootDir)
 
 logger.info('✨ All contracts compiled successfully')
