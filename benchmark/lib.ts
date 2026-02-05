@@ -344,12 +344,45 @@ async function updateStats(
             op: string
             gas: number
             gasCost: number
+            depth: number
             weightCost?: { ref_time: number; proof_size: number }
         }>
         weightConsumed?: { ref_time: number; proof_size: number }
         baseCallWeight?: { ref_time: number; proof_size: number }
     }
-    const structLogs = typedTrace.structLogs ?? []
+
+    // Calculate intrinsic gas costs for Geth by removing forwarded gas for call opcodes
+    const rawLogs = typedTrace.structLogs ?? []
+    const structLogs =
+        chainName === 'Geth'
+            ? rawLogs.map((log, i) => {
+                  // CALL-type opcodes where gasCost includes forwarded gas
+                  const callOpcodes = new Set([
+                      'CALL',
+                      'DELEGATECALL',
+                      'STATICCALL',
+                      'CALLCODE',
+                      'CREATE',
+                      'CREATE2',
+                  ])
+
+                  if (!callOpcodes.has(log.op)) {
+                      return log
+                  }
+
+                  // For call opcodes, check if next entry has higher depth (child call started)
+                  const nextLog = rawLogs[i + 1]
+                  if (nextLog && nextLog.depth > log.depth) {
+                      // Intrinsic cost = total gasCost - gas forwarded to child
+                      const gasForwarded = nextLog.gas
+                      const intrinsicCost = log.gasCost - gasForwarded
+                      return { ...log, gasCost: intrinsicCost }
+                  }
+
+                  // No child call (e.g., call to precompile or empty account)
+                  return log
+              })
+            : rawLogs
     const weightConsumed = typedTrace.weightConsumed
     const baseCallWeight = typedTrace.baseCallWeight
 

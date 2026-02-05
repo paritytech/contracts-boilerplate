@@ -243,7 +243,6 @@ async function generateOpcodeAnalysis() {
                 )
 
                 const row: Record<string, string | null | undefined> = {
-                    'Category': getOpcodeCategory(opcode.op),
                     'Opcode': opcode.op,
                     'Total Gas': opcode.total_gas_cost?.toLocaleString(),
                     'Call Count': opcode.count.toLocaleString(),
@@ -563,18 +562,24 @@ async function generateContractComparison() {
             )
 
             if (hasWeightData) {
-                // For eth-rpc: show ref_time, vs Best, % metered, pov
+                // For eth-rpc: show ref_time, vs Best, metered_ref_time, vs Best (metered), % metered, pov
                 // Find best (lowest) total weight ref_time
+                const validImplementations = implementations.filter((row) =>
+                    row.weight_consumed_ref_time !== null &&
+                    row.base_call_weight_ref_time !== null
+                )
+
                 const bestRefTime = Math.min(
-                    ...implementations
-                        .filter((row) =>
-                            row.weight_consumed_ref_time !== null &&
-                            row.base_call_weight_ref_time !== null
-                        )
-                        .map((row) =>
-                            row.base_call_weight_ref_time! +
-                            row.weight_consumed_ref_time!
-                        ),
+                    ...validImplementations.map((row) =>
+                        row.base_call_weight_ref_time! +
+                        row.weight_consumed_ref_time!
+                    ),
+                )
+
+                const bestMeteredRefTime = Math.min(
+                    ...validImplementations.map((row) =>
+                        row.weight_consumed_ref_time!
+                    ),
                 )
 
                 // Sort by total ref_time
@@ -610,10 +615,19 @@ async function generateContractComparison() {
                                 ((totalRefTime / bestRefTime - 1) * 100)
                                     .toFixed(1)
                             }%`
+                        const vsBestMetered = row.weight_consumed_ref_time === bestMeteredRefTime
+                            ? '-'
+                            : `+${
+                                ((row.weight_consumed_ref_time / bestMeteredRefTime - 1) * 100)
+                                    .toFixed(1)
+                            }%`
 
                         result['ref_time'] = totalRefTime
                             .toLocaleString()
                         result['vs Best'] = vsBest
+                        result['metered_ref_time'] = row.weight_consumed_ref_time
+                            .toLocaleString()
+                        result['vs Best (metered)'] = vsBestMetered
                         result['% metered'] = `${meterPercent}%`
                         result['pov'] = totalProofSize.toLocaleString()
                     }

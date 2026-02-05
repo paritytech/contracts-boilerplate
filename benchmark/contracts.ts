@@ -37,7 +37,7 @@ if (env.chain.name !== 'Geth') {
 }
 
 const cli = parseArgs(Deno.args, {
-    boolean: ['build', 'execute', 'report', 'clean'],
+    boolean: ['build', 'execute', 'report', 'html-report', 'clean'],
 })
 
 if (cli.build) {
@@ -59,4 +59,10 @@ if (cli.report) {
     logger.info(`Generating reports...`)
     const { report } = await import('./reports.ts')
     await report(contracts)
+}
+
+if (cli['html-report']) {
+    logger.info(`Generating HTML report...`)
+    const { generateHtmlReport } = await import('./html-report.ts')
+    await generateHtmlReport(contracts)
 }

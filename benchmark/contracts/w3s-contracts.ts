@@ -50,10 +50,17 @@ export const w3sContracts: Artifacts = [
             const { readBytecode: readBytecodeUtil } = await import('../../utils/index.ts')
             const addresses = await loadAddresses()
 
-            // Get all W3S contract addresses with their variant type (pvm or evm)
+            // Get W3S contract addresses matching the current chain
+            // On Geth, only use EVM variant; on other chains (Polkadot), use both
             const w3sVariants: { address: Hex; variant: 'pvm' | 'evm' }[] = []
-            if (addresses['W3S_pvm']) w3sVariants.push({ address: addresses['W3S_pvm'], variant: 'pvm' })
-            if (addresses['W3S_evm']) w3sVariants.push({ address: addresses['W3S_evm'], variant: 'evm' })
+            if (env.chain.name === 'Geth') {
+                // Geth only supports EVM
+                if (addresses['W3S_evm']) w3sVariants.push({ address: addresses['W3S_evm'], variant: 'evm' })
+            } else {
+                // Polkadot-based chains support both
+                if (addresses['W3S_pvm']) w3sVariants.push({ address: addresses['W3S_pvm'], variant: 'pvm' })
+                if (addresses['W3S_evm']) w3sVariants.push({ address: addresses['W3S_evm'], variant: 'evm' })
+            }
 
             if (w3sVariants.length === 0) {
                 throw new Error('W3S contract not deployed')

@@ -1,6 +1,6 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-01-29
+Generated on: 2026-02-05
 
 ## Fibonacci Implementations
 
@@ -142,5 +142,21 @@ Generated on: 2026-01-29
 | -------- | ------- | ------------ | ----------- |
 | W3S_evm  | EVM     | 12,501       | -           |
 | W3S_pvm  | PVM     | 104,732      | +737.8%     |
+
+
+## Mark3tMarketplaceProxy Implementations
+
+| Contract                   | VM Type | Size (bytes) | vs Smallest |
+| -------------------------- | ------- | ------------ | ----------- |
+| Mark3tMarketplaceProxy_evm | EVM     | 2,732        | -           |
+| Mark3tMarketplaceProxy_pvm | PVM     | 11,786       | +331.4%     |
+
+
+## Mark3tMockMobRule Implementations
+
+| Contract        | VM Type | Size (bytes) | vs Smallest |
+| --------------- | ------- | ------------ | ----------- |
+| MockMobRule_evm | EVM     | 5,892        | -           |
+| MockMobRule_pvm | PVM     | 47,029       | +698.2%     |
 
 
