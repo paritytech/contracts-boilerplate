@@ -1,6 +1,6 @@
 # Revive Contract Comparison
 
-Generated on: 2026-02-05
+Generated on: 2026-02-09
 
 Comparison of gas usage across different contract implementations.
 
@@ -101,14 +101,14 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | gas_used | vs Best | % metered |
 | -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 273,146  | -       | 8.3%      |
+| DotNS_evm      | 273,107  | -       | 8.3%      |
 
 
 ### DotNS - register_with_duration
 
 | Implementation | gas_used | vs Best | % metered |
 | -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 275,104  | -       | 8.2%      |
+| DotNS_evm      | 275,065  | -       | 8.2%      |
 
 
 ### DotNS - release
@@ -795,16 +795,16 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| DotNS_evm      | 4,429,740,452 | -       | 3,515,431,875    | -                 | 79.4%     | 255,278 |
-| DotNS_pvm      | 7,377,144,941 | +66.5%  | 6,462,836,364    | +83.8%            | 87.6%     | 351,270 |
+| DotNS_evm      | 4,428,548,612 | -       | 3,514,240,035    | -                 | 79.4%     | 255,278 |
+| DotNS_pvm      | 7,375,471,121 | +66.5%  | 6,461,162,544    | +83.9%            | 87.6%     | 351,270 |
 
 
 ### DotNS - register_with_duration
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| DotNS_evm      | 4,416,083,476 | -       | 3,501,774,899    | -                 | 79.3%     | 255,310 |
-| DotNS_pvm      | 7,262,551,219 | +64.5%  | 6,348,242,642    | +81.3%            | 87.4%     | 351,172 |
+| DotNS_evm      | 4,415,487,556 | -       | 3,501,178,979    | -                 | 79.3%     | 255,310 |
+| DotNS_pvm      | 7,261,714,309 | +64.5%  | 6,347,405,732    | +81.3%            | 87.4%     | 351,172 |
 
 
 ### DotNS - release

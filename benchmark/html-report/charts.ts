@@ -33,7 +33,7 @@ export interface ChartData {
     labels: string[]
     datasets: Array<{
         label: string
-        data: number[]
+        data: (number | null)[]
         backgroundColor?: string | string[]
         borderColor?: string | string[]
         borderWidth?: number
@@ -60,8 +60,8 @@ function jsonStringify(obj: unknown): string {
 export function groupedBarChart(
     canvasId: string,
     labels: string[],
-    datasets: Array<{ label: string; data: number[]; color: string }>,
-    options: { title?: string; xLabel?: string; yLabel?: string; horizontal?: boolean } = {}
+    datasets: Array<{ label: string; data: (number | null)[]; color: string }>,
+    options: { title?: string; xLabel?: string; yLabel?: string; horizontal?: boolean; logScale?: boolean } = {}
 ): string {
     const chartData: ChartData = {
         labels,
@@ -73,6 +73,16 @@ export function groupedBarChart(
             borderWidth: 1,
         })),
     }
+
+    const yScale = options.logScale
+        ? {
+            type: 'logarithmic',
+            title: { display: !!options.yLabel, text: options.yLabel || '' },
+        }
+        : {
+            title: { display: !!options.yLabel, text: options.yLabel || '' },
+            beginAtZero: true,
+        }
 
     const chartOptions: ChartOptions = {
         responsive: true,
@@ -87,10 +97,7 @@ export function groupedBarChart(
                 title: { display: !!options.xLabel, text: options.xLabel || '' },
                 ticks: { maxRotation: 45, minRotation: 45 },
             },
-            y: {
-                title: { display: !!options.yLabel, text: options.yLabel || '' },
-                beginAtZero: true,
-            },
+            y: yScale,
         },
     }
 
@@ -567,6 +574,14 @@ export function horizontalBarChart(
 
 export function getCategoryColor(index: number): string {
     return CATEGORY_COLORS[index % CATEGORY_COLORS.length]
+}
+
+export function buildCategoryColorMap(categories: string[]): Record<string, string> {
+    const map: Record<string, string> = {}
+    for (let i = 0; i < categories.length; i++) {
+        map[categories[i]] = CATEGORY_COLORS[i % CATEGORY_COLORS.length]
+    }
+    return map
 }
 
 export { COLORS, CATEGORY_COLORS }

@@ -161,6 +161,8 @@ export function rust(name: string): ContractInfo {
 export type Artifacts = Array<{
     id: string
     srcs: ContractInfo[]
+    /** Skip deploying the EVM variant (e.g. contract too large for EVM) */
+    pvmOnly?: boolean
     deploy: (
         id: keyof Abis,
         name: string,
@@ -269,7 +271,9 @@ export async function deploy(contracts: Artifacts) {
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
-            : artifact.srcs
+            : artifact.pvmOnly
+                ? artifact.srcs.filter((src) => !src.supportEvm())
+                : artifact.srcs
 
         for (const src of srcs) {
             const contract = src.getName()
@@ -303,7 +307,9 @@ export async function execute(contracts: Artifacts) {
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
-            : artifact.srcs
+            : artifact.pvmOnly
+                ? artifact.srcs.filter((src) => !src.supportEvm())
+                : artifact.srcs
         for (const src of srcs) {
             for (const call of artifact.calls) {
                 const contract = src.getName()

@@ -1,6 +1,6 @@
 # Opcode Analysis
 
-Generated on: 2026-02-05
+Generated on: 2026-02-09
 
 ## Chain: Geth
 
@@ -352,7 +352,7 @@ Generated on: 2026-02-05
 
 ### DotNS_evm - register
 
-- **Total Gas Used:** 273,146
+- **Total Gas Used:** 273,107
 
 | Opcode       | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
 | ------------ | --------- | ---------- | ------------ | ------------ | ----------- |
@@ -380,7 +380,7 @@ Generated on: 2026-02-05
 
 ### DotNS_evm - register_with_duration
 
-- **Total Gas Used:** 275,104
+- **Total Gas Used:** 275,065
 
 | Opcode       | Total Gas | Call Count | Avg Gas/Call | % of opcodes | % of tx Gas |
 | ------------ | --------- | ---------- | ------------ | ------------ | ----------- |
@@ -3321,10 +3321,10 @@ Generated on: 2026-02-05
 
 ### DotNS_evm - register
 
-- **Total Gas Used:** 1,132,511
+- **Total Gas Used:** 1,132,487
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=4,429,740,452, proof_size=255,278
-- **Weight Consumed:** ref_time=3,515,431,875 (79.4% of total), proof_size=246,552
+- **Total Weight:** ref_time=4,428,548,612, proof_size=255,278
+- **Weight Consumed:** ref_time=3,514,240,035 (79.4% of total), proof_size=246,552
 
 | Opcode       | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -3332,7 +3332,60 @@ Generated on: 2026-02-05
 | SLOAD        | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 2.0%          | 4.2%            |
 | LOG3         | 612       | 1          | 612.0        | 30,607,500  | 0          | 0.9%          | 0.0%            |
 | KECCAK256    | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.4%          | 0.0%            |
-| CALLDATACOPY | 9         | 1          | 9.0          | 491,842     | 0          | 0.0%          | 0.0%            |
+| CALLDATACOPY | 10        | 1          | 10.0         | 491,842     | 0          | 0.0%          | 0.0%            |
+| CALLER       | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| TIMESTAMP    | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
+| CALLVALUE    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+| JUMPI        | 3         | 1          | 3.0          | 152,800     | 0          | 0.0%          | 0.0%            |
+| JUMP         | 2         | 1          | 2.0          | 122,240     | 0          | 0.0%          | 0.0%            |
+| MCOPY        | 2         | 1          | 2.0          | 91,680      | 0          | 0.0%          | 0.0%            |
+| ADD          | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| AND          | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| BYTE         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| CALLDATALOAD | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP1         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP10        | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP11        | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP2         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+| DUP3         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
+
+
+### DotNS_pvm - register
+
+- **Total Gas Used:** 1,191,426
+- **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
+- **Total Weight:** ref_time=7,375,471,121, proof_size=351,270
+- **Weight Consumed:** ref_time=6,461,162,544 (87.6% of total), proof_size=342,544
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 2.6%          | 3.0%            |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 1.1%          | 3.0%            |
+| deposit_event        | 612       | 1          | 612.0        | 30,607,500  | 0          | 0.5%          | 0.0%            |
+| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.2%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 10        | 1          | 10.0         | 498,158     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
+
+
+### DotNS_evm - register_with_duration
+
+- **Total Gas Used:** 1,132,226
+- **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
+- **Total Weight:** ref_time=4,415,487,556, proof_size=255,310
+- **Weight Consumed:** ref_time=3,501,178,979 (79.3% of total), proof_size=246,584
+
+| Opcode       | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
+| ------------ | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
+| SSTORE       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 4.9%          | 4.2%            |
+| SLOAD        | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 2.0%          | 4.2%            |
+| LOG3         | 612       | 1          | 612.0        | 30,607,500  | 0          | 0.9%          | 0.0%            |
+| KECCAK256    | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.4%          | 0.0%            |
+| CALLDATACOPY | 10        | 1          | 10.0         | 491,639     | 0          | 0.0%          | 0.0%            |
 | CALLER       | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
 | TIMESTAMP    | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
 | CALLVALUE    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
@@ -3350,75 +3403,22 @@ Generated on: 2026-02-05
 | DUP4         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
 
 
-### DotNS_pvm - register
-
-- **Total Gas Used:** 1,191,459
-- **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=7,377,144,941, proof_size=351,270
-- **Weight Consumed:** ref_time=6,462,836,364 (87.6% of total), proof_size=342,544
-
-| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 2.6%          | 3.0%            |
-| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 1.1%          | 3.0%            |
-| deposit_event        | 613       | 1          | 613.0        | 30,607,500  | 0          | 0.5%          | 0.0%            |
-| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.2%          | 0.0%            |
-| seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 10        | 1          | 10.0         | 498,158     | 0          | 0.0%          | 0.0%            |
-| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-
-
-### DotNS_evm - register_with_duration
-
-- **Total Gas Used:** 1,132,238
-- **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=4,416,083,476, proof_size=255,310
-- **Weight Consumed:** ref_time=3,501,774,899 (79.3% of total), proof_size=246,584
-
-| Opcode       | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
-| ------------ | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| SSTORE       | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 4.9%          | 4.2%            |
-| SLOAD        | 1,383     | 1          | 1383.0       | 69,164,719  | 10,289     | 2.0%          | 4.2%            |
-| LOG3         | 612       | 1          | 612.0        | 30,607,500  | 0          | 0.9%          | 0.0%            |
-| KECCAK256    | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.4%          | 0.0%            |
-| CALLDATACOPY | 9         | 1          | 9.0          | 491,639     | 0          | 0.0%          | 0.0%            |
-| CALLER       | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
-| TIMESTAMP    | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
-| CALLVALUE    | 7         | 1          | 7.0          | 319,000     | 0          | 0.0%          | 0.0%            |
-| JUMPI        | 3         | 1          | 3.0          | 152,800     | 0          | 0.0%          | 0.0%            |
-| JUMP         | 3         | 1          | 3.0          | 122,240     | 0          | 0.0%          | 0.0%            |
-| MCOPY        | 2         | 1          | 2.0          | 91,680      | 0          | 0.0%          | 0.0%            |
-| ADD          | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| AND          | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| BYTE         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| CALLDATALOAD | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| DUP1         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| DUP10        | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| DUP11        | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| DUP3         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-| DUP4         | 1         | 1          | 1.0          | 45,840      | 0          | 0.0%          | 0.0%            |
-
-
 ### DotNS_pvm - register_with_duration
 
-- **Total Gas Used:** 1,189,167
+- **Total Gas Used:** 1,189,151
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=7,262,551,219, proof_size=351,172
-- **Weight Consumed:** ref_time=6,348,242,642 (87.4% of total), proof_size=342,446
+- **Total Weight:** ref_time=7,261,714,309, proof_size=351,172
+- **Weight Consumed:** ref_time=6,347,405,732 (87.4% of total), proof_size=342,446
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 56,212    | 1          | 56212.0      | 170,600,294 | 10,257     | 2.7%          | 3.0%            |
-| get_storage_or_zero  | 1,383     | 1          | 1383.0       | 69,114,511  | 10,257     | 1.1%          | 3.0%            |
+| get_storage_or_zero  | 1,382     | 1          | 1382.0       | 69,114,511  | 10,257     | 1.1%          | 3.0%            |
 | deposit_event        | 612       | 1          | 612.0        | 30,607,500  | 0          | 0.5%          | 0.0%            |
-| hash_keccak_256      | 304       | 1          | 304.0        | 15,219,717  | 0          | 0.2%          | 0.0%            |
+| hash_keccak_256      | 305       | 1          | 305.0        | 15,219,717  | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 535,865     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 10        | 1          | 10.0         | 498,045     | 0          | 0.0%          | 0.0%            |
-| caller               | 9         | 1          | 9.0          | 403,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 403,000     | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 347,000     | 0          | 0.0%          | 0.0%            |
 | call_data_load       | 6         | 1          | 6.0          | 343,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 330,000     | 0          | 0.0%          | 0.0%            |

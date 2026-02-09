@@ -1,6 +1,6 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-02-05
+Generated on: 2026-02-09
 
 ## Fibonacci Implementations
 
@@ -45,7 +45,7 @@ Generated on: 2026-02-05
 | Contract          | VM Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | ------------ | ----------- |
 | FiatTokenV2_2_evm | EVM     | 15,467       | -           |
-| FiatTokenV2_2_pvm | PVM     | 103,545      | +569.5%     |
+| FiatTokenV2_2_pvm | PVM     | 412,256      | +2565.4%    |
 
 
 ## FiatTokenProxy Implementations
@@ -61,7 +61,7 @@ Generated on: 2026-02-05
 | Contract      | VM Type | Size (bytes) | vs Smallest |
 | ------------- | ------- | ------------ | ----------- |
 | XENCrypto_evm | EVM     | 10,489       | -           |
-| XENCrypto_pvm | PVM     | 112,648      | +974.0%     |
+| XENCrypto_pvm | PVM     | 305,896      | +2816.4%    |
 
 
 ## CoinTool_App Implementations
@@ -142,21 +142,5 @@ Generated on: 2026-02-05
 | -------- | ------- | ------------ | ----------- |
 | W3S_evm  | EVM     | 12,501       | -           |
 | W3S_pvm  | PVM     | 104,732      | +737.8%     |
-
-
-## Mark3tMarketplaceProxy Implementations
-
-| Contract                   | VM Type | Size (bytes) | vs Smallest |
-| -------------------------- | ------- | ------------ | ----------- |
-| Mark3tMarketplaceProxy_evm | EVM     | 2,732        | -           |
-| Mark3tMarketplaceProxy_pvm | PVM     | 11,786       | +331.4%     |
-
-
-## Mark3tMockMobRule Implementations
-
-| Contract        | VM Type | Size (bytes) | vs Smallest |
-| --------------- | ------- | ------------ | ----------- |
-| MockMobRule_evm | EVM     | 5,892        | -           |
-| MockMobRule_pvm | PVM     | 47,029       | +698.2%     |
 
 

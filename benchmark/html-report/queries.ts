@@ -1,6 +1,94 @@
 import { db } from '../lib.ts'
 import { join } from '@std/path'
 
+// Dataset descriptions for the HTML report
+export const DATASET_DESCRIPTIONS: Record<string, string> = {
+    'test-contracts': 'Small test contracts used for basic benchmarking (e.g. Fibonacci, SimpleToken).',
+    'ethereum-contracts': 'The most actively used contracts on Ethereum in 2025 (e.g. USDT, WETH, USDC, XEN).',
+    'polkadot-contracts': 'Real-world contracts being built by teams at Parity for the Polkadot ecosystem.',
+}
+
+// Dataset methodology HTML content keyed by dataset name.
+// Rendered inside a collapsible <details> in the summary section.
+export const DATASET_METHODOLOGY: Record<string, string> = {
+    'ethereum-contracts': `\
+<p>Contracts were selected by querying all Ethereum traces in 2025 using
+<a href="https://app.allium.so/s/K2LtkNW9" target="_blank" rel="noopener">Allium</a>,
+aggregated by recipient address (to_address).
+Two rankings were produced: by total call count and by total gas consumption.
+The top 3 from each ranking were included. For each contract, the 3 most called
+function selectors (by call count or gas) were benchmarked.
+Only write calls (CALL) were included; read-only calls (STATICCALL) were excluded
+since benchmarking focuses on state-changing transactions.</p>
+<h4>By call count</h4>
+<table><thead><tr>
+<th>Contract</th><th>Total calls</th><th>Top selectors</th><th>Calls</th>
+</tr></thead><tbody>
+<tr><td><a href="https://etherscan.io/address/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" target="_blank" rel="noopener">WETH</a></td><td>321,329,353</td><td>balanceOf</td><td>149,750,134</td></tr>
+<tr><td></td><td></td><td>transfer</td><td>90,228,580</td></tr>
+<tr><td></td><td></td><td>deposit</td><td>30,107,061</td></tr>
+<tr><td><a href="https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7" target="_blank" rel="noopener">Tether (USDT)</a></td><td>191,378,911</td><td>transfer</td><td>98,159,919</td></tr>
+<tr><td></td><td></td><td>balanceOf</td><td>46,783,952</td></tr>
+<tr><td></td><td></td><td>transferFrom</td><td>32,547,619</td></tr>
+<tr><td><a href="https://etherscan.io/address/0x43506849d7c04f9138d1a2050bbf3a0c054402dd" target="_blank" rel="noopener">USDC (FiatTokenProxy)</a></td><td>185,973,493</td><td>transfer</td><td>75,804,102</td></tr>
+<tr><td></td><td></td><td>balanceOf</td><td>58,391,735</td></tr>
+<tr><td></td><td></td><td>transferFrom</td><td>32,331,464</td></tr>
+</tbody></table>
+<h4>By gas consumption</h4>
+<table><thead><tr>
+<th>Contract</th><th>Total gas</th><th>Top selectors</th><th>Gas</th>
+</tr></thead><tbody>
+<tr><td><a href="https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7" target="_blank" rel="noopener">Tether (USDT)</a></td><td>4,786,144,607,779</td><td>transfer</td><td>3,753,968,494,925</td></tr>
+<tr><td></td><td></td><td>transferFrom</td><td>654,588,082,394</td></tr>
+<tr><td></td><td></td><td>approve</td><td>265,488,653,071</td></tr>
+<tr><td><a href="https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" target="_blank" rel="noopener">USDC (FiatTokenProxy)</a></td><td>3,679,838,974,896</td><td>transfer</td><td>2,376,628,261,914</td></tr>
+<tr><td></td><td></td><td>transferFrom</td><td>706,967,302,229</td></tr>
+<tr><td></td><td></td><td>approve</td><td>324,389,815,620</td></tr>
+<tr><td><a href="https://etherscan.io/address/0x0de8bf93da2f7eecb3d9169422413a9bef4ef628" target="_blank" rel="noopener">CoinTool (batch minter)</a></td><td>3,141,067,792,096</td><td>t*</td><td>2,952,995,520,294</td></tr>
+</tbody></table>
+<p>* CoinTool's top selectors are <code>t</code>, <code>c</code>, and <code>f</code>.
+Since <code>t</code> internally calls <code>c</code> and <code>f</code>,
+all three are aggregated into a single <code>t</code> benchmark.</p>
+<p class="source-links">Source queries:
+<a href="https://app.allium.so/s/K2LtkNW9" target="_blank" rel="noopener">by calls</a> &middot;
+<a href="https://app.allium.so/s/uIwwdg7Z" target="_blank" rel="noopener">by gas</a> &middot;
+per contract:
+<a href="https://app.allium.so/s/4cXQZ7WI" target="_blank" rel="noopener">WETH</a>,
+<a href="https://app.allium.so/s/y6mReG29" target="_blank" rel="noopener">Tether</a>,
+<a href="https://app.allium.so/s/4eA1636Z" target="_blank" rel="noopener">USDC</a>,
+<a href="https://app.allium.so/s/OaNuRqUw" target="_blank" rel="noopener">Tether (gas)</a>,
+<a href="https://app.allium.so/s/vJtRXnrL" target="_blank" rel="noopener">USDC (gas)</a>,
+<a href="https://app.allium.so/s/xzrgBw35" target="_blank" rel="noopener">CoinTool</a>
+</p>`,
+    'polkadot-contracts': `\
+<p>Contracts were sourced from repositories provided by the Parity products team.
+Benchmarked transactions were derived from the test suites available in each repository.
+The selection of benchmarked methods is not exhaustive and covers a subset of those exercised by existing tests.
+Note that these contracts may have changed after this report was generated.</p>
+<h4>Source repositories</h4>
+<table><thead><tr>
+<th>Repository</th><th>Contracts</th>
+</tr></thead><tbody>
+<tr><td><a href="https://github.com/paritytech/protocol-commons" target="_blank" rel="noopener">protocol-commons</a></td><td>Store, Log, NonFungibleCredential, FungibleCredential, Escrow, DotNS, KeyRegistry</td></tr>
+<tr><td><a href="https://github.com/paritytech/mark3t" target="_blank" rel="noopener">mark3t</a></td><td>Mark3tMarketplace*, Mark3tMarketplaceProxy, Mark3tMockMobRule</td></tr>
+<tr><td><a href="https://github.com/paritytech/hackm3" target="_blank" rel="noopener">hackm3</a></td><td>DocumentAccessManagement</td></tr>
+<tr><td><a href="https://github.com/paritytech/tick3t" target="_blank" rel="noopener">tick3t</a></td><td>W3S</td></tr>
+</tbody></table>
+<p>* The Mark3tMarketplace (Marketplace.sol) contract exceeds the EVM bytecode size limit
+and is only deployed on PVM. The remaining contracts it interacts with (Mark3tMarketplaceProxy,
+Mark3tMockMobRule) are deployed on both EVM and PVM, and the benchmark tests the
+combination of both VMs.</p>`,
+}
+
+// Canonical dataset ordering used across all charts and tables
+export const DATASET_ORDER = ['test-contracts', 'ethereum-contracts', 'polkadot-contracts']
+
+function datasetSortOrder(a: string, b: string): number {
+    const ai = DATASET_ORDER.indexOf(a)
+    const bi = DATASET_ORDER.indexOf(b)
+    return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
+}
+
 // Dataset categorization for contracts
 export const DATASET_CATEGORIES: Record<string, string[]> = {
     'test-contracts': ['Fibonacci', 'SimpleToken'],
@@ -72,6 +160,20 @@ export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
     'Control Flow': 'Execution flow: JUMP, JUMPI, JUMPDEST',
 }
 
+export function getCategoryMappingHtml(): string {
+    const rows = Object.entries(OPCODE_CATEGORIES).map(([category, opcodes]) => {
+        const evm = opcodes.filter(o => o === o.toUpperCase()).join(', ')
+        const pvm = opcodes.filter(o => o !== o.toUpperCase()).join(', ')
+        return `<tr><td><strong>${category}</strong></td><td><code>${evm || '&mdash;'}</code></td><td><code>${pvm || '&mdash;'}</code></td></tr>`
+    }).join('\n')
+
+    return `<details class="methodology"><summary>&#9656; Category mapping (show more)</summary>
+<p>Each EVM opcode and PVM syscall is grouped into a semantic category.
+The cost attributed to each category is the sum of gas (EVM) or ref_time (PVM) consumed by its opcodes/syscalls.</p>
+<table><thead><tr><th>Category</th><th>EVM opcodes</th><th>PVM syscalls</th></tr></thead>
+<tbody>${rows}</tbody></table></details>`
+}
+
 // Build reverse mapping
 const OPCODE_TO_CATEGORY: Record<string, string> = {}
 for (const [category, opcodes] of Object.entries(OPCODE_CATEGORIES)) {
@@ -129,6 +231,12 @@ export interface GasAnalysisData {
     eth_rpc_pvm_gas: number | null
 }
 
+export interface AltGasImplementation {
+    name: string
+    pvm_gas: number | null
+    transactions: Array<{ name: string; pvm_gas: number | null }>
+}
+
 export interface GasAnalysisHierarchy {
     datasets: Array<{
         name: string
@@ -146,6 +254,7 @@ export interface GasAnalysisHierarchy {
                 eth_rpc_evm_gas: number | null
                 eth_rpc_pvm_gas: number | null
             }>
+            alt_implementations: AltGasImplementation[]
         }>
     }>
 }
@@ -199,7 +308,23 @@ export interface WeightHierarchy {
                 evm_metered_ref_time: number | null
                 pvm_metered_ref_time: number | null
             }>
+            alt_implementations: AltWeightImplementation[]
         }>
+    }>
+}
+
+export interface AltWeightImplementation {
+    name: string
+    pvm_ref_time: number | null
+    pvm_proof_size: number | null
+    pvm_metered_pct: number | null
+    pvm_metered_ref_time: number | null
+    transactions: Array<{
+        name: string
+        pvm_ref_time: number | null
+        pvm_proof_size: number | null
+        pvm_metered_pct: number | null
+        pvm_metered_ref_time: number | null
     }>
 }
 
@@ -231,7 +356,7 @@ export interface BytecodeSize {
 export function getExecutiveSummary(): ExecutiveSummary {
     const overall = db.prepare(`
         SELECT
-            COUNT(DISTINCT contract_id) as total_contracts,
+            COUNT(DISTINCT contract_name) as total_contracts,
             COUNT(*) as total_transactions,
             AVG(gas_used) as avg_gas_used,
             AVG(weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as avg_ref_time
@@ -248,7 +373,7 @@ export function getExecutiveSummary(): ExecutiveSummary {
                 WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_ink' THEN 'eth-rpc (PVM/Ink)'
                 ELSE chain_name
             END as chain_name,
-            COUNT(DISTINCT contract_id) as contract_count,
+            COUNT(DISTINCT contract_name) as contract_count,
             COUNT(*) as transaction_count,
             AVG(gas_used) as avg_gas_used,
             AVG(weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as avg_ref_time,
@@ -399,6 +524,24 @@ export function getGasAnalysisData(): GasAnalysisData[] {
 export function getGasAnalysisHierarchy(): GasAnalysisHierarchy {
     const flatData = getGasAnalysisData()
 
+    // Fetch alternative PVM implementations (Rust, Ink, etc.)
+    const altPvmData = db.prepare(`
+        SELECT contract_id, contract_name, transaction_name, gas_used as gas
+        FROM transactions
+        WHERE chain_name = 'eth-rpc'
+            AND contract_name NOT LIKE '%_evm'
+            AND contract_name NOT LIKE '%_pvm'
+    `).all() as Array<{ contract_id: string; contract_name: string; transaction_name: string; gas: number }>
+
+    // Group alt implementations by contract_id -> contract_name -> transactions
+    const altImplMap = new Map<string, Map<string, Array<{ name: string; gas: number }>>>()
+    for (const row of altPvmData) {
+        if (!altImplMap.has(row.contract_id)) altImplMap.set(row.contract_id, new Map())
+        const implMap = altImplMap.get(row.contract_id)!
+        if (!implMap.has(row.contract_name)) implMap.set(row.contract_name, [])
+        implMap.get(row.contract_name)!.push({ name: row.transaction_name, gas: row.gas })
+    }
+
     // Group by dataset -> contract -> transaction
     const datasetMap = new Map<string, Map<string, GasAnalysisData[]>>()
 
@@ -447,12 +590,28 @@ export function getGasAnalysisHierarchy(): GasAnalysisHierarchy {
             if (cHasEvm) { datasetEvm += contractEvm; hasEvm = true }
             if (cHasPvm) { datasetPvm += contractPvm; hasPvm = true }
 
+            // Build alt implementations for this contract
+            const alt_implementations: AltGasImplementation[] = []
+            const implMap = altImplMap.get(contractName)
+            if (implMap) {
+                for (const [implName, implTxs] of implMap) {
+                    const totalGas = implTxs.reduce((s, t) => s + t.gas, 0)
+                    alt_implementations.push({
+                        name: implName,
+                        pvm_gas: totalGas,
+                        transactions: implTxs.map(t => ({ name: t.name, pvm_gas: t.gas })),
+                    })
+                }
+                alt_implementations.sort((a, b) => a.name.localeCompare(b.name))
+            }
+
             contracts.push({
                 name: contractName,
                 geth_gas: cHasGeth ? contractGeth : null,
                 eth_rpc_evm_gas: cHasEvm ? contractEvm : null,
                 eth_rpc_pvm_gas: cHasPvm ? contractPvm : null,
                 transactions,
+                alt_implementations,
             })
         }
 
@@ -466,7 +625,7 @@ export function getGasAnalysisHierarchy(): GasAnalysisHierarchy {
     }
 
     return {
-        datasets: datasets.sort((a, b) => a.name.localeCompare(b.name)),
+        datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
     }
 }
 
@@ -554,6 +713,39 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             AND contract_name LIKE '%_pvm'
             AND weight_consumed_ref_time IS NOT NULL
     `).all() as RawWeightRow[]
+
+    // Get alt PVM weight data (Rust, Ink, etc.)
+    const altPvmWeightData = db.prepare(`
+        SELECT
+            contract_id,
+            contract_name,
+            transaction_name,
+            (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
+            (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
+            weight_consumed_ref_time as weight_consumed,
+            COALESCE(base_call_weight_ref_time, 0) as base_weight
+        FROM transactions
+        WHERE chain_name = 'eth-rpc'
+            AND contract_name NOT LIKE '%_evm'
+            AND contract_name NOT LIKE '%_pvm'
+            AND weight_consumed_ref_time IS NOT NULL
+    `).all() as (RawWeightRow & { contract_name: string })[]
+
+    // Group alt weight implementations by contract_id -> contract_name -> transactions
+    const altWeightMap = new Map<string, Map<string, Array<{ name: string; ref_time: number; proof_size: number; metered_pct: number; metered_ref_time: number }>>>()
+    for (const row of altPvmWeightData) {
+        if (!altWeightMap.has(row.contract_id)) altWeightMap.set(row.contract_id, new Map())
+        const implMap = altWeightMap.get(row.contract_id)!
+        if (!implMap.has(row.contract_name)) implMap.set(row.contract_name, [])
+        const metered_pct = row.ref_time > 0 ? (row.weight_consumed / row.ref_time) * 100 : 0
+        implMap.get(row.contract_name)!.push({
+            name: row.transaction_name,
+            ref_time: row.ref_time,
+            proof_size: row.proof_size,
+            metered_pct,
+            metered_ref_time: row.weight_consumed,
+        })
+    }
 
     // Create lookup maps with metered percentage and metered ref_time
     const evmMap = new Map<string, { ref_time: number; proof_size: number; metered_pct: number; metered_ref_time: number }>()
@@ -688,36 +880,61 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                 hasPvm = true
             }
 
+            // Build alt weight implementations for this contract
+            const alt_implementations: AltWeightImplementation[] = []
+            const altWMap = altWeightMap.get(contractName)
+            if (altWMap) {
+                for (const [implName, implTxs] of altWMap) {
+                    const count = implTxs.length
+                    alt_implementations.push({
+                        name: implName,
+                        pvm_ref_time: count > 0 ? Math.round(implTxs.reduce((s, t) => s + t.ref_time, 0) / count) : null,
+                        pvm_proof_size: count > 0 ? Math.round(implTxs.reduce((s, t) => s + t.proof_size, 0) / count) : null,
+                        pvm_metered_pct: count > 0 ? implTxs.reduce((s, t) => s + t.metered_pct, 0) / count : null,
+                        pvm_metered_ref_time: count > 0 ? Math.round(implTxs.reduce((s, t) => s + t.metered_ref_time, 0) / count) : null,
+                        transactions: implTxs.map(t => ({
+                            name: t.name,
+                            pvm_ref_time: t.ref_time,
+                            pvm_proof_size: t.proof_size,
+                            pvm_metered_pct: t.metered_pct,
+                            pvm_metered_ref_time: t.metered_ref_time,
+                        })),
+                    })
+                }
+                alt_implementations.sort((a, b) => a.name.localeCompare(b.name))
+            }
+
             contracts.push({
                 name: contractName,
-                evm_ref_time: cHasEvm ? contractEvmRefTime : null,
-                pvm_ref_time: cHasPvm ? contractPvmRefTime : null,
-                evm_proof_size: cHasEvm ? contractEvmProofSize : null,
-                pvm_proof_size: cHasPvm ? contractPvmProofSize : null,
+                evm_ref_time: cHasEvm && contractEvmCount > 0 ? Math.round(contractEvmRefTime / contractEvmCount) : null,
+                pvm_ref_time: cHasPvm && contractPvmCount > 0 ? Math.round(contractPvmRefTime / contractPvmCount) : null,
+                evm_proof_size: cHasEvm && contractEvmCount > 0 ? Math.round(contractEvmProofSize / contractEvmCount) : null,
+                pvm_proof_size: cHasPvm && contractPvmCount > 0 ? Math.round(contractPvmProofSize / contractPvmCount) : null,
                 evm_metered_pct: cHasEvm && contractEvmCount > 0 ? contractEvmMeteredSum / contractEvmCount : null,
                 pvm_metered_pct: cHasPvm && contractPvmCount > 0 ? contractPvmMeteredSum / contractPvmCount : null,
-                evm_metered_ref_time: cHasEvm ? contractEvmMeteredRefTime : null,
-                pvm_metered_ref_time: cHasPvm ? contractPvmMeteredRefTime : null,
+                evm_metered_ref_time: cHasEvm && contractEvmCount > 0 ? Math.round(contractEvmMeteredRefTime / contractEvmCount) : null,
+                pvm_metered_ref_time: cHasPvm && contractPvmCount > 0 ? Math.round(contractPvmMeteredRefTime / contractPvmCount) : null,
                 transactions,
+                alt_implementations,
             })
         }
 
         datasets.push({
             name: datasetName,
-            evm_ref_time: hasEvm ? datasetEvmRefTime : null,
-            pvm_ref_time: hasPvm ? datasetPvmRefTime : null,
-            evm_proof_size: hasEvm ? datasetEvmProofSize : null,
-            pvm_proof_size: hasPvm ? datasetPvmProofSize : null,
+            evm_ref_time: hasEvm && datasetEvmCount > 0 ? Math.round(datasetEvmRefTime / datasetEvmCount) : null,
+            pvm_ref_time: hasPvm && datasetPvmCount > 0 ? Math.round(datasetPvmRefTime / datasetPvmCount) : null,
+            evm_proof_size: hasEvm && datasetEvmCount > 0 ? Math.round(datasetEvmProofSize / datasetEvmCount) : null,
+            pvm_proof_size: hasPvm && datasetPvmCount > 0 ? Math.round(datasetPvmProofSize / datasetPvmCount) : null,
             evm_metered_pct: hasEvm && datasetEvmCount > 0 ? datasetEvmMeteredSum / datasetEvmCount : null,
             pvm_metered_pct: hasPvm && datasetPvmCount > 0 ? datasetPvmMeteredSum / datasetPvmCount : null,
-            evm_metered_ref_time: hasEvm ? datasetEvmMeteredRefTime : null,
-            pvm_metered_ref_time: hasPvm ? datasetPvmMeteredRefTime : null,
+            evm_metered_ref_time: hasEvm && datasetEvmCount > 0 ? Math.round(datasetEvmMeteredRefTime / datasetEvmCount) : null,
+            pvm_metered_ref_time: hasPvm && datasetPvmCount > 0 ? Math.round(datasetPvmMeteredRefTime / datasetPvmCount) : null,
             contracts: contracts.sort((a, b) => a.name.localeCompare(b.name)),
         })
     }
 
     return {
-        datasets: datasets.sort((a, b) => a.name.localeCompare(b.name)),
+        datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
     }
 }
 
@@ -1056,7 +1273,7 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & { categoryD
     }
 
     return {
-        datasets: datasets.sort((a, b) => a.name.localeCompare(b.name)),
+        datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
         allCategories,
         categoryDescriptions: CATEGORY_DESCRIPTIONS,
     }
@@ -1078,6 +1295,12 @@ export interface BytecodeSizeData {
     }>
 }
 
+export interface BytecodeImplementation {
+    name: string
+    vm_type: string
+    size_bytes: number
+}
+
 export interface BytecodeSizeHierarchy {
     datasets: Array<{
         name: string
@@ -1089,6 +1312,7 @@ export interface BytecodeSizeHierarchy {
             pvm_size: number | null
             evm_name: string | null
             pvm_name: string | null
+            implementations: BytecodeImplementation[]
         }>
     }>
 }
@@ -1158,21 +1382,25 @@ export function getBytecodeHierarchy(): BytecodeSizeHierarchy {
         let pvmSize: number | null = null
         let evmName: string | null = null
         let pvmName: string | null = null
+        const implementations: BytecodeImplementation[] = []
 
         for (const entry of group.entries) {
+            implementations.push({ name: entry.contract_name, vm_type: entry.vm_type, size_bytes: entry.size_bytes })
             if (entry.vm_type === 'EVM') {
                 evmSize = entry.size_bytes
                 evmName = entry.contract_name
             } else if (entry.vm_type === 'PVM') {
-                // Take the smallest PVM if multiple (e.g., solidity vs rust)
-                if (pvmSize === null || entry.size_bytes < pvmSize) {
+                // Prefer the Solidity-compiled PVM (_pvm suffix) for apples-to-apples comparison
+                const isSolidityPvm = entry.contract_name.endsWith('_pvm')
+                const currentIsSolidityPvm = pvmName?.endsWith('_pvm') ?? false
+                if (pvmSize === null || (isSolidityPvm && !currentIsSolidityPvm)) {
                     pvmSize = entry.size_bytes
                     pvmName = entry.contract_name
                 }
             }
         }
 
-        contractMap.set(group.contract_id, { evm_size: evmSize, pvm_size: pvmSize, evm_name: evmName, pvm_name: pvmName })
+        contractMap.set(group.contract_id, { evm_size: evmSize, pvm_size: pvmSize, evm_name: evmName, pvm_name: pvmName, implementations })
     }
 
     // Build hierarchy
@@ -1202,6 +1430,7 @@ export function getBytecodeHierarchy(): BytecodeSizeHierarchy {
                 pvm_size: sizes.pvm_size,
                 evm_name: sizes.evm_name,
                 pvm_name: sizes.pvm_name,
+                implementations: sizes.implementations.sort((a, b) => a.size_bytes - b.size_bytes),
             })
         }
 
@@ -1214,6 +1443,6 @@ export function getBytecodeHierarchy(): BytecodeSizeHierarchy {
     }
 
     return {
-        datasets: datasets.sort((a, b) => a.name.localeCompare(b.name)),
+        datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
     }
 }

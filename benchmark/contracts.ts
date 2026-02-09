@@ -3,7 +3,6 @@ import { env } from '../tools/lib/index.ts'
 import { logger } from '../utils/logger.ts'
 import { build, deleteChainData, deploy, execute } from './lib.ts'
 import { parseArgs } from '@std/cli'
-import { uploadCodePVM } from '../tools/lib/pvm.ts'
 
 // Import contract definitions
 import { testContracts } from './contracts/test-contracts.ts'
@@ -28,13 +27,8 @@ export const contracts = [
     ...protocolCommonsContracts,
     ...hackm3Contracts,
     ...w3sContracts,
-    ...mark3tContracts,
+    ...(env.chain.name !== 'Geth' ? mark3tContracts : []),
 ]
-
-if (env.chain.name !== 'Geth') {
-    const code = env.getByteCode('ProxyAdmin', 'polkavm')
-    await uploadCodePVM(code)
-}
 
 const cli = parseArgs(Deno.args, {
     boolean: ['build', 'execute', 'report', 'html-report', 'clean'],
@@ -64,5 +58,5 @@ if (cli.report) {
 if (cli['html-report']) {
     logger.info(`Generating HTML report...`)
     const { generateHtmlReport } = await import('./html-report.ts')
-    await generateHtmlReport(contracts)
+    await generateHtmlReport()
 }

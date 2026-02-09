@@ -232,8 +232,8 @@ export function htmlDocument(content: string, scripts: string): string {
                 if (!headerRow) return;
 
                 headerRow.querySelectorAll('th').forEach((th, idx) => {
-                    th.style.cursor = 'pointer';
-                    // Preserve existing title (category descriptions) and append sort hint
+                    if (!th.classList.contains('number')) return;
+                    th.classList.add('sortable');
                     const existingTitle = th.getAttribute('title');
                     th.title = existingTitle ? existingTitle + ' (click to sort)' : 'Click to sort';
                     th.addEventListener('click', () => sortTable(table, idx));
@@ -335,12 +335,33 @@ export interface GasRow {
     eth_rpc_pvm_gas: number | null
 }
 
+export interface AltGasImpl {
+    name: string
+    pvm_gas: number | null
+    transactions: Array<{ name: string; pvm_gas: number | null }>
+}
+
 export interface GasHierarchyData {
     datasets: Array<GasRow & {
         contracts: Array<GasRow & {
             transactions: GasRow[]
+            alt_implementations: AltGasImpl[]
         }>
     }>
+}
+
+/** Derive a short label (e.g. "ink", "rust", "u128_rust") from an alt implementation name */
+function getImplLabel(contractName: string, altName: string): string {
+    const base = contractName.replace(/_pvm$/, '')
+    // Convert CamelCase to snake_case: "SimpleToken" → "simple_token"
+    const snake = base.replace(/([A-Z])/g, (m, _p, offset) =>
+        offset > 0 ? '_' + m.toLowerCase() : m.toLowerCase()
+    )
+    const prefix = snake + '_'
+    if (altName.startsWith(prefix)) {
+        return altName.slice(prefix.length)
+    }
+    return altName
 }
 
 function formatGas(value: number | null): string {
@@ -405,6 +426,26 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             };
         }
 
+        function toPctDiff(val, base) {
+            return val !== null && base !== null && base > 0 ? Math.round((val / base - 1) * 10000) / 100 : null;
+        }
+
+        function avgOfTxPctDiffs(contracts, valKey) {
+            var diffs = [];
+            contracts.forEach(function(c) {
+                c.transactions.forEach(function(tx) {
+                    var d = toPctDiff(tx[valKey], tx.geth_gas);
+                    if (d !== null) diffs.push(d);
+                });
+            });
+            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+        }
+
+        function avgOfPctDiffs(children, valKey) {
+            var diffs = children.map(function(c) { return toPctDiff(c[valKey], c.geth_gas); }).filter(function(d) { return d !== null; });
+            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+        }
+
         function getChartData(level, parent) {
             let items = [];
             let title = 'Gas by Dataset';
@@ -412,12 +453,26 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
 
             if (level === 'datasets') {
                 items = gasHierarchy.datasets;
-                title = 'Gas by Dataset' + suffix + ' (click to drill down)';
+                title = 'Avg Gas by Dataset' + suffix + ' (click to drill down)';
+                return {
+                    labels: items.map(i => i.name),
+                    evmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_evm_gas')),
+                    pvmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_pvm_gas')),
+                    title: title,
+                    canDrillDown: true
+                };
             } else if (level === 'contracts' && parent) {
                 const dataset = gasHierarchy.datasets.find(d => d.name === parent);
                 if (dataset) {
                     items = dataset.contracts;
-                    title = 'Gas by Contract: ' + parent + suffix + ' (click to drill down, right-click to go back)';
+                    title = 'Avg Gas by Contract: ' + parent + suffix + ' (click to drill down, right-click to go back)';
+                    return {
+                        labels: items.map(i => i.name),
+                        evmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_evm_gas')),
+                        pvmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_pvm_gas')),
+                        title: title,
+                        canDrillDown: true
+                    };
                 }
             } else if (level === 'transactions' && parent) {
                 for (const dataset of gasHierarchy.datasets) {
@@ -432,9 +487,8 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
 
             return {
                 labels: items.map(i => i.name),
-                evmData: items.map(i => i.eth_rpc_evm_gas),
-                pvmData: items.map(i => i.eth_rpc_pvm_gas),
-                gethData: items.map(i => i.geth_gas),
+                evmData: items.map(i => toPctDiff(i.eth_rpc_evm_gas, i.geth_gas)),
+                pvmData: items.map(i => toPctDiff(i.eth_rpc_pvm_gas, i.geth_gas)),
                 title: title,
                 canDrillDown: level !== 'transactions'
             };
@@ -450,7 +504,6 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             chart.data.labels = data.labels;
             chart.data.datasets[0].data = data.evmData;
             chart.data.datasets[1].data = data.pvmData;
-            chart.data.datasets[2].data = data.gethData;
             chart.options.plugins.title.text = data.title;
             chart.options.plugins.title.display = true;
 
@@ -466,16 +519,24 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
         };
 
         function updateTableVisibility() {
-            const rows = document.querySelectorAll('.expandable-table tbody tr');
-            rows.forEach(row => {
+            const table = document.querySelector('.expandable-gas-table');
+            table.querySelectorAll('tbody tr').forEach(row => {
                 const nameCell = row.querySelector('td:first-child');
                 if (nameCell) {
                     const name = nameCell.textContent.trim();
-                    if (hideDeployTx && name === 'deploy' && row.classList.contains('level-2')) {
+                    if (hideDeployTx && name.startsWith('deploy') && row.classList.contains('level-2')) {
                         row.style.display = 'none';
                     } else if (!row.classList.contains('hidden-row')) {
                         row.style.display = '';
                     }
+                }
+            });
+            table.querySelectorAll('.swappable').forEach(cell => {
+                if (hideDeployTx) {
+                    if (!cell.dataset.all) cell.dataset.all = cell.textContent;
+                    cell.textContent = cell.dataset.excl;
+                } else {
+                    if (cell.dataset.all) cell.textContent = cell.dataset.all;
                 }
             });
         }
@@ -521,7 +582,7 @@ export function gasAnalysisFilterControls(): string {
     <div class="filter-controls">
         <label>
             <input type="checkbox" id="hideDeployCheckbox">
-            Hide deploy transactions
+            Exclude deploy transactions
         </label>
     </div>
     `
@@ -531,48 +592,86 @@ export function expandableGasTable(data: GasHierarchyData): string {
     let rowId = 0
     const rows: string[] = []
 
-    // Calculate totals across all datasets
-    const totals = {
-        geth_gas: 0 as number | null,
-        eth_rpc_evm_gas: 0 as number | null,
-        eth_rpc_pvm_gas: 0 as number | null,
+    // Helper to compute average gas across transactions
+    function avgGas(txs: Array<{ geth_gas: number | null; eth_rpc_evm_gas: number | null; eth_rpc_pvm_gas: number | null }>, key: 'geth_gas' | 'eth_rpc_evm_gas' | 'eth_rpc_pvm_gas'): number | null {
+        const vals = txs.map(tx => tx[key]).filter((v): v is number => v !== null)
+        return vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : null
     }
-    let hasGeth = false, hasEvm = false, hasPvm = false
+
+    // Collect all transactions for overall average
+    type GasTx = { name: string; geth_gas: number | null; eth_rpc_evm_gas: number | null; eth_rpc_pvm_gas: number | null }
+    const allTxs: GasTx[] = []
+    const noDeploy = (txs: GasTx[]) => txs.filter(tx => tx.name !== 'deploy')
 
     for (const dataset of data.datasets) {
-        if (dataset.geth_gas !== null) { totals.geth_gas! += dataset.geth_gas; hasGeth = true }
-        if (dataset.eth_rpc_evm_gas !== null) { totals.eth_rpc_evm_gas! += dataset.eth_rpc_evm_gas; hasEvm = true }
-        if (dataset.eth_rpc_pvm_gas !== null) { totals.eth_rpc_pvm_gas! += dataset.eth_rpc_pvm_gas; hasPvm = true }
+        const datasetTxs = dataset.contracts.flatMap(c => c.transactions)
+        allTxs.push(...datasetTxs)
+
+        const dsAvg = {
+            geth: avgGas(datasetTxs, 'geth_gas'),
+            evm: avgGas(datasetTxs, 'eth_rpc_evm_gas'),
+            pvm: avgGas(datasetTxs, 'eth_rpc_pvm_gas'),
+        }
+        const dsExcl = {
+            geth: avgGas(noDeploy(datasetTxs), 'geth_gas'),
+            evm: avgGas(noDeploy(datasetTxs), 'eth_rpc_evm_gas'),
+            pvm: avgGas(noDeploy(datasetTxs), 'eth_rpc_pvm_gas'),
+        }
 
         const datasetId = rowId++
         rows.push(`
             <tr class="level-0" data-id="${datasetId}" data-level="0">
                 <td><span class="expand-toggle" onclick="toggleExpand(${datasetId}, 0)">${dataset.name}</span></td>
-                <td class="number">${formatGas(dataset.geth_gas)}</td>
-                <td class="number">${formatGas(dataset.eth_rpc_evm_gas)}</td>
-                <td class="number">${calcDiff(dataset.geth_gas, dataset.eth_rpc_evm_gas)}</td>
-                <td class="number">${formatGas(dataset.eth_rpc_pvm_gas)}</td>
-                <td class="number">${calcDiff(dataset.geth_gas, dataset.eth_rpc_pvm_gas)}</td>
+                <td class="number swappable" data-excl="${formatGas(dsExcl.geth)}">${formatGas(dsAvg.geth)}</td>
+                <td class="number swappable" data-excl="${formatGas(dsExcl.evm)}">${formatGas(dsAvg.evm)}</td>
+                <td class="number swappable" data-excl="${calcDiff(dsExcl.geth, dsExcl.evm)}">${calcDiff(dsAvg.geth, dsAvg.evm)}</td>
+                <td class="number swappable" data-excl="${formatGas(dsExcl.pvm)}">${formatGas(dsAvg.pvm)}</td>
+                <td class="number swappable" data-excl="${calcDiff(dsExcl.geth, dsExcl.pvm)}">${calcDiff(dsAvg.geth, dsAvg.pvm)}</td>
             </tr>
         `)
 
         for (const contract of dataset.contracts) {
+            const cAvg = {
+                geth: avgGas(contract.transactions, 'geth_gas'),
+                evm: avgGas(contract.transactions, 'eth_rpc_evm_gas'),
+                pvm: avgGas(contract.transactions, 'eth_rpc_pvm_gas'),
+            }
+            const cExcl = {
+                geth: avgGas(noDeploy(contract.transactions), 'geth_gas'),
+                evm: avgGas(noDeploy(contract.transactions), 'eth_rpc_evm_gas'),
+                pvm: avgGas(noDeploy(contract.transactions), 'eth_rpc_pvm_gas'),
+            }
+
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                     <td><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
-                    <td class="number">${formatGas(contract.geth_gas)}</td>
-                    <td class="number">${formatGas(contract.eth_rpc_evm_gas)}</td>
-                    <td class="number">${calcDiff(contract.geth_gas, contract.eth_rpc_evm_gas)}</td>
-                    <td class="number">${formatGas(contract.eth_rpc_pvm_gas)}</td>
-                    <td class="number">${calcDiff(contract.geth_gas, contract.eth_rpc_pvm_gas)}</td>
+                    <td class="number swappable" data-excl="${formatGas(cExcl.geth)}">${formatGas(cAvg.geth)}</td>
+                    <td class="number swappable" data-excl="${formatGas(cExcl.evm)}">${formatGas(cAvg.evm)}</td>
+                    <td class="number swappable" data-excl="${calcDiff(cExcl.geth, cExcl.evm)}">${calcDiff(cAvg.geth, cAvg.evm)}</td>
+                    <td class="number swappable" data-excl="${formatGas(cExcl.pvm)}">${formatGas(cAvg.pvm)}</td>
+                    <td class="number swappable" data-excl="${calcDiff(cExcl.geth, cExcl.pvm)}">${calcDiff(cAvg.geth, cAvg.pvm)}</td>
                 </tr>
             `)
 
+            // Build alt tx lookup by transaction name
+            const hasAlts = contract.alt_implementations.length > 0
+            const altGasByTxName = new Map<string, Array<{label: string, pvm_gas: number | null}>>()
+            if (hasAlts) {
+                for (const alt of contract.alt_implementations) {
+                    const label = getImplLabel(contract.name, alt.name)
+                    for (const tx of alt.transactions) {
+                        if (!altGasByTxName.has(tx.name)) altGasByTxName.set(tx.name, [])
+                        altGasByTxName.get(tx.name)!.push({ label, pvm_gas: tx.pvm_gas })
+                    }
+                }
+            }
+
             for (const tx of contract.transactions) {
+                const suffix = hasAlts ? ' (solidity)' : ''
                 rows.push(`
                     <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                        <td>${tx.name}</td>
+                        <td>${tx.name}${suffix}</td>
                         <td class="number">${formatGas(tx.geth_gas)}</td>
                         <td class="number">${formatGas(tx.eth_rpc_evm_gas)}</td>
                         <td class="number">${calcDiff(tx.geth_gas, tx.eth_rpc_evm_gas)}</td>
@@ -580,28 +679,50 @@ export function expandableGasTable(data: GasHierarchyData): string {
                         <td class="number">${calcDiff(tx.geth_gas, tx.eth_rpc_pvm_gas)}</td>
                     </tr>
                 `)
+
+                // Alt implementation rows for the same transaction
+                const alts = altGasByTxName.get(tx.name) || []
+                for (const { label, pvm_gas } of alts) {
+                    rows.push(`
+                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
+                            <td>${tx.name} (${label})</td>
+                            <td class="number"></td>
+                            <td class="number"></td>
+                            <td class="number"></td>
+                            <td class="number">${formatGas(pvm_gas)}</td>
+                            <td class="number">${calcDiff(tx.geth_gas, pvm_gas)}</td>
+                        </tr>
+                    `)
+                }
             }
         }
     }
 
-    if (!hasGeth) totals.geth_gas = null
-    if (!hasEvm) totals.eth_rpc_evm_gas = null
-    if (!hasPvm) totals.eth_rpc_pvm_gas = null
+    const overallAvg = {
+        geth: avgGas(allTxs, 'geth_gas'),
+        evm: avgGas(allTxs, 'eth_rpc_evm_gas'),
+        pvm: avgGas(allTxs, 'eth_rpc_pvm_gas'),
+    }
+    const overallExcl = {
+        geth: avgGas(noDeploy(allTxs), 'geth_gas'),
+        evm: avgGas(noDeploy(allTxs), 'eth_rpc_evm_gas'),
+        pvm: avgGas(noDeploy(allTxs), 'eth_rpc_pvm_gas'),
+    }
 
-    // Add total row
+    // Add average row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
-            <td>Total</td>
-            <td class="number">${formatGas(totals.geth_gas)}</td>
-            <td class="number">${formatGas(totals.eth_rpc_evm_gas)}</td>
-            <td class="number">${calcDiff(totals.geth_gas, totals.eth_rpc_evm_gas)}</td>
-            <td class="number">${formatGas(totals.eth_rpc_pvm_gas)}</td>
-            <td class="number">${calcDiff(totals.geth_gas, totals.eth_rpc_pvm_gas)}</td>
+            <td>Avg per transaction</td>
+            <td class="number swappable" data-excl="${formatGas(overallExcl.geth)}">${formatGas(overallAvg.geth)}</td>
+            <td class="number swappable" data-excl="${formatGas(overallExcl.evm)}">${formatGas(overallAvg.evm)}</td>
+            <td class="number swappable" data-excl="${calcDiff(overallExcl.geth, overallExcl.evm)}">${calcDiff(overallAvg.geth, overallAvg.evm)}</td>
+            <td class="number swappable" data-excl="${formatGas(overallExcl.pvm)}">${formatGas(overallAvg.pvm)}</td>
+            <td class="number swappable" data-excl="${calcDiff(overallExcl.geth, overallExcl.pvm)}">${calcDiff(overallAvg.geth, overallAvg.pvm)}</td>
         </tr>
     `)
 
     return `
-    <table class="expandable-table">
+    <table class="expandable-table expandable-gas-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -637,10 +758,26 @@ export interface WeightRow {
     pvm_metered_ref_time: number | null
 }
 
+export interface AltWeightImpl {
+    name: string
+    pvm_ref_time: number | null
+    pvm_proof_size: number | null
+    pvm_metered_pct: number | null
+    pvm_metered_ref_time: number | null
+    transactions: Array<{
+        name: string
+        pvm_ref_time: number | null
+        pvm_proof_size: number | null
+        pvm_metered_pct: number | null
+        pvm_metered_ref_time: number | null
+    }>
+}
+
 export interface WeightHierarchyData {
     datasets: Array<WeightRow & {
         contracts: Array<WeightRow & {
             transactions: WeightRow[]
+            alt_implementations: AltWeightImpl[]
         }>
     }>
 }
@@ -669,58 +806,48 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                 return;
             }
 
-            // Deep clone and filter out deploy transactions
+            // Deep clone and filter out deploy transactions, recalculate averages
+            function avgOfFiltered(txs, key) {
+                var vals = txs.map(function(tx) { return tx[key]; }).filter(function(v) { return v !== null; });
+                return vals.length > 0 ? Math.round(vals.reduce(function(s, v) { return s + v; }, 0) / vals.length) : null;
+            }
+            function avgPctOfFiltered(txs, key) {
+                var vals = txs.map(function(tx) { return tx[key]; }).filter(function(v) { return v !== null; });
+                return vals.length > 0 ? vals.reduce(function(s, v) { return s + v; }, 0) / vals.length : null;
+            }
+
             weightHierarchy = {
                 datasets: weightHierarchyOriginal.datasets.map(dataset => ({
                     ...dataset,
                     contracts: dataset.contracts.map(contract => {
                         const filteredTxs = contract.transactions.filter(tx => tx.name !== 'deploy');
-                        // Recalculate contract totals
-                        const evmRefTime = filteredTxs.reduce((sum, tx) => sum + (tx.evm_ref_time || 0), 0);
-                        const pvmRefTime = filteredTxs.reduce((sum, tx) => sum + (tx.pvm_ref_time || 0), 0);
-                        const evmProofSize = filteredTxs.reduce((sum, tx) => sum + (tx.evm_proof_size || 0), 0);
-                        const pvmProofSize = filteredTxs.reduce((sum, tx) => sum + (tx.pvm_proof_size || 0), 0);
-                        const evmCount = filteredTxs.filter(tx => tx.evm_metered_pct !== null).length;
-                        const pvmCount = filteredTxs.filter(tx => tx.pvm_metered_pct !== null).length;
-                        const evmMeteredSum = filteredTxs.reduce((sum, tx) => sum + (tx.evm_metered_pct || 0), 0);
-                        const pvmMeteredSum = filteredTxs.reduce((sum, tx) => sum + (tx.pvm_metered_pct || 0), 0);
-                        const evmMeteredRefTime = filteredTxs.reduce((sum, tx) => sum + (tx.evm_metered_ref_time || 0), 0);
-                        const pvmMeteredRefTime = filteredTxs.reduce((sum, tx) => sum + (tx.pvm_metered_ref_time || 0), 0);
                         return {
                             ...contract,
-                            evm_ref_time: filteredTxs.some(tx => tx.evm_ref_time !== null) ? evmRefTime : null,
-                            pvm_ref_time: filteredTxs.some(tx => tx.pvm_ref_time !== null) ? pvmRefTime : null,
-                            evm_proof_size: filteredTxs.some(tx => tx.evm_proof_size !== null) ? evmProofSize : null,
-                            pvm_proof_size: filteredTxs.some(tx => tx.pvm_proof_size !== null) ? pvmProofSize : null,
-                            evm_metered_pct: evmCount > 0 ? evmMeteredSum / evmCount : null,
-                            pvm_metered_pct: pvmCount > 0 ? pvmMeteredSum / pvmCount : null,
-                            evm_metered_ref_time: filteredTxs.some(tx => tx.evm_metered_ref_time !== null) ? evmMeteredRefTime : null,
-                            pvm_metered_ref_time: filteredTxs.some(tx => tx.pvm_metered_ref_time !== null) ? pvmMeteredRefTime : null,
+                            evm_ref_time: avgOfFiltered(filteredTxs, 'evm_ref_time'),
+                            pvm_ref_time: avgOfFiltered(filteredTxs, 'pvm_ref_time'),
+                            evm_proof_size: avgOfFiltered(filteredTxs, 'evm_proof_size'),
+                            pvm_proof_size: avgOfFiltered(filteredTxs, 'pvm_proof_size'),
+                            evm_metered_pct: avgPctOfFiltered(filteredTxs, 'evm_metered_pct'),
+                            pvm_metered_pct: avgPctOfFiltered(filteredTxs, 'pvm_metered_pct'),
+                            evm_metered_ref_time: avgOfFiltered(filteredTxs, 'evm_metered_ref_time'),
+                            pvm_metered_ref_time: avgOfFiltered(filteredTxs, 'pvm_metered_ref_time'),
                             transactions: filteredTxs
                         };
                     }).filter(c => c.transactions.length > 0)
                 })).map(dataset => {
-                    // Recalculate dataset totals
-                    const evmRefTime = dataset.contracts.reduce((sum, c) => sum + (c.evm_ref_time || 0), 0);
-                    const pvmRefTime = dataset.contracts.reduce((sum, c) => sum + (c.pvm_ref_time || 0), 0);
-                    const evmProofSize = dataset.contracts.reduce((sum, c) => sum + (c.evm_proof_size || 0), 0);
-                    const pvmProofSize = dataset.contracts.reduce((sum, c) => sum + (c.pvm_proof_size || 0), 0);
-                    const evmCount = dataset.contracts.filter(c => c.evm_metered_pct !== null).length;
-                    const pvmCount = dataset.contracts.filter(c => c.pvm_metered_pct !== null).length;
-                    const evmMeteredSum = dataset.contracts.reduce((sum, c) => sum + (c.evm_metered_pct || 0), 0);
-                    const pvmMeteredSum = dataset.contracts.reduce((sum, c) => sum + (c.pvm_metered_pct || 0), 0);
-                    const evmMeteredRefTime = dataset.contracts.reduce((sum, c) => sum + (c.evm_metered_ref_time || 0), 0);
-                    const pvmMeteredRefTime = dataset.contracts.reduce((sum, c) => sum + (c.pvm_metered_ref_time || 0), 0);
+                    // Recalculate dataset averages from all transactions across contracts
+                    const allTxs = [];
+                    dataset.contracts.forEach(function(c) { c.transactions.forEach(function(tx) { allTxs.push(tx); }); });
                     return {
                         ...dataset,
-                        evm_ref_time: dataset.contracts.some(c => c.evm_ref_time !== null) ? evmRefTime : null,
-                        pvm_ref_time: dataset.contracts.some(c => c.pvm_ref_time !== null) ? pvmRefTime : null,
-                        evm_proof_size: dataset.contracts.some(c => c.evm_proof_size !== null) ? evmProofSize : null,
-                        pvm_proof_size: dataset.contracts.some(c => c.pvm_proof_size !== null) ? pvmProofSize : null,
-                        evm_metered_pct: evmCount > 0 ? evmMeteredSum / evmCount : null,
-                        pvm_metered_pct: pvmCount > 0 ? pvmMeteredSum / pvmCount : null,
-                        evm_metered_ref_time: dataset.contracts.some(c => c.evm_metered_ref_time !== null) ? evmMeteredRefTime : null,
-                        pvm_metered_ref_time: dataset.contracts.some(c => c.pvm_metered_ref_time !== null) ? pvmMeteredRefTime : null
+                        evm_ref_time: avgOfFiltered(allTxs, 'evm_ref_time'),
+                        pvm_ref_time: avgOfFiltered(allTxs, 'pvm_ref_time'),
+                        evm_proof_size: avgOfFiltered(allTxs, 'evm_proof_size'),
+                        pvm_proof_size: avgOfFiltered(allTxs, 'pvm_proof_size'),
+                        evm_metered_pct: avgPctOfFiltered(allTxs, 'evm_metered_pct'),
+                        pvm_metered_pct: avgPctOfFiltered(allTxs, 'pvm_metered_pct'),
+                        evm_metered_ref_time: avgOfFiltered(allTxs, 'evm_metered_ref_time'),
+                        pvm_metered_ref_time: avgOfFiltered(allTxs, 'pvm_metered_ref_time')
                     };
                 })
             };
@@ -728,25 +855,29 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
 
         function getWeightChartData(level, parent, metric) {
             let items = [];
-            const metricLabel = metric === 'ref_time' ? 'Weight (ref_time)' : 'Weight (proof_size)';
-            let title = metricLabel + ' by Dataset';
+            const metricName = metric === 'ref_time' ? 'ref_time' : 'proof_size';
             const suffix = hideWeightDeployTx ? ' (excluding deploy)' : '';
+            let title = '';
+            let yLabel = '';
 
             if (level === 'datasets') {
                 items = weightHierarchy.datasets;
-                title = metricLabel + ' by Dataset' + suffix + ' (click to drill down)';
+                title = 'Avg ' + metricName + ' per Transaction by Dataset' + suffix + ' (click to drill down)';
+                yLabel = 'Avg ' + metricName + ' per Transaction';
             } else if (level === 'contracts' && parent) {
                 const dataset = weightHierarchy.datasets.find(d => d.name === parent);
                 if (dataset) {
                     items = dataset.contracts;
-                    title = metricLabel + ' by Contract: ' + parent + suffix + ' (click to drill down, right-click to go back)';
+                    title = 'Avg ' + metricName + ' per Transaction: ' + parent + suffix + ' (click to drill down, right-click to go back)';
+                    yLabel = 'Avg ' + metricName + ' per Transaction';
                 }
             } else if (level === 'transactions' && parent) {
                 for (const dataset of weightHierarchy.datasets) {
                     const contract = dataset.contracts.find(c => c.name === parent);
                     if (contract) {
                         items = contract.transactions;
-                        title = metricLabel + ' by Transaction: ' + parent + suffix + ' (right-click to go back)';
+                        title = metricName + ' by Transaction: ' + parent + suffix + ' (right-click to go back)';
+                        yLabel = metricName;
                         break;
                     }
                 }
@@ -796,7 +927,7 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                 evmMetered, evmOverhead, pvmMetered, pvmOverhead,
                 evmMeteredPct: items.map(i => i.evm_metered_pct),
                 pvmMeteredPct: items.map(i => i.pvm_metered_pct),
-                title, metric
+                title, metric, yLabel
             };
         }
 
@@ -813,7 +944,7 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
             chart.data.datasets[2].data = data.pvmMetered;
             chart.data.datasets[3].data = data.pvmOverhead;
             chart.options.plugins.title.text = data.title;
-            chart.options.scales.y.title.text = data.metric;
+            chart.options.scales.y.title.text = data.yLabel;
 
             if (data.metric === 'ref_time') {
                 chart.data.datasets[0].label = 'EVM Metered';
@@ -853,16 +984,24 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
         });
 
         function updateWeightTableVisibility() {
-            const rows = document.querySelectorAll('.expandable-weight-table tbody tr');
-            rows.forEach(row => {
+            const table = document.querySelector('.expandable-weight-table');
+            table.querySelectorAll('tbody tr').forEach(row => {
                 const nameCell = row.querySelector('td:first-child');
                 if (nameCell) {
                     const name = nameCell.textContent.trim();
-                    if (hideWeightDeployTx && name === 'deploy' && row.classList.contains('level-2')) {
+                    if (hideWeightDeployTx && name.startsWith('deploy') && row.classList.contains('level-2')) {
                         row.style.display = 'none';
                     } else if (!row.classList.contains('hidden-row')) {
                         row.style.display = '';
                     }
+                }
+            });
+            table.querySelectorAll('.swappable').forEach(cell => {
+                if (hideWeightDeployTx) {
+                    if (!cell.dataset.all) cell.dataset.all = cell.textContent;
+                    cell.textContent = cell.dataset.excl;
+                } else {
+                    if (cell.dataset.all) cell.textContent = cell.dataset.all;
                 }
             });
         }
@@ -907,7 +1046,7 @@ export function weightAnalysisFilterControls(): string {
     <div class="filter-controls">
         <label>
             <input type="checkbox" id="hideWeightDeployCheckbox">
-            Hide deploy transactions
+            Exclude deploy transactions
         </label>
         <span style="margin-left: 1.5rem;">View:</span>
         <label>
@@ -926,69 +1065,111 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
     let rowId = 1000 // Start from 1000 to avoid conflicts with gas table IDs
     const rows: string[] = []
 
-    // Calculate totals across all datasets
-    const totals = {
-        evm_ref_time: 0 as number | null,
-        evm_metered_ref_time: 0 as number | null,
-        evm_proof_size: 0 as number | null,
-        pvm_ref_time: 0 as number | null,
-        pvm_metered_ref_time: 0 as number | null,
-        pvm_proof_size: 0 as number | null,
+    // Helper to compute average across all transactions
+    type WeightTx = WeightHierarchyData['datasets'][0]['contracts'][0]['transactions'][0]
+    function avgWeight(txs: WeightTx[], key: keyof WeightTx): number | null {
+        const vals = txs.map(tx => tx[key] as number | null).filter((v): v is number => v !== null)
+        return vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : null
     }
-    let hasEvmRefTime = false, hasEvmMetered = false, hasEvmProof = false
-    let hasPvmRefTime = false, hasPvmMetered = false, hasPvmProof = false
-    let evmMeteredPctSum = 0, evmMeteredPctCount = 0
-    let pvmMeteredPctSum = 0, pvmMeteredPctCount = 0
+    function avgPct(txs: WeightTx[], key: keyof WeightTx): number | null {
+        const vals = txs.map(tx => tx[key] as number | null).filter((v): v is number => v !== null)
+        return vals.length > 0 ? vals.reduce((s, v) => s + v, 0) / vals.length : null
+    }
+
+    // Collect all transactions for overall average
+    const allTxs: WeightTx[] = data.datasets.flatMap(d => d.contracts.flatMap(c => c.transactions))
+    const noDeployW = (txs: WeightTx[]) => txs.filter(tx => tx.name !== 'deploy')
+
+    function weightAvgs(txs: WeightTx[]) {
+        return {
+            evm_ref_time: avgWeight(txs, 'evm_ref_time'),
+            evm_metered_ref_time: avgWeight(txs, 'evm_metered_ref_time'),
+            evm_metered_pct: avgPct(txs, 'evm_metered_pct'),
+            evm_proof_size: avgWeight(txs, 'evm_proof_size'),
+            pvm_ref_time: avgWeight(txs, 'pvm_ref_time'),
+            pvm_metered_ref_time: avgWeight(txs, 'pvm_metered_ref_time'),
+            pvm_metered_pct: avgPct(txs, 'pvm_metered_pct'),
+            pvm_proof_size: avgWeight(txs, 'pvm_proof_size'),
+        }
+    }
+
+    function weightRow(v: ReturnType<typeof weightAvgs>, cls: string) {
+        return [
+            `<td class="number ${cls}">${formatWeight(v.evm_ref_time)}</td>`,
+            `<td class="number ${cls}">${formatWeight(v.evm_metered_ref_time)}</td>`,
+            `<td class="number ${cls}">${formatMetered(v.evm_metered_pct)}</td>`,
+            `<td class="number ${cls}">${formatWeight(v.evm_proof_size)}</td>`,
+            `<td class="number ${cls}">${formatWeight(v.pvm_ref_time)}</td>`,
+            `<td class="number ${cls}">${formatWeight(v.pvm_metered_ref_time)}</td>`,
+            `<td class="number ${cls}">${formatMetered(v.pvm_metered_pct)}</td>`,
+            `<td class="number ${cls}">${formatWeight(v.pvm_proof_size)}</td>`,
+            `<td class="number ${cls}">${calcDiff(v.evm_ref_time, v.pvm_ref_time)}</td>`,
+            `<td class="number ${cls}">${calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time)}</td>`,
+        ].join('')
+    }
+
+    function swappableWeightCells(all: ReturnType<typeof weightAvgs>, excl: ReturnType<typeof weightAvgs>) {
+        const keys: Array<keyof ReturnType<typeof weightAvgs>> = [
+            'evm_ref_time', 'evm_metered_ref_time', 'evm_metered_pct', 'evm_proof_size',
+            'pvm_ref_time', 'pvm_metered_ref_time', 'pvm_metered_pct', 'pvm_proof_size',
+        ]
+        const fmt = (k: string, v: number | null) => k.includes('pct') ? formatMetered(v) : formatWeight(v)
+        const cells = keys.map(k => `<td class="number swappable" data-excl="${fmt(k, excl[k])}">${fmt(k, all[k])}</td>`)
+        // Delta columns
+        cells.push(`<td class="number swappable" data-excl="${calcDiff(excl.evm_ref_time, excl.pvm_ref_time)}">${calcDiff(all.evm_ref_time, all.pvm_ref_time)}</td>`)
+        cells.push(`<td class="number swappable" data-excl="${calcDiff(excl.evm_metered_ref_time, excl.pvm_metered_ref_time)}">${calcDiff(all.evm_metered_ref_time, all.pvm_metered_ref_time)}</td>`)
+        return cells.join('')
+    }
 
     for (const dataset of data.datasets) {
-        if (dataset.evm_ref_time !== null) { totals.evm_ref_time! += dataset.evm_ref_time; hasEvmRefTime = true }
-        if (dataset.evm_metered_ref_time !== null) { totals.evm_metered_ref_time! += dataset.evm_metered_ref_time; hasEvmMetered = true }
-        if (dataset.evm_proof_size !== null) { totals.evm_proof_size! += dataset.evm_proof_size; hasEvmProof = true }
-        if (dataset.pvm_ref_time !== null) { totals.pvm_ref_time! += dataset.pvm_ref_time; hasPvmRefTime = true }
-        if (dataset.pvm_metered_ref_time !== null) { totals.pvm_metered_ref_time! += dataset.pvm_metered_ref_time; hasPvmMetered = true }
-        if (dataset.pvm_proof_size !== null) { totals.pvm_proof_size! += dataset.pvm_proof_size; hasPvmProof = true }
-        if (dataset.evm_metered_pct !== null) { evmMeteredPctSum += dataset.evm_metered_pct; evmMeteredPctCount++ }
-        if (dataset.pvm_metered_pct !== null) { pvmMeteredPctSum += dataset.pvm_metered_pct; pvmMeteredPctCount++ }
+        const dsTxs = dataset.contracts.flatMap(c => c.transactions)
+        const dsAll = weightAvgs(dsTxs)
+        const dsExcl = weightAvgs(noDeployW(dsTxs))
 
         const datasetId = rowId++
         rows.push(`
             <tr class="level-0" data-id="${datasetId}" data-level="0">
                 <td><span class="expand-toggle" onclick="toggleExpand(${datasetId}, 0)">${dataset.name}</span></td>
-                <td class="number">${formatWeight(dataset.evm_ref_time)}</td>
-                <td class="number">${formatWeight(dataset.evm_metered_ref_time)}</td>
-                <td class="number">${formatMetered(dataset.evm_metered_pct)}</td>
-                <td class="number">${formatWeight(dataset.evm_proof_size)}</td>
-                <td class="number">${formatWeight(dataset.pvm_ref_time)}</td>
-                <td class="number">${formatWeight(dataset.pvm_metered_ref_time)}</td>
-                <td class="number">${formatMetered(dataset.pvm_metered_pct)}</td>
-                <td class="number">${formatWeight(dataset.pvm_proof_size)}</td>
-                <td class="number">${calcDiff(dataset.evm_ref_time, dataset.pvm_ref_time)}</td>
-                <td class="number">${calcDiff(dataset.evm_metered_ref_time, dataset.pvm_metered_ref_time)}</td>
+                ${swappableWeightCells(dsAll, dsExcl)}
             </tr>
         `)
 
         for (const contract of dataset.contracts) {
+            const cAll = weightAvgs(contract.transactions)
+            const cExcl = weightAvgs(noDeployW(contract.transactions))
+
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                     <td><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
-                    <td class="number">${formatWeight(contract.evm_ref_time)}</td>
-                    <td class="number">${formatWeight(contract.evm_metered_ref_time)}</td>
-                    <td class="number">${formatMetered(contract.evm_metered_pct)}</td>
-                    <td class="number">${formatWeight(contract.evm_proof_size)}</td>
-                    <td class="number">${formatWeight(contract.pvm_ref_time)}</td>
-                    <td class="number">${formatWeight(contract.pvm_metered_ref_time)}</td>
-                    <td class="number">${formatMetered(contract.pvm_metered_pct)}</td>
-                    <td class="number">${formatWeight(contract.pvm_proof_size)}</td>
-                    <td class="number">${calcDiff(contract.evm_ref_time, contract.pvm_ref_time)}</td>
-                    <td class="number">${calcDiff(contract.evm_metered_ref_time, contract.pvm_metered_ref_time)}</td>
+                    ${swappableWeightCells(cAll, cExcl)}
                 </tr>
             `)
 
+            // Build alt tx lookup by transaction name
+            const hasWeightAlts = contract.alt_implementations.length > 0
+            const altWeightByTxName = new Map<string, Array<{label: string, pvm_ref_time: number | null, pvm_metered_ref_time: number | null, pvm_metered_pct: number | null, pvm_proof_size: number | null}>>()
+            if (hasWeightAlts) {
+                for (const alt of contract.alt_implementations) {
+                    const label = getImplLabel(contract.name, alt.name)
+                    for (const tx of alt.transactions) {
+                        if (!altWeightByTxName.has(tx.name)) altWeightByTxName.set(tx.name, [])
+                        altWeightByTxName.get(tx.name)!.push({
+                            label,
+                            pvm_ref_time: tx.pvm_ref_time,
+                            pvm_metered_ref_time: tx.pvm_metered_ref_time,
+                            pvm_metered_pct: tx.pvm_metered_pct,
+                            pvm_proof_size: tx.pvm_proof_size,
+                        })
+                    }
+                }
+            }
+
             for (const tx of contract.transactions) {
+                const suffix = hasWeightAlts ? ' (solidity)' : ''
                 rows.push(`
                     <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                        <td>${tx.name}</td>
+                        <td>${tx.name}${suffix}</td>
                         <td class="number">${formatWeight(tx.evm_ref_time)}</td>
                         <td class="number">${formatWeight(tx.evm_metered_ref_time)}</td>
                         <td class="number">${formatMetered(tx.evm_metered_pct)}</td>
@@ -1001,34 +1182,38 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
                         <td class="number">${calcDiff(tx.evm_metered_ref_time, tx.pvm_metered_ref_time)}</td>
                     </tr>
                 `)
+
+                // Alt implementation rows for the same transaction
+                const alts = altWeightByTxName.get(tx.name) || []
+                for (const alt of alts) {
+                    rows.push(`
+                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
+                            <td>${tx.name} (${alt.label})</td>
+                            <td class="number"></td>
+                            <td class="number"></td>
+                            <td class="number"></td>
+                            <td class="number"></td>
+                            <td class="number">${formatWeight(alt.pvm_ref_time)}</td>
+                            <td class="number">${formatWeight(alt.pvm_metered_ref_time)}</td>
+                            <td class="number">${formatMetered(alt.pvm_metered_pct)}</td>
+                            <td class="number">${formatWeight(alt.pvm_proof_size)}</td>
+                            <td class="number">${calcDiff(tx.evm_ref_time, alt.pvm_ref_time)}</td>
+                            <td class="number">${calcDiff(tx.evm_metered_ref_time, alt.pvm_metered_ref_time)}</td>
+                        </tr>
+                    `)
+                }
             }
         }
     }
 
-    if (!hasEvmRefTime) totals.evm_ref_time = null
-    if (!hasEvmMetered) totals.evm_metered_ref_time = null
-    if (!hasEvmProof) totals.evm_proof_size = null
-    if (!hasPvmRefTime) totals.pvm_ref_time = null
-    if (!hasPvmMetered) totals.pvm_metered_ref_time = null
-    if (!hasPvmProof) totals.pvm_proof_size = null
+    const overallAll = weightAvgs(allTxs)
+    const overallExcl = weightAvgs(noDeployW(allTxs))
 
-    const avgEvmMeteredPct = evmMeteredPctCount > 0 ? evmMeteredPctSum / evmMeteredPctCount : null
-    const avgPvmMeteredPct = pvmMeteredPctCount > 0 ? pvmMeteredPctSum / pvmMeteredPctCount : null
-
-    // Add total row
+    // Add average row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
-            <td>Total</td>
-            <td class="number">${formatWeight(totals.evm_ref_time)}</td>
-            <td class="number">${formatWeight(totals.evm_metered_ref_time)}</td>
-            <td class="number">${formatMetered(avgEvmMeteredPct)}</td>
-            <td class="number">${formatWeight(totals.evm_proof_size)}</td>
-            <td class="number">${formatWeight(totals.pvm_ref_time)}</td>
-            <td class="number">${formatWeight(totals.pvm_metered_ref_time)}</td>
-            <td class="number">${formatMetered(avgPvmMeteredPct)}</td>
-            <td class="number">${formatWeight(totals.pvm_proof_size)}</td>
-            <td class="number">${calcDiff(totals.evm_ref_time, totals.pvm_ref_time)}</td>
-            <td class="number">${calcDiff(totals.evm_metered_ref_time, totals.pvm_metered_ref_time)}</td>
+            <td>Avg per transaction</td>
+            ${swappableWeightCells(overallAll, overallExcl)}
         </tr>
     `)
 
@@ -1044,11 +1229,11 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
             <tr>
                 <th class="number">ref_time</th>
                 <th class="number">metered</th>
-                <th class="number">%</th>
+                <th class="number">% metered</th>
                 <th class="number">proof</th>
                 <th class="number">ref_time</th>
                 <th class="number">metered</th>
-                <th class="number">%</th>
+                <th class="number">% metered</th>
                 <th class="number">proof</th>
                 <th class="number">ref_time</th>
                 <th class="number">metered</th>
@@ -1083,11 +1268,32 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
     const rows: string[] = []
     const { allCategories, datasets, categoryDescriptions = {} } = data
 
+    // Recalculate category percentages for a set of transactions
+    function recalcCategoryPcts(txs: CategoryHierarchyRow[]): Record<string, number> {
+        const catTotals: Record<string, number> = {}
+        let cost = 0
+        for (const cat of allCategories) catTotals[cat] = 0
+        for (const tx of txs) {
+            cost += tx.total_cost
+            for (const cat of allCategories) {
+                catTotals[cat] += (tx.categories[cat] ?? 0) * tx.total_cost / 100
+            }
+        }
+        const result: Record<string, number> = {}
+        for (const cat of allCategories) {
+            result[cat] = cost > 0 ? (catTotals[cat] / cost) * 100 : 0
+        }
+        return result
+    }
+
     // Calculate totals
     const totals: Record<string, number> = {}
+    const totalsExcl: Record<string, number> = {}
     let totalCost = 0
+    let totalCostExcl = 0
     for (const cat of allCategories) {
         totals[cat] = 0
+        totalsExcl[cat] = 0
     }
 
     for (const dataset of datasets) {
@@ -1096,20 +1302,35 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
             totals[cat] += (dataset.categories[cat] ?? 0) * dataset.total_cost / 100
         }
 
+        // Compute excluding-deploy percentages
+        const dsTxs = dataset.contracts.flatMap(c => c.transactions)
+        const dsTxsExcl = dsTxs.filter(tx => tx.name !== 'deploy')
+        const dsExclPcts = recalcCategoryPcts(dsTxsExcl)
+
+        // Track excluding-deploy totals
+        const dsCostExcl = dsTxsExcl.reduce((s, tx) => s + tx.total_cost, 0)
+        totalCostExcl += dsCostExcl
+        for (const cat of allCategories) {
+            totalsExcl[cat] += (dsExclPcts[cat] ?? 0) * dsCostExcl / 100
+        }
+
         const datasetId = rowId++
         rows.push(`
             <tr class="level-0" data-id="${datasetId}" data-level="0">
                 <td><span class="expand-toggle" onclick="toggleExpand(${datasetId}, 0)">${dataset.name}</span></td>
-                ${allCategories.map(cat => `<td class="number">${(dataset.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
+                ${allCategories.map(cat => `<td class="number swappable" data-excl="${(dsExclPcts[cat] ?? 0).toFixed(1)}%">${(dataset.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
             </tr>
         `)
 
         for (const contract of dataset.contracts) {
+            const cTxsExcl = contract.transactions.filter(tx => tx.name !== 'deploy')
+            const cExclPcts = recalcCategoryPcts(cTxsExcl)
+
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                     <td><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
-                    ${allCategories.map(cat => `<td class="number">${(contract.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
+                    ${allCategories.map(cat => `<td class="number swappable" data-excl="${(cExclPcts[cat] ?? 0).toFixed(1)}%">${(contract.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
                 </tr>
             `)
 
@@ -1124,17 +1345,19 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
         }
     }
 
-    // Calculate total percentages
+    // Calculate total percentages (all and excluding deploy)
     const totalPcts: Record<string, number> = {}
+    const totalPctsExcl: Record<string, number> = {}
     for (const cat of allCategories) {
         totalPcts[cat] = totalCost > 0 ? (totals[cat] / totalCost) * 100 : 0
+        totalPctsExcl[cat] = totalCostExcl > 0 ? (totalsExcl[cat] / totalCostExcl) * 100 : 0
     }
 
     // Add total row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
             <td>Total</td>
-            ${allCategories.map(cat => `<td class="number">${totalPcts[cat].toFixed(1)}%</td>`).join('')}
+            ${allCategories.map(cat => `<td class="number swappable" data-excl="${totalPctsExcl[cat].toFixed(1)}%">${totalPcts[cat].toFixed(1)}%</td>`).join('')}
         </tr>
     `)
 
@@ -1160,15 +1383,16 @@ export function categoryFilterControls(): string {
     <div class="filter-controls">
         <label>
             <input type="checkbox" id="hideCategoryDeployCheckbox">
-            Hide deploy transactions
+            Exclude deploy transactions
         </label>
     </div>
     `
 }
 
-export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData): string {
+export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, categoryColorMap: Record<string, string>): string {
     return `
         // Store category hierarchy data for drill-down
+        const categoryColorMap = ${JSON.stringify(categoryColorMap)};
         const categoryHierarchyOriginal = ${JSON.stringify(hierarchy)};
         let categoryHierarchy = JSON.parse(JSON.stringify(categoryHierarchyOriginal));
         let categoryCurrentLevel = 'datasets';
@@ -1255,10 +1479,10 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData): 
             }
 
             const categories = categoryHierarchy.allCategories;
-            const datasets = categories.map((cat, idx) => ({
+            const datasets = categories.map(cat => ({
                 label: cat,
                 data: items.map(i => i.categories[cat] ?? 0),
-                backgroundColor: getCategoryColorByIndex(idx),
+                backgroundColor: categoryColorMap[cat] || 'rgba(128, 128, 128, 0.8)',
             }));
 
             return {
@@ -1267,24 +1491,6 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData): 
                 title,
                 canDrillDown: level !== 'transactions'
             };
-        }
-
-        function getCategoryColorByIndex(idx) {
-            const colors = [
-                'rgba(54, 162, 235, 0.8)',
-                'rgba(255, 99, 132, 0.8)',
-                'rgba(75, 192, 192, 0.8)',
-                'rgba(255, 206, 86, 0.8)',
-                'rgba(153, 102, 255, 0.8)',
-                'rgba(255, 159, 64, 0.8)',
-                'rgba(199, 199, 199, 0.8)',
-                'rgba(83, 102, 255, 0.8)',
-                'rgba(255, 99, 255, 0.8)',
-                'rgba(99, 255, 132, 0.8)',
-                'rgba(255, 180, 86, 0.8)',
-                'rgba(102, 255, 255, 0.8)',
-            ];
-            return colors[idx % colors.length];
         }
 
         function updateCategoryChart(level, parent) {
@@ -1311,16 +1517,24 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData): 
         };
 
         function updateCategoryTableVisibility() {
-            const rows = document.querySelectorAll('.expandable-category-table tbody tr');
-            rows.forEach(row => {
+            const table = document.querySelector('.expandable-category-table');
+            table.querySelectorAll('tbody tr').forEach(row => {
                 const nameCell = row.querySelector('td:first-child');
                 if (nameCell) {
                     const name = nameCell.textContent.trim();
-                    if (hideCategoryDeployTx && name === 'deploy' && row.classList.contains('level-2')) {
+                    if (hideCategoryDeployTx && name.startsWith('deploy') && row.classList.contains('level-2')) {
                         row.style.display = 'none';
                     } else if (!row.classList.contains('hidden-row')) {
                         row.style.display = '';
                     }
+                }
+            });
+            table.querySelectorAll('.swappable').forEach(cell => {
+                if (hideCategoryDeployTx) {
+                    if (!cell.dataset.all) cell.dataset.all = cell.textContent;
+                    cell.textContent = cell.dataset.excl;
+                } else {
+                    if (cell.dataset.all) cell.textContent = cell.dataset.all;
                 }
             });
         }
@@ -1449,6 +1663,7 @@ export interface BytecodeHierarchyData {
             pvm_size: number | null
             evm_name: string | null
             pvm_name: string | null
+            implementations: Array<{ name: string; vm_type: string; size_bytes: number }>
         }>
     }>
 }
@@ -1469,48 +1684,96 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
     let rowId = 3000 // Start from 3000 to avoid conflicts with other table IDs
     const rows: string[] = []
 
-    // Calculate totals
-    let totalEvmSize = 0
-    let totalPvmSize = 0
-    let hasEvm = false
-    let hasPvm = false
+    // Helper to compute average size per contract
+    function avgSize(contracts: BytecodeHierarchyData['datasets'][0]['contracts'], key: 'evm_size' | 'pvm_size'): number | null {
+        const vals = contracts.map(c => c[key]).filter((v): v is number => v !== null)
+        return vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : null
+    }
+
+    // Collect all contracts for overall average
+    const allContracts = data.datasets.flatMap(d => d.contracts)
 
     for (const dataset of data.datasets) {
-        if (dataset.evm_size !== null) { totalEvmSize += dataset.evm_size; hasEvm = true }
-        if (dataset.pvm_size !== null) { totalPvmSize += dataset.pvm_size; hasPvm = true }
+        const dsAvgEvm = avgSize(dataset.contracts, 'evm_size')
+        const dsAvgPvm = avgSize(dataset.contracts, 'pvm_size')
 
         const datasetId = rowId++
         rows.push(`
             <tr class="level-0" data-id="${datasetId}" data-level="0">
                 <td><span class="expand-toggle" onclick="toggleExpand(${datasetId}, 0)">${dataset.name}</span></td>
-                <td class="number">${formatBytes(dataset.evm_size)}</td>
-                <td class="number">${formatBytes(dataset.pvm_size)}</td>
-                <td class="number">${calcSizeDiff(dataset.evm_size, dataset.pvm_size)}</td>
+                <td class="number">${formatBytes(dsAvgEvm)}</td>
+                <td class="number">${formatBytes(dsAvgPvm)}</td>
+                <td class="number">${calcSizeDiff(dsAvgEvm, dsAvgPvm)}</td>
             </tr>
         `)
 
         for (const contract of dataset.contracts) {
+            const hasMultipleImpls = contract.implementations.length > 2
+            const contractId = hasMultipleImpls ? rowId++ : -1
+
             const evmLabel = contract.evm_name ? `<span title="${contract.evm_name}">${formatBytes(contract.evm_size)}</span>` : 'N/A'
             const pvmLabel = contract.pvm_name ? `<span title="${contract.pvm_name}">${formatBytes(contract.pvm_size)}</span>` : 'N/A'
 
-            rows.push(`
-                <tr class="level-1 hidden-row" data-level="1" data-parent="${datasetId}">
-                    <td style="padding-left: 2rem;">${contract.name}</td>
-                    <td class="number">${evmLabel}</td>
-                    <td class="number">${pvmLabel}</td>
-                    <td class="number">${calcSizeDiff(contract.evm_size, contract.pvm_size)}</td>
-                </tr>
-            `)
+            if (hasMultipleImpls) {
+                rows.push(`
+                    <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
+                        <td style="padding-left: 2rem;"><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
+                        <td class="number">${evmLabel}</td>
+                        <td class="number">${pvmLabel}</td>
+                        <td class="number">${calcSizeDiff(contract.evm_size, contract.pvm_size)}</td>
+                    </tr>
+                `)
+
+                // Combined Solidity row (EVM + PVM)
+                const evmImpl = contract.implementations.find(i => i.vm_type === 'EVM')
+                const pvmSolImpl = contract.implementations.find(i => i.name.endsWith('_pvm'))
+                if (evmImpl || pvmSolImpl) {
+                    rows.push(`
+                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
+                            <td style="padding-left: 3.5rem;">${contract.name} (solidity)</td>
+                            <td class="number">${evmImpl ? formatBytes(evmImpl.size_bytes) : ''}</td>
+                            <td class="number">${pvmSolImpl ? formatBytes(pvmSolImpl.size_bytes) : ''}</td>
+                            <td class="number">${evmImpl && pvmSolImpl ? calcSizeDiff(evmImpl.size_bytes, pvmSolImpl.size_bytes) : ''}</td>
+                        </tr>
+                    `)
+                }
+
+                // Alt implementations with parenthetical labels
+                for (const impl of contract.implementations) {
+                    if (impl.vm_type === 'EVM' || impl.name.endsWith('_pvm')) continue
+                    const label = getImplLabel(contract.name, impl.name)
+                    rows.push(`
+                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
+                            <td style="padding-left: 3.5rem;">${contract.name} (${label})</td>
+                            <td class="number"></td>
+                            <td class="number">${formatBytes(impl.size_bytes)}</td>
+                            <td class="number">${calcSizeDiff(contract.evm_size, impl.size_bytes)}</td>
+                        </tr>
+                    `)
+                }
+            } else {
+                rows.push(`
+                    <tr class="level-1 hidden-row" data-level="1" data-parent="${datasetId}">
+                        <td style="padding-left: 2rem;">${contract.name}</td>
+                        <td class="number">${evmLabel}</td>
+                        <td class="number">${pvmLabel}</td>
+                        <td class="number">${calcSizeDiff(contract.evm_size, contract.pvm_size)}</td>
+                    </tr>
+                `)
+            }
         }
     }
 
-    // Add total row
+    const overallAvgEvm = avgSize(allContracts, 'evm_size')
+    const overallAvgPvm = avgSize(allContracts, 'pvm_size')
+
+    // Add average row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
-            <td>Total</td>
-            <td class="number">${hasEvm ? formatBytes(totalEvmSize) : 'N/A'}</td>
-            <td class="number">${hasPvm ? formatBytes(totalPvmSize) : 'N/A'}</td>
-            <td class="number">${calcSizeDiff(hasEvm ? totalEvmSize : null, hasPvm ? totalPvmSize : null)}</td>
+            <td>Avg per contract</td>
+            <td class="number">${formatBytes(overallAvgEvm)}</td>
+            <td class="number">${formatBytes(overallAvgPvm)}</td>
+            <td class="number">${calcSizeDiff(overallAvgEvm, overallAvgPvm)}</td>
         </tr>
     `)
 
@@ -1538,43 +1801,37 @@ export function drilldownBytecodeChartScript(hierarchy: BytecodeHierarchyData): 
         let bytecodeCurrentLevel = 'datasets';
         let bytecodeCurrentParent = null;
 
-        function getBytecodeChartData(level, parent) {
-            let items = [];
-            let title = 'Total Bytecode Size by Dataset (bytes)';
-
-            if (level === 'datasets') {
-                items = bytecodeHierarchy.datasets;
-                title = 'Total Bytecode Size by Dataset (click to drill down)';
-            } else if (level === 'contracts' && parent) {
-                const dataset = bytecodeHierarchy.datasets.find(d => d.name === parent);
-                if (dataset) {
-                    items = dataset.contracts;
-                    title = 'Bytecode Size by Contract: ' + parent + ' (right-click to go back)';
-                }
-            }
-
-            return {
-                labels: items.map(i => i.name),
-                evmData: items.map(i => i.evm_size),
-                pvmData: items.map(i => i.pvm_size),
-                title: title,
-                canDrillDown: level === 'datasets'
-            };
+        function avgSize(dataset, vm) {
+            var contracts = dataset.contracts.filter(function(c) { return vm === 'evm' ? c.evm_size !== null : c.pvm_size !== null; });
+            var total = vm === 'evm' ? dataset.evm_size : dataset.pvm_size;
+            return total !== null && contracts.length > 0 ? Math.round(total / contracts.length) : null;
         }
 
         function updateBytecodeChart(level, parent) {
             bytecodeCurrentLevel = level;
             bytecodeCurrentParent = parent;
 
-            const data = getBytecodeChartData(level, parent);
             const chart = Chart.getChart('bytecodeChart');
 
-            chart.data.labels = data.labels;
-            chart.data.datasets[0].data = data.evmData;
-            chart.data.datasets[1].data = data.pvmData;
-            chart.options.plugins.title.text = data.title;
-            chart.options.plugins.title.display = true;
+            if (level === 'datasets') {
+                const items = bytecodeHierarchy.datasets;
+                chart.data.labels = items.map(i => i.name);
+                chart.data.datasets[0].data = items.map(i => avgSize(i, 'evm'));
+                chart.data.datasets[1].data = items.map(i => avgSize(i, 'pvm'));
+                chart.options.plugins.title.text = 'Avg Bytecode Size per Contract (click to drill down)';
+                chart.options.scales.y.title.text = 'Avg Size (bytes)';
+            } else if (level === 'contracts' && parent) {
+                const dataset = bytecodeHierarchy.datasets.find(d => d.name === parent);
+                if (!dataset) return;
+                const items = dataset.contracts;
+                chart.data.labels = items.map(i => i.name);
+                chart.data.datasets[0].data = items.map(i => i.evm_size);
+                chart.data.datasets[1].data = items.map(i => i.pvm_size);
+                chart.options.plugins.title.text = 'Bytecode Size: ' + parent + ' (right-click to go back)';
+                chart.options.scales.y.title.text = 'Size (bytes)';
+            }
 
+            chart.options.plugins.title.display = true;
             chart.update();
         }
 

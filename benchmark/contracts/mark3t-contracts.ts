@@ -2,6 +2,7 @@ import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
 import { Artifacts, solidity } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
+import { uploadCodePVM } from '../../tools/lib/pvm.ts'
 import { Hex, parseEther, encodeFunctionData } from 'viem'
 
 // Test constants
@@ -40,15 +41,19 @@ function getNextPurchaseId(proxyAddress: Hex): bigint {
     return nextPurchaseIdByProxy[proxyAddress]++
 }
 
-// Helper to filter sources by type (pvm only for large contracts)
-const pvmOnly = (srcs: ReturnType<typeof solidity>) => srcs.filter(s => !s.supportEvm())
-
 export const mark3tContracts: Artifacts = [
     // ============ Mark3tMarketplace Implementation Contract (PVM only - too big for EVM) ============
     {
         id: 'Mark3tMarketplace',
-        srcs: pvmOnly(solidity('Mark3tMarketplace.sol', 'Marketplace')),
+        srcs: solidity('Mark3tMarketplace.sol', 'Marketplace'),
+        pvmOnly: true,
         deploy: async (id, name, bytecode) => {
+            // Upload ProxyAdmin bytecode early so it's available when the proxy deploys
+            if (env.chain.name !== 'Geth') {
+                const code = env.getByteCode('ProxyAdmin', 'polkavm')
+                await uploadCodePVM(code)
+            }
+
             // Deploy the implementation contract (no constructor args for upgradeable)
             const receipt = await deployContract({
                 name: { id, name },

@@ -376,14 +376,14 @@ footer {
 }
 
 /* Sortable table headers */
-.expandable-table th {
+.expandable-table th.sortable {
     cursor: pointer;
     user-select: none;
     position: relative;
     padding-right: 1.5rem !important;
 }
 
-.expandable-table th::after {
+.expandable-table th.sortable::after {
     content: '⇅';
     position: absolute;
     right: 0.25rem;
@@ -391,18 +391,76 @@ footer {
     font-size: 0.75rem;
 }
 
-.expandable-table th.sort-asc::after {
+.expandable-table th.sortable.sort-asc::after {
     content: '↑';
     opacity: 1;
 }
 
-.expandable-table th.sort-desc::after {
+.expandable-table th.sortable.sort-desc::after {
     content: '↓';
     opacity: 1;
 }
 
-.expandable-table th:hover {
+.expandable-table th.sortable:hover {
     background-color: var(--bg-primary);
+}
+
+/* Collapsible methodology */
+details.methodology {
+    margin-top: -0.25rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+details.methodology summary {
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary);
+    list-style: none;
+}
+
+details.methodology summary:hover {
+    color: var(--accent-color);
+}
+
+details.methodology[open] summary {
+    margin-bottom: 0.75rem;
+}
+
+details.methodology h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 1rem;
+    margin-bottom: 0.375rem;
+}
+
+details.methodology h4:first-of-type {
+    margin-top: 0.5rem;
+}
+
+details.methodology p {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+details.methodology .source-links {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+}
+
+details.methodology table {
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+}
+
+details.methodology a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+details.methodology a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {
