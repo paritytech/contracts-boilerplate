@@ -1,0 +1,24 @@
+[package]
+name = "pc-store"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "Protocol Commons Store contract for pallet-revive"
+
+[[bin]]
+name = "store"
+path = "src/main.rs"
+
+[dependencies]
+pc-revive-common = { path = "../../common" }
+parity-scale-codec = { version = "3.6", default-features = false, features = ["derive"] }
+polkavm-derive = "0.26"
+
+[features]
+default = []
+
+[profile.release]
+opt-level = "s"
+lto = "fat"
+codegen-units = 1
+panic = "abort"

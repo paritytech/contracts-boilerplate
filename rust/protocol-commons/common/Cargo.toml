@@ -1,0 +1,19 @@
+[package]
+name = "pc-revive-common"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "Common utilities for Protocol Commons contracts on pallet-revive"
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+uapi = { package = "pallet-revive-uapi", version = "0.7", default-features = false }
+parity-scale-codec = { version = "3.6", default-features = false, features = ["derive"] }
+polkavm-derive = "0.26"
+keccak-const = "0.2"
+
+[features]
+default = []
+std = ["uapi/std", "parity-scale-codec/std"]

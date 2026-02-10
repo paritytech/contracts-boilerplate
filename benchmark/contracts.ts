@@ -27,7 +27,7 @@ export const contracts = [
     ...protocolCommonsContracts,
     ...hackm3Contracts,
     ...w3sContracts,
-    ...(env.chain.name !== 'Geth' ? mark3tContracts : []),
+    ...(env.chain.name !== 'Geth' ? mark3tContracts : []), // mark3t contracts are too big to be tested w/ geth
 ]
 
 const cli = parseArgs(Deno.args, {

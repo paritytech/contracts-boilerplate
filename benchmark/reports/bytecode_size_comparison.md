@@ -1,6 +1,6 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-02-09
+Generated on: 2026-02-10
 
 ## Fibonacci Implementations
 
@@ -45,7 +45,7 @@ Generated on: 2026-02-09
 | Contract          | VM Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | ------------ | ----------- |
 | FiatTokenV2_2_evm | EVM     | 15,467       | -           |
-| FiatTokenV2_2_pvm | PVM     | 412,256      | +2565.4%    |
+| FiatTokenV2_2_pvm | PVM     | 103,545      | +569.5%     |
 
 
 ## FiatTokenProxy Implementations
@@ -61,7 +61,7 @@ Generated on: 2026-02-09
 | Contract      | VM Type | Size (bytes) | vs Smallest |
 | ------------- | ------- | ------------ | ----------- |
 | XENCrypto_evm | EVM     | 10,489       | -           |
-| XENCrypto_pvm | PVM     | 305,896      | +2816.4%    |
+| XENCrypto_pvm | PVM     | 112,648      | +974.0%     |
 
 
 ## CoinTool_App Implementations
@@ -74,10 +74,11 @@ Generated on: 2026-02-09
 
 ## Store Implementations
 
-| Contract  | VM Type | Size (bytes) | vs Smallest |
-| --------- | ------- | ------------ | ----------- |
-| Store_evm | EVM     | 7,835        | -           |
-| Store_pvm | PVM     | 74,006       | +844.6%     |
+| Contract   | VM Type | Size (bytes) | vs Smallest |
+| ---------- | ------- | ------------ | ----------- |
+| Store_evm  | EVM     | 7,835        | -           |
+| store_rust | PVM     | 31,224       | +298.5%     |
+| Store_pvm  | PVM     | 74,006       | +844.6%     |
 
 
 ## Log Implementations
@@ -85,47 +86,53 @@ Generated on: 2026-02-09
 | Contract | VM Type | Size (bytes) | vs Smallest |
 | -------- | ------- | ------------ | ----------- |
 | Log_evm  | EVM     | 6,297        | -           |
+| log_rust | PVM     | 16,793       | +166.7%     |
 | Log_pvm  | PVM     | 54,127       | +759.6%     |
 
 
 ## NonFungibleCredential Implementations
 
-| Contract                  | VM Type | Size (bytes) | vs Smallest |
-| ------------------------- | ------- | ------------ | ----------- |
-| NonFungibleCredential_evm | EVM     | 6,684        | -           |
-| NonFungibleCredential_pvm | PVM     | 65,361       | +877.9%     |
+| Contract                     | VM Type | Size (bytes) | vs Smallest |
+| ---------------------------- | ------- | ------------ | ----------- |
+| NonFungibleCredential_evm    | EVM     | 6,684        | -           |
+| non_fungible_credential_rust | PVM     | 17,863       | +167.3%     |
+| NonFungibleCredential_pvm    | PVM     | 65,361       | +877.9%     |
 
 
 ## FungibleCredential Implementations
 
-| Contract               | VM Type | Size (bytes) | vs Smallest |
-| ---------------------- | ------- | ------------ | ----------- |
-| FungibleCredential_evm | EVM     | 7,235        | -           |
-| FungibleCredential_pvm | PVM     | 65,747       | +808.7%     |
+| Contract                 | VM Type | Size (bytes) | vs Smallest |
+| ------------------------ | ------- | ------------ | ----------- |
+| FungibleCredential_evm   | EVM     | 7,235        | -           |
+| fungible_credential_rust | PVM     | 17,353       | +139.8%     |
+| FungibleCredential_pvm   | PVM     | 65,747       | +808.7%     |
 
 
 ## DotNS Implementations
 
-| Contract  | VM Type | Size (bytes) | vs Smallest |
-| --------- | ------- | ------------ | ----------- |
-| DotNS_evm | EVM     | 8,168        | -           |
-| DotNS_pvm | PVM     | 75,443       | +823.6%     |
+| Contract   | VM Type | Size (bytes) | vs Smallest |
+| ---------- | ------- | ------------ | ----------- |
+| DotNS_evm  | EVM     | 8,168        | -           |
+| dotns_rust | PVM     | 23,120       | +183.1%     |
+| DotNS_pvm  | PVM     | 75,443       | +823.6%     |
 
 
 ## KeyRegistry Implementations
 
-| Contract        | VM Type | Size (bytes) | vs Smallest |
-| --------------- | ------- | ------------ | ----------- |
-| KeyRegistry_evm | EVM     | 4,298        | -           |
-| KeyRegistry_pvm | PVM     | 38,843       | +803.7%     |
+| Contract          | VM Type | Size (bytes) | vs Smallest |
+| ----------------- | ------- | ------------ | ----------- |
+| KeyRegistry_evm   | EVM     | 4,298        | -           |
+| key_registry_rust | PVM     | 18,243       | +324.5%     |
+| KeyRegistry_pvm   | PVM     | 38,843       | +803.7%     |
 
 
 ## Escrow Implementations
 
-| Contract   | VM Type | Size (bytes) | vs Smallest |
-| ---------- | ------- | ------------ | ----------- |
-| Escrow_evm | EVM     | 4,226        | -           |
-| Escrow_pvm | PVM     | 33,827       | +700.4%     |
+| Contract    | VM Type | Size (bytes) | vs Smallest |
+| ----------- | ------- | ------------ | ----------- |
+| Escrow_evm  | EVM     | 4,226        | -           |
+| escrow_rust | PVM     | 12,434       | +194.2%     |
+| Escrow_pvm  | PVM     | 33,827       | +700.4%     |
 
 
 ## DocumentAccessManagement Implementations
@@ -142,5 +149,29 @@ Generated on: 2026-02-09
 | -------- | ------- | ------------ | ----------- |
 | W3S_evm  | EVM     | 12,501       | -           |
 | W3S_pvm  | PVM     | 104,732      | +737.8%     |
+
+
+## Mark3tMarketplace Implementations
+
+| Contract        | VM Type | Size (bytes) | vs Smallest |
+| --------------- | ------- | ------------ | ----------- |
+| Marketplace_evm | EVM     | 28,848       | -           |
+| Marketplace_pvm | PVM     | 272,397      | +844.2%     |
+
+
+## Mark3tMarketplaceProxy Implementations
+
+| Contract                   | VM Type | Size (bytes) | vs Smallest |
+| -------------------------- | ------- | ------------ | ----------- |
+| Mark3tMarketplaceProxy_evm | EVM     | 2,732        | -           |
+| Mark3tMarketplaceProxy_pvm | PVM     | 11,786       | +331.4%     |
+
+
+## Mark3tMockMobRule Implementations
+
+| Contract        | VM Type | Size (bytes) | vs Smallest |
+| --------------- | ------- | ------------ | ----------- |
+| MockMobRule_evm | EVM     | 5,892        | -           |
+| MockMobRule_pvm | PVM     | 47,029       | +698.2%     |
 
 

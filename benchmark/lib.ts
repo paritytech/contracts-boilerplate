@@ -158,6 +158,32 @@ export function rust(name: string): ContractInfo {
     }
 }
 
+export function pcRust(name: string): ContractInfo {
+    const pcDir = join(import.meta.dirname!, '..', 'rust', 'protocol-commons', 'rust', name)
+    return {
+        supportEvm() {
+            return false
+        },
+        getName() {
+            return `${name}_rust`
+        },
+        getBytecode() {
+            return readBytecode(join(pcDir, `${name}.polkavm`))
+        },
+        async build() {
+            const cmd = new Deno.Command('make', {
+                cwd: pcDir,
+                stdout: 'inherit',
+                stderr: 'inherit',
+            })
+            const result = await cmd.output()
+            if (!result.success) {
+                throw new Error(`Failed to build pc rust contract: ${name}`)
+            }
+        },
+    }
+}
+
 export type Artifacts = Array<{
     id: string
     srcs: ContractInfo[]
