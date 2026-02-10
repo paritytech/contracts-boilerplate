@@ -354,14 +354,28 @@ export interface GasHierarchyData {
 function getImplLabel(contractName: string, altName: string): string {
     const base = contractName.replace(/_pvm$/, '')
     // Convert CamelCase to snake_case: "SimpleToken" → "simple_token"
-    const snake = base.replace(/([A-Z])/g, (m, _p, offset) =>
-        offset > 0 ? '_' + m.toLowerCase() : m.toLowerCase()
-    )
-    const prefix = snake + '_'
-    if (altName.startsWith(prefix)) {
-        return altName.slice(prefix.length)
+    // Handle consecutive uppercase (e.g. "DotNS" → "dot_ns", not "dot_n_s")
+    const snake = base
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        .toLowerCase()
+    // Try snake_case prefix first, then plain lowercase (for names like DotNS → dotns)
+    const lower = base.toLowerCase()
+    for (const prefix of [snake + '_', lower + '_']) {
+        if (altName.startsWith(prefix)) {
+            return altName.slice(prefix.length)
+        }
     }
     return altName
+}
+
+/** Generate a small colored tag for an implementation label */
+function implTag(label: string): string {
+    const lower = label.toLowerCase()
+    let cls = 'impl-tag-rust'
+    if (lower === 'solidity') cls = 'impl-tag-solidity'
+    else if (lower === 'ink') cls = 'impl-tag-ink'
+    return `<span class="impl-tag ${cls}">${label}</span>`
 }
 
 function formatGas(value: number | null): string {
@@ -373,6 +387,53 @@ function calcDiff(base: number | null, compare: number | null): string {
     const diff = ((compare - base) / base) * 100
     const sign = diff > 0 ? '+' : ''
     return `${sign}${diff.toFixed(1)}%`
+}
+
+/** HTML-encode a string for safe use in data-* attributes */
+function escAttr(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+/** Format a number in compact form for range indicators */
+function formatCompact(v: number): string {
+    const abs = Math.abs(v)
+    if (abs >= 1e9) return `${(v / 1e9).toFixed(1)}B`
+    if (abs >= 1e6) return `${(v / 1e6).toFixed(1)}M`
+    if (abs >= 1e3) return `${(v / 1e3).toFixed(1)}K`
+    return v.toLocaleString()
+}
+
+interface LabeledValue { value: number | null; label: string }
+
+/** Map implementation label to its CSS color */
+function implColor(label: string): string {
+    const lower = label.toLowerCase()
+    if (lower === 'solidity') return '#198754'
+    if (lower === 'ink') return '#6f42c1'
+    return '#d56a10' // rust and other alts
+}
+
+/** Append a colored min..max range indicator below an aggregated value */
+function withRange(mainValue: string, allValues: LabeledValue[], rangeFmt: (v: number) => string = formatCompact): string {
+    const entries = allValues.filter((e): e is { value: number; label: string } => e.value !== null)
+    if (entries.length <= 1) return mainValue
+    const minEntry = entries.reduce((a, b) => a.value < b.value ? a : b)
+    const maxEntry = entries.reduce((a, b) => a.value > b.value ? a : b)
+    if (minEntry.value === maxEntry.value) return mainValue
+    return `${mainValue}<span class="impl-range"><span style="color:${implColor(minEntry.label)}">${rangeFmt(minEntry.value)}</span>..<span style="color:${implColor(maxEntry.label)}">${rangeFmt(maxEntry.value)}</span></span>`
+}
+
+/** Append a colored min..max range for percentage-diff columns */
+function withDiffRange(mainDiff: string, base: number | null, allCompareValues: LabeledValue[]): string {
+    if (base === null) return mainDiff
+    const entries = allCompareValues.filter((e): e is { value: number; label: string } => e.value !== null)
+    if (entries.length <= 1) return mainDiff
+    const withDiffs = entries.map(e => ({ label: e.label, diff: ((e.value - base) / base) * 100 }))
+    const minEntry = withDiffs.reduce((a, b) => a.diff < b.diff ? a : b)
+    const maxEntry = withDiffs.reduce((a, b) => a.diff > b.diff ? a : b)
+    if (Math.abs(maxEntry.diff - minEntry.diff) < 0.1) return mainDiff
+    const fmtDiff = (d: number) => { const s = d > 0 ? '+' : ''; return `${s}${d.toFixed(1)}%` }
+    return `${mainDiff}<span class="impl-range"><span style="color:${implColor(minEntry.label)}">${fmtDiff(minEntry.diff)}</span>..<span style="color:${implColor(maxEntry.label)}">${fmtDiff(maxEntry.diff)}</span></span>`
 }
 
 export function drilldownChartScript(hierarchy: GasHierarchyData): string {
@@ -594,10 +655,10 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             });
             table.querySelectorAll('.swappable').forEach(cell => {
                 if (hideDeployTx) {
-                    if (!cell.dataset.all) cell.dataset.all = cell.textContent;
-                    cell.textContent = cell.dataset.excl;
+                    if (!cell.dataset.all) cell.dataset.all = cell.innerHTML;
+                    cell.innerHTML = cell.dataset.excl;
                 } else {
-                    if (cell.dataset.all) cell.textContent = cell.dataset.all;
+                    if (cell.dataset.all) cell.innerHTML = cell.dataset.all;
                 }
             });
         }
@@ -646,6 +707,7 @@ export function gasAnalysisFilterControls(): string {
             Exclude deploy transactions
         </label>
     </div>
+    <p class="table-note">Dataset and contract rows show the average gas for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink).</p>
     `
 }
 
@@ -703,6 +765,30 @@ export function expandableGasTable(data: GasHierarchyData): string {
                 pvm: avgGas(noDeploy(contract.transactions), 'eth_rpc_pvm_gas'),
             }
 
+            // Collect all PVM gas values (Solidity avg + alt avgs) for range display
+            const altLabels = contract.alt_implementations.map(alt => getImplLabel(contract.name, alt.name))
+            const altPvmAvgs = contract.alt_implementations.map(alt => {
+                const vals = alt.transactions.map(t => t.pvm_gas).filter((v): v is number => v !== null)
+                return vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : null
+            })
+            const altPvmExclAvgs = contract.alt_implementations.map(alt => {
+                const vals = alt.transactions.filter(t => t.name !== 'deploy').map(t => t.pvm_gas).filter((v): v is number => v !== null)
+                return vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : null
+            })
+            const allPvmAll: LabeledValue[] = [
+                { value: cAvg.pvm, label: 'solidity' },
+                ...altPvmAvgs.map((v, i) => ({ value: v, label: altLabels[i] })),
+            ]
+            const allPvmExcl: LabeledValue[] = [
+                { value: cExcl.pvm, label: 'solidity' },
+                ...altPvmExclAvgs.map((v, i) => ({ value: v, label: altLabels[i] })),
+            ]
+
+            const pvmGasAll = withRange(formatGas(cAvg.pvm), allPvmAll, formatGas)
+            const pvmDiffAll = withDiffRange(calcDiff(cAvg.geth, cAvg.pvm), cAvg.geth, allPvmAll)
+            const pvmGasExcl = withRange(formatGas(cExcl.pvm), allPvmExcl, formatGas)
+            const pvmDiffExcl = withDiffRange(calcDiff(cExcl.geth, cExcl.pvm), cExcl.geth, allPvmExcl)
+
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
@@ -710,8 +796,8 @@ export function expandableGasTable(data: GasHierarchyData): string {
                     <td class="number swappable" data-excl="${formatGas(cExcl.geth)}">${formatGas(cAvg.geth)}</td>
                     <td class="number swappable" data-excl="${formatGas(cExcl.evm)}">${formatGas(cAvg.evm)}</td>
                     <td class="number swappable" data-excl="${calcDiff(cExcl.geth, cExcl.evm)}">${calcDiff(cAvg.geth, cAvg.evm)}</td>
-                    <td class="number swappable" data-excl="${formatGas(cExcl.pvm)}">${formatGas(cAvg.pvm)}</td>
-                    <td class="number swappable" data-excl="${calcDiff(cExcl.geth, cExcl.pvm)}">${calcDiff(cAvg.geth, cAvg.pvm)}</td>
+                    <td class="number swappable" data-excl="${escAttr(pvmGasExcl)}">${pvmGasAll}</td>
+                    <td class="number swappable" data-excl="${escAttr(pvmDiffExcl)}">${pvmDiffAll}</td>
                 </tr>
             `)
 
@@ -729,10 +815,10 @@ export function expandableGasTable(data: GasHierarchyData): string {
             }
 
             for (const tx of contract.transactions) {
-                const suffix = hasAlts ? ' (solidity)' : ''
+                const tag = hasAlts ? ' ' + implTag('solidity') : ''
                 rows.push(`
                     <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                        <td>${tx.name}${suffix}</td>
+                        <td>${tx.name}${tag}</td>
                         <td class="number">${formatGas(tx.geth_gas)}</td>
                         <td class="number">${formatGas(tx.eth_rpc_evm_gas)}</td>
                         <td class="number">${calcDiff(tx.geth_gas, tx.eth_rpc_evm_gas)}</td>
@@ -745,8 +831,8 @@ export function expandableGasTable(data: GasHierarchyData): string {
                 const alts = altGasByTxName.get(tx.name) || []
                 for (const { label, pvm_gas } of alts) {
                     rows.push(`
-                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                            <td>${tx.name} (${label})</td>
+                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}">
+                            <td>${tx.name} ${implTag(label)}</td>
                             <td class="number"></td>
                             <td class="number"></td>
                             <td class="number"></td>
@@ -1170,10 +1256,10 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
             });
             table.querySelectorAll('.swappable').forEach(cell => {
                 if (hideWeightDeployTx) {
-                    if (!cell.dataset.all) cell.dataset.all = cell.textContent;
-                    cell.textContent = cell.dataset.excl;
+                    if (!cell.dataset.all) cell.dataset.all = cell.innerHTML;
+                    cell.innerHTML = cell.dataset.excl;
                 } else {
-                    if (cell.dataset.all) cell.textContent = cell.dataset.all;
+                    if (cell.dataset.all) cell.innerHTML = cell.dataset.all;
                 }
             });
         }
@@ -1230,6 +1316,7 @@ export function weightAnalysisFilterControls(): string {
             proof_size
         </label>
     </div>
+    <p class="table-note">Dataset and contract rows show the average weight for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink).</p>
     `
 }
 
@@ -1280,16 +1367,40 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
         ].join('')
     }
 
-    function swappableWeightCells(all: ReturnType<typeof weightAvgs>, excl: ReturnType<typeof weightAvgs>) {
+    type PvmRanges = { ref: LabeledValue[], metered: LabeledValue[], pct: LabeledValue[], proof: LabeledValue[] }
+    const pctFmt = (v: number) => `${v.toFixed(1)}%`
+
+    function swappableWeightCells(all: ReturnType<typeof weightAvgs>, excl: ReturnType<typeof weightAvgs>, rangeAll?: PvmRanges, rangeExcl?: PvmRanges) {
         const keys: Array<keyof ReturnType<typeof weightAvgs>> = [
             'evm_ref_time', 'evm_metered_ref_time', 'evm_metered_pct', 'evm_proof_size',
             'pvm_ref_time', 'pvm_metered_ref_time', 'pvm_metered_pct', 'pvm_proof_size',
         ]
         const fmt = (k: string, v: number | null) => k.includes('pct') ? formatMetered(v) : formatWeight(v)
-        const cells = keys.map(k => `<td class="number swappable" data-excl="${fmt(k, excl[k])}">${fmt(k, all[k])}</td>`)
+
+        // Map PVM keys to their range arrays and formatters
+        const pvmRangeMap: Record<string, { allVals?: LabeledValue[], exclVals?: LabeledValue[], rfmt: (v: number) => string }> = {
+            'pvm_ref_time': { allVals: rangeAll?.ref, exclVals: rangeExcl?.ref, rfmt: formatCompact },
+            'pvm_metered_ref_time': { allVals: rangeAll?.metered, exclVals: rangeExcl?.metered, rfmt: formatCompact },
+            'pvm_metered_pct': { allVals: rangeAll?.pct, exclVals: rangeExcl?.pct, rfmt: pctFmt },
+            'pvm_proof_size': { allVals: rangeAll?.proof, exclVals: rangeExcl?.proof, rfmt: formatCompact },
+        }
+
+        const cells = keys.map(k => {
+            const r = pvmRangeMap[k]
+            if (r && r.allVals) {
+                const allVal = withRange(fmt(k, all[k]), r.allVals, r.rfmt)
+                const exclVal = withRange(fmt(k, excl[k]), r.exclVals ?? [], r.rfmt)
+                return `<td class="number swappable" data-excl="${escAttr(exclVal)}">${allVal}</td>`
+            }
+            return `<td class="number swappable" data-excl="${fmt(k, excl[k])}">${fmt(k, all[k])}</td>`
+        })
         // Delta columns
-        cells.push(`<td class="number swappable" data-excl="${calcDiff(excl.evm_ref_time, excl.pvm_ref_time)}">${calcDiff(all.evm_ref_time, all.pvm_ref_time)}</td>`)
-        cells.push(`<td class="number swappable" data-excl="${calcDiff(excl.evm_metered_ref_time, excl.pvm_metered_ref_time)}">${calcDiff(all.evm_metered_ref_time, all.pvm_metered_ref_time)}</td>`)
+        const refDiffAll = withDiffRange(calcDiff(all.evm_ref_time, all.pvm_ref_time), all.evm_ref_time, rangeAll?.ref ?? [])
+        const refDiffExcl = withDiffRange(calcDiff(excl.evm_ref_time, excl.pvm_ref_time), excl.evm_ref_time, rangeExcl?.ref ?? [])
+        cells.push(`<td class="number swappable" data-excl="${escAttr(refDiffExcl)}">${refDiffAll}</td>`)
+        const metDiffAll = withDiffRange(calcDiff(all.evm_metered_ref_time, all.pvm_metered_ref_time), all.evm_metered_ref_time, rangeAll?.metered ?? [])
+        const metDiffExcl = withDiffRange(calcDiff(excl.evm_metered_ref_time, excl.pvm_metered_ref_time), excl.evm_metered_ref_time, rangeExcl?.metered ?? [])
+        cells.push(`<td class="number swappable" data-excl="${escAttr(metDiffExcl)}">${metDiffAll}</td>`)
         return cells.join('')
     }
 
@@ -1310,11 +1421,28 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
             const cAll = weightAvgs(contract.transactions)
             const cExcl = weightAvgs(noDeployW(contract.transactions))
 
+            // Collect PVM ranges from alt implementations
+            const wAltLabels = contract.alt_implementations.map(alt => getImplLabel(contract.name, alt.name))
+            const altWeightAvgsAll = contract.alt_implementations.map(alt => weightAvgs(alt.transactions))
+            const altWeightAvgsExcl = contract.alt_implementations.map(alt => weightAvgs(alt.transactions.filter(t => t.name !== 'deploy')))
+            const pvmRangeAll: PvmRanges | undefined = contract.alt_implementations.length > 0 ? {
+                ref: [{ value: cAll.pvm_ref_time, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_ref_time, label: wAltLabels[i] }))],
+                metered: [{ value: cAll.pvm_metered_ref_time, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_metered_ref_time, label: wAltLabels[i] }))],
+                pct: [{ value: cAll.pvm_metered_pct, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_metered_pct, label: wAltLabels[i] }))],
+                proof: [{ value: cAll.pvm_proof_size, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_proof_size, label: wAltLabels[i] }))],
+            } : undefined
+            const pvmRangeExcl: PvmRanges | undefined = contract.alt_implementations.length > 0 ? {
+                ref: [{ value: cExcl.pvm_ref_time, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_ref_time, label: wAltLabels[i] }))],
+                metered: [{ value: cExcl.pvm_metered_ref_time, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_metered_ref_time, label: wAltLabels[i] }))],
+                pct: [{ value: cExcl.pvm_metered_pct, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_metered_pct, label: wAltLabels[i] }))],
+                proof: [{ value: cExcl.pvm_proof_size, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_proof_size, label: wAltLabels[i] }))],
+            } : undefined
+
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                     <td><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
-                    ${swappableWeightCells(cAll, cExcl)}
+                    ${swappableWeightCells(cAll, cExcl, pvmRangeAll, pvmRangeExcl)}
                 </tr>
             `)
 
@@ -1338,10 +1466,10 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
             }
 
             for (const tx of contract.transactions) {
-                const suffix = hasWeightAlts ? ' (solidity)' : ''
+                const wTag = hasWeightAlts ? ' ' + implTag('solidity') : ''
                 rows.push(`
                     <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                        <td>${tx.name}${suffix}</td>
+                        <td>${tx.name}${wTag}</td>
                         <td class="number">${formatWeight(tx.evm_ref_time)}</td>
                         <td class="number">${formatWeight(tx.evm_metered_ref_time)}</td>
                         <td class="number">${formatMetered(tx.evm_metered_pct)}</td>
@@ -1359,8 +1487,8 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
                 const alts = altWeightByTxName.get(tx.name) || []
                 for (const alt of alts) {
                     rows.push(`
-                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                            <td>${tx.name} (${alt.label})</td>
+                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}">
+                            <td>${tx.name} ${implTag(alt.label)}</td>
                             <td class="number"></td>
                             <td class="number"></td>
                             <td class="number"></td>
@@ -1703,10 +1831,10 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
             });
             table.querySelectorAll('.swappable').forEach(cell => {
                 if (hideCategoryDeployTx) {
-                    if (!cell.dataset.all) cell.dataset.all = cell.textContent;
-                    cell.textContent = cell.dataset.excl;
+                    if (!cell.dataset.all) cell.dataset.all = cell.innerHTML;
+                    cell.innerHTML = cell.dataset.excl;
                 } else {
-                    if (cell.dataset.all) cell.textContent = cell.dataset.all;
+                    if (cell.dataset.all) cell.innerHTML = cell.dataset.all;
                 }
             });
         }
@@ -1887,12 +2015,21 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
             const pvmLabel = contract.pvm_name ? `<span title="${contract.pvm_name}">${formatBytes(contract.pvm_size)}</span>` : 'N/A'
 
             if (hasMultipleImpls) {
+                const altPvmImpls = contract.implementations
+                    .filter(i => i.vm_type !== 'EVM' && !i.name.endsWith('_pvm'))
+                const allPvmSizes: LabeledValue[] = [
+                    { value: contract.pvm_size, label: 'solidity' },
+                    ...altPvmImpls.map(i => ({ value: i.size_bytes as number | null, label: getImplLabel(contract.name, i.name) })),
+                ]
+                const pvmWithRange = withRange(pvmLabel, allPvmSizes, formatBytes)
+                const diffWithRange = withDiffRange(calcSizeDiff(contract.evm_size, contract.pvm_size), contract.evm_size, allPvmSizes)
+
                 rows.push(`
                     <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                         <td style="padding-left: 2rem;"><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
                         <td class="number">${evmLabel}</td>
-                        <td class="number">${pvmLabel}</td>
-                        <td class="number">${calcSizeDiff(contract.evm_size, contract.pvm_size)}</td>
+                        <td class="number">${pvmWithRange}</td>
+                        <td class="number">${diffWithRange}</td>
                     </tr>
                 `)
 
@@ -1902,7 +2039,7 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
                 if (evmImpl || pvmSolImpl) {
                     rows.push(`
                         <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                            <td style="padding-left: 3.5rem;">${contract.name} (solidity)</td>
+                            <td style="padding-left: 3.5rem;">${contract.name} ${implTag('solidity')}</td>
                             <td class="number">${evmImpl ? formatBytes(evmImpl.size_bytes) : ''}</td>
                             <td class="number">${pvmSolImpl ? formatBytes(pvmSolImpl.size_bytes) : ''}</td>
                             <td class="number">${evmImpl && pvmSolImpl ? calcSizeDiff(evmImpl.size_bytes, pvmSolImpl.size_bytes) : ''}</td>
@@ -1915,8 +2052,8 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
                     if (impl.vm_type === 'EVM' || impl.name.endsWith('_pvm')) continue
                     const label = getImplLabel(contract.name, impl.name)
                     rows.push(`
-                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
-                            <td style="padding-left: 3.5rem;">${contract.name} (${label})</td>
+                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}">
+                            <td style="padding-left: 3.5rem;">${contract.name} ${implTag(label)}</td>
                             <td class="number"></td>
                             <td class="number">${formatBytes(impl.size_bytes)}</td>
                             <td class="number">${calcSizeDiff(contract.evm_size, impl.size_bytes)}</td>
@@ -1950,6 +2087,7 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
     `)
 
     return `
+    <p class="table-note">Dataset rows show the average bytecode size for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink).</p>
     <table class="expandable-table expandable-bytecode-table">
         <thead>
             <tr>

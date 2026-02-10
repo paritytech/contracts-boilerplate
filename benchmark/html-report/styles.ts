@@ -333,6 +333,44 @@ footer {
     background-color: var(--bg-secondary);
 }
 
+/* Implementation type tags */
+.impl-tag {
+    display: inline-block;
+    font-size: 0.675rem;
+    font-weight: 600;
+    padding: 0.1em 0.45em;
+    border-radius: 3px;
+    margin-left: 0.4em;
+    vertical-align: middle;
+    letter-spacing: 0.02em;
+}
+.impl-tag-solidity { background: rgba(25, 135, 84, 0.15); color: #198754; }
+.impl-tag-rust { background: rgba(253, 126, 20, 0.15); color: #d56a10; }
+.impl-tag-ink { background: rgba(111, 66, 193, 0.15); color: #6f42c1; }
+
+/* Alt implementation rows: subtle left accent */
+.expandable-table tr.alt-impl-row td:first-child {
+    border-left: 3px solid rgba(253, 126, 20, 0.5);
+    padding-left: calc(3.5rem - 3px);
+}
+
+/* Table notes */
+.table-note {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0 0 0.5rem 0;
+    font-style: italic;
+}
+
+/* Implementation range indicator (min–max) below aggregated values */
+.impl-range {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
 /* Grouped table headers */
 .group-header {
     text-align: center !important;
