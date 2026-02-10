@@ -157,12 +157,28 @@ function generateGasAnalysis(): { html: string; scripts: string } {
         return diffs.length > 0 ? Math.round(diffs.reduce((s, d) => s + d, 0) / diffs.length * 100) / 100 : null
     }
 
+    const avgRustTxPctDiff = (contracts: typeof hierarchy.datasets[0]['contracts']) => {
+        const diffs: number[] = []
+        for (const c of contracts) {
+            const rustAlts = c.alt_implementations.filter(a => a.name.includes('rust'))
+            for (const alt of rustAlts) {
+                for (const altTx of alt.transactions) {
+                    const baseTx = c.transactions.find(t => t.name === altTx.name)
+                    const d = toPctDiff(altTx.pvm_gas, baseTx?.geth_gas ?? null)
+                    if (d !== null) diffs.push(d)
+                }
+            }
+        }
+        return diffs.length > 0 ? Math.round(diffs.reduce((s, d) => s + d, 0) / diffs.length * 100) / 100 : null
+    }
+
     const chartScript = groupedBarChart(
         'gasAnalysisChart',
         labels,
         [
-            { label: 'eth-rpc (EVM) vs Geth', data: hierarchy.datasets.map(d => avgTxPctDiff(d.contracts, 'eth_rpc_evm_gas')), color: COLORS.primary },
-            { label: 'eth-rpc (PVM) vs Geth', data: hierarchy.datasets.map(d => avgTxPctDiff(d.contracts, 'eth_rpc_pvm_gas')), color: COLORS.success },
+            { label: 'EVM', data: hierarchy.datasets.map(d => avgTxPctDiff(d.contracts, 'eth_rpc_evm_gas')), color: COLORS.primary },
+            { label: 'PVM (Solidity)', data: hierarchy.datasets.map(d => avgTxPctDiff(d.contracts, 'eth_rpc_pvm_gas')), color: COLORS.success },
+            { label: 'PVM (Rust)', data: hierarchy.datasets.map(d => avgRustTxPctDiff(d.contracts)), color: COLORS.orange },
         ],
         { yLabel: 'Avg % difference vs Geth' }
     )
@@ -200,6 +216,33 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
     // Stacked bar chart showing metered vs overhead breakdown
     const labels = hierarchy.datasets.map(d => d.name)
 
+    // Compute Rust averages from alt_implementations at dataset level
+    const rustWeightData = {
+        refTime: hierarchy.datasets.map(d => {
+            let sum = 0, count = 0
+            for (const c of d.contracts) {
+                for (const alt of c.alt_implementations.filter(a => a.name.includes('rust'))) {
+                    for (const tx of alt.transactions) {
+                        if (tx.pvm_ref_time !== null) { sum += tx.pvm_ref_time; count++ }
+                    }
+                }
+            }
+            return count > 0 ? Math.round(sum / count) : null
+        }),
+        meteredPct: hierarchy.datasets.map(d => {
+            let sum = 0, count = 0
+            for (const c of d.contracts) {
+                for (const alt of c.alt_implementations.filter(a => a.name.includes('rust'))) {
+                    for (const tx of alt.transactions) {
+                        if (tx.pvm_metered_pct !== null) { sum += tx.pvm_metered_pct; count++ }
+                    }
+                }
+            }
+            return count > 0 ? sum / count : null
+        }),
+    }
+    const hasRustWeight = rustWeightData.refTime.some(v => v !== null)
+
     const chartScript = weightBreakdownChart(
         'weightAnalysisChart',
         labels,
@@ -211,6 +254,7 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
             refTime: hierarchy.datasets.map(d => d.pvm_ref_time),
             meteredPct: hierarchy.datasets.map(d => d.pvm_metered_pct),
         },
+        hasRustWeight ? rustWeightData : null,
         { yLabel: 'Avg ref_time per Transaction' }
     )
     scripts.push(chartScript)
@@ -302,6 +346,19 @@ function generateBytecodeSection(): { html: string; scripts: string } {
     const evmData = hierarchy.datasets.map(d => avg(d.evm_size, d.contracts, 'evm'))
     const pvmData = hierarchy.datasets.map(d => avg(d.pvm_size, d.contracts, 'pvm'))
 
+    // Compute average Rust PVM bytecode size per dataset
+    const rustBytecodeData = hierarchy.datasets.map(d => {
+        const rustSizes: number[] = []
+        for (const c of d.contracts) {
+            const rustImpls = c.implementations.filter(i => i.name.includes('rust') && i.vm_type === 'PVM')
+            if (rustImpls.length > 0) {
+                const avgRust = Math.round(rustImpls.reduce((s, i) => s + i.size_bytes, 0) / rustImpls.length)
+                rustSizes.push(avgRust)
+            }
+        }
+        return rustSizes.length > 0 ? Math.round(rustSizes.reduce((s, v) => s + v, 0) / rustSizes.length) : null
+    })
+
     const chartScript = `
         new Chart(document.getElementById('bytecodeChart'), {
             type: 'bar',
@@ -316,10 +373,17 @@ function generateBytecodeSection(): { html: string; scripts: string } {
                         borderWidth: 1,
                     },
                     {
-                        label: 'PVM',
+                        label: 'PVM (Solidity)',
                         data: ${JSON.stringify(pvmData)},
                         backgroundColor: 'rgba(25, 135, 84, 0.8)',
                         borderColor: 'rgba(25, 135, 84, 1)',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'PVM (Rust)',
+                        data: ${JSON.stringify(rustBytecodeData)},
+                        backgroundColor: 'rgba(253, 126, 20, 0.8)',
+                        borderColor: 'rgba(253, 126, 20, 1)',
                         borderWidth: 1,
                     }
                 ]

@@ -400,6 +400,11 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                         // Recalculate contract totals - keep geth unchanged
                         const evm = filteredTxs.reduce((sum, tx) => sum + (tx.eth_rpc_evm_gas || 0), 0);
                         const pvm = filteredTxs.reduce((sum, tx) => sum + (tx.eth_rpc_pvm_gas || 0), 0);
+                        // Filter alt_implementations deploy transactions too
+                        const filteredAlts = (contract.alt_implementations || []).map(alt => ({
+                            ...alt,
+                            transactions: alt.transactions.filter(tx => tx.name !== 'deploy')
+                        }));
                         return {
                             ...contract,
                             geth_gas: contract.geth_gas, // Keep original geth value
@@ -408,7 +413,8 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                             transactions: filteredTxs.map(tx => ({
                                 ...tx,
                                 geth_gas: contract.transactions.find(t => t.name === tx.name)?.geth_gas ?? null
-                            }))
+                            })),
+                            alt_implementations: filteredAlts
                         };
                     }).filter(c => c.transactions.length > 0)
                 })).map(dataset => {
@@ -446,6 +452,48 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
         }
 
+        function avgRustTxPctDiffs(contracts) {
+            var diffs = [];
+            contracts.forEach(function(c) {
+                var rustAlts = (c.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
+                rustAlts.forEach(function(alt) {
+                    alt.transactions.forEach(function(altTx) {
+                        var baseTx = c.transactions.find(function(t) { return t.name === altTx.name; });
+                        var d = toPctDiff(altTx.pvm_gas, baseTx ? baseTx.geth_gas : null);
+                        if (d !== null) diffs.push(d);
+                    });
+                });
+            });
+            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+        }
+
+        function avgRustPctDiffsForContract(contract) {
+            var diffs = [];
+            var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
+            rustAlts.forEach(function(alt) {
+                alt.transactions.forEach(function(altTx) {
+                    var baseTx = contract.transactions.find(function(t) { return t.name === altTx.name; });
+                    var d = toPctDiff(altTx.pvm_gas, baseTx ? baseTx.geth_gas : null);
+                    if (d !== null) diffs.push(d);
+                });
+            });
+            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+        }
+
+        function rustPctDiffForTx(contract, txName) {
+            var diffs = [];
+            var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
+            rustAlts.forEach(function(alt) {
+                var altTx = alt.transactions.find(function(t) { return t.name === txName; });
+                if (altTx) {
+                    var baseTx = contract.transactions.find(function(t) { return t.name === txName; });
+                    var d = toPctDiff(altTx.pvm_gas, baseTx ? baseTx.geth_gas : null);
+                    if (d !== null) diffs.push(d);
+                }
+            });
+            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+        }
+
         function getChartData(level, parent) {
             let items = [];
             let title = 'Gas by Dataset';
@@ -458,6 +506,7 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                     labels: items.map(i => i.name),
                     evmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_evm_gas')),
                     pvmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_pvm_gas')),
+                    rustPvmData: items.map(i => avgRustTxPctDiffs(i.contracts)),
                     title: title,
                     canDrillDown: true
                 };
@@ -470,25 +519,36 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                         labels: items.map(i => i.name),
                         evmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_evm_gas')),
                         pvmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_pvm_gas')),
+                        rustPvmData: items.map(i => avgRustPctDiffsForContract(i)),
                         title: title,
                         canDrillDown: true
                     };
                 }
             } else if (level === 'transactions' && parent) {
+                let contract = null;
                 for (const dataset of gasHierarchy.datasets) {
-                    const contract = dataset.contracts.find(c => c.name === parent);
+                    contract = dataset.contracts.find(c => c.name === parent);
                     if (contract) {
                         items = contract.transactions;
                         title = 'Gas by Transaction: ' + parent + suffix + ' (right-click to go back)';
                         break;
                     }
                 }
+                return {
+                    labels: items.map(i => i.name),
+                    evmData: items.map(i => toPctDiff(i.eth_rpc_evm_gas, i.geth_gas)),
+                    pvmData: items.map(i => toPctDiff(i.eth_rpc_pvm_gas, i.geth_gas)),
+                    rustPvmData: contract ? items.map(i => rustPctDiffForTx(contract, i.name)) : items.map(() => null),
+                    title: title,
+                    canDrillDown: false
+                };
             }
 
             return {
                 labels: items.map(i => i.name),
                 evmData: items.map(i => toPctDiff(i.eth_rpc_evm_gas, i.geth_gas)),
                 pvmData: items.map(i => toPctDiff(i.eth_rpc_pvm_gas, i.geth_gas)),
+                rustPvmData: items.map(() => null),
                 title: title,
                 canDrillDown: level !== 'transactions'
             };
@@ -504,6 +564,7 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             chart.data.labels = data.labels;
             chart.data.datasets[0].data = data.evmData;
             chart.data.datasets[1].data = data.pvmData;
+            chart.data.datasets[2].data = data.rustPvmData;
             chart.options.plugins.title.text = data.title;
             chart.options.plugins.title.display = true;
 
@@ -821,6 +882,11 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                     ...dataset,
                     contracts: dataset.contracts.map(contract => {
                         const filteredTxs = contract.transactions.filter(tx => tx.name !== 'deploy');
+                        // Filter alt_implementations deploy transactions too
+                        const filteredAlts = (contract.alt_implementations || []).map(alt => ({
+                            ...alt,
+                            transactions: alt.transactions.filter(tx => tx.name !== 'deploy')
+                        }));
                         return {
                             ...contract,
                             evm_ref_time: avgOfFiltered(filteredTxs, 'evm_ref_time'),
@@ -831,7 +897,8 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                             pvm_metered_pct: avgPctOfFiltered(filteredTxs, 'pvm_metered_pct'),
                             evm_metered_ref_time: avgOfFiltered(filteredTxs, 'evm_metered_ref_time'),
                             pvm_metered_ref_time: avgOfFiltered(filteredTxs, 'pvm_metered_ref_time'),
-                            transactions: filteredTxs
+                            transactions: filteredTxs,
+                            alt_implementations: filteredAlts
                         };
                     }).filter(c => c.transactions.length > 0)
                 })).map(dataset => {
@@ -851,6 +918,73 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                     };
                 })
             };
+        }
+
+        function getRustWeightForItems(items, level, metric) {
+            // Extract Rust weight data from alt_implementations
+            // Returns { rustRefTime, rustMeteredPct } arrays parallel to items
+            var rustRefTime = [];
+            var rustMeteredPct = [];
+
+            if (level === 'datasets') {
+                items.forEach(function(dataset) {
+                    var sum = 0, pctSum = 0, count = 0;
+                    dataset.contracts.forEach(function(c) {
+                        var rustAlts = (c.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
+                        rustAlts.forEach(function(alt) {
+                            alt.transactions.forEach(function(tx) {
+                                var val = metric === 'ref_time' ? tx.pvm_ref_time : tx.pvm_proof_size;
+                                if (val !== null) { sum += val; count++; }
+                                if (tx.pvm_metered_pct !== null) { pctSum += tx.pvm_metered_pct; }
+                            });
+                        });
+                    });
+                    rustRefTime.push(count > 0 ? Math.round(sum / count) : null);
+                    rustMeteredPct.push(count > 0 ? pctSum / count : null);
+                });
+            } else if (level === 'contracts') {
+                items.forEach(function(contract) {
+                    var sum = 0, pctSum = 0, count = 0;
+                    var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
+                    rustAlts.forEach(function(alt) {
+                        alt.transactions.forEach(function(tx) {
+                            var val = metric === 'ref_time' ? tx.pvm_ref_time : tx.pvm_proof_size;
+                            if (val !== null) { sum += val; count++; }
+                            if (tx.pvm_metered_pct !== null) { pctSum += tx.pvm_metered_pct; }
+                        });
+                    });
+                    rustRefTime.push(count > 0 ? Math.round(sum / count) : null);
+                    rustMeteredPct.push(count > 0 ? pctSum / count : null);
+                });
+            } else if (level === 'transactions') {
+                // Find the parent contract to get alt_implementations
+                var contract = null;
+                for (var di = 0; di < weightHierarchy.datasets.length; di++) {
+                    for (var ci = 0; ci < weightHierarchy.datasets[di].contracts.length; ci++) {
+                        var c = weightHierarchy.datasets[di].contracts[ci];
+                        if (c.transactions === items) { contract = c; break; }
+                    }
+                    if (contract) break;
+                }
+                items.forEach(function(tx) {
+                    var sum = 0, pctSum = 0, count = 0;
+                    if (contract) {
+                        var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
+                        rustAlts.forEach(function(alt) {
+                            var altTx = alt.transactions.find(function(t) { return t.name === tx.name; });
+                            if (altTx) {
+                                var val = metric === 'ref_time' ? altTx.pvm_ref_time : altTx.pvm_proof_size;
+                                if (val !== null) { sum += val; count++; }
+                                if (altTx.pvm_metered_pct !== null) { pctSum += altTx.pvm_metered_pct; }
+                            }
+                        });
+                    }
+                    rustRefTime.push(count > 0 ? Math.round(sum / count) : null);
+                    rustMeteredPct.push(count > 0 ? pctSum / count : null);
+                });
+            }
+
+            return { rustRefTime: rustRefTime, rustMeteredPct: rustMeteredPct };
         }
 
         function getWeightChartData(level, parent, metric) {
@@ -893,6 +1027,10 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
 
             // Calculate metered and overhead portions based on metric
             let evmMetered, evmOverhead, pvmMetered, pvmOverhead;
+            let rustMetered, rustOverhead;
+
+            // Get Rust data
+            const rustData = getRustWeightForItems(items, level, metric);
 
             if (metric === 'ref_time') {
                 evmMetered = items.map((i, idx) => {
@@ -915,18 +1053,30 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                     if (val === null || i.pvm_metered_pct === null) return null;
                     return val * (1 - i.pvm_metered_pct / 100);
                 });
+                rustMetered = rustData.rustRefTime.map((val, idx) => {
+                    if (val === null || rustData.rustMeteredPct[idx] === null) return null;
+                    return val * (rustData.rustMeteredPct[idx] / 100);
+                });
+                rustOverhead = rustData.rustRefTime.map((val, idx) => {
+                    if (val === null || rustData.rustMeteredPct[idx] === null) return null;
+                    return val * (1 - rustData.rustMeteredPct[idx] / 100);
+                });
             } else {
                 evmMetered = evmValues;
                 evmOverhead = evmValues.map(() => null);
                 pvmMetered = pvmValues;
                 pvmOverhead = pvmValues.map(() => null);
+                rustMetered = rustData.rustRefTime;
+                rustOverhead = rustData.rustRefTime.map(() => null);
             }
 
             return {
                 labels: items.map(i => i.name),
                 evmMetered, evmOverhead, pvmMetered, pvmOverhead,
+                rustMetered, rustOverhead,
                 evmMeteredPct: items.map(i => i.evm_metered_pct),
                 pvmMeteredPct: items.map(i => i.pvm_metered_pct),
+                rustMeteredPct: rustData.rustMeteredPct,
                 title, metric, yLabel
             };
         }
@@ -943,27 +1093,49 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
             chart.data.datasets[1].data = data.evmOverhead;
             chart.data.datasets[2].data = data.pvmMetered;
             chart.data.datasets[3].data = data.pvmOverhead;
+
+            // Ensure Rust datasets exist (they may not if initial chart had no Rust data)
+            while (chart.data.datasets.length < 6) {
+                chart.data.datasets.push({
+                    label: '',
+                    data: [],
+                    backgroundColor: chart.data.datasets.length === 4 ? 'rgba(253, 126, 20, 0.8)' : 'rgba(253, 126, 20, 0.4)',
+                    borderColor: 'rgba(253, 126, 20, 1)',
+                    borderWidth: 1,
+                    stack: 'rust',
+                });
+            }
+            chart.data.datasets[4].data = data.rustMetered;
+            chart.data.datasets[5].data = data.rustOverhead;
+
             chart.options.plugins.title.text = data.title;
             chart.options.scales.y.title.text = data.yLabel;
 
             if (data.metric === 'ref_time') {
                 chart.data.datasets[0].label = 'EVM Metered';
                 chart.data.datasets[1].label = 'EVM Overhead';
-                chart.data.datasets[2].label = 'PVM Metered';
-                chart.data.datasets[3].label = 'PVM Overhead';
+                chart.data.datasets[2].label = 'PVM (Solidity) Metered';
+                chart.data.datasets[3].label = 'PVM (Solidity) Overhead';
+                chart.data.datasets[4].label = 'Rust Metered';
+                chart.data.datasets[5].label = 'Rust Overhead';
                 chart.data.datasets[1].hidden = false;
                 chart.data.datasets[3].hidden = false;
+                chart.data.datasets[5].hidden = false;
             } else {
                 chart.data.datasets[0].label = 'EVM';
                 chart.data.datasets[1].label = '';
-                chart.data.datasets[2].label = 'PVM';
+                chart.data.datasets[2].label = 'PVM (Solidity)';
                 chart.data.datasets[3].label = '';
+                chart.data.datasets[4].label = 'PVM (Rust)';
+                chart.data.datasets[5].label = '';
                 chart.data.datasets[1].hidden = true;
                 chart.data.datasets[3].hidden = true;
+                chart.data.datasets[5].hidden = true;
             }
 
             window.weightEvmMeteredPct = data.evmMeteredPct;
             window.weightPvmMeteredPct = data.pvmMeteredPct;
+            window.weightRustMeteredPct = data.rustMeteredPct;
             chart.update();
         }
 
@@ -1807,6 +1979,25 @@ export function drilldownBytecodeChartScript(hierarchy: BytecodeHierarchyData): 
             return total !== null && contracts.length > 0 ? Math.round(total / contracts.length) : null;
         }
 
+        function avgRustBytecodeSize(contracts) {
+            // For each contract, avg Rust impl sizes, then avg across contracts
+            var sizes = [];
+            contracts.forEach(function(c) {
+                var rustImpls = (c.implementations || []).filter(function(i) { return i.name.indexOf('rust') !== -1 && i.vm_type === 'PVM'; });
+                if (rustImpls.length > 0) {
+                    var avg = Math.round(rustImpls.reduce(function(s, i) { return s + i.size_bytes; }, 0) / rustImpls.length);
+                    sizes.push(avg);
+                }
+            });
+            return sizes.length > 0 ? Math.round(sizes.reduce(function(s, v) { return s + v; }, 0) / sizes.length) : null;
+        }
+
+        function contractRustBytecodeSize(contract) {
+            var rustImpls = (contract.implementations || []).filter(function(i) { return i.name.indexOf('rust') !== -1 && i.vm_type === 'PVM'; });
+            if (rustImpls.length === 0) return null;
+            return Math.round(rustImpls.reduce(function(s, i) { return s + i.size_bytes; }, 0) / rustImpls.length);
+        }
+
         function updateBytecodeChart(level, parent) {
             bytecodeCurrentLevel = level;
             bytecodeCurrentParent = parent;
@@ -1818,6 +2009,7 @@ export function drilldownBytecodeChartScript(hierarchy: BytecodeHierarchyData): 
                 chart.data.labels = items.map(i => i.name);
                 chart.data.datasets[0].data = items.map(i => avgSize(i, 'evm'));
                 chart.data.datasets[1].data = items.map(i => avgSize(i, 'pvm'));
+                chart.data.datasets[2].data = items.map(i => avgRustBytecodeSize(i.contracts));
                 chart.options.plugins.title.text = 'Avg Bytecode Size per Contract (click to drill down)';
                 chart.options.scales.y.title.text = 'Avg Size (bytes)';
             } else if (level === 'contracts' && parent) {
@@ -1827,6 +2019,7 @@ export function drilldownBytecodeChartScript(hierarchy: BytecodeHierarchyData): 
                 chart.data.labels = items.map(i => i.name);
                 chart.data.datasets[0].data = items.map(i => i.evm_size);
                 chart.data.datasets[1].data = items.map(i => i.pvm_size);
+                chart.data.datasets[2].data = items.map(i => contractRustBytecodeSize(i));
                 chart.options.plugins.title.text = 'Bytecode Size: ' + parent + ' (right-click to go back)';
                 chart.options.scales.y.title.text = 'Size (bytes)';
             }

@@ -233,63 +233,83 @@ export function weightBreakdownChart(
     labels: string[],
     evmData: { refTime: (number | null)[]; meteredPct: (number | null)[] },
     pvmData: { refTime: (number | null)[]; meteredPct: (number | null)[] },
+    rustData: { refTime: (number | null)[]; meteredPct: (number | null)[] } | null,
     options: { title?: string; yLabel?: string } = {}
 ): string {
     // Calculate metered and overhead portions for each
-    const evmMetered = evmData.refTime.map((rt, i) => {
-        if (rt === null || evmData.meteredPct[i] === null) return null
-        return rt * (evmData.meteredPct[i]! / 100)
-    })
-    const evmOverhead = evmData.refTime.map((rt, i) => {
-        if (rt === null || evmData.meteredPct[i] === null) return null
-        return rt * (1 - evmData.meteredPct[i]! / 100)
-    })
-    const pvmMetered = pvmData.refTime.map((rt, i) => {
-        if (rt === null || pvmData.meteredPct[i] === null) return null
-        return rt * (pvmData.meteredPct[i]! / 100)
-    })
-    const pvmOverhead = pvmData.refTime.map((rt, i) => {
-        if (rt === null || pvmData.meteredPct[i] === null) return null
-        return rt * (1 - pvmData.meteredPct[i]! / 100)
-    })
+    const calcMetered = (data: { refTime: (number | null)[]; meteredPct: (number | null)[] }) =>
+        data.refTime.map((rt, i) => {
+            if (rt === null || data.meteredPct[i] === null) return null
+            return rt * (data.meteredPct[i]! / 100)
+        })
+    const calcOverhead = (data: { refTime: (number | null)[]; meteredPct: (number | null)[] }) =>
+        data.refTime.map((rt, i) => {
+            if (rt === null || data.meteredPct[i] === null) return null
+            return rt * (1 - data.meteredPct[i]! / 100)
+        })
 
-    const chartData = {
-        labels,
-        datasets: [
+    const evmMetered = calcMetered(evmData)
+    const evmOverhead = calcOverhead(evmData)
+    const pvmMetered = calcMetered(pvmData)
+    const pvmOverhead = calcOverhead(pvmData)
+
+    const datasets: Array<Record<string, unknown>> = [
+        {
+            label: 'EVM Metered',
+            data: evmMetered,
+            backgroundColor: COLORS.primary,
+            borderColor: COLORS.primary.replace('0.8', '1'),
+            borderWidth: 1,
+            stack: 'evm',
+        },
+        {
+            label: 'EVM Overhead',
+            data: evmOverhead,
+            backgroundColor: COLORS.primaryLight,
+            borderColor: COLORS.primary.replace('0.8', '1'),
+            borderWidth: 1,
+            stack: 'evm',
+        },
+        {
+            label: 'PVM (Solidity) Metered',
+            data: pvmMetered,
+            backgroundColor: COLORS.success,
+            borderColor: COLORS.success.replace('0.8', '1'),
+            borderWidth: 1,
+            stack: 'pvm',
+        },
+        {
+            label: 'PVM (Solidity) Overhead',
+            data: pvmOverhead,
+            backgroundColor: COLORS.successLight,
+            borderColor: COLORS.success.replace('0.8', '1'),
+            borderWidth: 1,
+            stack: 'pvm',
+        },
+    ]
+
+    if (rustData) {
+        datasets.push(
             {
-                label: 'EVM Metered',
-                data: evmMetered,
-                backgroundColor: COLORS.primary,
-                borderColor: COLORS.primary.replace('0.8', '1'),
+                label: 'Rust Metered',
+                data: calcMetered(rustData),
+                backgroundColor: COLORS.orange,
+                borderColor: COLORS.orange.replace('0.8', '1'),
                 borderWidth: 1,
-                stack: 'evm',
+                stack: 'rust',
             },
             {
-                label: 'EVM Overhead',
-                data: evmOverhead,
-                backgroundColor: COLORS.primaryLight,
-                borderColor: COLORS.primary.replace('0.8', '1'),
+                label: 'Rust Overhead',
+                data: calcOverhead(rustData),
+                backgroundColor: COLORS.orangeLight,
+                borderColor: COLORS.orange.replace('0.8', '1'),
                 borderWidth: 1,
-                stack: 'evm',
+                stack: 'rust',
             },
-            {
-                label: 'PVM Metered',
-                data: pvmMetered,
-                backgroundColor: COLORS.success,
-                borderColor: COLORS.success.replace('0.8', '1'),
-                borderWidth: 1,
-                stack: 'pvm',
-            },
-            {
-                label: 'PVM Overhead',
-                data: pvmOverhead,
-                backgroundColor: COLORS.successLight,
-                borderColor: COLORS.success.replace('0.8', '1'),
-                borderWidth: 1,
-                stack: 'pvm',
-            },
-        ],
+        )
     }
+
+    const chartData = { labels, datasets }
 
     const chartOptions = {
         responsive: true,
@@ -318,6 +338,7 @@ export function weightBreakdownChart(
         (function() {
             window.weightEvmMeteredPct = ${jsonStringify(evmData.meteredPct)};
             window.weightPvmMeteredPct = ${jsonStringify(pvmData.meteredPct)};
+            window.weightRustMeteredPct = ${jsonStringify(rustData?.meteredPct ?? [])};
             new Chart(document.getElementById('${canvasId}'), {
                 type: 'bar',
                 data: ${jsonStringify(chartData)},
@@ -332,9 +353,11 @@ export function weightBreakdownChart(
                                     const idx = context[0].dataIndex;
                                     const evmPct = window.weightEvmMeteredPct[idx];
                                     const pvmPct = window.weightPvmMeteredPct[idx];
+                                    const rustPct = window.weightRustMeteredPct[idx];
                                     const lines = [];
                                     if (evmPct !== null) lines.push('EVM % metered: ' + evmPct.toFixed(1) + '%');
                                     if (pvmPct !== null) lines.push('PVM % metered: ' + pvmPct.toFixed(1) + '%');
+                                    if (rustPct !== null && rustPct !== undefined) lines.push('Rust % metered: ' + rustPct.toFixed(1) + '%');
                                     return lines.length > 0 ? '\\n' + lines.join('\\n') : '';
                                 }
                             }
