@@ -937,6 +937,12 @@ function formatMetered(value: number | null): string {
     return value !== null ? `${value.toFixed(1)}%` : 'N/A'
 }
 
+function formatWeightWithPct(weight: number | null, pct: number | null): string {
+    if (weight === null) return 'N/A'
+    const pctStr = pct !== null ? ` (${pct.toFixed(1)}%)` : ''
+    return `${weight.toLocaleString()}${pctStr}`
+}
+
 export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): string {
     return `
         // Store weight hierarchy data for drill-down
@@ -1355,52 +1361,58 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
     function weightRow(v: ReturnType<typeof weightAvgs>, cls: string) {
         return [
             `<td class="number ${cls}">${formatWeight(v.evm_ref_time)}</td>`,
-            `<td class="number ${cls}">${formatWeight(v.evm_metered_ref_time)}</td>`,
-            `<td class="number ${cls}">${formatMetered(v.evm_metered_pct)}</td>`,
+            `<td class="number ${cls}">${formatWeightWithPct(v.evm_metered_ref_time, v.evm_metered_pct)}</td>`,
             `<td class="number ${cls}">${formatWeight(v.evm_proof_size)}</td>`,
             `<td class="number ${cls}">${formatWeight(v.pvm_ref_time)}</td>`,
-            `<td class="number ${cls}">${formatWeight(v.pvm_metered_ref_time)}</td>`,
-            `<td class="number ${cls}">${formatMetered(v.pvm_metered_pct)}</td>`,
+            `<td class="number ${cls}">${formatWeightWithPct(v.pvm_metered_ref_time, v.pvm_metered_pct)}</td>`,
             `<td class="number ${cls}">${formatWeight(v.pvm_proof_size)}</td>`,
             `<td class="number ${cls}">${calcDiff(v.evm_ref_time, v.pvm_ref_time)}</td>`,
             `<td class="number ${cls}">${calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time)}</td>`,
+            `<td class="number ${cls}">${calcDiff(v.evm_proof_size, v.pvm_proof_size)}</td>`,
         ].join('')
     }
 
-    type PvmRanges = { ref: LabeledValue[], metered: LabeledValue[], pct: LabeledValue[], proof: LabeledValue[] }
-    const pctFmt = (v: number) => `${v.toFixed(1)}%`
+    type PvmRanges = { ref: LabeledValue[], metered: LabeledValue[], proof: LabeledValue[] }
 
     function swappableWeightCells(all: ReturnType<typeof weightAvgs>, excl: ReturnType<typeof weightAvgs>, rangeAll?: PvmRanges, rangeExcl?: PvmRanges) {
-        const keys: Array<keyof ReturnType<typeof weightAvgs>> = [
-            'evm_ref_time', 'evm_metered_ref_time', 'evm_metered_pct', 'evm_proof_size',
-            'pvm_ref_time', 'pvm_metered_ref_time', 'pvm_metered_pct', 'pvm_proof_size',
-        ]
-        const fmt = (k: string, v: number | null) => k.includes('pct') ? formatMetered(v) : formatWeight(v)
+        const cells: string[] = []
 
-        // Map PVM keys to their range arrays and formatters
-        const pvmRangeMap: Record<string, { allVals?: LabeledValue[], exclVals?: LabeledValue[], rfmt: (v: number) => string }> = {
-            'pvm_ref_time': { allVals: rangeAll?.ref, exclVals: rangeExcl?.ref, rfmt: formatCompact },
-            'pvm_metered_ref_time': { allVals: rangeAll?.metered, exclVals: rangeExcl?.metered, rfmt: formatCompact },
-            'pvm_metered_pct': { allVals: rangeAll?.pct, exclVals: rangeExcl?.pct, rfmt: pctFmt },
-            'pvm_proof_size': { allVals: rangeAll?.proof, exclVals: rangeExcl?.proof, rfmt: formatCompact },
+        // Helper to push a simple swappable cell
+        const pushCell = (allVal: string, exclVal: string) => {
+            cells.push(`<td class="number swappable" data-excl="${escAttr(exclVal)}">${allVal}</td>`)
         }
 
-        const cells = keys.map(k => {
-            const r = pvmRangeMap[k]
-            if (r && r.allVals) {
-                const allVal = withRange(fmt(k, all[k]), r.allVals, r.rfmt)
-                const exclVal = withRange(fmt(k, excl[k]), r.exclVals ?? [], r.rfmt)
-                return `<td class="number swappable" data-excl="${escAttr(exclVal)}">${allVal}</td>`
+        // Helper to push a swappable cell with optional range annotations
+        const pushRangeCell = (allVal: string, exclVal: string, allRange: LabeledValue[] | undefined, exclRange: LabeledValue[] | undefined, rfmt: (v: number) => string) => {
+            if (allRange) {
+                const aVal = withRange(allVal, allRange, rfmt)
+                const eVal = withRange(exclVal, exclRange ?? [], rfmt)
+                pushCell(aVal, eVal)
+            } else {
+                pushCell(allVal, exclVal)
             }
-            return `<td class="number swappable" data-excl="${fmt(k, excl[k])}">${fmt(k, all[k])}</td>`
-        })
+        }
+
+        // EVM columns: ref_time, metered (pct%), proof
+        pushCell(formatWeight(all.evm_ref_time), formatWeight(excl.evm_ref_time))
+        pushCell(formatWeightWithPct(all.evm_metered_ref_time, all.evm_metered_pct), formatWeightWithPct(excl.evm_metered_ref_time, excl.evm_metered_pct))
+        pushCell(formatWeight(all.evm_proof_size), formatWeight(excl.evm_proof_size))
+
+        // PVM columns: ref_time, metered (pct%), proof — with range annotations
+        pushRangeCell(formatWeight(all.pvm_ref_time), formatWeight(excl.pvm_ref_time), rangeAll?.ref, rangeExcl?.ref, formatCompact)
+        pushRangeCell(formatWeightWithPct(all.pvm_metered_ref_time, all.pvm_metered_pct), formatWeightWithPct(excl.pvm_metered_ref_time, excl.pvm_metered_pct), rangeAll?.metered, rangeExcl?.metered, formatCompact)
+        pushRangeCell(formatWeight(all.pvm_proof_size), formatWeight(excl.pvm_proof_size), rangeAll?.proof, rangeExcl?.proof, formatCompact)
+
         // Delta columns
         const refDiffAll = withDiffRange(calcDiff(all.evm_ref_time, all.pvm_ref_time), all.evm_ref_time, rangeAll?.ref ?? [])
         const refDiffExcl = withDiffRange(calcDiff(excl.evm_ref_time, excl.pvm_ref_time), excl.evm_ref_time, rangeExcl?.ref ?? [])
-        cells.push(`<td class="number swappable" data-excl="${escAttr(refDiffExcl)}">${refDiffAll}</td>`)
+        pushCell(refDiffAll, refDiffExcl)
         const metDiffAll = withDiffRange(calcDiff(all.evm_metered_ref_time, all.pvm_metered_ref_time), all.evm_metered_ref_time, rangeAll?.metered ?? [])
         const metDiffExcl = withDiffRange(calcDiff(excl.evm_metered_ref_time, excl.pvm_metered_ref_time), excl.evm_metered_ref_time, rangeExcl?.metered ?? [])
-        cells.push(`<td class="number swappable" data-excl="${escAttr(metDiffExcl)}">${metDiffAll}</td>`)
+        pushCell(metDiffAll, metDiffExcl)
+        const proofDiffAll = withDiffRange(calcDiff(all.evm_proof_size, all.pvm_proof_size), all.evm_proof_size, rangeAll?.proof ?? [])
+        const proofDiffExcl = withDiffRange(calcDiff(excl.evm_proof_size, excl.pvm_proof_size), excl.evm_proof_size, rangeExcl?.proof ?? [])
+        pushCell(proofDiffAll, proofDiffExcl)
         return cells.join('')
     }
 
@@ -1428,13 +1440,11 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
             const pvmRangeAll: PvmRanges | undefined = contract.alt_implementations.length > 0 ? {
                 ref: [{ value: cAll.pvm_ref_time, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_ref_time, label: wAltLabels[i] }))],
                 metered: [{ value: cAll.pvm_metered_ref_time, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_metered_ref_time, label: wAltLabels[i] }))],
-                pct: [{ value: cAll.pvm_metered_pct, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_metered_pct, label: wAltLabels[i] }))],
                 proof: [{ value: cAll.pvm_proof_size, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_proof_size, label: wAltLabels[i] }))],
             } : undefined
             const pvmRangeExcl: PvmRanges | undefined = contract.alt_implementations.length > 0 ? {
                 ref: [{ value: cExcl.pvm_ref_time, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_ref_time, label: wAltLabels[i] }))],
                 metered: [{ value: cExcl.pvm_metered_ref_time, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_metered_ref_time, label: wAltLabels[i] }))],
-                pct: [{ value: cExcl.pvm_metered_pct, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_metered_pct, label: wAltLabels[i] }))],
                 proof: [{ value: cExcl.pvm_proof_size, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_proof_size, label: wAltLabels[i] }))],
             } : undefined
 
@@ -1471,15 +1481,14 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
                     <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
                         <td>${tx.name}${wTag}</td>
                         <td class="number">${formatWeight(tx.evm_ref_time)}</td>
-                        <td class="number">${formatWeight(tx.evm_metered_ref_time)}</td>
-                        <td class="number">${formatMetered(tx.evm_metered_pct)}</td>
+                        <td class="number">${formatWeightWithPct(tx.evm_metered_ref_time, tx.evm_metered_pct)}</td>
                         <td class="number">${formatWeight(tx.evm_proof_size)}</td>
                         <td class="number">${formatWeight(tx.pvm_ref_time)}</td>
-                        <td class="number">${formatWeight(tx.pvm_metered_ref_time)}</td>
-                        <td class="number">${formatMetered(tx.pvm_metered_pct)}</td>
+                        <td class="number">${formatWeightWithPct(tx.pvm_metered_ref_time, tx.pvm_metered_pct)}</td>
                         <td class="number">${formatWeight(tx.pvm_proof_size)}</td>
                         <td class="number">${calcDiff(tx.evm_ref_time, tx.pvm_ref_time)}</td>
                         <td class="number">${calcDiff(tx.evm_metered_ref_time, tx.pvm_metered_ref_time)}</td>
+                        <td class="number">${calcDiff(tx.evm_proof_size, tx.pvm_proof_size)}</td>
                     </tr>
                 `)
 
@@ -1492,13 +1501,12 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
                             <td class="number"></td>
                             <td class="number"></td>
                             <td class="number"></td>
-                            <td class="number"></td>
                             <td class="number">${formatWeight(alt.pvm_ref_time)}</td>
-                            <td class="number">${formatWeight(alt.pvm_metered_ref_time)}</td>
-                            <td class="number">${formatMetered(alt.pvm_metered_pct)}</td>
+                            <td class="number">${formatWeightWithPct(alt.pvm_metered_ref_time, alt.pvm_metered_pct)}</td>
                             <td class="number">${formatWeight(alt.pvm_proof_size)}</td>
                             <td class="number">${calcDiff(tx.evm_ref_time, alt.pvm_ref_time)}</td>
                             <td class="number">${calcDiff(tx.evm_metered_ref_time, alt.pvm_metered_ref_time)}</td>
+                            <td class="number">${calcDiff(tx.evm_proof_size, alt.pvm_proof_size)}</td>
                         </tr>
                     `)
                 }
@@ -1518,31 +1526,32 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
     `)
 
     return `
+    <div class="expandable-weight-table-wrapper">
     <table class="expandable-table expandable-weight-table">
         <thead>
             <tr>
                 <th rowspan="2">Name</th>
-                <th colspan="4" class="group-header">EVM</th>
-                <th colspan="4" class="group-header">PVM</th>
-                <th colspan="2" class="group-header">Δ (PVM vs EVM)</th>
+                <th colspan="3" class="group-header">EVM</th>
+                <th colspan="3" class="group-header">PVM</th>
+                <th colspan="3" class="group-header">Δ (PVM vs EVM)</th>
             </tr>
             <tr>
                 <th class="number">ref_time</th>
                 <th class="number">metered</th>
-                <th class="number">% metered</th>
                 <th class="number">proof</th>
                 <th class="number">ref_time</th>
                 <th class="number">metered</th>
-                <th class="number">% metered</th>
                 <th class="number">proof</th>
                 <th class="number">ref_time</th>
                 <th class="number">metered</th>
+                <th class="number">proof</th>
             </tr>
         </thead>
         <tbody>
             ${rows.join('')}
         </tbody>
     </table>
+    </div>
     `
 }
 

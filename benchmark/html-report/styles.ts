@@ -379,10 +379,15 @@ footer {
     font-weight: 700;
 }
 
+.expandable-weight-table-wrapper {
+    overflow-x: auto;
+}
+
 .expandable-weight-table th,
 .expandable-weight-table td {
-    padding: 0.5rem 0.625rem;
-    font-size: 0.8125rem;
+    padding: 0.5rem 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
 }
 
 .expandable-weight-table thead tr:first-child th {
@@ -402,14 +407,14 @@ footer {
 }
 
 .expandable-weight-table thead tr:last-child th:nth-child(1),
-.expandable-weight-table thead tr:last-child th:nth-child(5),
-.expandable-weight-table thead tr:last-child th:nth-child(9) {
+.expandable-weight-table thead tr:last-child th:nth-child(4),
+.expandable-weight-table thead tr:last-child th:nth-child(7) {
     border-left: 2px solid var(--border-color);
 }
 
 .expandable-weight-table tbody td:nth-child(2),
-.expandable-weight-table tbody td:nth-child(6),
-.expandable-weight-table tbody td:nth-child(10) {
+.expandable-weight-table tbody td:nth-child(5),
+.expandable-weight-table tbody td:nth-child(8) {
     border-left: 2px solid var(--border-color);
 }
 
