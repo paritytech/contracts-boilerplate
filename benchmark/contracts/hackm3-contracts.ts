@@ -23,7 +23,7 @@ export const hackm3Contracts: Artifacts = [
     // ============ DocumentAccessManagement Contract ============
     {
         id: 'DocumentAccessManagement',
-        srcs: [...solidity('DocumentAccessManagement.sol', 'DocumentAccessManagement')],
+        srcs: [...solidity('polkadot-contracts/hackm3/DocumentAccessManagement.sol', 'DocumentAccessManagement')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },

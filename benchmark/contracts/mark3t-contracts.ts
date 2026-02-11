@@ -50,8 +50,8 @@ function getNextPurchaseId(proxyAddress: Hex): bigint {
 export const mark3tContracts: Artifacts = [
     // ============ Mark3tMarketplace Implementation Contract (PVM only - too big for EVM) ============
     {
-        id: 'Mark3tMarketplace',
-        srcs: solidity('Mark3tMarketplace.sol', 'Marketplace'),
+        id: 'Marketplace',
+        srcs: solidity('polkadot-contracts/mark3t/Marketplace.sol', 'Marketplace'),
         pvmOnly: true,
         deploy: async (id, name, bytecode) => {
             // Upload ProxyAdmin bytecode early so it's available when the proxy deploys
@@ -74,8 +74,8 @@ export const mark3tContracts: Artifacts = [
 
     // ============ Mark3tMarketplaceProxy Contract (EVM and PVM) ============
     {
-        id: 'Mark3tMarketplaceProxy',
-        srcs: [...solidity('Mark3tMarketplaceProxy.sol', 'Mark3tMarketplaceProxy')],
+        id: 'MarketplaceProxy',
+        srcs: [...solidity('polkadot-contracts/mark3t/MarketplaceProxy.sol', 'MarketplaceProxy')],
         deploy: async (id, name, bytecode) => {
             if (!marketplaceImplAddress) {
                 throw new Error('Marketplace implementation must be deployed first')
@@ -417,8 +417,8 @@ export const mark3tContracts: Artifacts = [
 
     // ============ Mark3tMockMobRule Contract (EVM and PVM) ============
     {
-        id: 'Mark3tMockMobRule',
-        srcs: [...solidity('Mark3tMockMobRule.sol', 'MockMobRule')],
+        id: 'MockMobRule',
+        srcs: [...solidity('polkadot-contracts/mark3t/MockMobRule.sol', 'MockMobRule')],
         deploy: async (id, name, bytecode) => {
             if (!marketplaceProxyAddress) {
                 throw new Error('Marketplace proxy must be deployed first')

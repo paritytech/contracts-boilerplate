@@ -797,18 +797,18 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,401,001,411 | -       | 1,486,692,834    | -                 | 61.9%     | 72,874  |
-| DotNS_evm      | 4,429,144,532 | +84.5%  | 3,514,835,955    | +136.4%           | 79.4%     | 255,278 |
-| DotNS_pvm      | 7,376,308,031 | +207.2% | 6,461,999,454    | +334.7%           | 87.6%     | 351,270 |
+| dotns_rust     | 2,400,804,491 | -       | 1,486,495,914    | -                 | 61.9%     | 72,874  |
+| DotNS_evm      | 4,429,144,532 | +84.5%  | 3,514,835,955    | +136.5%           | 79.4%     | 255,278 |
+| DotNS_pvm      | 7,377,144,941 | +207.3% | 6,462,836,364    | +334.8%           | 87.6%     | 351,270 |
 
 
 ### DotNS - register_with_duration
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,399,896,218 | -       | 1,485,587,641    | -                 | 61.9%     | 72,914  |
+| dotns_rust     | 2,399,699,298 | -       | 1,485,390,721    | -                 | 61.9%     | 72,914  |
 | DotNS_evm      | 4,415,487,556 | +84.0%  | 3,501,178,979    | +135.7%           | 79.3%     | 255,310 |
-| DotNS_pvm      | 7,261,714,309 | +202.6% | 6,347,405,732    | +327.3%           | 87.4%     | 351,172 |
+| DotNS_pvm      | 7,262,551,219 | +202.6% | 6,348,242,642    | +327.4%           | 87.4%     | 351,172 |
 
 
 ### DotNS - release
@@ -834,7 +834,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | DotNS_evm      | 1,696,631,090 | -       | 782,322,513      | -                 | 46.1%     | 60,171  |
-| dotns_rust     | 1,892,732,613 | +11.6%  | 978,436,363      | +25.1%            | 51.7%     | 53,063  |
+| dotns_rust     | 1,892,744,940 | +11.6%  | 978,436,363      | +25.1%            | 51.7%     | 53,066  |
 | DotNS_pvm      | 3,389,574,121 | +99.8%  | 2,475,265,544    | +216.4%           | 73.0%     | 145,903 |
 
 
@@ -1029,7 +1029,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FungibleCredential_evm   | 1,805,849,977 | -       | 892,342,655      | -                 | 49.4%     | 90,843  |
-| fungible_credential_rust | 1,979,924,151 | +9.6%   | 1,066,416,829    | +19.5%            | 53.9%     | 67,180  |
+| fungible_credential_rust | 1,979,891,008 | +9.6%   | 1,066,383,686    | +19.5%            | 53.9%     | 67,157  |
 | FungibleCredential_pvm   | 2,046,426,943 | +13.3%  | 1,132,919,621    | +27.0%            | 55.4%     | 156,590 |
 
 
@@ -1037,8 +1037,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| fungible_credential_rust | 1,895,334,603 | -       | 980,224,771      | -                 | 51.7%     | 57,061  |
-| FungibleCredential_evm   | 2,536,848,430 | +33.8%  | 1,621,738,598    | +65.4%            | 63.9%     | 132,229 |
+| fungible_credential_rust | 1,895,301,460 | -       | 980,191,628      | -                 | 51.7%     | 57,038  |
+| FungibleCredential_evm   | 2,536,848,430 | +33.8%  | 1,621,738,598    | +65.5%            | 63.9%     | 132,229 |
 | FungibleCredential_pvm   | 3,472,725,251 | +83.2%  | 2,557,615,419    | +160.9%           | 73.6%     | 249,423 |
 
 
@@ -1046,7 +1046,7 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| fungible_credential_rust | 1,884,941,624 | -       | 969,831,792      | -                 | 51.5%     | 57,061  |
+| fungible_credential_rust | 1,884,908,481 | -       | 969,798,649      | -                 | 51.5%     | 57,038  |
 | FungibleCredential_evm   | 2,536,818,525 | +34.6%  | 1,621,721,020    | +67.2%            | 63.9%     | 132,226 |
 | FungibleCredential_pvm   | 3,472,800,197 | +84.2%  | 2,557,690,365    | +163.7%           | 73.6%     | 249,487 |
 
@@ -1056,7 +1056,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
 | FungibleCredential_evm   | 1,875,143,045 | -       | 243,178,786      | +3.8%             | 13.0%     | 27,480 |
-| fungible_credential_rust | 2,026,380,249 | +8.1%   | 234,288,522      | -                 | 11.6%     | 17,191 |
+| fungible_credential_rust | 2,026,016,251 | +8.0%   | 234,288,522      | -                 | 11.6%     | 17,191 |
 | FungibleCredential_pvm   | 2,813,972,701 | +50.1%  | 255,997,530      | +9.3%             | 9.1%      | 27,448 |
 
 
@@ -1065,7 +1065,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FungibleCredential_evm   | 3,589,605,323 | -       | 2,675,691,210    | -                 | 74.5%     | 245,021 |
-| fungible_credential_rust | 3,652,349,781 | +1.7%   | 2,738,435,668    | +2.3%             | 75.0%     | 149,303 |
+| fungible_credential_rust | 3,652,907,398 | +1.8%   | 2,738,993,285    | +2.4%             | 75.0%     | 149,280 |
 | FungibleCredential_pvm   | 3,972,708,937 | +10.7%  | 3,058,794,824    | +14.3%            | 77.0%     | 310,384 |
 
 
@@ -1075,7 +1075,7 @@ Comparison of gas usage across different contract implementations.
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FungibleCredential_evm   | 1,881,485,767 | -       | 967,571,654      | -                 | 51.4%     | 101,231 |
 | FungibleCredential_pvm   | 2,117,505,969 | +12.5%  | 1,203,591,856    | +24.4%            | 56.8%     | 166,978 |
-| fungible_credential_rust | 2,197,729,367 | +16.8%  | 1,283,815,254    | +32.7%            | 58.4%     | 77,537  |
+| fungible_credential_rust | 2,197,400,844 | +16.8%  | 1,283,486,731    | +32.7%            | 58.4%     | 77,514  |
 
 
 ### FungibleCredential - revoke
@@ -1083,7 +1083,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FungibleCredential_evm   | 1,809,295,608 | -       | 895,381,495      | -                 | 49.5%     | 90,942  |
-| fungible_credential_rust | 2,012,678,595 | +11.2%  | 1,098,764,482    | +22.7%            | 54.6%     | 67,279  |
+| fungible_credential_rust | 2,012,645,452 | +11.2%  | 1,098,731,339    | +22.7%            | 54.6%     | 67,256  |
 | FungibleCredential_pvm   | 2,046,185,606 | +13.1%  | 1,132,271,493    | +26.5%            | 55.3%     | 156,689 |
 
 
@@ -1091,7 +1091,7 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| fungible_credential_rust | 3,753,299,711 | -       | 2,839,397,925    | -                 | 75.7%     | 159,487 |
+| fungible_credential_rust | 3,753,857,328 | -       | 2,839,955,542    | -                 | 75.7%     | 159,464 |
 | FungibleCredential_evm   | 3,807,250,163 | +1.4%   | 2,893,348,377    | +1.9%             | 76.0%     | 265,660 |
 | FungibleCredential_pvm   | 4,289,839,492 | +14.3%  | 3,375,937,706    | +18.9%            | 78.7%     | 331,119 |
 
@@ -1213,110 +1213,110 @@ Comparison of gas usage across different contract implementations.
 | Log_pvm        | 3,402,786,748 | +115.3% | 2,489,267,099    | +273.1%           | 73.2%     | 278,602 |
 
 
-### Mark3tMarketplace - deploy
+### Marketplace - deploy
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
 | Marketplace_pvm | 6,114,599,509 | -       | 286,181,438      | -                 | 4.7%      | 27,448 |
 
 
-### Mark3tMarketplaceProxy - createItem_digital
+### MarketplaceProxy - createItem_digital
 
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | --------- |
-| Mark3tMarketplaceProxy_evm | 8,581,317,474 | -       | 7,663,816,204    | -                 | 89.3%     | 1,021,670 |
-| Mark3tMarketplaceProxy_pvm | 8,725,188,862 | +1.7%   | 7,807,687,592    | +1.9%             | 89.5%     | 1,052,844 |
-
-
-### Mark3tMarketplaceProxy - createItem_physical
-
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | --------- |
-| Mark3tMarketplaceProxy_evm | 8,461,731,068 | -       | 7,544,229,798    | -                 | 89.2%     | 1,021,734 |
-| Mark3tMarketplaceProxy_pvm | 8,605,602,456 | +1.7%   | 7,688,101,186    | +1.9%             | 89.3%     | 1,052,908 |
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | --------- |
+| MarketplaceProxy_evm | 8,581,317,474 | -       | 7,663,816,204    | -                 | 89.3%     | 1,021,670 |
+| MarketplaceProxy_pvm | 8,725,188,862 | +1.7%   | 7,807,687,592    | +1.9%             | 89.5%     | 1,052,844 |
 
 
-### Mark3tMarketplaceProxy - deactivateItem
+### MarketplaceProxy - createItem_physical
 
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 1,871,092,628 | -       | 957,967,443      | -                 | 51.2%     | 326,987 |
-| Mark3tMarketplaceProxy_pvm | 1,942,492,932 | +3.8%   | 1,029,367,747    | +7.5%             | 53.0%     | 342,574 |
-
-
-### Mark3tMarketplaceProxy - deploy
-
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 6,680,792,148 | -       | 5,117,053,775    | +2.1%             | 76.6%     | 576,628 |
-| Mark3tMarketplaceProxy_pvm | 6,715,512,868 | +0.5%   | 5,011,397,763    | -                 | 74.6%     | 583,244 |
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | --------- |
+| MarketplaceProxy_evm | 8,461,731,068 | -       | 7,544,229,798    | -                 | 89.2%     | 1,021,734 |
+| MarketplaceProxy_pvm | 8,605,602,456 | +1.7%   | 7,688,101,186    | +1.9%             | 89.3%     | 1,052,908 |
 
 
-### Mark3tMarketplaceProxy - markAsShipped
+### MarketplaceProxy - deactivateItem
 
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 3,712,344,722 | -       | 2,798,023,818    | -                 | 75.4%     | 501,806 |
-| Mark3tMarketplaceProxy_pvm | 3,783,834,846 | +1.9%   | 2,869,513,942    | +2.6%             | 75.8%     | 517,393 |
-
-
-### Mark3tMarketplaceProxy - purchaseItem_digital
-
-| Implementation             | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 11,035,522,764 | -       | 10,120,326,643   | -                 | 91.7%     | 930,987 |
-| Mark3tMarketplaceProxy_pvm | 11,107,509,128 | +0.7%   | 10,192,313,007   | +0.7%             | 91.8%     | 946,574 |
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 1,871,092,628 | -       | 957,967,443      | -                 | 51.2%     | 326,987 |
+| MarketplaceProxy_pvm | 1,942,492,932 | +3.8%   | 1,029,367,747    | +7.5%             | 53.0%     | 342,574 |
 
 
-### Mark3tMarketplaceProxy - purchaseItem_physical
+### MarketplaceProxy - deploy
 
-| Implementation             | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 11,112,201,274 | -       | 10,195,414,970   | -                 | 91.7%     | 956,487 |
-| Mark3tMarketplaceProxy_pvm | 11,184,176,118 | +0.6%   | 10,267,389,814   | +0.7%             | 91.8%     | 972,074 |
-
-
-### Mark3tMarketplaceProxy - purchaseItem_with_matchmaker
-
-| Implementation             | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
-| -------------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | --------- |
-| Mark3tMarketplaceProxy_evm | 12,278,036,655 | -       | 11,362,840,534   | -                 | 92.5%     | 1,023,105 |
-| Mark3tMarketplaceProxy_pvm | 12,350,023,019 | +0.6%   | 11,434,826,898   | +0.6%             | 92.6%     | 1,038,692 |
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 6,680,792,148 | -       | 5,117,053,775    | +2.1%             | 76.6%     | 576,628 |
+| MarketplaceProxy_pvm | 6,715,512,868 | +0.5%   | 5,011,397,763    | -                 | 74.6%     | 583,244 |
 
 
-### Mark3tMarketplaceProxy - registerMatchMaker
+### MarketplaceProxy - markAsShipped
 
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 3,881,871,521 | -       | 2,967,550,617    | -                 | 76.4%     | 450,362 |
-| Mark3tMarketplaceProxy_pvm | 3,953,863,645 | +1.9%   | 3,039,542,741    | +2.4%             | 76.9%     | 465,949 |
-
-
-### Mark3tMarketplaceProxy - registerShop
-
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 3,861,570,964 | -       | 2,944,464,158    | -                 | 76.3%     | 450,847 |
-| Mark3tMarketplaceProxy_pvm | 3,933,040,928 | +1.9%   | 3,015,934,122    | +2.4%             | 76.7%     | 466,434 |
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 3,712,344,722 | -       | 2,798,023,818    | -                 | 75.4%     | 501,806 |
+| MarketplaceProxy_pvm | 3,783,834,846 | +1.9%   | 2,869,513,942    | +2.6%             | 75.8%     | 517,393 |
 
 
-### Mark3tMarketplaceProxy - updateItem
+### MarketplaceProxy - purchaseItem_digital
 
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 5,244,458,725 | -       | 4,327,351,919    | -                 | 82.5%     | 554,090 |
-| Mark3tMarketplaceProxy_pvm | 5,315,928,689 | +1.4%   | 4,398,821,883    | +1.7%             | 82.7%     | 569,677 |
-
-
-### Mark3tMarketplaceProxy - updateMatchMakerFee
-
-| Implementation             | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
-| -------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Mark3tMarketplaceProxy_evm | 2,079,704,723 | -       | 1,166,604,192    | -                 | 56.1%     | 347,462 |
-| Mark3tMarketplaceProxy_pvm | 2,151,105,027 | +3.4%   | 1,238,004,496    | +6.1%             | 57.6%     | 363,049 |
+| Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 11,035,522,764 | -       | 10,120,326,643   | -                 | 91.7%     | 930,987 |
+| MarketplaceProxy_pvm | 11,107,509,128 | +0.7%   | 10,192,313,007   | +0.7%             | 91.8%     | 946,574 |
 
 
-### Mark3tMockMobRule - addCounterEvidence
+### MarketplaceProxy - purchaseItem_physical
+
+| Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 11,112,201,274 | -       | 10,195,414,970   | -                 | 91.7%     | 956,487 |
+| MarketplaceProxy_pvm | 11,184,176,118 | +0.6%   | 10,267,389,814   | +0.7%             | 91.8%     | 972,074 |
+
+
+### MarketplaceProxy - purchaseItem_with_matchmaker
+
+| Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
+| -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | --------- |
+| MarketplaceProxy_evm | 12,278,036,655 | -       | 11,362,840,534   | -                 | 92.5%     | 1,023,105 |
+| MarketplaceProxy_pvm | 12,350,023,019 | +0.6%   | 11,434,826,898   | +0.6%             | 92.6%     | 1,038,692 |
+
+
+### MarketplaceProxy - registerMatchMaker
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 3,881,871,521 | -       | 2,967,550,617    | -                 | 76.4%     | 450,362 |
+| MarketplaceProxy_pvm | 3,953,863,645 | +1.9%   | 3,039,542,741    | +2.4%             | 76.9%     | 465,949 |
+
+
+### MarketplaceProxy - registerShop
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 3,861,570,964 | -       | 2,944,464,158    | -                 | 76.3%     | 450,847 |
+| MarketplaceProxy_pvm | 3,933,040,928 | +1.9%   | 3,015,934,122    | +2.4%             | 76.7%     | 466,434 |
+
+
+### MarketplaceProxy - updateItem
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 5,244,458,725 | -       | 4,327,351,919    | -                 | 82.5%     | 554,090 |
+| MarketplaceProxy_pvm | 5,315,928,689 | +1.4%   | 4,398,821,883    | +1.7%             | 82.7%     | 569,677 |
+
+
+### MarketplaceProxy - updateMatchMakerFee
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
+| MarketplaceProxy_evm | 2,079,704,723 | -       | 1,166,604,192    | -                 | 56.1%     | 347,462 |
+| MarketplaceProxy_pvm | 2,151,105,027 | +3.4%   | 1,238,004,496    | +6.1%             | 57.6%     | 363,049 |
+
+
+### MockMobRule - addCounterEvidence
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
@@ -1324,7 +1324,7 @@ Comparison of gas usage across different contract implementations.
 | MockMobRule_pvm | 1,583,949,442 | +16.2%  | 669,628,538      | +49.2%            | 42.3%     | 96,818 |
 
 
-### Mark3tMockMobRule - createDispute
+### MockMobRule - createDispute
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
@@ -1332,7 +1332,7 @@ Comparison of gas usage across different contract implementations.
 | MockMobRule_pvm | 3,963,934,532 | +13.8%  | 3,048,417,909    | +18.7%            | 76.9%     | 251,254 |
 
 
-### Mark3tMockMobRule - deploy
+### MockMobRule - deploy
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
@@ -1340,7 +1340,7 @@ Comparison of gas usage across different contract implementations.
 | MockMobRule_pvm | 2,852,280,559 | +40.0%  | 590,494,216      | +38.5%            | 20.7%     | 37,705 |
 
 
-### Mark3tMockMobRule - resolveCase
+### MockMobRule - resolveCase
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
@@ -1361,27 +1361,27 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| non_fungible_credential_rust | 3,807,373,310 | -       | 2,891,869,014    | -                 | 76.0%     | 150,012 |
-| NonFungibleCredential_evm    | 4,969,684,244 | +30.5%  | 4,054,179,948    | +40.2%            | 81.6%     | 337,977 |
-| NonFungibleCredential_pvm    | 6,134,924,617 | +61.1%  | 5,219,420,321    | +80.5%            | 85.1%     | 444,529 |
+| non_fungible_credential_rust | 3,794,967,350 | -       | 2,879,463,054    | -                 | 75.9%     | 150,012 |
+| NonFungibleCredential_evm    | 4,969,684,244 | +31.0%  | 4,054,179,948    | +40.8%            | 81.6%     | 337,977 |
+| NonFungibleCredential_pvm    | 6,134,924,617 | +61.7%  | 5,219,420,321    | +81.3%            | 85.1%     | 444,529 |
 
 
 ### NonFungibleCredential - issue_transferable
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| non_fungible_credential_rust | 3,796,902,733 | -       | 2,881,398,437    | -                 | 75.9%     | 149,980 |
-| NonFungibleCredential_evm    | 4,969,579,856 | +30.9%  | 4,054,075,560    | +40.7%            | 81.6%     | 337,849 |
-| NonFungibleCredential_pvm    | 6,133,344,587 | +61.5%  | 5,217,840,291    | +81.1%            | 85.1%     | 444,240 |
+| non_fungible_credential_rust | 3,784,496,773 | -       | 2,868,992,477    | -                 | 75.8%     | 149,980 |
+| NonFungibleCredential_evm    | 4,969,579,856 | +31.3%  | 4,054,075,560    | +41.3%            | 81.6%     | 337,849 |
+| NonFungibleCredential_pvm    | 6,133,344,587 | +62.1%  | 5,217,840,291    | +81.9%            | 85.1%     | 444,240 |
 
 
 ### NonFungibleCredential - issue_with_expiry
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| non_fungible_credential_rust | 3,817,393,719 | -       | 2,901,889,423    | -                 | 76.0%     | 150,028 |
-| NonFungibleCredential_evm    | 4,969,762,896 | +30.2%  | 4,054,258,600    | +39.7%            | 81.6%     | 338,041 |
-| NonFungibleCredential_pvm    | 6,128,156,371 | +60.5%  | 5,212,652,075    | +79.6%            | 85.1%     | 444,430 |
+| non_fungible_credential_rust | 3,804,987,759 | -       | 2,889,483,463    | -                 | 75.9%     | 150,028 |
+| NonFungibleCredential_evm    | 4,969,762,896 | +30.6%  | 4,054,258,600    | +40.3%            | 81.6%     | 338,041 |
+| NonFungibleCredential_pvm    | 6,128,156,371 | +61.1%  | 5,212,652,075    | +80.4%            | 85.1%     | 444,430 |
 
 
 ### NonFungibleCredential - revoke
@@ -1397,9 +1397,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| non_fungible_credential_rust | 2,915,948,000 | -       | 2,002,440,678    | -                 | 68.7%     | 108,696 |
-| NonFungibleCredential_evm    | 6,599,059,373 | +126.3% | 5,685,552,051    | +183.9%           | 86.2%     | 502,147 |
-| NonFungibleCredential_pvm    | 7,531,318,193 | +158.3% | 6,617,810,871    | +230.5%           | 87.9%     | 567,962 |
+| non_fungible_credential_rust | 2,909,745,020 | -       | 1,996,237,698    | -                 | 68.6%     | 108,696 |
+| NonFungibleCredential_evm    | 6,599,059,373 | +126.8% | 5,685,552,051    | +184.8%           | 86.2%     | 502,147 |
+| NonFungibleCredential_pvm    | 7,531,318,193 | +158.8% | 6,617,810,871    | +231.5%           | 87.9%     | 567,962 |
 
 
 ### NonFungibleCredential - updateMetadata
@@ -1445,9 +1445,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| store_rust     | 2,271,757,830 | -       | 1,357,461,580    | -                 | 59.8%     | 91,232  |
-| Store_evm      | 2,441,052,761 | +7.5%   | 1,526,756,511    | +12.5%            | 62.5%     | 132,031 |
-| Store_pvm      | 2,851,063,628 | +25.5%  | 1,936,767,378    | +42.7%            | 67.9%     | 205,845 |
+| store_rust     | 2,348,226,144 | -       | 1,433,929,894    | -                 | 61.1%     | 90,866  |
+| Store_evm      | 2,441,052,761 | +4.0%   | 1,526,756,511    | +6.5%             | 62.5%     | 132,031 |
+| Store_pvm      | 2,851,063,628 | +21.4%  | 1,936,767,378    | +35.1%            | 67.9%     | 205,845 |
 
 
 ### Store - deleteFor
@@ -1455,7 +1455,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | Store_evm      | 2,873,724,363 | -       | 1,959,428,113    | -                 | 68.2%     | 173,315 |
-| store_rust     | 3,037,144,125 | +5.7%   | 2,122,847,875    | +8.3%             | 69.9%     | 143,149 |
+| store_rust     | 3,162,842,439 | +10.1%  | 2,248,546,189    | +14.8%            | 71.1%     | 142,783 |
 | Store_pvm      | 3,891,123,016 | +35.4%  | 2,976,826,766    | +51.9%            | 76.5%     | 247,806 |
 
 
@@ -1464,7 +1464,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | Store_evm      | 2,406,719,754 | -       | 1,492,817,968    | -                 | 62.0%     | 121,774 |
-| store_rust     | 2,697,302,437 | +12.1%  | 1,783,400,651    | +19.5%            | 66.1%     | 122,413 |
+| store_rust     | 2,761,857,091 | +14.8%  | 1,847,955,305    | +23.8%            | 66.9%     | 122,047 |
 | Store_pvm      | 2,762,878,611 | +14.8%  | 1,848,976,825    | +23.9%            | 66.9%     | 196,265 |
 
 
@@ -1473,7 +1473,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov   |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----- |
 | Store_evm      | 1,644,464,286 | -       | 3,004,427        | +138.9%           | 0.2%      | 6,934 |
-| store_rust     | 2,012,871,612 | +22.4%  | 1,257,439        | -                 | 0.1%      | 6,934 |
+| store_rust     | 2,007,079,296 | +22.1%  | 1,257,439        | -                 | 0.1%      | 6,934 |
 | Store_pvm      | 2,699,176,642 | +64.1%  | 10,494,537       | +734.6%           | 0.4%      | 6,934 |
 
 
@@ -1481,9 +1481,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| store_rust     | 2,172,981,757 | -       | 1,258,673,180    | -                 | 57.9%     | 91,705  |
-| Store_evm      | 2,885,319,932 | +32.8%  | 1,971,023,682    | +56.6%            | 68.3%     | 183,636 |
-| Store_pvm      | 3,346,683,897 | +54.0%  | 2,432,387,647    | +93.3%            | 72.7%     | 258,127 |
+| store_rust     | 2,301,387,721 | -       | 1,387,079,144    | -                 | 60.3%     | 91,339  |
+| Store_evm      | 2,885,319,932 | +25.4%  | 1,971,023,682    | +42.1%            | 68.3%     | 183,636 |
+| Store_pvm      | 3,346,683,897 | +45.4%  | 2,432,387,647    | +75.4%            | 72.7%     | 258,127 |
 
 
 ### Store - set
@@ -1491,7 +1491,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | Store_evm      | 2,592,457,023 | -       | 1,678,160,773    | -                 | 64.7%     | 142,320 |
-| store_rust     | 2,721,091,427 | +5.0%   | 1,806,795,177    | +7.7%             | 66.4%     | 111,746 |
+| store_rust     | 2,799,528,941 | +8.0%   | 1,885,232,691    | +12.3%            | 67.3%     | 111,380 |
 | Store_pvm      | 2,898,070,430 | +11.8%  | 1,983,774,180    | +18.2%            | 68.5%     | 216,295 |
 
 
@@ -1499,18 +1499,18 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| store_rust     | 3,064,902,522 | -       | 2,150,199,481    | -                 | 70.2%     | 132,501 |
-| Store_evm      | 3,068,765,383 | +0.1%   | 2,154,062,342    | +0.2%             | 70.2%     | 193,864 |
-| Store_pvm      | 4,023,708,706 | +31.3%  | 3,109,005,665    | +44.6%            | 77.3%     | 267,839 |
+| Store_evm      | 3,068,765,383 | -       | 2,154,062,342    | -                 | 70.2%     | 193,864 |
+| store_rust     | 3,210,095,916 | +4.6%   | 2,295,392,875    | +6.6%             | 71.5%     | 132,135 |
+| Store_pvm      | 4,023,708,706 | +31.1%  | 3,109,005,665    | +44.3%            | 77.3%     | 267,839 |
 
 
 ### Store - set_update
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| store_rust     | 1,607,961,297 | -       | 693,665,047      | -                 | 43.1%     | 60,645  |
-| Store_evm      | 1,717,538,790 | +6.8%   | 803,242,540      | +15.8%            | 46.8%     | 70,457  |
-| Store_pvm      | 1,935,100,725 | +20.3%  | 1,020,804,475    | +47.2%            | 52.8%     | 144,463 |
+| store_rust     | 1,652,430,111 | -       | 738,133,861      | -                 | 44.7%     | 60,279  |
+| Store_evm      | 1,717,538,790 | +3.9%   | 803,242,540      | +8.8%             | 46.8%     | 70,457  |
+| Store_pvm      | 1,935,100,725 | +17.1%  | 1,020,804,475    | +38.3%            | 52.8%     | 144,463 |
 
 
 ### TetherToken - approve

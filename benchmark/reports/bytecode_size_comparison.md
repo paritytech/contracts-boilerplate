@@ -45,7 +45,7 @@ Generated on: 2026-02-11
 | Contract          | VM Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | ------------ | ----------- |
 | FiatTokenV2_2_evm | EVM     | 15,467       | -           |
-| FiatTokenV2_2_pvm | PVM     | 412,256      | +2565.4%    |
+| FiatTokenV2_2_pvm | PVM     | 103,545      | +569.5%     |
 
 
 ## FiatTokenProxy Implementations
@@ -61,7 +61,7 @@ Generated on: 2026-02-11
 | Contract      | VM Type | Size (bytes) | vs Smallest |
 | ------------- | ------- | ------------ | ----------- |
 | XENCrypto_evm | EVM     | 10,489       | -           |
-| XENCrypto_pvm | PVM     | 305,896      | +2816.4%    |
+| XENCrypto_pvm | PVM     | 112,648      | +974.0%     |
 
 
 ## CoinTool_App Implementations
@@ -77,7 +77,7 @@ Generated on: 2026-02-11
 | Contract   | VM Type | Size (bytes) | vs Smallest |
 | ---------- | ------- | ------------ | ----------- |
 | Store_evm  | EVM     | 7,835        | -           |
-| store_rust | PVM     | 31,224       | +298.5%     |
+| store_rust | PVM     | 30,858       | +293.8%     |
 | Store_pvm  | PVM     | 74,006       | +844.6%     |
 
 
@@ -104,7 +104,7 @@ Generated on: 2026-02-11
 | Contract                 | VM Type | Size (bytes) | vs Smallest |
 | ------------------------ | ------- | ------------ | ----------- |
 | FungibleCredential_evm   | EVM     | 7,235        | -           |
-| fungible_credential_rust | PVM     | 17,353       | +139.8%     |
+| fungible_credential_rust | PVM     | 17,330       | +139.5%     |
 | FungibleCredential_pvm   | PVM     | 65,747       | +808.7%     |
 
 
@@ -149,5 +149,29 @@ Generated on: 2026-02-11
 | -------- | ------- | ------------ | ----------- |
 | W3S_evm  | EVM     | 12,501       | -           |
 | W3S_pvm  | PVM     | 104,732      | +737.8%     |
+
+
+## Marketplace Implementations
+
+| Contract        | VM Type | Size (bytes) | vs Smallest |
+| --------------- | ------- | ------------ | ----------- |
+| Marketplace_evm | EVM     | 28,848       | -           |
+| Marketplace_pvm | PVM     | 272,397      | +844.2%     |
+
+
+## MarketplaceProxy Implementations
+
+| Contract             | VM Type | Size (bytes) | vs Smallest |
+| -------------------- | ------- | ------------ | ----------- |
+| MarketplaceProxy_evm | EVM     | 2,732        | -           |
+| MarketplaceProxy_pvm | PVM     | 11,786       | +331.4%     |
+
+
+## MockMobRule Implementations
+
+| Contract        | VM Type | Size (bytes) | vs Smallest |
+| --------------- | ------- | ------------ | ----------- |
+| MockMobRule_evm | EVM     | 5,892        | -           |
+| MockMobRule_pvm | PVM     | 47,029       | +698.2%     |
 
 

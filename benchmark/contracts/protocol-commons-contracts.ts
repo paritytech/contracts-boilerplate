@@ -35,7 +35,7 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ Store Contract ============
     {
         id: 'Store',
-        srcs: [...solidity('Store.sol', 'Store'), pcRust('store')],
+        srcs: [...solidity('polkadot-contracts/protocol-commons/Store.sol', 'Store'), pcRust('store')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -127,7 +127,7 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ Log Contract ============
     {
         id: 'Log',
-        srcs: [...solidity('Log.sol', 'Log'), pcRust('log')],
+        srcs: [...solidity('polkadot-contracts/protocol-commons/Log.sol', 'Log'), pcRust('log')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -219,7 +219,7 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ NonFungibleCredential Contract ============
     {
         id: 'NonFungibleCredential',
-        srcs: [...solidity('NonFungibleCredential.sol', 'NonFungibleCredential'), pcRust('non_fungible_credential')],
+        srcs: [...solidity('polkadot-contracts/protocol-commons/NonFungibleCredential.sol', 'NonFungibleCredential'), pcRust('non_fungible_credential')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -301,7 +301,7 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ FungibleCredential Contract ============
     {
         id: 'FungibleCredential',
-        srcs: [...solidity('FungibleCredential.sol', 'FungibleCredential'), pcRust('fungible_credential')],
+        srcs: [...solidity('polkadot-contracts/protocol-commons/FungibleCredential.sol', 'FungibleCredential'), pcRust('fungible_credential')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -393,7 +393,7 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ DotNS Contract ============
     {
         id: 'DotNS',
-        srcs: [...solidity('DotNS.sol', 'DotNS'), pcRust('dotns')],
+        srcs: [...solidity('polkadot-contracts/protocol-commons/DotNS.sol', 'DotNS'), pcRust('dotns')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -564,7 +564,7 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ KeyRegistry Contract ============
     {
         id: 'KeyRegistry',
-        srcs: [...solidity('KeyRegistry.sol', 'KeyRegistry'), pcRust('key_registry')],
+        srcs: [...solidity('polkadot-contracts/protocol-commons/KeyRegistry.sol', 'KeyRegistry'), pcRust('key_registry')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -630,7 +630,7 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ Escrow Contract ============
     {
         id: 'Escrow',
-        srcs: [...solidity('Escrow.sol', 'Escrow'), pcRust('escrow')],
+        srcs: [...solidity('polkadot-contracts/protocol-commons/Escrow.sol', 'Escrow'), pcRust('escrow')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },

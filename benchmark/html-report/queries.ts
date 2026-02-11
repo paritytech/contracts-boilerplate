@@ -70,13 +70,13 @@ Note that these contracts may have changed after this report was generated.</p>
 <th>Repository</th><th>Contracts</th>
 </tr></thead><tbody>
 <tr><td><a href="https://github.com/paritytech/protocol-commons" target="_blank" rel="noopener">protocol-commons</a></td><td>Store, Log, NonFungibleCredential, FungibleCredential, Escrow, DotNS, KeyRegistry</td></tr>
-<tr><td><a href="https://github.com/paritytech/mark3t" target="_blank" rel="noopener">mark3t</a></td><td>Mark3tMarketplace*, Mark3tMarketplaceProxy, Mark3tMockMobRule</td></tr>
+<tr><td><a href="https://github.com/paritytech/mark3t" target="_blank" rel="noopener">mark3t</a></td><td>Marketplace*, MarketplaceProxy, MockMobRule</td></tr>
 <tr><td><a href="https://github.com/paritytech/hackm3" target="_blank" rel="noopener">hackm3</a></td><td>DocumentAccessManagement</td></tr>
 <tr><td><a href="https://github.com/paritytech/tick3t" target="_blank" rel="noopener">tick3t</a></td><td>W3S</td></tr>
 </tbody></table>
-<p>* The Mark3tMarketplace (Marketplace.sol) contract exceeds the EVM bytecode size limit
-and is only deployed on PVM. The remaining contracts it interacts with (Mark3tMarketplaceProxy,
-Mark3tMockMobRule) are deployed on both EVM and PVM, and the benchmark tests the
+<p>* The Marketplace.sol contract exceeds the EVM bytecode size limit
+and is only deployed on PVM. The remaining contracts it interacts with (MarketplaceProxy,
+MockMobRule) are deployed on both EVM and PVM, and the benchmark tests the
 combination of both VMs.</p>`,
 }
 
@@ -96,7 +96,7 @@ export const DATASET_CATEGORIES: Record<string, string[]> = {
     'polkadot-contracts': [
         'Store', 'Log', 'NonFungibleCredential', 'FungibleCredential',
         'Escrow', 'DotNS', 'KeyRegistry', 'DocumentAccessManagement',
-        'W3S', 'Mark3tMarketplace', 'Mark3tMarketplaceProxy', 'Mark3tMockMobRule',
+        'W3S', 'Marketplace', 'MarketplaceProxy', 'MockMobRule',
     ],
 }
 

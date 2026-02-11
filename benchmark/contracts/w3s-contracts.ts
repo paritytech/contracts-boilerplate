@@ -36,7 +36,7 @@ export const w3sContracts: Artifacts = [
     // ============ W3S Ticketing Contract ============
     {
         id: 'W3S',
-        srcs: [...solidity('W3S.sol', 'W3S')],
+        srcs: [...solidity('polkadot-contracts/w3s/W3S.sol', 'W3S')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },

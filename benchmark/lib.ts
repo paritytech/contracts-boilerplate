@@ -161,7 +161,7 @@ export function rust(name: string): ContractInfo {
 }
 
 export function pcRust(name: string): ContractInfo {
-    const pcDir = join(import.meta.dirname!, '..', 'rust', 'protocol-commons', 'rust', name)
+    const pcRoot = join(import.meta.dirname!, '..', 'rust', 'protocol-commons')
     return {
         supportEvm() {
             return false
@@ -170,11 +170,12 @@ export function pcRust(name: string): ContractInfo {
             return `${name}_rust`
         },
         getBytecode() {
-            return readBytecode(join(pcDir, `${name}.polkavm`))
+            return readBytecode(join(pcRoot, name, `${name}.polkavm`))
         },
         async build() {
             const cmd = new Deno.Command('make', {
-                cwd: pcDir,
+                args: [name],
+                cwd: pcRoot,
                 stdout: 'inherit',
                 stderr: 'inherit',
             })
