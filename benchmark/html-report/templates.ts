@@ -44,6 +44,138 @@ export function htmlDocument(content: string, scripts: string): string {
     </footer>
 
     <script>
+        // ── Global exclusion state ──
+        // Keys are compound: "dataset|contract|txName"
+        const excludedTxKeys = new Set();
+
+        function txKey(dataset, contract, txname) {
+            return dataset + '|' + contract + '|' + txname;
+        }
+
+        function toggleTxExclusion(dataset, contract, txname) {
+            var key = txKey(dataset, contract, txname);
+            if (excludedTxKeys.has(key)) excludedTxKeys.delete(key);
+            else excludedTxKeys.add(key);
+            applyExclusions();
+        }
+
+        function resetExclusions() {
+            excludedTxKeys.clear();
+            applyExclusions();
+        }
+
+        function toggleDeployExclusion(checked) {
+            document.querySelectorAll('tr.level-2[data-txname="deploy"]').forEach(function(row) {
+                var key = txKey(row.dataset.dataset, row.dataset.contract, 'deploy');
+                if (checked) excludedTxKeys.add(key);
+                else excludedTxKeys.delete(key);
+            });
+            applyExclusions();
+        }
+
+        function syncDeployCheckboxes() {
+            // Check if ALL deploy rows are excluded
+            var deployRows = document.querySelectorAll('tr.level-2[data-txname="deploy"]:not(.alt-impl-row)');
+            var allExcluded = deployRows.length > 0;
+            deployRows.forEach(function(row) {
+                if (!excludedTxKeys.has(txKey(row.dataset.dataset, row.dataset.contract, 'deploy'))) allExcluded = false;
+            });
+            ['hideDeployCheckbox','hideWeightDeployCheckbox','hideCategoryDeployCheckbox'].forEach(function(id) {
+                var cb = document.getElementById(id);
+                if (cb) cb.checked = allExcluded;
+            });
+        }
+
+        function applyExclusions() {
+            document.querySelectorAll('tr.level-2[data-txname]').forEach(function(row) {
+                var key = txKey(row.dataset.dataset, row.dataset.contract, row.dataset.txname);
+                row.classList.toggle('excluded-row', excludedTxKeys.has(key));
+            });
+            syncDeployCheckboxes();
+            if (typeof window.updateGasSection === 'function') window.updateGasSection();
+            if (typeof window.updateWeightSection === 'function') window.updateWeightSection();
+            if (typeof window.updateCategorySection === 'function') window.updateCategorySection();
+            updateExclusionIndicator();
+        }
+
+        function updateExclusionIndicator() {
+            document.querySelectorAll('.excl-indicator').forEach(function(el) {
+                if (excludedTxKeys.size > 0) {
+                    el.innerHTML = excludedTxKeys.size + ' excluded (<a onclick="resetExclusions()">reset</a>)';
+                    el.style.display = '';
+                } else {
+                    el.innerHTML = '';
+                    el.style.display = 'none';
+                }
+            });
+        }
+
+        // ── JS formatting helpers (mirrors TS formatGas / calcDiff / formatWeight / etc.) ──
+        function fmtGas(v) { return v !== null ? v.toLocaleString() : 'N/A'; }
+        function fmtDiff(base, compare) {
+            if (base === null || compare === null) return 'N/A';
+            var d = ((compare - base) / base) * 100;
+            var s = d > 0 ? '+' : '';
+            return s + d.toFixed(1) + '%';
+        }
+        function fmtWeight(v) { return v !== null ? v.toLocaleString() : 'N/A'; }
+        function fmtWeightPct(w, pct) {
+            if (w === null) return 'N/A';
+            var ps = pct !== null ? ' (' + pct.toFixed(1) + '%)' : '';
+            return w.toLocaleString() + ps;
+        }
+        function fmtCatPct(v) { return v.toFixed(1) + '%'; }
+        function fmtCompact(v) {
+            var abs = Math.abs(v);
+            if (abs >= 1e9) return (v / 1e9).toFixed(1) + 'B';
+            if (abs >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+            if (abs >= 1e3) return (v / 1e3).toFixed(1) + 'K';
+            return v.toLocaleString();
+        }
+        function implColorJS(label) {
+            var l = label.toLowerCase();
+            if (l === 'solidity') return '#198754';
+            if (l === 'ink') return '#6f42c1';
+            return '#d56a10';
+        }
+        function getImplLabelJS(contractName, altName) {
+            var base = contractName.replace(/_pvm$/, '');
+            var snake = base.replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2').replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
+            var lower = base.toLowerCase();
+            var prefixes = [snake + '_', lower + '_'];
+            for (var i = 0; i < prefixes.length; i++) {
+                if (altName.indexOf(prefixes[i]) === 0) return altName.slice(prefixes[i].length);
+            }
+            return altName;
+        }
+        function jsWithRange(mainHtml, allValues, rangeFmt) {
+            var entries = allValues.filter(function(e) { return e.value !== null; });
+            if (entries.length <= 1) return mainHtml;
+            var mn = entries.reduce(function(a,b){ return a.value < b.value ? a : b; });
+            var mx = entries.reduce(function(a,b){ return a.value > b.value ? a : b; });
+            if (mn.value === mx.value) return mainHtml;
+            return mainHtml + '<span class="impl-range"><span style="color:'+implColorJS(mn.label)+'">'+rangeFmt(mn.value)+'</span>..<span style="color:'+implColorJS(mx.label)+'">'+rangeFmt(mx.value)+'</span></span>';
+        }
+        function jsWithDiffRange(mainDiff, base, allCompareValues) {
+            if (base === null) return mainDiff;
+            var entries = allCompareValues.filter(function(e) { return e.value !== null; });
+            if (entries.length <= 1) return mainDiff;
+            var withDiffs = entries.map(function(e){ return { label: e.label, diff: ((e.value - base) / base) * 100 }; });
+            var mn = withDiffs.reduce(function(a,b){ return a.diff < b.diff ? a : b; });
+            var mx = withDiffs.reduce(function(a,b){ return a.diff > b.diff ? a : b; });
+            if (Math.abs(mx.diff - mn.diff) < 0.1) return mainDiff;
+            function fd(d){ var s = d > 0 ? '+' : ''; return s + d.toFixed(1) + '%'; }
+            return mainDiff + '<span class="impl-range"><span style="color:'+implColorJS(mn.label)+'">'+fd(mn.diff)+'</span>..<span style="color:'+implColorJS(mx.label)+'">'+fd(mx.diff)+'</span></span>';
+        }
+        function avgArr(arr) {
+            var vals = arr.filter(function(v){ return v !== null; });
+            return vals.length > 0 ? Math.round(vals.reduce(function(s,v){ return s+v; },0) / vals.length) : null;
+        }
+        function avgPctArr(arr) {
+            var vals = arr.filter(function(v){ return v !== null; });
+            return vals.length > 0 ? vals.reduce(function(s,v){ return s+v; },0) / vals.length : null;
+        }
+
         // Navigation highlighting
         const sections = document.querySelectorAll('.section');
         const navLinks = document.querySelectorAll('nav a');
@@ -225,7 +357,7 @@ export function htmlDocument(content: string, scripts: string): string {
             }
         }
 
-        // Initialize sortable tables
+        // Initialize sortable tables + click-to-exclude
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.expandable-table').forEach(table => {
                 const headerRow = table.querySelector('thead tr:last-child') || table.querySelector('thead tr');
@@ -237,6 +369,14 @@ export function htmlDocument(content: string, scripts: string): string {
                     const existingTitle = th.getAttribute('title');
                     th.title = existingTitle ? existingTitle + ' (click to sort)' : 'Click to sort';
                     th.addEventListener('click', () => sortTable(table, idx));
+                });
+            });
+
+            // Click-to-exclude on level-2 transaction rows
+            document.querySelectorAll('tr.level-2[data-txname]:not(.alt-impl-row)').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    if (e.target.closest('.expand-toggle')) return;
+                    toggleTxExclusion(row.dataset.dataset, row.dataset.contract, row.dataset.txname);
                 });
             });
         });
@@ -443,32 +583,26 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
         let gasHierarchy = JSON.parse(JSON.stringify(gasHierarchyOriginal));
         let currentLevel = 'datasets';
         let currentParent = null;
-        let hideDeployTx = false;
-
-        function filterHierarchy(hide) {
-            if (!hide) {
+        function filterGasHierarchy() {
+            if (excludedTxKeys.size === 0) {
                 gasHierarchy = JSON.parse(JSON.stringify(gasHierarchyOriginal));
                 return;
             }
 
-            // Deep clone and filter out deploy transactions
-            // Keep geth_gas unchanged (reference line) - only filter EVM/PVM data
             gasHierarchy = {
                 datasets: gasHierarchyOriginal.datasets.map(dataset => ({
                     ...dataset,
                     contracts: dataset.contracts.map(contract => {
-                        const filteredTxs = contract.transactions.filter(tx => tx.name !== 'deploy');
-                        // Recalculate contract totals - keep geth unchanged
+                        const filteredTxs = contract.transactions.filter(tx => !excludedTxKeys.has(txKey(dataset.name, contract.name, tx.name)));
                         const evm = filteredTxs.reduce((sum, tx) => sum + (tx.eth_rpc_evm_gas || 0), 0);
                         const pvm = filteredTxs.reduce((sum, tx) => sum + (tx.eth_rpc_pvm_gas || 0), 0);
-                        // Filter alt_implementations deploy transactions too
                         const filteredAlts = (contract.alt_implementations || []).map(alt => ({
                             ...alt,
-                            transactions: alt.transactions.filter(tx => tx.name !== 'deploy')
+                            transactions: alt.transactions.filter(tx => !excludedTxKeys.has(txKey(dataset.name, contract.name, tx.name)))
                         }));
                         return {
                             ...contract,
-                            geth_gas: contract.geth_gas, // Keep original geth value
+                            geth_gas: contract.geth_gas,
                             eth_rpc_evm_gas: filteredTxs.some(tx => tx.eth_rpc_evm_gas !== null) ? evm : null,
                             eth_rpc_pvm_gas: filteredTxs.some(tx => tx.eth_rpc_pvm_gas !== null) ? pvm : null,
                             transactions: filteredTxs.map(tx => ({
@@ -479,17 +613,16 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                         };
                     }).filter(c => c.transactions.length > 0)
                 })).map(dataset => {
-                    // Recalculate dataset totals - keep geth from original
                     const originalDataset = gasHierarchyOriginal.datasets.find(d => d.name === dataset.name);
                     const evm = dataset.contracts.reduce((sum, c) => sum + (c.eth_rpc_evm_gas || 0), 0);
                     const pvm = dataset.contracts.reduce((sum, c) => sum + (c.eth_rpc_pvm_gas || 0), 0);
                     return {
                         ...dataset,
-                        geth_gas: originalDataset?.geth_gas ?? null, // Keep original geth value
+                        geth_gas: originalDataset?.geth_gas ?? null,
                         eth_rpc_evm_gas: dataset.contracts.some(c => c.eth_rpc_evm_gas !== null) ? evm : null,
                         eth_rpc_pvm_gas: dataset.contracts.some(c => c.eth_rpc_pvm_gas !== null) ? pvm : null
                     };
-                })
+                }).filter(d => d.contracts.length > 0)
             };
         }
 
@@ -558,7 +691,7 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
         function getChartData(level, parent) {
             let items = [];
             let title = 'Gas by Dataset';
-            const suffix = hideDeployTx ? ' (excluding deploy)' : '';
+            const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
 
             if (level === 'datasets') {
                 items = gasHierarchy.datasets;
@@ -632,36 +765,101 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             chart.update();
         }
 
-        // Filter checkbox handler
+        // Deploy checkbox handler
         document.getElementById('hideDeployCheckbox').onchange = function(evt) {
-            hideDeployTx = evt.target.checked;
-            filterHierarchy(hideDeployTx);
-            updateGasChart(currentLevel, currentParent);
-            updateTableVisibility();
+            toggleDeployExclusion(evt.target.checked);
         };
 
-        function updateTableVisibility() {
-            const table = document.querySelector('.expandable-gas-table');
-            table.querySelectorAll('tbody tr').forEach(row => {
-                const nameCell = row.querySelector('td:first-child');
-                if (nameCell) {
-                    const name = nameCell.textContent.trim();
-                    if (hideDeployTx && name.startsWith('deploy') && row.classList.contains('level-2')) {
-                        row.style.display = 'none';
-                    } else if (!row.classList.contains('hidden-row')) {
-                        row.style.display = '';
-                    }
-                }
+        function updateGasTable() {
+            var table = document.querySelector('.expandable-gas-table');
+            if (!table) return;
+
+            if (excludedTxKeys.size === 0) {
+                // Restore original HTML
+                table.querySelectorAll('[data-orig]').forEach(function(cell) {
+                    cell.innerHTML = cell.dataset.orig;
+                    delete cell.dataset.orig;
+                });
+                return;
+            }
+
+            // Save original HTML if not already saved
+            table.querySelectorAll('tr.level-0 td.number, tr.level-1 td.number').forEach(function(cell) {
+                if (!cell.dataset.orig) cell.dataset.orig = cell.innerHTML;
             });
-            table.querySelectorAll('.swappable').forEach(cell => {
-                if (hideDeployTx) {
-                    if (!cell.dataset.all) cell.dataset.all = cell.innerHTML;
-                    cell.innerHTML = cell.dataset.excl;
-                } else {
-                    if (cell.dataset.all) cell.innerHTML = cell.dataset.all;
-                }
+
+            // Update level-0 dataset rows
+            table.querySelectorAll('tr.level-0:not(.total-row)').forEach(function(row) {
+                var toggle = row.querySelector('.expand-toggle');
+                if (!toggle) return;
+                var name = toggle.textContent.trim();
+                var ds = gasHierarchy.datasets.find(function(d){ return d.name === name; });
+                var allTxs = [];
+                if (ds) ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); });
+                var geth = avgArr(allTxs.map(function(t){ return t.geth_gas; }));
+                var evm = avgArr(allTxs.map(function(t){ return t.eth_rpc_evm_gas; }));
+                var pvm = avgArr(allTxs.map(function(t){ return t.eth_rpc_pvm_gas; }));
+                var cells = row.querySelectorAll('td');
+                cells[1].innerHTML = fmtGas(geth);
+                cells[2].innerHTML = fmtGas(evm);
+                cells[3].innerHTML = fmtDiff(geth, evm);
+                cells[4].innerHTML = fmtGas(pvm);
+                cells[5].innerHTML = fmtDiff(geth, pvm);
             });
+
+            // Update level-1 contract rows
+            table.querySelectorAll('tr.level-1').forEach(function(row) {
+                var toggle = row.querySelector('.expand-toggle');
+                if (!toggle) return;
+                var contractName = toggle.textContent.trim();
+                var contract = null;
+                for (var di = 0; di < gasHierarchy.datasets.length && !contract; di++) {
+                    contract = gasHierarchy.datasets[di].contracts.find(function(c){ return c.name === contractName; }) || null;
+                }
+                var txs = contract ? contract.transactions : [];
+                var geth = avgArr(txs.map(function(t){ return t.geth_gas; }));
+                var evm = avgArr(txs.map(function(t){ return t.eth_rpc_evm_gas; }));
+                var pvm = avgArr(txs.map(function(t){ return t.eth_rpc_pvm_gas; }));
+                // Build range data from alt implementations
+                var altAvgs = contract ? (contract.alt_implementations || []).map(function(alt) {
+                    var vals = alt.transactions.map(function(t){ return t.pvm_gas; }).filter(function(v){ return v !== null; });
+                    return { label: getImplLabelJS(contract.name, alt.name), value: vals.length > 0 ? Math.round(vals.reduce(function(s,v){ return s+v; },0)/vals.length) : null };
+                }) : [];
+                var allPvm = [{ value: pvm, label: 'solidity' }].concat(altAvgs);
+                var cells = row.querySelectorAll('td');
+                cells[1].innerHTML = fmtGas(geth);
+                cells[2].innerHTML = fmtGas(evm);
+                cells[3].innerHTML = fmtDiff(geth, evm);
+                cells[4].innerHTML = jsWithRange(fmtGas(pvm), allPvm, fmtGas);
+                cells[5].innerHTML = jsWithDiffRange(fmtDiff(geth, pvm), geth, allPvm);
+            });
+
+            // Update total row
+            var allTxs = [];
+            gasHierarchy.datasets.forEach(function(ds){ ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); }); });
+            var geth = avgArr(allTxs.map(function(t){ return t.geth_gas; }));
+            var evm = avgArr(allTxs.map(function(t){ return t.eth_rpc_evm_gas; }));
+            var pvm = avgArr(allTxs.map(function(t){ return t.eth_rpc_pvm_gas; }));
+            var totalRow = table.querySelector('tr.total-row');
+            if (totalRow) {
+                totalRow.querySelectorAll('td.number').forEach(function(cell) {
+                    if (!cell.dataset.orig) cell.dataset.orig = cell.innerHTML;
+                });
+                var cells = totalRow.querySelectorAll('td');
+                cells[1].innerHTML = fmtGas(geth);
+                cells[2].innerHTML = fmtGas(evm);
+                cells[3].innerHTML = fmtDiff(geth, evm);
+                cells[4].innerHTML = fmtGas(pvm);
+                cells[5].innerHTML = fmtDiff(geth, pvm);
+            }
         }
+
+        function updateGasSection() {
+            filterGasHierarchy();
+            updateGasChart(currentLevel, currentParent);
+            updateGasTable();
+        }
+        window.updateGasSection = updateGasSection;
 
         // Add click handler for drill-down
         document.getElementById('gasAnalysisChart').onclick = function(evt) {
@@ -706,8 +904,9 @@ export function gasAnalysisFilterControls(): string {
             <input type="checkbox" id="hideDeployCheckbox">
             Exclude deploy transactions
         </label>
+        <span class="excl-indicator" style="display:none"></span>
     </div>
-    <p class="table-note">Dataset and contract rows show the average gas for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink).</p>
+    <p class="table-note">Dataset and contract rows show the average gas for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink). Click a transaction row to exclude it.</p>
     `
 }
 
@@ -724,7 +923,6 @@ export function expandableGasTable(data: GasHierarchyData): string {
     // Collect all transactions for overall average
     type GasTx = { name: string; geth_gas: number | null; eth_rpc_evm_gas: number | null; eth_rpc_pvm_gas: number | null }
     const allTxs: GasTx[] = []
-    const noDeploy = (txs: GasTx[]) => txs.filter(tx => tx.name !== 'deploy')
 
     for (const dataset of data.datasets) {
         const datasetTxs = dataset.contracts.flatMap(c => c.transactions)
@@ -735,21 +933,16 @@ export function expandableGasTable(data: GasHierarchyData): string {
             evm: avgGas(datasetTxs, 'eth_rpc_evm_gas'),
             pvm: avgGas(datasetTxs, 'eth_rpc_pvm_gas'),
         }
-        const dsExcl = {
-            geth: avgGas(noDeploy(datasetTxs), 'geth_gas'),
-            evm: avgGas(noDeploy(datasetTxs), 'eth_rpc_evm_gas'),
-            pvm: avgGas(noDeploy(datasetTxs), 'eth_rpc_pvm_gas'),
-        }
 
         const datasetId = rowId++
         rows.push(`
             <tr class="level-0" data-id="${datasetId}" data-level="0">
                 <td><span class="expand-toggle" onclick="toggleExpand(${datasetId}, 0)">${dataset.name}</span></td>
-                <td class="number swappable" data-excl="${formatGas(dsExcl.geth)}">${formatGas(dsAvg.geth)}</td>
-                <td class="number swappable" data-excl="${formatGas(dsExcl.evm)}">${formatGas(dsAvg.evm)}</td>
-                <td class="number swappable" data-excl="${calcDiff(dsExcl.geth, dsExcl.evm)}">${calcDiff(dsAvg.geth, dsAvg.evm)}</td>
-                <td class="number swappable" data-excl="${formatGas(dsExcl.pvm)}">${formatGas(dsAvg.pvm)}</td>
-                <td class="number swappable" data-excl="${calcDiff(dsExcl.geth, dsExcl.pvm)}">${calcDiff(dsAvg.geth, dsAvg.pvm)}</td>
+                <td class="number">${formatGas(dsAvg.geth)}</td>
+                <td class="number">${formatGas(dsAvg.evm)}</td>
+                <td class="number">${calcDiff(dsAvg.geth, dsAvg.evm)}</td>
+                <td class="number">${formatGas(dsAvg.pvm)}</td>
+                <td class="number">${calcDiff(dsAvg.geth, dsAvg.pvm)}</td>
             </tr>
         `)
 
@@ -759,11 +952,6 @@ export function expandableGasTable(data: GasHierarchyData): string {
                 evm: avgGas(contract.transactions, 'eth_rpc_evm_gas'),
                 pvm: avgGas(contract.transactions, 'eth_rpc_pvm_gas'),
             }
-            const cExcl = {
-                geth: avgGas(noDeploy(contract.transactions), 'geth_gas'),
-                evm: avgGas(noDeploy(contract.transactions), 'eth_rpc_evm_gas'),
-                pvm: avgGas(noDeploy(contract.transactions), 'eth_rpc_pvm_gas'),
-            }
 
             // Collect all PVM gas values (Solidity avg + alt avgs) for range display
             const altLabels = contract.alt_implementations.map(alt => getImplLabel(contract.name, alt.name))
@@ -771,33 +959,23 @@ export function expandableGasTable(data: GasHierarchyData): string {
                 const vals = alt.transactions.map(t => t.pvm_gas).filter((v): v is number => v !== null)
                 return vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : null
             })
-            const altPvmExclAvgs = contract.alt_implementations.map(alt => {
-                const vals = alt.transactions.filter(t => t.name !== 'deploy').map(t => t.pvm_gas).filter((v): v is number => v !== null)
-                return vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : null
-            })
             const allPvmAll: LabeledValue[] = [
                 { value: cAvg.pvm, label: 'solidity' },
                 ...altPvmAvgs.map((v, i) => ({ value: v, label: altLabels[i] })),
             ]
-            const allPvmExcl: LabeledValue[] = [
-                { value: cExcl.pvm, label: 'solidity' },
-                ...altPvmExclAvgs.map((v, i) => ({ value: v, label: altLabels[i] })),
-            ]
 
             const pvmGasAll = withRange(formatGas(cAvg.pvm), allPvmAll, formatGas)
             const pvmDiffAll = withDiffRange(calcDiff(cAvg.geth, cAvg.pvm), cAvg.geth, allPvmAll)
-            const pvmGasExcl = withRange(formatGas(cExcl.pvm), allPvmExcl, formatGas)
-            const pvmDiffExcl = withDiffRange(calcDiff(cExcl.geth, cExcl.pvm), cExcl.geth, allPvmExcl)
 
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                     <td><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
-                    <td class="number swappable" data-excl="${formatGas(cExcl.geth)}">${formatGas(cAvg.geth)}</td>
-                    <td class="number swappable" data-excl="${formatGas(cExcl.evm)}">${formatGas(cAvg.evm)}</td>
-                    <td class="number swappable" data-excl="${calcDiff(cExcl.geth, cExcl.evm)}">${calcDiff(cAvg.geth, cAvg.evm)}</td>
-                    <td class="number swappable" data-excl="${escAttr(pvmGasExcl)}">${pvmGasAll}</td>
-                    <td class="number swappable" data-excl="${escAttr(pvmDiffExcl)}">${pvmDiffAll}</td>
+                    <td class="number">${formatGas(cAvg.geth)}</td>
+                    <td class="number">${formatGas(cAvg.evm)}</td>
+                    <td class="number">${calcDiff(cAvg.geth, cAvg.evm)}</td>
+                    <td class="number">${pvmGasAll}</td>
+                    <td class="number">${pvmDiffAll}</td>
                 </tr>
             `)
 
@@ -817,7 +995,7 @@ export function expandableGasTable(data: GasHierarchyData): string {
             for (const tx of contract.transactions) {
                 const tag = hasAlts ? ' ' + implTag('solidity') : ''
                 rows.push(`
-                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
+                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
                         <td>${tx.name}${tag}</td>
                         <td class="number">${formatGas(tx.geth_gas)}</td>
                         <td class="number">${formatGas(tx.eth_rpc_evm_gas)}</td>
@@ -831,7 +1009,7 @@ export function expandableGasTable(data: GasHierarchyData): string {
                 const alts = altGasByTxName.get(tx.name) || []
                 for (const { label, pvm_gas } of alts) {
                     rows.push(`
-                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}">
+                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
                             <td>${tx.name} ${implTag(label)}</td>
                             <td class="number"></td>
                             <td class="number"></td>
@@ -850,21 +1028,16 @@ export function expandableGasTable(data: GasHierarchyData): string {
         evm: avgGas(allTxs, 'eth_rpc_evm_gas'),
         pvm: avgGas(allTxs, 'eth_rpc_pvm_gas'),
     }
-    const overallExcl = {
-        geth: avgGas(noDeploy(allTxs), 'geth_gas'),
-        evm: avgGas(noDeploy(allTxs), 'eth_rpc_evm_gas'),
-        pvm: avgGas(noDeploy(allTxs), 'eth_rpc_pvm_gas'),
-    }
 
     // Add average row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
             <td>Avg per transaction</td>
-            <td class="number swappable" data-excl="${formatGas(overallExcl.geth)}">${formatGas(overallAvg.geth)}</td>
-            <td class="number swappable" data-excl="${formatGas(overallExcl.evm)}">${formatGas(overallAvg.evm)}</td>
-            <td class="number swappable" data-excl="${calcDiff(overallExcl.geth, overallExcl.evm)}">${calcDiff(overallAvg.geth, overallAvg.evm)}</td>
-            <td class="number swappable" data-excl="${formatGas(overallExcl.pvm)}">${formatGas(overallAvg.pvm)}</td>
-            <td class="number swappable" data-excl="${calcDiff(overallExcl.geth, overallExcl.pvm)}">${calcDiff(overallAvg.geth, overallAvg.pvm)}</td>
+            <td class="number">${formatGas(overallAvg.geth)}</td>
+            <td class="number">${formatGas(overallAvg.evm)}</td>
+            <td class="number">${calcDiff(overallAvg.geth, overallAvg.evm)}</td>
+            <td class="number">${formatGas(overallAvg.pvm)}</td>
+            <td class="number">${calcDiff(overallAvg.geth, overallAvg.pvm)}</td>
         </tr>
     `)
 
@@ -950,16 +1123,14 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
         let weightHierarchy = JSON.parse(JSON.stringify(weightHierarchyOriginal));
         let weightCurrentLevel = 'datasets';
         let weightCurrentParent = null;
-        let hideWeightDeployTx = false;
         let weightMetric = 'ref_time'; // 'ref_time' or 'proof_size'
 
-        function filterWeightHierarchy(hide) {
-            if (!hide) {
+        function filterWeightHierarchy() {
+            if (excludedTxKeys.size === 0) {
                 weightHierarchy = JSON.parse(JSON.stringify(weightHierarchyOriginal));
                 return;
             }
 
-            // Deep clone and filter out deploy transactions, recalculate averages
             function avgOfFiltered(txs, key) {
                 var vals = txs.map(function(tx) { return tx[key]; }).filter(function(v) { return v !== null; });
                 return vals.length > 0 ? Math.round(vals.reduce(function(s, v) { return s + v; }, 0) / vals.length) : null;
@@ -973,11 +1144,10 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                 datasets: weightHierarchyOriginal.datasets.map(dataset => ({
                     ...dataset,
                     contracts: dataset.contracts.map(contract => {
-                        const filteredTxs = contract.transactions.filter(tx => tx.name !== 'deploy');
-                        // Filter alt_implementations deploy transactions too
+                        const filteredTxs = contract.transactions.filter(tx => !excludedTxKeys.has(txKey(dataset.name, contract.name, tx.name)));
                         const filteredAlts = (contract.alt_implementations || []).map(alt => ({
                             ...alt,
-                            transactions: alt.transactions.filter(tx => tx.name !== 'deploy')
+                            transactions: alt.transactions.filter(tx => !excludedTxKeys.has(txKey(dataset.name, contract.name, tx.name)))
                         }));
                         return {
                             ...contract,
@@ -994,7 +1164,6 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                         };
                     }).filter(c => c.transactions.length > 0)
                 })).map(dataset => {
-                    // Recalculate dataset averages from all transactions across contracts
                     const allTxs = [];
                     dataset.contracts.forEach(function(c) { c.transactions.forEach(function(tx) { allTxs.push(tx); }); });
                     return {
@@ -1008,7 +1177,7 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
                         evm_metered_ref_time: avgOfFiltered(allTxs, 'evm_metered_ref_time'),
                         pvm_metered_ref_time: avgOfFiltered(allTxs, 'pvm_metered_ref_time')
                     };
-                })
+                }).filter(d => d.contracts.length > 0)
             };
         }
 
@@ -1082,7 +1251,7 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
         function getWeightChartData(level, parent, metric) {
             let items = [];
             const metricName = metric === 'ref_time' ? 'ref_time' : 'proof_size';
-            const suffix = hideWeightDeployTx ? ' (excluding deploy)' : '';
+            const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
             let title = '';
             let yLabel = '';
 
@@ -1231,12 +1400,9 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
             chart.update();
         }
 
-        // Filter checkbox handler for weight
+        // Deploy checkbox handler for weight
         document.getElementById('hideWeightDeployCheckbox').onchange = function(evt) {
-            hideWeightDeployTx = evt.target.checked;
-            filterWeightHierarchy(hideWeightDeployTx);
-            updateWeightChart(weightCurrentLevel, weightCurrentParent);
-            updateWeightTableVisibility();
+            toggleDeployExclusion(evt.target.checked);
         };
 
         // Metric radio button handler
@@ -1247,28 +1413,112 @@ export function drilldownWeightChartScript(hierarchy: WeightHierarchyData): stri
             };
         });
 
-        function updateWeightTableVisibility() {
-            const table = document.querySelector('.expandable-weight-table');
-            table.querySelectorAll('tbody tr').forEach(row => {
-                const nameCell = row.querySelector('td:first-child');
-                if (nameCell) {
-                    const name = nameCell.textContent.trim();
-                    if (hideWeightDeployTx && name.startsWith('deploy') && row.classList.contains('level-2')) {
-                        row.style.display = 'none';
-                    } else if (!row.classList.contains('hidden-row')) {
-                        row.style.display = '';
+        function updateWeightTable() {
+            var table = document.querySelector('.expandable-weight-table');
+            if (!table) return;
+
+            if (excludedTxKeys.size === 0) {
+                table.querySelectorAll('[data-orig]').forEach(function(cell) {
+                    cell.innerHTML = cell.dataset.orig;
+                    delete cell.dataset.orig;
+                });
+                return;
+            }
+
+            // Save original HTML if not already saved
+            table.querySelectorAll('tr.level-0 td.number, tr.level-1 td.number').forEach(function(cell) {
+                if (!cell.dataset.orig) cell.dataset.orig = cell.innerHTML;
+            });
+
+            function weightRowCells(row, v, rangeRef, rangeMetered, rangeProof) {
+                var cells = row.querySelectorAll('td');
+                // EVM: ref_time, metered, proof
+                cells[1].innerHTML = fmtWeight(v.evm_ref_time);
+                cells[2].innerHTML = fmtWeightPct(v.evm_metered_ref_time, v.evm_metered_pct);
+                cells[3].innerHTML = fmtWeight(v.evm_proof_size);
+                // PVM: ref_time, metered, proof (with ranges)
+                cells[4].innerHTML = rangeRef ? jsWithRange(fmtWeight(v.pvm_ref_time), rangeRef, fmtCompact) : fmtWeight(v.pvm_ref_time);
+                cells[5].innerHTML = rangeMetered ? jsWithRange(fmtWeightPct(v.pvm_metered_ref_time, v.pvm_metered_pct), rangeMetered, fmtCompact) : fmtWeightPct(v.pvm_metered_ref_time, v.pvm_metered_pct);
+                cells[6].innerHTML = rangeProof ? jsWithRange(fmtWeight(v.pvm_proof_size), rangeProof, fmtCompact) : fmtWeight(v.pvm_proof_size);
+                // Deltas
+                cells[7].innerHTML = rangeRef ? jsWithDiffRange(fmtDiff(v.evm_ref_time, v.pvm_ref_time), v.evm_ref_time, rangeRef) : fmtDiff(v.evm_ref_time, v.pvm_ref_time);
+                cells[8].innerHTML = rangeMetered ? jsWithDiffRange(fmtDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time), v.evm_metered_ref_time, rangeMetered) : fmtDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time);
+                cells[9].innerHTML = rangeProof ? jsWithDiffRange(fmtDiff(v.evm_proof_size, v.pvm_proof_size), v.evm_proof_size, rangeProof) : fmtDiff(v.evm_proof_size, v.pvm_proof_size);
+            }
+
+            // Helper: compute weight avgs from array of txs
+            function wAvgs(txs) {
+                return {
+                    evm_ref_time: avgArr(txs.map(function(t){ return t.evm_ref_time; })),
+                    evm_metered_ref_time: avgArr(txs.map(function(t){ return t.evm_metered_ref_time; })),
+                    evm_metered_pct: avgPctArr(txs.map(function(t){ return t.evm_metered_pct; })),
+                    evm_proof_size: avgArr(txs.map(function(t){ return t.evm_proof_size; })),
+                    pvm_ref_time: avgArr(txs.map(function(t){ return t.pvm_ref_time; })),
+                    pvm_metered_ref_time: avgArr(txs.map(function(t){ return t.pvm_metered_ref_time; })),
+                    pvm_metered_pct: avgPctArr(txs.map(function(t){ return t.pvm_metered_pct; })),
+                    pvm_proof_size: avgArr(txs.map(function(t){ return t.pvm_proof_size; })),
+                };
+            }
+
+            // Update level-0 dataset rows
+            table.querySelectorAll('tr.level-0:not(.total-row)').forEach(function(row) {
+                var toggle = row.querySelector('.expand-toggle');
+                if (!toggle) return;
+                var name = toggle.textContent.trim();
+                var ds = weightHierarchy.datasets.find(function(d){ return d.name === name; });
+                var allTxs = [];
+                if (ds) ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); });
+                weightRowCells(row, wAvgs(allTxs), null, null, null);
+            });
+
+            // Update level-1 contract rows
+            table.querySelectorAll('tr.level-1').forEach(function(row) {
+                var toggle = row.querySelector('.expand-toggle');
+                if (!toggle) return;
+                var contractName = toggle.textContent.trim();
+                var contract = null;
+                for (var di = 0; di < weightHierarchy.datasets.length && !contract; di++) {
+                    contract = weightHierarchy.datasets[di].contracts.find(function(c){ return c.name === contractName; }) || null;
+                }
+                var v = wAvgs(contract ? contract.transactions : []);
+                // Build range data
+                var rangeRef = null, rangeMetered = null, rangeProof = null;
+                if (contract) {
+                    var alts = (contract.alt_implementations || []);
+                    if (alts.length > 0) {
+                        rangeRef = [{ value: v.pvm_ref_time, label: 'solidity' }];
+                        rangeMetered = [{ value: v.pvm_metered_ref_time, label: 'solidity' }];
+                        rangeProof = [{ value: v.pvm_proof_size, label: 'solidity' }];
+                        alts.forEach(function(alt) {
+                            var label = getImplLabelJS(contract.name, alt.name);
+                            var av = wAvgs(alt.transactions);
+                            rangeRef.push({ value: av.pvm_ref_time, label: label });
+                            rangeMetered.push({ value: av.pvm_metered_ref_time, label: label });
+                            rangeProof.push({ value: av.pvm_proof_size, label: label });
+                        });
                     }
                 }
+                weightRowCells(row, v, rangeRef, rangeMetered, rangeProof);
             });
-            table.querySelectorAll('.swappable').forEach(cell => {
-                if (hideWeightDeployTx) {
-                    if (!cell.dataset.all) cell.dataset.all = cell.innerHTML;
-                    cell.innerHTML = cell.dataset.excl;
-                } else {
-                    if (cell.dataset.all) cell.innerHTML = cell.dataset.all;
-                }
-            });
+
+            // Update total row
+            var allTxs = [];
+            weightHierarchy.datasets.forEach(function(ds){ ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); }); });
+            var totalRow = table.querySelector('tr.total-row');
+            if (totalRow) {
+                totalRow.querySelectorAll('td.number').forEach(function(cell) {
+                    if (!cell.dataset.orig) cell.dataset.orig = cell.innerHTML;
+                });
+                weightRowCells(totalRow, wAvgs(allTxs), null, null, null);
+            }
         }
+
+        function updateWeightSection() {
+            filterWeightHierarchy();
+            updateWeightChart(weightCurrentLevel, weightCurrentParent);
+            updateWeightTable();
+        }
+        window.updateWeightSection = updateWeightSection;
 
         // Add click handler for weight drill-down
         document.getElementById('weightAnalysisChart').onclick = function(evt) {
@@ -1312,6 +1562,7 @@ export function weightAnalysisFilterControls(): string {
             <input type="checkbox" id="hideWeightDeployCheckbox">
             Exclude deploy transactions
         </label>
+        <span class="excl-indicator" style="display:none"></span>
         <span style="margin-left: 1.5rem;">View:</span>
         <label>
             <input type="radio" name="weightMetric" value="ref_time" checked>
@@ -1322,7 +1573,7 @@ export function weightAnalysisFilterControls(): string {
             proof_size
         </label>
     </div>
-    <p class="table-note">Dataset and contract rows show the average weight for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink).</p>
+    <p class="table-note">Dataset and contract rows show the average weight for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink). Click a transaction row to exclude it.</p>
     `
 }
 
@@ -1343,8 +1594,6 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
 
     // Collect all transactions for overall average
     const allTxs: WeightTx[] = data.datasets.flatMap(d => d.contracts.flatMap(c => c.transactions))
-    const noDeployW = (txs: WeightTx[]) => txs.filter(tx => tx.name !== 'deploy')
-
     function weightAvgs(txs: WeightTx[]) {
         return {
             evm_ref_time: avgWeight(txs, 'evm_ref_time'),
@@ -1358,101 +1607,61 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
         }
     }
 
-    function weightRow(v: ReturnType<typeof weightAvgs>, cls: string) {
-        return [
-            `<td class="number ${cls}">${formatWeight(v.evm_ref_time)}</td>`,
-            `<td class="number ${cls}">${formatWeightWithPct(v.evm_metered_ref_time, v.evm_metered_pct)}</td>`,
-            `<td class="number ${cls}">${formatWeight(v.evm_proof_size)}</td>`,
-            `<td class="number ${cls}">${formatWeight(v.pvm_ref_time)}</td>`,
-            `<td class="number ${cls}">${formatWeightWithPct(v.pvm_metered_ref_time, v.pvm_metered_pct)}</td>`,
-            `<td class="number ${cls}">${formatWeight(v.pvm_proof_size)}</td>`,
-            `<td class="number ${cls}">${calcDiff(v.evm_ref_time, v.pvm_ref_time)}</td>`,
-            `<td class="number ${cls}">${calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time)}</td>`,
-            `<td class="number ${cls}">${calcDiff(v.evm_proof_size, v.pvm_proof_size)}</td>`,
-        ].join('')
-    }
-
     type PvmRanges = { ref: LabeledValue[], metered: LabeledValue[], proof: LabeledValue[] }
 
-    function swappableWeightCells(all: ReturnType<typeof weightAvgs>, excl: ReturnType<typeof weightAvgs>, rangeAll?: PvmRanges, rangeExcl?: PvmRanges) {
+    function weightTableCells(v: ReturnType<typeof weightAvgs>, rangeAll?: PvmRanges) {
         const cells: string[] = []
-
-        // Helper to push a simple swappable cell
-        const pushCell = (allVal: string, exclVal: string) => {
-            cells.push(`<td class="number swappable" data-excl="${escAttr(exclVal)}">${allVal}</td>`)
+        const push = (val: string) => { cells.push(`<td class="number">${val}</td>`) }
+        const pushRange = (val: string, range: LabeledValue[] | undefined, rfmt: (v: number) => string) => {
+            push(range ? withRange(val, range, rfmt) : val)
         }
 
-        // Helper to push a swappable cell with optional range annotations
-        const pushRangeCell = (allVal: string, exclVal: string, allRange: LabeledValue[] | undefined, exclRange: LabeledValue[] | undefined, rfmt: (v: number) => string) => {
-            if (allRange) {
-                const aVal = withRange(allVal, allRange, rfmt)
-                const eVal = withRange(exclVal, exclRange ?? [], rfmt)
-                pushCell(aVal, eVal)
-            } else {
-                pushCell(allVal, exclVal)
-            }
-        }
+        // EVM columns
+        push(formatWeight(v.evm_ref_time))
+        push(formatWeightWithPct(v.evm_metered_ref_time, v.evm_metered_pct))
+        push(formatWeight(v.evm_proof_size))
 
-        // EVM columns: ref_time, metered (pct%), proof
-        pushCell(formatWeight(all.evm_ref_time), formatWeight(excl.evm_ref_time))
-        pushCell(formatWeightWithPct(all.evm_metered_ref_time, all.evm_metered_pct), formatWeightWithPct(excl.evm_metered_ref_time, excl.evm_metered_pct))
-        pushCell(formatWeight(all.evm_proof_size), formatWeight(excl.evm_proof_size))
-
-        // PVM columns: ref_time, metered (pct%), proof — with range annotations
-        pushRangeCell(formatWeight(all.pvm_ref_time), formatWeight(excl.pvm_ref_time), rangeAll?.ref, rangeExcl?.ref, formatCompact)
-        pushRangeCell(formatWeightWithPct(all.pvm_metered_ref_time, all.pvm_metered_pct), formatWeightWithPct(excl.pvm_metered_ref_time, excl.pvm_metered_pct), rangeAll?.metered, rangeExcl?.metered, formatCompact)
-        pushRangeCell(formatWeight(all.pvm_proof_size), formatWeight(excl.pvm_proof_size), rangeAll?.proof, rangeExcl?.proof, formatCompact)
+        // PVM columns with range
+        pushRange(formatWeight(v.pvm_ref_time), rangeAll?.ref, formatCompact)
+        pushRange(formatWeightWithPct(v.pvm_metered_ref_time, v.pvm_metered_pct), rangeAll?.metered, formatCompact)
+        pushRange(formatWeight(v.pvm_proof_size), rangeAll?.proof, formatCompact)
 
         // Delta columns
-        const refDiffAll = withDiffRange(calcDiff(all.evm_ref_time, all.pvm_ref_time), all.evm_ref_time, rangeAll?.ref ?? [])
-        const refDiffExcl = withDiffRange(calcDiff(excl.evm_ref_time, excl.pvm_ref_time), excl.evm_ref_time, rangeExcl?.ref ?? [])
-        pushCell(refDiffAll, refDiffExcl)
-        const metDiffAll = withDiffRange(calcDiff(all.evm_metered_ref_time, all.pvm_metered_ref_time), all.evm_metered_ref_time, rangeAll?.metered ?? [])
-        const metDiffExcl = withDiffRange(calcDiff(excl.evm_metered_ref_time, excl.pvm_metered_ref_time), excl.evm_metered_ref_time, rangeExcl?.metered ?? [])
-        pushCell(metDiffAll, metDiffExcl)
-        const proofDiffAll = withDiffRange(calcDiff(all.evm_proof_size, all.pvm_proof_size), all.evm_proof_size, rangeAll?.proof ?? [])
-        const proofDiffExcl = withDiffRange(calcDiff(excl.evm_proof_size, excl.pvm_proof_size), excl.evm_proof_size, rangeExcl?.proof ?? [])
-        pushCell(proofDiffAll, proofDiffExcl)
+        push(rangeAll ? withDiffRange(calcDiff(v.evm_ref_time, v.pvm_ref_time), v.evm_ref_time, rangeAll.ref) : calcDiff(v.evm_ref_time, v.pvm_ref_time))
+        push(rangeAll ? withDiffRange(calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time), v.evm_metered_ref_time, rangeAll.metered) : calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time))
+        push(rangeAll ? withDiffRange(calcDiff(v.evm_proof_size, v.pvm_proof_size), v.evm_proof_size, rangeAll.proof) : calcDiff(v.evm_proof_size, v.pvm_proof_size))
         return cells.join('')
     }
 
     for (const dataset of data.datasets) {
         const dsTxs = dataset.contracts.flatMap(c => c.transactions)
         const dsAll = weightAvgs(dsTxs)
-        const dsExcl = weightAvgs(noDeployW(dsTxs))
 
         const datasetId = rowId++
         rows.push(`
             <tr class="level-0" data-id="${datasetId}" data-level="0">
                 <td><span class="expand-toggle" onclick="toggleExpand(${datasetId}, 0)">${dataset.name}</span></td>
-                ${swappableWeightCells(dsAll, dsExcl)}
+                ${weightTableCells(dsAll)}
             </tr>
         `)
 
         for (const contract of dataset.contracts) {
             const cAll = weightAvgs(contract.transactions)
-            const cExcl = weightAvgs(noDeployW(contract.transactions))
 
             // Collect PVM ranges from alt implementations
             const wAltLabels = contract.alt_implementations.map(alt => getImplLabel(contract.name, alt.name))
-            const altWeightAvgsAll = contract.alt_implementations.map(alt => weightAvgs(alt.transactions))
-            const altWeightAvgsExcl = contract.alt_implementations.map(alt => weightAvgs(alt.transactions.filter(t => t.name !== 'deploy')))
+            const altWeightAvgsAll = contract.alt_implementations.map(alt => weightAvgs(alt.transactions as unknown as WeightTx[]))
             const pvmRangeAll: PvmRanges | undefined = contract.alt_implementations.length > 0 ? {
                 ref: [{ value: cAll.pvm_ref_time, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_ref_time, label: wAltLabels[i] }))],
                 metered: [{ value: cAll.pvm_metered_ref_time, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_metered_ref_time, label: wAltLabels[i] }))],
                 proof: [{ value: cAll.pvm_proof_size, label: 'solidity' }, ...altWeightAvgsAll.map((a, i) => ({ value: a.pvm_proof_size, label: wAltLabels[i] }))],
-            } : undefined
-            const pvmRangeExcl: PvmRanges | undefined = contract.alt_implementations.length > 0 ? {
-                ref: [{ value: cExcl.pvm_ref_time, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_ref_time, label: wAltLabels[i] }))],
-                metered: [{ value: cExcl.pvm_metered_ref_time, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_metered_ref_time, label: wAltLabels[i] }))],
-                proof: [{ value: cExcl.pvm_proof_size, label: 'solidity' }, ...altWeightAvgsExcl.map((a, i) => ({ value: a.pvm_proof_size, label: wAltLabels[i] }))],
             } : undefined
 
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                     <td><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
-                    ${swappableWeightCells(cAll, cExcl, pvmRangeAll, pvmRangeExcl)}
+                    ${weightTableCells(cAll, pvmRangeAll)}
                 </tr>
             `)
 
@@ -1478,7 +1687,7 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
             for (const tx of contract.transactions) {
                 const wTag = hasWeightAlts ? ' ' + implTag('solidity') : ''
                 rows.push(`
-                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
+                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
                         <td>${tx.name}${wTag}</td>
                         <td class="number">${formatWeight(tx.evm_ref_time)}</td>
                         <td class="number">${formatWeightWithPct(tx.evm_metered_ref_time, tx.evm_metered_pct)}</td>
@@ -1496,7 +1705,7 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
                 const alts = altWeightByTxName.get(tx.name) || []
                 for (const alt of alts) {
                     rows.push(`
-                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}">
+                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
                             <td>${tx.name} ${implTag(alt.label)}</td>
                             <td class="number"></td>
                             <td class="number"></td>
@@ -1515,13 +1724,12 @@ export function expandableWeightTable(data: WeightHierarchyData): string {
     }
 
     const overallAll = weightAvgs(allTxs)
-    const overallExcl = weightAvgs(noDeployW(allTxs))
 
     // Add average row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
             <td>Avg per transaction</td>
-            ${swappableWeightCells(overallAll, overallExcl)}
+            ${weightTableCells(overallAll)}
         </tr>
     `)
 
@@ -1597,12 +1805,9 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
 
     // Calculate totals
     const totals: Record<string, number> = {}
-    const totalsExcl: Record<string, number> = {}
     let totalCost = 0
-    let totalCostExcl = 0
     for (const cat of allCategories) {
         totals[cat] = 0
-        totalsExcl[cat] = 0
     }
 
     for (const dataset of datasets) {
@@ -1611,41 +1816,26 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
             totals[cat] += (dataset.categories[cat] ?? 0) * dataset.total_cost / 100
         }
 
-        // Compute excluding-deploy percentages
-        const dsTxs = dataset.contracts.flatMap(c => c.transactions)
-        const dsTxsExcl = dsTxs.filter(tx => tx.name !== 'deploy')
-        const dsExclPcts = recalcCategoryPcts(dsTxsExcl)
-
-        // Track excluding-deploy totals
-        const dsCostExcl = dsTxsExcl.reduce((s, tx) => s + tx.total_cost, 0)
-        totalCostExcl += dsCostExcl
-        for (const cat of allCategories) {
-            totalsExcl[cat] += (dsExclPcts[cat] ?? 0) * dsCostExcl / 100
-        }
-
         const datasetId = rowId++
         rows.push(`
             <tr class="level-0" data-id="${datasetId}" data-level="0">
                 <td><span class="expand-toggle" onclick="toggleExpand(${datasetId}, 0)">${dataset.name}</span></td>
-                ${allCategories.map(cat => `<td class="number swappable" data-excl="${(dsExclPcts[cat] ?? 0).toFixed(1)}%">${(dataset.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
+                ${allCategories.map(cat => `<td class="number">${(dataset.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
             </tr>
         `)
 
         for (const contract of dataset.contracts) {
-            const cTxsExcl = contract.transactions.filter(tx => tx.name !== 'deploy')
-            const cExclPcts = recalcCategoryPcts(cTxsExcl)
-
             const contractId = rowId++
             rows.push(`
                 <tr class="level-1 hidden-row" data-id="${contractId}" data-level="1" data-parent="${datasetId}">
                     <td><span class="expand-toggle" onclick="toggleExpand(${contractId}, 1)">${contract.name}</span></td>
-                    ${allCategories.map(cat => `<td class="number swappable" data-excl="${(cExclPcts[cat] ?? 0).toFixed(1)}%">${(contract.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
+                    ${allCategories.map(cat => `<td class="number">${(contract.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
                 </tr>
             `)
 
             for (const tx of contract.transactions) {
                 rows.push(`
-                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
+                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
                         <td>${tx.name}</td>
                         ${allCategories.map(cat => `<td class="number">${(tx.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
                     </tr>
@@ -1654,19 +1844,17 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
         }
     }
 
-    // Calculate total percentages (all and excluding deploy)
+    // Calculate total percentages
     const totalPcts: Record<string, number> = {}
-    const totalPctsExcl: Record<string, number> = {}
     for (const cat of allCategories) {
         totalPcts[cat] = totalCost > 0 ? (totals[cat] / totalCost) * 100 : 0
-        totalPctsExcl[cat] = totalCostExcl > 0 ? (totalsExcl[cat] / totalCostExcl) * 100 : 0
     }
 
     // Add total row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
             <td>Total</td>
-            ${allCategories.map(cat => `<td class="number swappable" data-excl="${totalPctsExcl[cat].toFixed(1)}%">${totalPcts[cat].toFixed(1)}%</td>`).join('')}
+            ${allCategories.map(cat => `<td class="number">${totalPcts[cat].toFixed(1)}%</td>`).join('')}
         </tr>
     `)
 
@@ -1694,7 +1882,9 @@ export function categoryFilterControls(): string {
             <input type="checkbox" id="hideCategoryDeployCheckbox">
             Exclude deploy transactions
         </label>
+        <span class="excl-indicator" style="display:none"></span>
     </div>
+    <p class="table-note">Click a transaction row to exclude it.</p>
     `
 }
 
@@ -1706,10 +1896,7 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
         let categoryHierarchy = JSON.parse(JSON.stringify(categoryHierarchyOriginal));
         let categoryCurrentLevel = 'datasets';
         let categoryCurrentParent = null;
-        let hideCategoryDeployTx = false;
-
         function recalculateCategoryPercentages(transactions, allCategories) {
-            // Recalculate percentages based on remaining transactions
             const totals = {};
             let totalCost = 0;
             for (const cat of allCategories) {
@@ -1728,8 +1915,8 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
             return { categories: result, total_cost: totalCost };
         }
 
-        function filterCategoryHierarchy(hide) {
-            if (!hide) {
+        function filterCategoryHierarchy() {
+            if (excludedTxKeys.size === 0) {
                 categoryHierarchy = JSON.parse(JSON.stringify(categoryHierarchyOriginal));
                 return;
             }
@@ -1740,7 +1927,7 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                 allCategories,
                 datasets: categoryHierarchyOriginal.datasets.map(dataset => {
                     const contracts = dataset.contracts.map(contract => {
-                        const filteredTxs = contract.transactions.filter(tx => tx.name !== 'deploy');
+                        const filteredTxs = contract.transactions.filter(tx => !excludedTxKeys.has(txKey(dataset.name, contract.name, tx.name)));
                         const recalc = recalculateCategoryPercentages(filteredTxs, allCategories);
                         return {
                             name: contract.name,
@@ -1765,7 +1952,7 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
         function getCategoryChartData(level, parent) {
             let items = [];
             let title = 'Category Breakdown by Dataset';
-            const suffix = hideCategoryDeployTx ? ' (excluding deploy)' : '';
+            const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
 
             if (level === 'datasets') {
                 items = categoryHierarchy.datasets;
@@ -1817,36 +2004,80 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
             chart.update();
         }
 
-        // Filter checkbox handler for category
+        // Deploy checkbox handler for category
         document.getElementById('hideCategoryDeployCheckbox').onchange = function(evt) {
-            hideCategoryDeployTx = evt.target.checked;
-            filterCategoryHierarchy(hideCategoryDeployTx);
-            updateCategoryChart(categoryCurrentLevel, categoryCurrentParent);
-            updateCategoryTableVisibility();
+            toggleDeployExclusion(evt.target.checked);
         };
 
-        function updateCategoryTableVisibility() {
-            const table = document.querySelector('.expandable-category-table');
-            table.querySelectorAll('tbody tr').forEach(row => {
-                const nameCell = row.querySelector('td:first-child');
-                if (nameCell) {
-                    const name = nameCell.textContent.trim();
-                    if (hideCategoryDeployTx && name.startsWith('deploy') && row.classList.contains('level-2')) {
-                        row.style.display = 'none';
-                    } else if (!row.classList.contains('hidden-row')) {
-                        row.style.display = '';
-                    }
+        function updateCategoryTable() {
+            var table = document.querySelector('.expandable-category-table');
+            if (!table) return;
+            var allCats = categoryHierarchy.allCategories;
+
+            if (excludedTxKeys.size === 0) {
+                table.querySelectorAll('[data-orig]').forEach(function(cell) {
+                    cell.innerHTML = cell.dataset.orig;
+                    delete cell.dataset.orig;
+                });
+                return;
+            }
+
+            // Save original HTML if not already saved
+            table.querySelectorAll('tr.level-0 td.number, tr.level-1 td.number').forEach(function(cell) {
+                if (!cell.dataset.orig) cell.dataset.orig = cell.innerHTML;
+            });
+
+            // Update level-0 dataset rows (iterate DOM, look up in hierarchy)
+            table.querySelectorAll('tr.level-0:not(.total-row)').forEach(function(row) {
+                var toggle = row.querySelector('.expand-toggle');
+                if (!toggle) return;
+                var name = toggle.textContent.trim();
+                var ds = categoryHierarchy.datasets.find(function(d){ return d.name === name; });
+                var cells = row.querySelectorAll('td');
+                for (var i = 0; i < allCats.length; i++) {
+                    cells[i + 1].innerHTML = ds ? fmtCatPct(ds.categories[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
                 }
             });
-            table.querySelectorAll('.swappable').forEach(cell => {
-                if (hideCategoryDeployTx) {
-                    if (!cell.dataset.all) cell.dataset.all = cell.innerHTML;
-                    cell.innerHTML = cell.dataset.excl;
-                } else {
-                    if (cell.dataset.all) cell.innerHTML = cell.dataset.all;
+
+            // Update level-1 contract rows (iterate DOM, look up in hierarchy)
+            table.querySelectorAll('tr.level-1').forEach(function(row) {
+                var toggle = row.querySelector('.expand-toggle');
+                if (!toggle) return;
+                var cName = toggle.textContent.trim();
+                var contract = null;
+                for (var di = 0; di < categoryHierarchy.datasets.length; di++) {
+                    var found = categoryHierarchy.datasets[di].contracts.find(function(c){ return c.name === cName; });
+                    if (found) { contract = found; break; }
+                }
+                var cells = row.querySelectorAll('td');
+                for (var i = 0; i < allCats.length; i++) {
+                    cells[i + 1].innerHTML = contract ? fmtCatPct(contract.categories[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
                 }
             });
+
+            // Update total row
+            var totalRow = table.querySelector('tr.total-row');
+            if (totalRow) {
+                totalRow.querySelectorAll('td.number').forEach(function(cell) {
+                    if (!cell.dataset.orig) cell.dataset.orig = cell.innerHTML;
+                });
+                // Recalculate overall totals
+                var allTxs = [];
+                categoryHierarchy.datasets.forEach(function(ds){ ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); }); });
+                var recalc = recalculateCategoryPercentages(allTxs, allCats);
+                var cells = totalRow.querySelectorAll('td');
+                for (var i = 0; i < allCats.length; i++) {
+                    cells[i + 1].innerHTML = fmtCatPct(recalc.categories[allCats[i]] ?? 0);
+                }
+            }
         }
+
+        function updateCategorySection() {
+            filterCategoryHierarchy();
+            updateCategoryChart(categoryCurrentLevel, categoryCurrentParent);
+            updateCategoryTable();
+        }
+        window.updateCategorySection = updateCategorySection;
 
         // Add click handler for category drill-down
         document.getElementById('categoryBreakdownChart').onclick = function(evt) {

@@ -448,6 +448,33 @@ footer {
     background-color: var(--bg-primary);
 }
 
+/* Excluded transaction rows */
+.excluded-row td {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+tr.level-2[data-txname]:not(.alt-impl-row) {
+    cursor: pointer;
+}
+
+.excl-indicator {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-left: 1rem;
+}
+
+.excl-indicator a {
+    color: var(--accent-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.excl-indicator a:hover {
+    text-decoration: underline;
+}
+
 /* Collapsible methodology */
 details.methodology {
     margin-top: -0.25rem;
