@@ -4,17 +4,6 @@ import { Artifacts, solidity, pcRust } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { Hex, keccak256, toHex, parseEther } from 'viem'
 
-// Helper to create a bytes32 value from string
-function toBytes32(str: string): Hex {
-    const encoder = new TextEncoder()
-    const bytes = encoder.encode(str)
-    const hex = Array.from(bytes)
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('')
-        .padEnd(64, '0')
-    return `0x${hex}` as Hex
-}
-
 // Test constants (matching Solidity tests)
 const CID_1 = keccak256(toHex('content1'))
 const CID_2 = keccak256(toHex('content2'))

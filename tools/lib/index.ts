@@ -8,7 +8,7 @@ import { Hex } from 'viem'
 
 const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
-const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? 'http://localhost:8545'
+const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? Deno.env.get('RPC_URL') ?? 'http://localhost:8545'
 
 /// load private keys from PRIVATE_KEYS env var (comma-separated) or fallback to defaults
 function loadPrivateKeys(): readonly [Hex, Hex] {

@@ -22,6 +22,12 @@ function uniqueName(base: string): string {
     return `${base}${Date.now().toString(36)}${(nameCounter++).toString(36)}`
 }
 
+// Counter for unique dispute purchase IDs (avoids Date.now() collision within a run)
+let disputeIdCounter = 0
+function uniqueDisputeId(): bigint {
+    return BigInt(Date.now()) * 1000n + BigInt(disputeIdCounter++)
+}
+
 // Helper for encrypted data
 function dummyEncryptedData(): Hex {
     return '0x1234567890abcdef1234567890abcdef' as Hex
@@ -442,7 +448,7 @@ export const mark3tContracts: Artifacts = [
             {
                 name: 'createDispute',
                 exec: async (address) => {
-                    const uniquePurchaseId = BigInt(Date.now())
+                    const uniquePurchaseId = uniqueDisputeId()
                     return env.wallet.writeContract({
                         address,
                         abi: abis.MockMobRule,
@@ -461,7 +467,7 @@ export const mark3tContracts: Artifacts = [
                 name: 'addCounterEvidence',
                 exec: async (address) => {
                     // Create a new dispute first, then add counter evidence
-                    const uniquePurchaseId = BigInt(Date.now() + 1)
+                    const uniquePurchaseId = uniqueDisputeId()
                     await env.wallet.writeContract({
                         address,
                         abi: abis.MockMobRule,
@@ -493,7 +499,7 @@ export const mark3tContracts: Artifacts = [
                 name: 'resolveCase',
                 exec: async (address) => {
                     // Create a new dispute and resolve it
-                    const uniquePurchaseId = BigInt(Date.now() + 2)
+                    const uniquePurchaseId = uniqueDisputeId()
                     await env.wallet.writeContract({
                         address,
                         abi: abis.MockMobRule,

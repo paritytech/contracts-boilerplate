@@ -36,9 +36,11 @@ CREATE TABLE IF NOT EXISTS transaction_steps (
     gas_cost INTEGER NOT NULL,
     weight_cost_ref_time INTEGER,
     weight_cost_proof_size INTEGER,
-    PRIMARY KEY (hash, chain_name, op),
     FOREIGN KEY (hash, chain_name) REFERENCES transactions(hash, chain_name)
 );
+
+CREATE INDEX IF NOT EXISTS idx_transaction_steps_hash_chain
+    ON transaction_steps(hash, chain_name);
 `,
 )
 
@@ -347,6 +349,16 @@ export async function execute(contracts: Artifacts) {
     }
 }
 
+// CALL-type opcodes where gasCost includes forwarded gas
+const CALL_OPCODES = new Set([
+    'CALL',
+    'DELEGATECALL',
+    'STATICCALL',
+    'CALLCODE',
+    'CREATE',
+    'CREATE2',
+])
+
 async function updateStats(
     contractId: string,
     contract: string,
@@ -388,17 +400,7 @@ async function updateStats(
     const structLogs =
         chainName === 'Geth'
             ? rawLogs.map((log, i) => {
-                  // CALL-type opcodes where gasCost includes forwarded gas
-                  const callOpcodes = new Set([
-                      'CALL',
-                      'DELEGATECALL',
-                      'STATICCALL',
-                      'CALLCODE',
-                      'CREATE',
-                      'CREATE2',
-                  ])
-
-                  if (!callOpcodes.has(log.op)) {
+                  if (!CALL_OPCODES.has(log.op)) {
                       return log
                   }
 
@@ -456,7 +458,7 @@ INSERT OR REPLACE INTO transactions (
 
         const insertStep = db.prepare(
             `
-INSERT OR REPLACE INTO transaction_steps (
+INSERT INTO transaction_steps (
     hash,
     chain_name,
     op,

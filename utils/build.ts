@@ -119,7 +119,7 @@ async function compileWithBinary(
     await checkCompilerExists(compiler)
     logger.info(`Compiling with ${compiler} ${compilerVersions[compiler]}`)
 
-    const optimizerSettings = compiler === 'resolc'
+    const optimizerSettings = compiler.includes('resolc')
         ? { enabled: true, mode: 'z' }
         : { enabled: true, runs: 200 }
 
@@ -262,7 +262,7 @@ export async function compile(options: {
             }
 
             const libs = getLibraries(contract)
-            if (Object.keys(libs).length == 0) continue
+            if (Object.keys(libs).length === 0) continue
             logger.info(`📜 Add libraries for ${contractName}`)
             const libsName = `${contractName}Libs`
             const tsContent = `export const ${libsName} = ${

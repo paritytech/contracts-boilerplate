@@ -9,14 +9,11 @@ const testDocId = keccak256(toHex('test-document-1'))
 const testDocId2 = keccak256(toHex('test-document-2'))
 const contentHash = keccak256(toHex('document content'))
 const contentHash2 = keccak256(toHex('updated document content'))
-const ipfsCid = toHex('QmTest123456789').slice(0, 66) as Hex // Truncate to bytes32-like
 const ipfsCidBytes = '0x516d5465737431323334353637383900000000000000000000000000000000' as Hex
 const encryptedShare = '0x656e637279707465642d6b65792d64617461000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' as Hex
 
 // Permission levels
-const PERMISSION_VIEW = 1
 const PERMISSION_EDIT = 3
-const PERMISSION_ADMIN = 4
 
 // Keys for registerKeys
 const encryptionKey = keccak256(toHex('encryption-key'))
