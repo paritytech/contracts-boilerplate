@@ -658,7 +658,8 @@ per contract:
 <a href="https://app.allium.so/s/OaNuRqUw" target="_blank" rel="noopener">Tether (gas)</a>,
 <a href="https://app.allium.so/s/vJtRXnrL" target="_blank" rel="noopener">USDC (gas)</a>,
 <a href="https://app.allium.so/s/xzrgBw35" target="_blank" rel="noopener">CoinTool</a>
-</p></details></li><li><strong>polkadot-contracts</strong>: Real-world contracts being built by teams at Parity for the Polkadot ecosystem.<details class="methodology"><summary>&#9656; Selection criteria (show more)</summary><p>Contracts were sourced from repositories provided by the Parity products team.
+</p>
+<p>Contracts have been slightly modified from their original source code to adapt to PVM or the test node configuration.</p></details></li><li><strong>polkadot-contracts</strong>: Real-world contracts being built by teams at Parity for the Polkadot ecosystem.<details class="methodology"><summary>&#9656; Selection criteria (show more)</summary><p>Contracts were sourced from repositories provided by the Parity products team.
 Benchmarked transactions were derived from the test suites available in each repository.
 The selection of benchmarked methods is not exhaustive and covers a subset of those exercised by existing tests.
 Note that these contracts may have changed after this report was generated.</p>
@@ -674,7 +675,8 @@ Note that these contracts may have changed after this report was generated.</p>
 <p>* The Marketplace.sol contract exceeds the EVM bytecode size limit
 and is only deployed on PVM. The remaining contracts it interacts with (MarketplaceProxy,
 MockMobRule) are deployed on both EVM and PVM, and the benchmark tests the
-combination of both VMs.</p></details></li></ul>
+combination of both VMs.</p>
+<p>Contracts have been slightly modified from their original source code to adapt to PVM or the test node configuration.</p></details></li></ul>
     </div>
         </div>
         <div style="margin-top: 1.5rem;">
