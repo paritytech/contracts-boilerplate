@@ -4,6 +4,7 @@ import { ensureDir } from '@std/fs'
 import { join } from '@std/path'
 import { tablemark } from 'tablemark'
 import { sumOf } from '@std/collections'
+import { getOpcodeCategory } from './opcode-categories.ts'
 
 const REPORTS_DIR = join(import.meta.dirname!, 'reports')
 
@@ -14,6 +15,7 @@ function table(data: Record<string, unknown>[]) {
 export async function report(contracts: Artifacts) {
     await ensureDir(REPORTS_DIR)
     await generateOpcodeAnalysis()
+    await generateCategoryAnalysis()
     await generateContractComparison()
     await generateBytecodeComparison(contracts)
     logger.info(`Reports saved to ${REPORTS_DIR}`)
@@ -127,7 +129,7 @@ async function generateOpcodeAnalysis() {
 
             markdown += '\n'
 
-            const topOpcodes = opcodes!.slice(0, 20)
+            const topOpcodes = opcodes.slice(0, 20)
             const totalGasFromOpcodes = sumOf(
                 topOpcodes,
                 (op) => op.total_gas_cost!,
@@ -191,6 +193,206 @@ async function generateOpcodeAnalysis() {
 
     await Deno.writeTextFile(
         join(REPORTS_DIR, 'opcode_analysis.md'),
+        markdown,
+    )
+}
+
+async function generateCategoryAnalysis() {
+    let markdown = `# Opcode Category Analysis\n\n`
+    markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
+    markdown += `Opcodes grouped by functional category.\n\n`
+
+    const allData = db.prepare(`
+        SELECT
+            t.chain_name,
+            t.contract_id,
+            t.contract_name,
+            t.transaction_name,
+            t.gas_used,
+            t.weight_consumed_ref_time,
+            t.weight_consumed_proof_size,
+            t.base_call_weight_ref_time,
+            t.base_call_weight_proof_size,
+            s.op,
+            SUM(s.gas_cost) as total_gas_cost,
+            COUNT(*) as count,
+            SUM(s.weight_cost_ref_time) as total_weight_cost_ref_time,
+            SUM(s.weight_cost_proof_size) as total_weight_cost_proof_size
+        FROM transactions AS t
+        JOIN
+            transaction_steps AS s ON s.hash = t.hash AND s.chain_name = t.chain_name
+        GROUP BY
+            t.hash, t.chain_name, s.op
+        ORDER BY
+            t.chain_name, t.contract_id, t.contract_name, t.transaction_name
+    `).all() as Array<{
+        chain_name: string
+        contract_id: string
+        contract_name: string
+        transaction_name: string
+        gas_used: number
+        weight_consumed_ref_time: number | null
+        weight_consumed_proof_size: number | null
+        base_call_weight_ref_time: number | null
+        base_call_weight_proof_size: number | null
+        op: string | null
+        total_gas_cost: number | null
+        count: number
+        total_weight_cost_ref_time: number | null
+        total_weight_cost_proof_size: number | null
+    }>
+
+    const byChain = Object.groupBy(allData, (row) => row.chain_name)
+
+    for (const [chainName, chainRows] of Object.entries(byChain)) {
+        if (!chainRows) continue
+
+        markdown += `## Chain: ${chainName}\n\n`
+
+        const byTransaction = Object.groupBy(
+            chainRows,
+            (row) => `${row.contract_name}:${row.transaction_name}`,
+        )
+
+        // Sort entries by contract_id, then transaction_name
+        const sortedEntries = Object.entries(byTransaction).sort((a, b) => {
+            const txA = a[1]?.[0]
+            const txB = b[1]?.[0]
+            if (!txA || !txB) return 0
+
+            if (txA.contract_id !== txB.contract_id) {
+                return txA.contract_id.localeCompare(txB.contract_id)
+            }
+            return txA.transaction_name.localeCompare(txB.transaction_name)
+        })
+
+        for (const [, opcodes] of sortedEntries) {
+            if (!opcodes) continue
+
+            const tx = opcodes[0]
+            markdown += `### ${tx.contract_name} - ${tx.transaction_name}\n\n`
+            markdown +=
+                `- **Total Gas Used:** ${tx.gas_used.toLocaleString()}\n`
+
+            if (
+                tx.weight_consumed_ref_time !== null &&
+                tx.base_call_weight_ref_time !== null
+            ) {
+                const totalRefTime = tx.base_call_weight_ref_time +
+                    tx.weight_consumed_ref_time
+                const weightConsumedPercent =
+                    ((tx.weight_consumed_ref_time / totalRefTime) * 100)
+                        .toFixed(1)
+
+                markdown += [
+                    `- **Base Call Weight:** ref_time=${tx.base_call_weight_ref_time.toLocaleString()}, proof_size=${
+                        tx.base_call_weight_proof_size?.toLocaleString() ??
+                            'N/A'
+                    }`,
+                    `- **Total Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${
+                        ((tx.base_call_weight_proof_size ?? 0) +
+                            (tx.weight_consumed_proof_size ?? 0))
+                            .toLocaleString()
+                    }`,
+                    `- **Weight Consumed:** ref_time=${tx.weight_consumed_ref_time.toLocaleString()} (${weightConsumedPercent}% of total), proof_size=${
+                        (tx.weight_consumed_proof_size ?? 0).toLocaleString()
+                    }`,
+                ].join('\n') + '\n'
+            }
+
+            markdown += '\n'
+
+            // Aggregate opcodes by category
+            const categoryData: Record<string, {
+                total_gas_cost: number
+                count: number
+                total_weight_cost_ref_time: number
+                total_weight_cost_proof_size: number
+                opcodes: string[]
+            }> = {}
+
+            for (const opcode of opcodes) {
+                const category = getOpcodeCategory(opcode.op)
+                if (!categoryData[category]) {
+                    categoryData[category] = {
+                        total_gas_cost: 0,
+                        count: 0,
+                        total_weight_cost_ref_time: 0,
+                        total_weight_cost_proof_size: 0,
+                        opcodes: [],
+                    }
+                }
+                categoryData[category].total_gas_cost += opcode.total_gas_cost ?? 0
+                categoryData[category].count += opcode.count
+                categoryData[category].total_weight_cost_ref_time +=
+                    opcode.total_weight_cost_ref_time ?? 0
+                categoryData[category].total_weight_cost_proof_size +=
+                    opcode.total_weight_cost_proof_size ?? 0
+                if (opcode.op && !categoryData[category].opcodes.includes(opcode.op)) {
+                    categoryData[category].opcodes.push(opcode.op)
+                }
+            }
+
+            const hasWeightCost = opcodes.some(
+                (op) => op.total_weight_cost_ref_time !== null,
+            )
+
+            // Sort categories by cost (descending)
+            const sortedCategories = Object.entries(categoryData).sort((a, b) => {
+                if (hasWeightCost) {
+                    return b[1].total_weight_cost_ref_time - a[1].total_weight_cost_ref_time
+                }
+                return b[1].total_gas_cost - a[1].total_gas_cost
+            })
+
+            const totalGasFromCategories = sumOf(
+                sortedCategories,
+                ([, data]) => data.total_gas_cost,
+            )
+
+            const tableData = sortedCategories.map(([category, data]) => {
+                const row: Record<string, string | null | undefined> = {
+                    'Category': category,
+                    'Opcodes Used': data.opcodes.sort().join(', '),
+                    'Total Gas': data.total_gas_cost.toLocaleString(),
+                    'Call Count': data.count.toLocaleString(),
+                }
+
+                if (hasWeightCost && tx.weight_consumed_ref_time) {
+                    const percentOfRefTime =
+                        ((data.total_weight_cost_ref_time /
+                            tx.weight_consumed_ref_time) * 100).toFixed(1)
+
+                    const percentOfProofSize = tx.weight_consumed_proof_size
+                        ? ((data.total_weight_cost_proof_size /
+                            tx.weight_consumed_proof_size) * 100).toFixed(1)
+                        : '0.0'
+
+                    row['ref time'] = data.total_weight_cost_ref_time
+                        .toLocaleString()
+                    row['proof size'] = data.total_weight_cost_proof_size
+                        .toLocaleString()
+                    row['% of ref time'] = `${percentOfRefTime}%`
+                    row['% of proof size'] = `${percentOfProofSize}%`
+                } else {
+                    const percentOfCategories =
+                        ((data.total_gas_cost / totalGasFromCategories) * 100)
+                            .toFixed(1)
+                    const percentOfTxGas =
+                        ((data.total_gas_cost / tx.gas_used) * 100).toFixed(1)
+                    row['% of opcodes'] = `${percentOfCategories}%`
+                    row['% of tx Gas'] = `${percentOfTxGas}%`
+                }
+
+                return row
+            })
+
+            markdown += table(tableData) + '\n\n'
+        }
+    }
+
+    await Deno.writeTextFile(
+        join(REPORTS_DIR, 'category_analysis.md'),
         markdown,
     )
 }
@@ -263,18 +465,24 @@ async function generateContractComparison() {
             )
 
             if (hasWeightData) {
-                // For eth-rpc: show ref_time, vs Best, % metered, pov
+                // For eth-rpc: show ref_time, vs Best, metered_ref_time, vs Best (metered), % metered, pov
                 // Find best (lowest) total weight ref_time
+                const validImplementations = implementations.filter((row) =>
+                    row.weight_consumed_ref_time !== null &&
+                    row.base_call_weight_ref_time !== null
+                )
+
                 const bestRefTime = Math.min(
-                    ...implementations
-                        .filter((row) =>
-                            row.weight_consumed_ref_time !== null &&
-                            row.base_call_weight_ref_time !== null
-                        )
-                        .map((row) =>
-                            row.base_call_weight_ref_time! +
-                            row.weight_consumed_ref_time!
-                        ),
+                    ...validImplementations.map((row) =>
+                        row.base_call_weight_ref_time! +
+                        row.weight_consumed_ref_time!
+                    ),
+                )
+
+                const bestMeteredRefTime = Math.min(
+                    ...validImplementations.map((row) =>
+                        row.weight_consumed_ref_time!
+                    ),
                 )
 
                 // Sort by total ref_time
@@ -310,10 +518,19 @@ async function generateContractComparison() {
                                 ((totalRefTime / bestRefTime - 1) * 100)
                                     .toFixed(1)
                             }%`
+                        const vsBestMetered = row.weight_consumed_ref_time === bestMeteredRefTime
+                            ? '-'
+                            : `+${
+                                ((row.weight_consumed_ref_time / bestMeteredRefTime - 1) * 100)
+                                    .toFixed(1)
+                            }%`
 
                         result['ref_time'] = totalRefTime
                             .toLocaleString()
                         result['vs Best'] = vsBest
+                        result['metered_ref_time'] = row.weight_consumed_ref_time
+                            .toLocaleString()
+                        result['vs Best (metered)'] = vsBestMetered
                         result['% metered'] = `${meterPercent}%`
                         result['pov'] = totalProofSize.toLocaleString()
                     }

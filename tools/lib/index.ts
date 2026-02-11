@@ -8,24 +8,32 @@ import { Hex } from 'viem'
 
 const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
-const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? 'http://localhost:8545'
+const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? Deno.env.get('RPC_URL') ?? 'http://localhost:8545'
 
-/// load private key, default account is 0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac
-function loadPrivateKey(): Hex {
-    if (Deno.env.has('PRIVATE_KEY')) {
-        const privateKey = Deno.env.get('PRIVATE_KEY')
-        return privateKey!.startsWith('0x')
-            ? privateKey as Hex
-            : ('0x' + privateKey) as Hex
+/// load private keys from PRIVATE_KEYS env var (comma-separated) or fallback to defaults
+function loadPrivateKeys(): readonly [Hex, Hex] {
+    if (Deno.env.has('PRIVATE_KEYS')) {
+        const keys = Deno.env.get('PRIVATE_KEYS')!.split(',').map((k) => {
+            const trimmed = k.trim()
+            return (trimmed.startsWith('0x') ? trimmed : '0x' + trimmed) as Hex
+        })
+        if (keys.length < 2) {
+            throw new Error('PRIVATE_KEYS must contain at least 2 comma-separated keys')
+        }
+        return [keys[0], keys[1]]
     }
-    return '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133'
+    // Default test keys (different addresses)
+    return [
+        '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133',
+        '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
+    ]
 }
 
-const privateKey = loadPrivateKey()
+const privateKeys = loadPrivateKeys()
 
 export const env = await createEnv({
     rpcUrl,
-    privateKey,
+    privateKeys,
 })
 
 let firstDeploy = true

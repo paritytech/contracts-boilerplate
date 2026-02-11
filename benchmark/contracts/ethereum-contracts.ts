@@ -13,7 +13,7 @@ const externalRecipient = '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63'
 export const ethereumContracts: Artifacts = [
     {
         id: 'TetherToken',
-        srcs: [...solidity('tether.sol', 'TetherToken')],
+        srcs: [...solidity('ethereum-contracts/tether.sol', 'TetherToken')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -63,7 +63,7 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'WETH9',
-        srcs: [...solidity('weth.sol', 'WETH9')],
+        srcs: [...solidity('ethereum-contracts/weth.sol', 'WETH9')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -110,7 +110,7 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'FiatTokenV2_2',
-        srcs: [...solidity('usdc_implementation.sol', 'FiatTokenV2_2')],
+        srcs: [...solidity('ethereum-contracts/usdc_implementation.sol', 'FiatTokenV2_2')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -122,7 +122,7 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'FiatTokenProxy',
-        srcs: [...solidity('usdc_proxy.sol', 'FiatTokenProxy')],
+        srcs: [...solidity('ethereum-contracts/usdc_proxy.sol', 'FiatTokenProxy')],
         deploy: async (id, name, bytecode) => {
             const addresses = await loadAddresses()
             const implementationKey = name.endsWith('_pvm')
@@ -233,7 +233,7 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'XENCrypto',
-        srcs: [...solidity('xen_token.sol', 'XENCrypto')],
+        srcs: [...solidity('ethereum-contracts/xen_token.sol', 'XENCrypto')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -245,7 +245,7 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'CoinTool_App',
-        srcs: [...solidity('xen_minter.sol', 'CoinTool_App')],
+        srcs: [...solidity('ethereum-contracts/xen_minter.sol', 'CoinTool_App')],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },

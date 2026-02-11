@@ -1,5 +1,6 @@
 import { join } from '@std/path'
 import { parseArgs } from '@std/cli'
+import { walkSync } from '@std/fs'
 import { compile, generateAbiIndex, generateLibIndex } from '../utils/build.ts'
 import { logger } from '../utils/logger.ts'
 
@@ -84,9 +85,12 @@ function collectDependencies(
     return sources
 }
 
-const contracts = Array.from(Deno.readDirSync(contractsDir))
-    .filter((f) => f.isFile && f.name.endsWith('.sol'))
-    .filter((f) => !filter || f.name.includes(filter))
+const contracts: { name: string; relativePath: string }[] = []
+for (const entry of walkSync(contractsDir, { exts: ['.sol'], skip: [/\/original\//] })) {
+    const relativePath = entry.path.substring(contractsDir.length + 1)
+    if (!filter || relativePath.includes(filter))
+        contracts.push({ name: entry.name, relativePath })
+}
 
 if (contracts.length === 0) {
     logger.warn('No contracts found to compile')
@@ -95,7 +99,7 @@ if (contracts.length === 0) {
 
 for (const contract of contracts) {
     // Collect only the files needed for this contract
-    const sources = collectDependencies(contract.name, contractsDir)
+    const sources = collectDependencies(contract.relativePath, contractsDir)
     const sourcesObj = Object.fromEntries(
         Array.from(sources.entries()).map(([path, content]) => [
             path,
@@ -104,7 +108,7 @@ for (const contract of contracts) {
     )
 
     await compile({
-        fileName: contract.name,
+        fileName: contract.relativePath,
         sources: sourcesObj,
         rootDir,
         compiler: (Deno.env.get('SOLC_BIN') as 'solc') ?? 'solc',
@@ -113,7 +117,7 @@ for (const contract of contracts) {
 
     if (!solcOnly) {
         await compile({
-            fileName: contract.name,
+            fileName: contract.relativePath,
             sources: sourcesObj,
             rootDir,
             compiler: (Deno.env.get('RESOLC_BIN') as 'resolc') ?? 'resolc',

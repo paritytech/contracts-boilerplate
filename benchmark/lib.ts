@@ -36,9 +36,11 @@ CREATE TABLE IF NOT EXISTS transaction_steps (
     gas_cost INTEGER NOT NULL,
     weight_cost_ref_time INTEGER,
     weight_cost_proof_size INTEGER,
-    PRIMARY KEY (hash, chain_name, op),
     FOREIGN KEY (hash, chain_name) REFERENCES transactions(hash, chain_name)
 );
+
+CREATE INDEX IF NOT EXISTS idx_transaction_steps_hash_chain
+    ON transaction_steps(hash, chain_name);
 `,
 )
 
@@ -158,9 +160,38 @@ export function rust(name: string): ContractInfo {
     }
 }
 
+export function pcRust(name: string): ContractInfo {
+    const pcRoot = join(import.meta.dirname!, '..', 'rust', 'protocol-commons')
+    return {
+        supportEvm() {
+            return false
+        },
+        getName() {
+            return `${name}_rust`
+        },
+        getBytecode() {
+            return readBytecode(join(pcRoot, name, `${name}.polkavm`))
+        },
+        async build() {
+            const cmd = new Deno.Command('make', {
+                args: [name],
+                cwd: pcRoot,
+                stdout: 'inherit',
+                stderr: 'inherit',
+            })
+            const result = await cmd.output()
+            if (!result.success) {
+                throw new Error(`Failed to build pc rust contract: ${name}`)
+            }
+        },
+    }
+}
+
 export type Artifacts = Array<{
     id: string
     srcs: ContractInfo[]
+    /** Skip deploying the EVM variant (e.g. contract too large for EVM) */
+    pvmOnly?: boolean
     deploy: (
         id: keyof Abis,
         name: string,
@@ -269,7 +300,9 @@ export async function deploy(contracts: Artifacts) {
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
-            : artifact.srcs
+            : artifact.pvmOnly
+                ? artifact.srcs.filter((src) => !src.supportEvm())
+                : artifact.srcs
 
         for (const src of srcs) {
             const contract = src.getName()
@@ -303,7 +336,9 @@ export async function execute(contracts: Artifacts) {
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
-            : artifact.srcs
+            : artifact.pvmOnly
+                ? artifact.srcs.filter((src) => !src.supportEvm())
+                : artifact.srcs
         for (const src of srcs) {
             for (const call of artifact.calls) {
                 const contract = src.getName()
@@ -314,6 +349,16 @@ export async function execute(contracts: Artifacts) {
         }
     }
 }
+
+// CALL-type opcodes where gasCost includes forwarded gas
+const CALL_OPCODES = new Set([
+    'CALL',
+    'DELEGATECALL',
+    'STATICCALL',
+    'CALLCODE',
+    'CREATE',
+    'CREATE2',
+])
 
 async function updateStats(
     contractId: string,
@@ -344,12 +389,35 @@ async function updateStats(
             op: string
             gas: number
             gasCost: number
+            depth: number
             weightCost?: { ref_time: number; proof_size: number }
         }>
         weightConsumed?: { ref_time: number; proof_size: number }
         baseCallWeight?: { ref_time: number; proof_size: number }
     }
-    const structLogs = typedTrace.structLogs ?? []
+
+    // Calculate intrinsic gas costs for Geth by removing forwarded gas for call opcodes
+    const rawLogs = typedTrace.structLogs ?? []
+    const structLogs =
+        chainName === 'Geth'
+            ? rawLogs.map((log, i) => {
+                  if (!CALL_OPCODES.has(log.op)) {
+                      return log
+                  }
+
+                  // For call opcodes, check if next entry has higher depth (child call started)
+                  const nextLog = rawLogs[i + 1]
+                  if (nextLog && nextLog.depth > log.depth) {
+                      // Intrinsic cost = total gasCost - gas forwarded to child
+                      const gasForwarded = nextLog.gas
+                      const intrinsicCost = log.gasCost - gasForwarded
+                      return { ...log, gasCost: intrinsicCost }
+                  }
+
+                  // No child call (e.g., call to precompile or empty account)
+                  return log
+              })
+            : rawLogs
     const weightConsumed = typedTrace.weightConsumed
     const baseCallWeight = typedTrace.baseCallWeight
 
@@ -391,7 +459,7 @@ INSERT OR REPLACE INTO transactions (
 
         const insertStep = db.prepare(
             `
-INSERT OR REPLACE INTO transaction_steps (
+INSERT INTO transaction_steps (
     hash,
     chain_name,
     op,

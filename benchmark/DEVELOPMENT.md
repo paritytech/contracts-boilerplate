@@ -34,7 +34,7 @@ geth-dev
 
 And build the necessary metadata:
 
-```
+```sh
 deno task build
 ```
 

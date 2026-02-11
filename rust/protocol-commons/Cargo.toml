@@ -1,0 +1,26 @@
+[workspace]
+members = [
+    "common",
+    "store",
+    "log",
+    "dotns",
+    "escrow",
+    "fungible_credential",
+    "key_registry",
+    "non_fungible_credential",
+]
+resolver = "2"
+
+[workspace.dependencies]
+pc-revive-common = { path = "common" }
+parity-scale-codec = { version = "3.6", default-features = false, features = ["derive"] }
+polkavm-derive = "0.27"
+uapi = { package = "pallet-revive-uapi", version = "0.7", default-features = false }
+keccak-const = "0.2"
+ed25519-dalek = { version = "2.1", default-features = false, features = ["alloc", "zeroize"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
