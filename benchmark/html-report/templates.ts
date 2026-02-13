@@ -1768,6 +1768,8 @@ export interface CategoryHierarchyRow {
     name: string
     categories: Record<string, number>
     total_cost: number
+    categories_proof_size: Record<string, number>
+    total_cost_proof_size: number
 }
 
 export interface CategoryHierarchyData {
@@ -1883,6 +1885,15 @@ export function categoryFilterControls(): string {
             Exclude deploy transactions
         </label>
         <span class="excl-indicator" style="display:none"></span>
+        <span style="margin-left: 1.5rem;">View:</span>
+        <label>
+            <input type="radio" name="categoryMetric" value="ref_time" checked>
+            ref_time
+        </label>
+        <label>
+            <input type="radio" name="categoryMetric" value="proof_size">
+            proof_size
+        </label>
     </div>
     <p class="table-note">Click a transaction row to exclude it.</p>
     `
@@ -1896,23 +1907,39 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
         let categoryHierarchy = JSON.parse(JSON.stringify(categoryHierarchyOriginal));
         let categoryCurrentLevel = 'datasets';
         let categoryCurrentParent = null;
+        let categoryMetric = 'ref_time'; // 'ref_time' or 'proof_size'
+
+        function catField(item) {
+            return categoryMetric === 'proof_size' ? (item.categories_proof_size || item.categories) : item.categories;
+        }
+        function catCostField(item) {
+            return categoryMetric === 'proof_size' ? (item.total_cost_proof_size ?? item.total_cost) : item.total_cost;
+        }
+
         function recalculateCategoryPercentages(transactions, allCategories) {
             const totals = {};
+            const totalsPs = {};
             let totalCost = 0;
+            let totalCostPs = 0;
             for (const cat of allCategories) {
                 totals[cat] = 0;
+                totalsPs[cat] = 0;
             }
             for (const tx of transactions) {
                 totalCost += tx.total_cost;
+                totalCostPs += (tx.total_cost_proof_size ?? 0);
                 for (const cat of allCategories) {
                     totals[cat] += (tx.categories[cat] ?? 0) * tx.total_cost / 100;
+                    totalsPs[cat] += ((tx.categories_proof_size || {})[cat] ?? 0) * (tx.total_cost_proof_size ?? 0) / 100;
                 }
             }
             const result = {};
+            const resultPs = {};
             for (const cat of allCategories) {
                 result[cat] = totalCost > 0 ? (totals[cat] / totalCost) * 100 : 0;
+                resultPs[cat] = totalCostPs > 0 ? (totalsPs[cat] / totalCostPs) * 100 : 0;
             }
-            return { categories: result, total_cost: totalCost };
+            return { categories: result, total_cost: totalCost, categories_proof_size: resultPs, total_cost_proof_size: totalCostPs };
         }
 
         function filterCategoryHierarchy() {
@@ -1933,6 +1960,8 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                             name: contract.name,
                             categories: recalc.categories,
                             total_cost: recalc.total_cost,
+                            categories_proof_size: recalc.categories_proof_size,
+                            total_cost_proof_size: recalc.total_cost_proof_size,
                             transactions: filteredTxs
                         };
                     }).filter(c => c.transactions.length > 0);
@@ -1943,6 +1972,8 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                         name: dataset.name,
                         categories: datasetRecalc.categories,
                         total_cost: datasetRecalc.total_cost,
+                        categories_proof_size: datasetRecalc.categories_proof_size,
+                        total_cost_proof_size: datasetRecalc.total_cost_proof_size,
                         contracts
                     };
                 }).filter(d => d.contracts.length > 0)
@@ -1952,23 +1983,24 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
         function getCategoryChartData(level, parent) {
             let items = [];
             let title = 'Category Breakdown by Dataset';
+            const metricLabel = categoryMetric === 'proof_size' ? ' [proof_size]' : ' [ref_time]';
             const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
 
             if (level === 'datasets') {
                 items = categoryHierarchy.datasets;
-                title = 'Category Breakdown by Dataset' + suffix + ' (click to drill down)';
+                title = 'Category Breakdown by Dataset' + metricLabel + suffix + ' (click to drill down)';
             } else if (level === 'contracts' && parent) {
                 const dataset = categoryHierarchy.datasets.find(d => d.name === parent);
                 if (dataset) {
                     items = dataset.contracts;
-                    title = 'Category Breakdown by Contract: ' + parent + suffix + ' (click to drill down, right-click to go back)';
+                    title = 'Category Breakdown by Contract: ' + parent + metricLabel + suffix + ' (click to drill down, right-click to go back)';
                 }
             } else if (level === 'transactions' && parent) {
                 for (const dataset of categoryHierarchy.datasets) {
                     const contract = dataset.contracts.find(c => c.name === parent);
                     if (contract) {
                         items = contract.transactions;
-                        title = 'Category Breakdown by Transaction: ' + parent + suffix + ' (right-click to go back)';
+                        title = 'Category Breakdown by Transaction: ' + parent + metricLabel + suffix + ' (right-click to go back)';
                         break;
                     }
                 }
@@ -1977,7 +2009,7 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
             const categories = categoryHierarchy.allCategories;
             const datasets = categories.map(cat => ({
                 label: cat,
-                data: items.map(i => i.categories[cat] ?? 0),
+                data: items.map(i => catField(i)[cat] ?? 0),
                 backgroundColor: categoryColorMap[cat] || 'rgba(128, 128, 128, 0.8)',
             }));
 
@@ -2009,12 +2041,21 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
             toggleDeployExclusion(evt.target.checked);
         };
 
+        // Metric radio button handler
+        document.querySelectorAll('input[name="categoryMetric"]').forEach(radio => {
+            radio.onchange = function(evt) {
+                categoryMetric = evt.target.value;
+                updateCategoryChart(categoryCurrentLevel, categoryCurrentParent);
+                updateCategoryTable();
+            };
+        });
+
         function updateCategoryTable() {
             var table = document.querySelector('.expandable-category-table');
             if (!table) return;
             var allCats = categoryHierarchy.allCategories;
 
-            if (excludedTxKeys.size === 0) {
+            if (excludedTxKeys.size === 0 && categoryMetric === 'ref_time') {
                 table.querySelectorAll('[data-orig]').forEach(function(cell) {
                     cell.innerHTML = cell.dataset.orig;
                     delete cell.dataset.orig;
@@ -2023,7 +2064,7 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
             }
 
             // Save original HTML if not already saved
-            table.querySelectorAll('tr.level-0 td.number, tr.level-1 td.number').forEach(function(cell) {
+            table.querySelectorAll('td.number').forEach(function(cell) {
                 if (!cell.dataset.orig) cell.dataset.orig = cell.innerHTML;
             });
 
@@ -2035,7 +2076,7 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                 var ds = categoryHierarchy.datasets.find(function(d){ return d.name === name; });
                 var cells = row.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
-                    cells[i + 1].innerHTML = ds ? fmtCatPct(ds.categories[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
+                    cells[i + 1].innerHTML = ds ? fmtCatPct(catField(ds)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
                 }
             });
 
@@ -2051,7 +2092,24 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                 }
                 var cells = row.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
-                    cells[i + 1].innerHTML = contract ? fmtCatPct(contract.categories[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
+                    cells[i + 1].innerHTML = contract ? fmtCatPct(catField(contract)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
+                }
+            });
+
+            // Update level-2 transaction rows
+            table.querySelectorAll('tr.level-2').forEach(function(row) {
+                var txName = row.dataset.txname;
+                var dsName = row.dataset.dataset;
+                var cName = row.dataset.contract;
+                var tx = null;
+                var ds = categoryHierarchy.datasets.find(function(d){ return d.name === dsName; });
+                if (ds) {
+                    var c = ds.contracts.find(function(c){ return c.name === cName; });
+                    if (c) tx = c.transactions.find(function(t){ return t.name === txName; });
+                }
+                var cells = row.querySelectorAll('td');
+                for (var i = 0; i < allCats.length; i++) {
+                    cells[i + 1].innerHTML = tx ? fmtCatPct(catField(tx)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
                 }
             });
 
@@ -2065,9 +2123,10 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                 var allTxs = [];
                 categoryHierarchy.datasets.forEach(function(ds){ ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); }); });
                 var recalc = recalculateCategoryPercentages(allTxs, allCats);
+                var cats = categoryMetric === 'proof_size' ? recalc.categories_proof_size : recalc.categories;
                 var cells = totalRow.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
-                    cells[i + 1].innerHTML = fmtCatPct(recalc.categories[allCats[i]] ?? 0);
+                    cells[i + 1].innerHTML = fmtCatPct(cats[allCats[i]] ?? 0);
                 }
             }
         }

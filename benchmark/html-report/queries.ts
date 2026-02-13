@@ -290,6 +290,8 @@ export interface CategoryBreakdown {
     category: string
     total_cost: number
     percent_of_total: number
+    total_cost_proof_size: number
+    percent_of_total_proof_size: number
 }
 
 export interface DatasetComparison {
@@ -954,10 +956,12 @@ export function getCategoryBreakdown(): CategoryBreakdown[] {
             t.contract_id,
             t.transaction_name,
             t.weight_consumed_ref_time,
+            t.weight_consumed_proof_size,
             t.gas_used,
             s.op,
             SUM(s.gas_cost) as total_gas_cost,
-            SUM(s.weight_cost_ref_time) as total_weight_cost_ref_time
+            SUM(s.weight_cost_ref_time) as total_weight_cost_ref_time,
+            SUM(s.weight_cost_proof_size) as total_weight_cost_proof_size
         FROM transactions AS t
         JOIN transaction_steps AS s ON s.hash = t.hash AND s.chain_name = t.chain_name
         GROUP BY t.hash, t.chain_name, s.op
@@ -967,10 +971,12 @@ export function getCategoryBreakdown(): CategoryBreakdown[] {
         contract_id: string
         transaction_name: string
         weight_consumed_ref_time: number | null
+        weight_consumed_proof_size: number | null
         gas_used: number
         op: string | null
         total_gas_cost: number | null
         total_weight_cost_ref_time: number | null
+        total_weight_cost_proof_size: number | null
     }>
 
     // Aggregate by category
@@ -988,6 +994,9 @@ export function getCategoryBreakdown(): CategoryBreakdown[] {
             ? (row.weight_consumed_ref_time ?? row.gas_used)
             : row.gas_used
 
+        const costProofSize = isPvm ? (row.total_weight_cost_proof_size ?? 0) : 0
+        const totalProofSize = isPvm ? (row.weight_consumed_proof_size ?? 0) : 0
+
         if (!categoryMap.has(key)) {
             categoryMap.set(key, {
                 chain_name: row.chain_name,
@@ -996,12 +1005,16 @@ export function getCategoryBreakdown(): CategoryBreakdown[] {
                 category,
                 total_cost: 0,
                 percent_of_total: 0,
+                total_cost_proof_size: 0,
+                percent_of_total_proof_size: 0,
             })
         }
 
         const entry = categoryMap.get(key)!
         entry.total_cost += cost
         entry.percent_of_total = total > 0 ? (entry.total_cost / total) * 100 : 0
+        entry.total_cost_proof_size += costProofSize
+        entry.percent_of_total_proof_size = totalProofSize > 0 ? (entry.total_cost_proof_size / totalProofSize) * 100 : 0
     }
 
     return Array.from(categoryMap.values())
@@ -1062,8 +1075,10 @@ export function getDatasetComparison(): DatasetComparison[] {
 // Category hierarchy types
 export interface CategoryHierarchyRow {
     name: string
-    categories: Record<string, number>  // category name -> percentage
+    categories: Record<string, number>  // category name -> ref_time percentage
     total_cost: number
+    categories_proof_size: Record<string, number>  // category name -> proof_size percentage
+    total_cost_proof_size: number
 }
 
 export interface CategoryHierarchy {
@@ -1093,7 +1108,13 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & { categoryD
 
     // Group by dataset -> contract -> transaction
     // Store actual costs, not percentages - percentages will be calculated at the end
-    const datasetMap = new Map<string, Map<string, Map<string, { categoryCosts: Map<string, number>; total: number }>>>()
+    interface TxAccum {
+        categoryCosts: Map<string, number>
+        total: number
+        categoryCostsProofSize: Map<string, number>
+        totalProofSize: number
+    }
+    const datasetMap = new Map<string, Map<string, Map<string, TxAccum>>>()
 
     for (const row of pvmData) {
         const dataset = getDatasetCategory(row.contract_id)
@@ -1109,13 +1130,25 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & { categoryD
         const txMap = contractMap.get(row.contract_id)!
 
         if (!txMap.has(row.transaction_name)) {
-            txMap.set(row.transaction_name, { categoryCosts: new Map(), total: 0 })
+            txMap.set(row.transaction_name, { categoryCosts: new Map(), total: 0, categoryCostsProofSize: new Map(), totalProofSize: 0 })
         }
         const txData = txMap.get(row.transaction_name)!
 
         // Accumulate actual costs, not percentages
         txData.categoryCosts.set(row.category, (txData.categoryCosts.get(row.category) ?? 0) + row.total_cost)
         txData.total += row.total_cost
+        txData.categoryCostsProofSize.set(row.category, (txData.categoryCostsProofSize.get(row.category) ?? 0) + row.total_cost_proof_size)
+        txData.totalProofSize += row.total_cost_proof_size
+    }
+
+    // Helper to calculate percentages from cost maps
+    function calcPercentages(costMap: Map<string, number>, total: number): Record<string, number> {
+        const result: Record<string, number> = {}
+        for (const cat of allCategories) {
+            const catCost = costMap.get(cat) ?? 0
+            result[cat] = total > 0 ? (catCost / total) * 100 : 0
+        }
+        return result
     }
 
     // Build hierarchy
@@ -1123,27 +1156,27 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & { categoryD
 
     for (const [datasetName, contractMap] of datasetMap) {
         const datasetCategories = new Map<string, number>()
+        const datasetCategoriesPs = new Map<string, number>()
         let datasetTotal = 0
+        let datasetTotalPs = 0
 
         const contracts: CategoryHierarchy['datasets'][0]['contracts'] = []
 
         for (const [contractName, txMap] of contractMap) {
             const contractCategories = new Map<string, number>()
+            const contractCategoriesPs = new Map<string, number>()
             let contractTotal = 0
+            let contractTotalPs = 0
 
             const transactions: CategoryHierarchyRow[] = []
 
             for (const [txName, txData] of txMap) {
-                // Calculate percentages from accumulated costs
-                const catObj: Record<string, number> = {}
-                for (const cat of allCategories) {
-                    const catCost = txData.categoryCosts.get(cat) ?? 0
-                    catObj[cat] = txData.total > 0 ? (catCost / txData.total) * 100 : 0
-                }
                 transactions.push({
                     name: txName,
-                    categories: catObj,
+                    categories: calcPercentages(txData.categoryCosts, txData.total),
                     total_cost: txData.total,
+                    categories_proof_size: calcPercentages(txData.categoryCostsProofSize, txData.totalProofSize),
+                    total_cost_proof_size: txData.totalProofSize,
                 })
 
                 // Aggregate actual costs to contract level (not percentages)
@@ -1151,19 +1184,18 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & { categoryD
                     contractCategories.set(cat, (contractCategories.get(cat) ?? 0) + cost)
                 }
                 contractTotal += txData.total
-            }
-
-            // Calculate contract percentages
-            const contractCatObj: Record<string, number> = {}
-            for (const cat of allCategories) {
-                const catCost = contractCategories.get(cat) ?? 0
-                contractCatObj[cat] = contractTotal > 0 ? (catCost / contractTotal) * 100 : 0
+                for (const [cat, cost] of txData.categoryCostsProofSize) {
+                    contractCategoriesPs.set(cat, (contractCategoriesPs.get(cat) ?? 0) + cost)
+                }
+                contractTotalPs += txData.totalProofSize
             }
 
             contracts.push({
                 name: contractName,
-                categories: contractCatObj,
+                categories: calcPercentages(contractCategories, contractTotal),
                 total_cost: contractTotal,
+                categories_proof_size: calcPercentages(contractCategoriesPs, contractTotalPs),
+                total_cost_proof_size: contractTotalPs,
                 transactions: transactions.sort((a, b) => a.name.localeCompare(b.name)),
             })
 
@@ -1172,19 +1204,18 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & { categoryD
                 datasetCategories.set(cat, (datasetCategories.get(cat) ?? 0) + cost)
             }
             datasetTotal += contractTotal
-        }
-
-        // Calculate dataset percentages
-        const datasetCatObj: Record<string, number> = {}
-        for (const cat of allCategories) {
-            const catCost = datasetCategories.get(cat) ?? 0
-            datasetCatObj[cat] = datasetTotal > 0 ? (catCost / datasetTotal) * 100 : 0
+            for (const [cat, cost] of contractCategoriesPs) {
+                datasetCategoriesPs.set(cat, (datasetCategoriesPs.get(cat) ?? 0) + cost)
+            }
+            datasetTotalPs += contractTotalPs
         }
 
         datasets.push({
             name: datasetName,
-            categories: datasetCatObj,
+            categories: calcPercentages(datasetCategories, datasetTotal),
             total_cost: datasetTotal,
+            categories_proof_size: calcPercentages(datasetCategoriesPs, datasetTotalPs),
+            total_cost_proof_size: datasetTotalPs,
             contracts: contracts.sort((a, b) => a.name.localeCompare(b.name)),
         })
     }
