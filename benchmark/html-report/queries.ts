@@ -1059,44 +1059,6 @@ export function getDatasetComparison(): DatasetComparison[] {
     return results.sort((a, b) => a.dataset.localeCompare(b.dataset) || a.chain_name.localeCompare(b.chain_name))
 }
 
-export function getCategoryProfileComparison(): Array<{
-    category: string
-    evm_percent: number
-    pvm_percent: number
-}> {
-    const categoryData = getCategoryBreakdown()
-
-    // Aggregate by chain and category
-    const evmTotals = new Map<string, number>()
-    const pvmTotals = new Map<string, number>()
-    let evmTotal = 0
-    let pvmTotal = 0
-
-    for (const row of categoryData) {
-        if (row.chain_name === 'Geth') {
-            evmTotals.set(row.category, (evmTotals.get(row.category) ?? 0) + row.total_cost)
-            evmTotal += row.total_cost
-        } else if (row.chain_name === 'eth-rpc') {
-            pvmTotals.set(row.category, (pvmTotals.get(row.category) ?? 0) + row.total_cost)
-            pvmTotal += row.total_cost
-        }
-    }
-
-    // Get all categories
-    const allCategories = new Set([...evmTotals.keys(), ...pvmTotals.keys()])
-
-    const results: Array<{ category: string; evm_percent: number; pvm_percent: number }> = []
-    for (const category of allCategories) {
-        results.push({
-            category,
-            evm_percent: evmTotal > 0 ? ((evmTotals.get(category) ?? 0) / evmTotal) * 100 : 0,
-            pvm_percent: pvmTotal > 0 ? ((pvmTotals.get(category) ?? 0) / pvmTotal) * 100 : 0,
-        })
-    }
-
-    return results.sort((a, b) => (b.evm_percent + b.pvm_percent) - (a.evm_percent + a.pvm_percent))
-}
-
 // Category hierarchy types
 export interface CategoryHierarchyRow {
     name: string
