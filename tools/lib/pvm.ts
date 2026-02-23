@@ -35,7 +35,16 @@ export async function uploadCodePVM(
         const tx = api.tx.revive.uploadCode(code, storageDepositLimit)
         logger.debug('Encoded transaction')
 
-        const txHash = await tx.signAndSend(alice)
+        const txHash = await new Promise<string>((resolve, reject) => {
+            tx.signAndSend(alice, ({ status, dispatchError }) => {
+                if (dispatchError) {
+                    reject(new Error(`Upload failed: ${dispatchError.toString()}`))
+                } else if (status.isInBlock || status.isFinalized) {
+                    resolve(status.isInBlock ? status.asInBlock.toString() : status.asFinalized.toString())
+                }
+            }).catch(reject)
+        })
+        logger.info(`Code uploaded in block: ${txHash}`)
         return txHash
     } finally {
         await api.disconnect()

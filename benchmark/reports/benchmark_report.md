@@ -10,10 +10,10 @@
 
 ### Base weight vs metered weight
 
-| Transaction type | Base ref_time | Metered ref_time | Base proof_size | Metered proof_size |
-| --- | --- | --- | --- | --- |
-| Deploy | 75.1% | 24.9% | 10.3% | 89.7% |
-| Execution | 17.7% | 82.3% | 2.4% | 97.6% |
+| Tx Type   | Avg base ref_time     | Avg metered ref_time  | Avg base proof_size | Avg metered proof_size |
+| --------- | --------------------- | --------------------- | ------------------- | ---------------------- |
+| deploy    |                 75.1% |               24.9%   |          10.3%      |          89.7%         |
+| execution |                 17.7% |               82.3%.  |           2.4%      |          97.6%         |
 
 For executions, metered weight dominates — cost is determined by what the contract does, not per-call setup. For deploys, base weight dominates ref_time (75%), scaling with bytecode size. PVM bytecodes are 5-11x larger than EVM, so PVM deploys pay a structural penalty before any code executes.
 
@@ -21,13 +21,13 @@ For executions, metered weight dominates — cost is determined by what the cont
 
 **Execution transactions (both VMs combined):**
 
-| Category | % of ref_time | % of proof_size | Calls |
-| --- | --- | --- | --- |
-| Storage write | 36.9% | 26.6% | 1,725 |
-| Storage read | 21.1% | 37.7% | 2,441 |
-| Cross-contract calls | 14.7% | 26.1% | 456 |
-| Other attributed ops | 16.0% | 2.0% | 170,876 |
-| Unattributed | 11.3% | 7.6% | — |
+| Category             | % of ref_time | % of proof_size | Calls   |
+| -------------------- | ------------- | --------------- | ------- |
+| Storage write        | 36.9%         | 26.6%           | 1,725   |
+| Storage read         | 21.1%         | 37.7%           | 2,441   |
+| Cross-contract calls | 14.7%         | 26.1%           | 456     |
+| Other attributed     | 16.0%         | 2.0%            | 170,887 |
+| Unattributed         | 11.3%         | 7.6%            | —       |
 
 Storage reads + writes consume 58% of ref_time and 64% of proof_size. Each write costs ~171M ref_time, each read ~69M. Cross-calls are individually expensive (456 calls, 15% ref_time, 26% proof_size) due to callee bytecode loading. The unattributed 11.3% is PolkaVM interpreter overhead between syscalls.
 
@@ -148,8 +148,8 @@ At native integer widths, PVM is dramatically faster (u32: -65%, u128: -29%). Th
 | Keccak256 | 6,681M (440) | 6,742M (444) | 5,958M (394) |
 | Events | 1,020M (46) | 1,020M (46) | 1,020M (46) |
 | Cross-calls | 852M (2) | 853M (2) | 853M (2) |
-| Unattributed | 14M | 43,215M | 35,163M |
-| **Total metered** | **101,926M** | **146,759M** | **78,020M** |
+| Unattributed | 14M | 43,216M | 35,162M |
+| **Total metered** | **101,927M** | **146,761M** | **78,020M** |
 
 Two effects are visible. **Call count:** Rust uses ~half the storage operations as EVM/Solidity (162 writes vs 327, 105 reads vs 479) by serializing entire structs into single storage blobs via SCALE encoding, whereas Solidity maps each field to a separate 32-byte slot. **Unattributed overhead:** EVM's is 14M (effectively zero — opcode metering captures all cost). PVM/Sol's is 43.2B (29.4%), Rust's is 35.2B (45.1%). This is RISC-V instruction execution between syscalls, charged via PolkaVM's fuel meter.
 

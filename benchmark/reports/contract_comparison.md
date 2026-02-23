@@ -1,6 +1,6 @@
 # Revive Contract Comparison
 
-Generated on: 2026-02-20
+Generated on: 2026-02-23
 
 Comparison of gas usage across different contract implementations.
 
@@ -797,18 +797,18 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,537,577,453 | -       | 1,623,268,876    | -                 | 64.0%     | 72,689  |
-| DotNS_evm      | 4,427,952,692 | +74.5%  | 3,513,644,115    | +116.5%           | 79.4%     | 255,278 |
-| DotNS_pvm      | 7,375,471,121 | +190.7% | 6,461,162,544    | +298.0%           | 87.6%     | 351,270 |
+| dotns_rust     | 2,537,380,533 | -       | 1,623,071,956    | -                 | 64.0%     | 72,689  |
+| DotNS_evm      | 4,428,548,612 | +74.5%  | 3,514,240,035    | +116.5%           | 79.4%     | 255,278 |
+| DotNS_pvm      | 7,376,308,031 | +190.7% | 6,461,999,454    | +298.1%           | 87.6%     | 351,270 |
 
 
 ### DotNS - register_with_duration
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,536,226,110 | -       | 1,621,917,533    | -                 | 64.0%     | 72,729  |
-| DotNS_evm      | 4,414,891,636 | +74.1%  | 3,500,583,059    | +115.8%           | 79.3%     | 255,310 |
-| DotNS_pvm      | 7,260,877,399 | +186.3% | 6,346,568,822    | +291.3%           | 87.4%     | 351,172 |
+| dotns_rust     | 2,536,029,190 | -       | 1,621,720,613    | -                 | 63.9%     | 72,729  |
+| DotNS_evm      | 4,414,879,309 | +74.1%  | 3,500,583,059    | +115.9%           | 79.3%     | 255,307 |
+| DotNS_pvm      | 7,261,714,309 | +186.3% | 6,347,405,732    | +291.4%           | 87.4%     | 351,172 |
 
 
 ### DotNS - release

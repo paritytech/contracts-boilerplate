@@ -1,6 +1,6 @@
 import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
-import { Artifacts, solidity, pcRust } from '../lib.ts'
+import { Artifacts, solidity, pcRust, uniqueName } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { Hex, keccak256, toHex, parseEther } from 'viem'
 
@@ -21,12 +21,6 @@ const aliceSpk = keccak256(toHex('alice-signed-prekey'))
 const aliceSigningKey = keccak256(toHex('alice-signing-key'))
 // 64-byte signature
 const aliceSpkSig = `0x${keccak256(toHex('sig-part1')).slice(2)}${keccak256(toHex('sig-part2')).slice(2)}` as Hex
-
-// Counter for unique names
-let nameCounter = 0
-function uniqueName(base: string): string {
-    return `${base}${Date.now().toString(36)}${(nameCounter++).toString(36)}`
-}
 
 // One year in seconds
 const ONE_YEAR = 365n * 24n * 60n * 60n

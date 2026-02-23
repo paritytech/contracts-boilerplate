@@ -71,10 +71,11 @@ export const testContracts: Artifacts = [
                 name: 'transfer',
                 exec: async (address) => {
                     // fund destination first
-                    await env.wallet.sendTransaction({
+                    const fundTx = await env.wallet.sendTransaction({
                         to: externalRecipient,
                         value: parseEther('1'),
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: fundTx })
 
                     return env.wallet.writeContract({
                         address,

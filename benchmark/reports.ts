@@ -136,7 +136,7 @@ async function generateOpcodeAnalysis() {
             const topOpcodes = opcodes.slice(0, 20)
             const totalGasFromOpcodes = sumOf(
                 topOpcodes,
-                (op) => op.total_gas_cost!,
+                (op) => op.total_gas_cost ?? 0,
             )
 
             // Check if weight cost data is available
@@ -145,7 +145,7 @@ async function generateOpcodeAnalysis() {
             )
 
             const tableData = topOpcodes.map((opcode) => {
-                const avgGas = (opcode.total_gas_cost! / opcode.count).toFixed(
+                const avgGas = ((opcode.total_gas_cost ?? 0) / opcode.count).toFixed(
                     1,
                 )
 
@@ -178,10 +178,10 @@ async function generateOpcodeAnalysis() {
                     row['% of proof size'] = `${percentOfProofSize}%`
                 } else {
                     const percentOfOpcodes =
-                        ((opcode.total_gas_cost! / totalGasFromOpcodes) * 100)
+                        (((opcode.total_gas_cost ?? 0) / totalGasFromOpcodes) * 100)
                             .toFixed(1)
                     const percentOfTxGas =
-                        ((opcode.total_gas_cost! / tx.gas_used) * 100).toFixed(
+                        (((opcode.total_gas_cost ?? 0) / tx.gas_used) * 100).toFixed(
                             1,
                         )
                     row['% of opcodes'] = `${percentOfOpcodes}%`

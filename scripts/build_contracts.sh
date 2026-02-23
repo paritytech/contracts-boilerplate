@@ -41,8 +41,7 @@ cd ../..
 
 # Build Solidity EVM and resolc contracts
 echo "Building PVM and resolc contracts..."
-deno task build --filter MyToken
-deno task build --filter Fibonacci
+deno task build --filter simple_token
 deno task build --filter Fibonacci
 
 echo "All contracts built successfully!"

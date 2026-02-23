@@ -1646,7 +1646,11 @@ export interface MedianRow {
 
 export function getPerTxMedians(): MedianRow[] {
     const pct = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(1)}%`
-    const median = (arr: number[]) => { const s = [...arr].sort((a, b) => a - b); return s[Math.floor(s.length / 2)] }
+    const median = (arr: number[]) => {
+        if (arr.length === 0) return 0
+        const s = [...arr].sort((a, b) => a - b)
+        return s[Math.floor(s.length / 2)]
+    }
 
     const solPairPcts = db.prepare(`
         SELECT

@@ -447,14 +447,14 @@ INSERT OR REPLACE INTO transactions (
             contractId,
             contract,
             action,
-            receipt.gasUsed.toString(),
+            Number(receipt.gasUsed),
             statusValue,
-            weight ? weight.ref_time.toString() : null,
-            weight ? weight.proof_size.toString() : null,
-            weightConsumed ? weightConsumed.ref_time.toString() : null,
-            weightConsumed ? weightConsumed.proof_size.toString() : null,
-            baseCallWeight ? baseCallWeight.ref_time.toString() : null,
-            baseCallWeight ? baseCallWeight.proof_size.toString() : null,
+            weight ? Number(weight.ref_time) : null,
+            weight ? Number(weight.proof_size) : null,
+            weightConsumed ? Number(weightConsumed.ref_time) : null,
+            weightConsumed ? Number(weightConsumed.proof_size) : null,
+            baseCallWeight ? Number(baseCallWeight.ref_time) : null,
+            baseCallWeight ? Number(baseCallWeight.proof_size) : null,
         )
 
         const insertStep = db.prepare(
@@ -486,6 +486,11 @@ INSERT INTO transaction_steps (
         db.exec('ROLLBACK')
         throw error
     }
+}
+
+let nameCounter = 0
+export function uniqueName(base: string): string {
+    return `${base}${Date.now().toString(36)}${(nameCounter++).toString(36)}`
 }
 
 export async function loadAddresses(): Promise<Record<string, Hex>> {

@@ -304,7 +304,11 @@ function execTotalsTable(): string {
 			AND r.transaction_name = e.transaction_name AND r.weight_consumed_ref_time IS NOT NULL
 	`).all() as { rt_pct: number; pov_pct: number | null }[]
 
-	const median = (arr: number[]) => { const s = [...arr].sort((a, b) => a - b); return s[Math.floor(s.length / 2)] }
+	const median = (arr: number[]) => {
+		if (arr.length === 0) return 0
+		const s = [...arr].sort((a, b) => a - b)
+		return s[Math.floor(s.length / 2)]
+	}
 
 	const solRts = solPairPcts.map(r => r.rt_pct).sort((a, b) => a - b)
 	const solPovs = solPairPcts.map(r => r.pov_pct).sort((a, b) => a - b)
@@ -407,7 +411,10 @@ function deployTotalsTable(): string {
 
 	const sumField = (rows: DeployRow[], f: (r: DeployRow) => number) => rows.reduce((s, r) => s + f(r), 0)
 	const sumPvm = (rows: DeployRow[], f: (r: DeployRow) => number) =>
-		rows.reduce((s, r) => s + f(pvmMap.get(r.contract)!), 0)
+		rows.reduce((s, r) => {
+			const pvm = pvmMap.get(r.contract)
+			return pvm ? s + f(pvm) : s
+		}, 0)
 
 	const makeRow = (metric: string, evm: number, pvm: number) => ({
 		'Metric': metric,
@@ -428,7 +435,10 @@ function deployTotalsTable(): string {
 	const polkadotContracts = new Set(Object.keys(EVM_TO_RUST))
 	const rustPairs = deploys.filter(r => polkadotContracts.has(r.contract) && rustMap.has(r.contract))
 	const sumRust = (rows: DeployRow[], f: (r: DeployRow) => number) =>
-		rows.reduce((s, r) => s + f(rustMap.get(r.contract)!), 0)
+		rows.reduce((s, r) => {
+			const rust = rustMap.get(r.contract)
+			return rust ? s + f(rust) : s
+		}, 0)
 
 	if (rustPairs.length > 0) {
 		const makeRow3 = (metric: string, evm: number, sol: number, rust: number) => ({

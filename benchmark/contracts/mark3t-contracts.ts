@@ -1,6 +1,6 @@
 import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
-import { Artifacts, solidity } from '../lib.ts'
+import { Artifacts, solidity, uniqueName } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { uploadCodePVM } from '../../tools/lib/pvm.ts'
 import { Hex, parseEther, encodeFunctionData } from 'viem'
@@ -15,12 +15,6 @@ const SHOP_METADATA_CID = 'QmTestShopMetadata'
 const SHOP_PUBLIC_KEY = '0x' + '0'.repeat(64)
 const DISPUTE_METADATA_CID = 'QmDisputeEvidence123'
 const COUNTER_EVIDENCE_CID = 'QmCounterEvidence456'
-
-// Counter for unique names
-let nameCounter = 0
-function uniqueName(base: string): string {
-    return `${base}${Date.now().toString(36)}${(nameCounter++).toString(36)}`
-}
 
 // Counter for unique dispute purchase IDs (avoids Date.now() collision within a run)
 let disputeIdCounter = 0
