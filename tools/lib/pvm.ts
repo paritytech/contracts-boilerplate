@@ -38,9 +38,15 @@ export async function uploadCodePVM(
         const txHash = await new Promise<string>((resolve, reject) => {
             tx.signAndSend(alice, ({ status, dispatchError }) => {
                 if (dispatchError) {
-                    reject(new Error(`Upload failed: ${dispatchError.toString()}`))
+                    reject(
+                        new Error(`Upload failed: ${dispatchError.toString()}`),
+                    )
                 } else if (status.isInBlock || status.isFinalized) {
-                    resolve(status.isInBlock ? status.asInBlock.toString() : status.asFinalized.toString())
+                    resolve(
+                        status.isInBlock
+                            ? status.asInBlock.toString()
+                            : status.asFinalized.toString(),
+                    )
                 }
             }).catch(reject)
         })

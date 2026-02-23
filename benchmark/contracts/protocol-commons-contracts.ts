@@ -1,8 +1,8 @@
 import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
-import { Artifacts, solidity, pcRust, uniqueName } from '../lib.ts'
+import { Artifacts, pcRust, solidity, uniqueName } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
-import { Hex, keccak256, toHex, parseEther } from 'viem'
+import { Hex, keccak256, parseEther, toHex } from 'viem'
 
 // Test constants (matching Solidity tests)
 const CID_1 = keccak256(toHex('content1'))
@@ -20,7 +20,9 @@ const aliceIk = keccak256(toHex('alice-identity-key'))
 const aliceSpk = keccak256(toHex('alice-signed-prekey'))
 const aliceSigningKey = keccak256(toHex('alice-signing-key'))
 // 64-byte signature
-const aliceSpkSig = `0x${keccak256(toHex('sig-part1')).slice(2)}${keccak256(toHex('sig-part2')).slice(2)}` as Hex
+const aliceSpkSig = `0x${keccak256(toHex('sig-part1')).slice(2)}${
+    keccak256(toHex('sig-part2')).slice(2)
+}` as Hex
 
 // One year in seconds
 const ONE_YEAR = 365n * 24n * 60n * 60n
@@ -29,7 +31,13 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ Store Contract ============
     {
         id: 'Store',
-        srcs: [...solidity('polkadot-contracts/protocol-commons/Store.sol', 'Store'), pcRust('store')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/protocol-commons/Store.sol',
+                'Store',
+            ),
+            pcRust('store'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -89,7 +97,11 @@ export const protocolCommonsContracts: Artifacts = [
                         address,
                         abi: abis.Store,
                         functionName: 'setFor',
-                        args: [env.wallet.account.address, 'notes/meeting', CID_1],
+                        args: [
+                            env.wallet.account.address,
+                            'notes/meeting',
+                            CID_1,
+                        ],
                     })
                 },
             },
@@ -121,7 +133,10 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ Log Contract ============
     {
         id: 'Log',
-        srcs: [...solidity('polkadot-contracts/protocol-commons/Log.sol', 'Log'), pcRust('log')],
+        srcs: [
+            ...solidity('polkadot-contracts/protocol-commons/Log.sol', 'Log'),
+            pcRust('log'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -213,7 +228,13 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ NonFungibleCredential Contract ============
     {
         id: 'NonFungibleCredential',
-        srcs: [...solidity('polkadot-contracts/protocol-commons/NonFungibleCredential.sol', 'NonFungibleCredential'), pcRust('non_fungible_credential')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/protocol-commons/NonFungibleCredential.sol',
+                'NonFungibleCredential',
+            ),
+            pcRust('non_fungible_credential'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -229,7 +250,13 @@ export const protocolCommonsContracts: Artifacts = [
                         address,
                         abi: abis.NonFungibleCredential,
                         functionName: 'issue',
-                        args: [env.wallet2.account.address, CLASS_TICKET, METADATA_CID, true, 0n],
+                        args: [
+                            env.wallet2.account.address,
+                            CLASS_TICKET,
+                            METADATA_CID,
+                            true,
+                            0n,
+                        ],
                     })
                 },
             },
@@ -240,19 +267,32 @@ export const protocolCommonsContracts: Artifacts = [
                         address,
                         abi: abis.NonFungibleCredential,
                         functionName: 'issue',
-                        args: [env.wallet2.account.address, CLASS_BADGE, METADATA_CID, false, 0n],
+                        args: [
+                            env.wallet2.account.address,
+                            CLASS_BADGE,
+                            METADATA_CID,
+                            false,
+                            0n,
+                        ],
                     })
                 },
             },
             {
                 name: 'issue_with_expiry',
                 exec: (address) => {
-                    const expiry = BigInt(Math.floor(Date.now() / 1000)) + ONE_YEAR
+                    const expiry = BigInt(Math.floor(Date.now() / 1000)) +
+                        ONE_YEAR
                     return env.wallet.writeContract({
                         address,
                         abi: abis.NonFungibleCredential,
                         functionName: 'issue',
-                        args: [env.wallet2.account.address, CLASS_TICKET, METADATA_CID, true, expiry],
+                        args: [
+                            env.wallet2.account.address,
+                            CLASS_TICKET,
+                            METADATA_CID,
+                            true,
+                            expiry,
+                        ],
                     })
                 },
             },
@@ -295,7 +335,13 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ FungibleCredential Contract ============
     {
         id: 'FungibleCredential',
-        srcs: [...solidity('polkadot-contracts/protocol-commons/FungibleCredential.sol', 'FungibleCredential'), pcRust('fungible_credential')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/protocol-commons/FungibleCredential.sol',
+                'FungibleCredential',
+            ),
+            pcRust('fungible_credential'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -387,7 +433,13 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ DotNS Contract ============
     {
         id: 'DotNS',
-        srcs: [...solidity('polkadot-contracts/protocol-commons/DotNS.sol', 'DotNS'), pcRust('dotns')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/protocol-commons/DotNS.sol',
+                'DotNS',
+            ),
+            pcRust('dotns'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -524,7 +576,12 @@ export const protocolCommonsContracts: Artifacts = [
                         address,
                         abi: abis.DotNS,
                         functionName: 'createSubdomain',
-                        args: [`${name}.dot`, 'payments', env.wallet2.account.address, env.wallet2.account.address],
+                        args: [
+                            `${name}.dot`,
+                            'payments',
+                            env.wallet2.account.address,
+                            env.wallet2.account.address,
+                        ],
                     })
                 },
             },
@@ -542,13 +599,22 @@ export const protocolCommonsContracts: Artifacts = [
                         address,
                         abi: abis.DotNS,
                         functionName: 'createSubdomain',
-                        args: [`${name}.dot`, 'work', env.wallet2.account.address, env.wallet2.account.address],
+                        args: [
+                            `${name}.dot`,
+                            'work',
+                            env.wallet2.account.address,
+                            env.wallet2.account.address,
+                        ],
                     })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'setSubdomainOwner',
-                        args: [`${name}.dot`, 'work', env.wallet.account.address],
+                        args: [
+                            `${name}.dot`,
+                            'work',
+                            env.wallet.account.address,
+                        ],
                     })
                 },
             },
@@ -558,7 +624,13 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ KeyRegistry Contract ============
     {
         id: 'KeyRegistry',
-        srcs: [...solidity('polkadot-contracts/protocol-commons/KeyRegistry.sol', 'KeyRegistry'), pcRust('key_registry')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/protocol-commons/KeyRegistry.sol',
+                'KeyRegistry',
+            ),
+            pcRust('key_registry'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -582,7 +654,9 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'updateSignedPrekey',
                 exec: (address) => {
                     const newSpk = keccak256(toHex('new-signed-prekey'))
-                    const newSig = `0x${keccak256(toHex('new-sig-1')).slice(2)}${keccak256(toHex('new-sig-2')).slice(2)}` as Hex
+                    const newSig = `0x${
+                        keccak256(toHex('new-sig-1')).slice(2)
+                    }${keccak256(toHex('new-sig-2')).slice(2)}` as Hex
                     return env.wallet.writeContract({
                         address,
                         abi: abis.KeyRegistry,
@@ -624,7 +698,13 @@ export const protocolCommonsContracts: Artifacts = [
     // ============ Escrow Contract ============
     {
         id: 'Escrow',
-        srcs: [...solidity('polkadot-contracts/protocol-commons/Escrow.sol', 'Escrow'), pcRust('escrow')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/protocol-commons/Escrow.sol',
+                'Escrow',
+            ),
+            pcRust('escrow'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -670,7 +750,8 @@ export const protocolCommonsContracts: Artifacts = [
             {
                 name: 'create_with_releaseTime',
                 exec: (address) => {
-                    const releaseTime = BigInt(Math.floor(Date.now() / 1000)) + 86400n // 1 day
+                    const releaseTime = BigInt(Math.floor(Date.now() / 1000)) +
+                        86400n // 1 day
                     return env.wallet.writeContract({
                         address,
                         abi: abis.Escrow,
@@ -688,7 +769,8 @@ export const protocolCommonsContracts: Artifacts = [
             {
                 name: 'create_with_expiry',
                 exec: (address) => {
-                    const expiryTime = BigInt(Math.floor(Date.now() / 1000)) + 604800n // 7 days
+                    const expiryTime = BigInt(Math.floor(Date.now() / 1000)) +
+                        604800n // 7 days
                     return env.wallet.writeContract({
                         address,
                         abi: abis.Escrow,

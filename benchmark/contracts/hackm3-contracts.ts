@@ -9,8 +9,10 @@ const testDocId = keccak256(toHex('test-document-1'))
 const testDocId2 = keccak256(toHex('test-document-2'))
 const contentHash = keccak256(toHex('document content'))
 const contentHash2 = keccak256(toHex('updated document content'))
-const ipfsCidBytes = '0x516d5465737431323334353637383900000000000000000000000000000000' as Hex
-const encryptedShare = '0x656e637279707465642d6b65792d64617461000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' as Hex
+const ipfsCidBytes =
+    '0x516d5465737431323334353637383900000000000000000000000000000000' as Hex
+const encryptedShare =
+    '0x656e637279707465642d6b65792d64617461000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' as Hex
 
 // Permission levels
 const PERMISSION_EDIT = 3
@@ -23,7 +25,12 @@ export const hackm3Contracts: Artifacts = [
     // ============ DocumentAccessManagement Contract ============
     {
         id: 'DocumentAccessManagement',
-        srcs: [...solidity('polkadot-contracts/hackm3/DocumentAccessManagement.sol', 'DocumentAccessManagement')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/hackm3/DocumentAccessManagement.sol',
+                'DocumentAccessManagement',
+            ),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },

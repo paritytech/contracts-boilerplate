@@ -110,7 +110,12 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'FiatTokenV2_2',
-        srcs: [...solidity('ethereum-contracts/usdc_implementation.sol', 'FiatTokenV2_2')],
+        srcs: [
+            ...solidity(
+                'ethereum-contracts/usdc_implementation.sol',
+                'FiatTokenV2_2',
+            ),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },
@@ -122,7 +127,9 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'FiatTokenProxy',
-        srcs: [...solidity('ethereum-contracts/usdc_proxy.sol', 'FiatTokenProxy')],
+        srcs: [
+            ...solidity('ethereum-contracts/usdc_proxy.sol', 'FiatTokenProxy'),
+        ],
         deploy: async (id, name, bytecode) => {
             const addresses = await loadAddresses()
             const implementationKey = name.endsWith('_pvm')
@@ -245,7 +252,9 @@ export const ethereumContracts: Artifacts = [
     },
     {
         id: 'CoinTool_App',
-        srcs: [...solidity('ethereum-contracts/xen_minter.sol', 'CoinTool_App')],
+        srcs: [
+            ...solidity('ethereum-contracts/xen_minter.sol', 'CoinTool_App'),
+        ],
         deploy: (id, name, bytecode) => {
             return deployContract({
                 name: { id, name },

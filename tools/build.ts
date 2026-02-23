@@ -86,10 +86,16 @@ function collectDependencies(
 }
 
 const contracts: { name: string; relativePath: string }[] = []
-for (const entry of walkSync(contractsDir, { exts: ['.sol'], skip: [/\/original\//] })) {
+for (
+    const entry of walkSync(contractsDir, {
+        exts: ['.sol'],
+        skip: [/\/original\//],
+    })
+) {
     const relativePath = entry.path.substring(contractsDir.length + 1)
-    if (!filter || relativePath.includes(filter))
+    if (!filter || relativePath.includes(filter)) {
         contracts.push({ name: entry.name, relativePath })
+    }
 }
 
 if (contracts.length === 0) {

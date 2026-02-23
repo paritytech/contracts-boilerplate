@@ -3,7 +3,7 @@ import { abis } from '../../codegen/abis.ts'
 import { Artifacts, solidity, uniqueName } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { uploadCodePVM } from '../../tools/lib/pvm.ts'
-import { Hex, parseEther, encodeFunctionData } from 'viem'
+import { encodeFunctionData, Hex, parseEther } from 'viem'
 
 // Test constants
 const METADATA_HASH = 'QmTest123456789'
@@ -43,7 +43,10 @@ export const mark3tContracts: Artifacts = [
     // ============ Mark3tMarketplace Implementation Contract (PVM only - too big for EVM) ============
     {
         id: 'Marketplace',
-        srcs: solidity('polkadot-contracts/mark3t/Marketplace.sol', 'Marketplace'),
+        srcs: solidity(
+            'polkadot-contracts/mark3t/Marketplace.sol',
+            'Marketplace',
+        ),
         pvmOnly: true,
         deploy: async (id, name, bytecode) => {
             // Upload ProxyAdmin bytecode early so it's available when the proxy deploys
@@ -67,10 +70,17 @@ export const mark3tContracts: Artifacts = [
     // ============ Mark3tMarketplaceProxy Contract (EVM and PVM) ============
     {
         id: 'MarketplaceProxy',
-        srcs: [...solidity('polkadot-contracts/mark3t/MarketplaceProxy.sol', 'MarketplaceProxy')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/mark3t/MarketplaceProxy.sol',
+                'MarketplaceProxy',
+            ),
+        ],
         deploy: async (id, name, bytecode) => {
             if (!marketplaceImplAddress) {
-                throw new Error('Marketplace implementation must be deployed first')
+                throw new Error(
+                    'Marketplace implementation must be deployed first',
+                )
             }
 
             // Encode the initialize() call
@@ -84,7 +94,11 @@ export const mark3tContracts: Artifacts = [
             const receipt = await deployContract({
                 name: { id, name },
                 bytecode,
-                args: [marketplaceImplAddress, env.wallet.account.address, initData],
+                args: [
+                    marketplaceImplAddress,
+                    env.wallet.account.address,
+                    initData,
+                ],
             })
             marketplaceProxyAddress = receipt.contractAddress as Hex
             return receipt
@@ -99,7 +113,11 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'registerShop',
-                        args: [uniqueName('Shop'), 'QmUpdatedMetadata', SHOP_PUBLIC_KEY],
+                        args: [
+                            uniqueName('Shop'),
+                            'QmUpdatedMetadata',
+                            SHOP_PUBLIC_KEY,
+                        ],
                     })
                 },
             },
@@ -153,7 +171,14 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'createItem',
-                        args: [0, 'Item to Update', 'books', METADATA_HASH, ITEM_PRICE, '0x0000000000000000000000000000000000000000'],
+                        args: [
+                            0,
+                            'Item to Update',
+                            'books',
+                            METADATA_HASH,
+                            ITEM_PRICE,
+                            '0x0000000000000000000000000000000000000000',
+                        ],
                     })
                     await env.wallet.waitForTransactionReceipt({ hash: tx })
 
@@ -188,7 +213,14 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'createItem',
-                        args: [0, 'Item to Deactivate', 'misc', METADATA_HASH, ITEM_PRICE, '0x0000000000000000000000000000000000000000'],
+                        args: [
+                            0,
+                            'Item to Deactivate',
+                            'misc',
+                            METADATA_HASH,
+                            ITEM_PRICE,
+                            '0x0000000000000000000000000000000000000000',
+                        ],
                     })
                     await env.wallet.waitForTransactionReceipt({ hash: tx })
 
@@ -217,7 +249,14 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'createItem',
-                        args: [0, 'Digital Product', 'software', METADATA_HASH, ITEM_PRICE, '0x0000000000000000000000000000000000000000'],
+                        args: [
+                            0,
+                            'Digital Product',
+                            'software',
+                            METADATA_HASH,
+                            ITEM_PRICE,
+                            '0x0000000000000000000000000000000000000000',
+                        ],
                     })
                     await env.wallet.waitForTransactionReceipt({ hash: tx })
 
@@ -256,7 +295,14 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'createItem',
-                        args: [1, 'Physical Product', 'hardware', METADATA_HASH, ITEM_PRICE, '0x0000000000000000000000000000000000000000'],
+                        args: [
+                            1,
+                            'Physical Product',
+                            'hardware',
+                            METADATA_HASH,
+                            ITEM_PRICE,
+                            '0x0000000000000000000000000000000000000000',
+                        ],
                     })
                     await env.wallet.waitForTransactionReceipt({ hash: tx })
 
@@ -295,9 +341,18 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'createItem',
-                        args: [1, 'Shipping Test', 'goods', METADATA_HASH, ITEM_PRICE, '0x0000000000000000000000000000000000000000'],
+                        args: [
+                            1,
+                            'Shipping Test',
+                            'goods',
+                            METADATA_HASH,
+                            ITEM_PRICE,
+                            '0x0000000000000000000000000000000000000000',
+                        ],
                     })
-                    await env.wallet.waitForTransactionReceipt({ hash: createTx })
+                    await env.wallet.waitForTransactionReceipt({
+                        hash: createTx,
+                    })
 
                     const totalItems = await env.wallet.readContract({
                         address,
@@ -310,10 +365,17 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'purchaseItem',
-                        args: [totalItems, 0n, dummyEncryptedData(), SHOP_PUBLIC_KEY],
+                        args: [
+                            totalItems,
+                            0n,
+                            dummyEncryptedData(),
+                            SHOP_PUBLIC_KEY,
+                        ],
                         value: ITEM_PRICE,
                     })
-                    await env.wallet2.waitForTransactionReceipt({ hash: purchaseTx })
+                    await env.wallet2.waitForTransactionReceipt({
+                        hash: purchaseTx,
+                    })
 
                     // Track the purchase ID (incremented after each physical item purchase)
                     const purchaseId = getNextPurchaseId(address)
@@ -376,9 +438,18 @@ export const mark3tContracts: Artifacts = [
                         address,
                         abi: abis.Marketplace,
                         functionName: 'createItem',
-                        args: [0, 'MM Test Item', 'digital', METADATA_HASH, ITEM_PRICE, '0x0000000000000000000000000000000000000000'],
+                        args: [
+                            0,
+                            'MM Test Item',
+                            'digital',
+                            METADATA_HASH,
+                            ITEM_PRICE,
+                            '0x0000000000000000000000000000000000000000',
+                        ],
                     })
-                    await env.wallet.waitForTransactionReceipt({ hash: createTx })
+                    await env.wallet.waitForTransactionReceipt({
+                        hash: createTx,
+                    })
 
                     const totalItems = await env.wallet.readContract({
                         address,
@@ -410,7 +481,12 @@ export const mark3tContracts: Artifacts = [
     // ============ Mark3tMockMobRule Contract (EVM and PVM) ============
     {
         id: 'MockMobRule',
-        srcs: [...solidity('polkadot-contracts/mark3t/MockMobRule.sol', 'MockMobRule')],
+        srcs: [
+            ...solidity(
+                'polkadot-contracts/mark3t/MockMobRule.sol',
+                'MockMobRule',
+            ),
+        ],
         deploy: async (id, name, bytecode) => {
             if (!marketplaceProxyAddress) {
                 throw new Error('Marketplace proxy must be deployed first')
@@ -426,7 +502,9 @@ export const mark3tContracts: Artifacts = [
         },
         setup: async () => {
             if (!marketplaceProxyAddress || !mockMobRuleAddress) {
-                throw new Error('Both Marketplace proxy and MockMobRule must be deployed')
+                throw new Error(
+                    'Both Marketplace proxy and MockMobRule must be deployed',
+                )
             }
             // Set MockMobRule address on Marketplace
             await env.wallet.writeContract({
@@ -448,7 +526,7 @@ export const mark3tContracts: Artifacts = [
                         args: [
                             uniquePurchaseId,
                             env.wallet2.account.address, // buyer
-                            env.wallet.account.address,  // seller
+                            env.wallet.account.address, // seller
                             env.wallet2.account.address, // initiator
                             DISPUTE_METADATA_CID,
                         ],

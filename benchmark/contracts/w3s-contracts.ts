@@ -2,7 +2,7 @@ import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
 import { Artifacts, solidity } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
-import { Hex, keccak256, toHex, encodePacked } from 'viem'
+import { encodePacked, Hex, keccak256, toHex } from 'viem'
 
 // Ticket types enum
 const TicketType = {
@@ -43,7 +43,9 @@ export const w3sContracts: Artifacts = [
         setup: async () => {
             // Deploy MockERC20 token for testing - one per W3S variant
             const { loadAddresses } = await import('../lib.ts')
-            const { readBytecode: readBytecodeUtil } = await import('../../utils/index.ts')
+            const { readBytecode: readBytecodeUtil } = await import(
+                '../../utils/index.ts'
+            )
             const addresses = await loadAddresses()
 
             // Get W3S contract addresses matching the current chain
@@ -51,11 +53,26 @@ export const w3sContracts: Artifacts = [
             const w3sVariants: { address: Hex; variant: 'pvm' | 'evm' }[] = []
             if (env.chain.name === 'Geth') {
                 // Geth only supports EVM
-                if (addresses['W3S_evm']) w3sVariants.push({ address: addresses['W3S_evm'], variant: 'evm' })
+                if (addresses['W3S_evm']) {
+                    w3sVariants.push({
+                        address: addresses['W3S_evm'],
+                        variant: 'evm',
+                    })
+                }
             } else {
                 // Polkadot-based chains support both
-                if (addresses['W3S_pvm']) w3sVariants.push({ address: addresses['W3S_pvm'], variant: 'pvm' })
-                if (addresses['W3S_evm']) w3sVariants.push({ address: addresses['W3S_evm'], variant: 'evm' })
+                if (addresses['W3S_pvm']) {
+                    w3sVariants.push({
+                        address: addresses['W3S_pvm'],
+                        variant: 'pvm',
+                    })
+                }
+                if (addresses['W3S_evm']) {
+                    w3sVariants.push({
+                        address: addresses['W3S_evm'],
+                        variant: 'evm',
+                    })
+                }
             }
 
             if (w3sVariants.length === 0) {
@@ -73,7 +90,9 @@ export const w3sContracts: Artifacts = [
             for (const { address: w3sAddress, variant } of w3sVariants) {
                 // Deploy MockERC20 with matching bytecode type
                 const mockBytecode = readBytecodeUtil(
-                    variant === 'evm' ? './codegen/evm/MockERC20.bin' : './codegen/pvm/MockERC20.polkavm'
+                    variant === 'evm'
+                        ? './codegen/evm/MockERC20.bin'
+                        : './codegen/pvm/MockERC20.polkavm',
                 )
 
                 const deployHash = await env.wallet.deployContract({
@@ -81,7 +100,9 @@ export const w3sContracts: Artifacts = [
                     bytecode: mockBytecode,
                     args: ['Test USDT', 'USDT', 6],
                 })
-                const receipt = await env.wallet.waitForTransactionReceipt({ hash: deployHash })
+                const receipt = await env.wallet.waitForTransactionReceipt({
+                    hash: deployHash,
+                })
                 const mockTokenAddress = receipt.contractAddress!
 
                 // Map this W3S address to its MockERC20 address
@@ -147,7 +168,8 @@ export const w3sContracts: Artifacts = [
                 name: 'configurePaymentToken',
                 exec: (address) => {
                     // Configure a new token (use a dummy address)
-                    const dummyToken = '0x0000000000000000000000000000000000000001' as Hex
+                    const dummyToken =
+                        '0x0000000000000000000000000000000000000001' as Hex
                     return env.wallet.writeContract({
                         address,
                         abi: abis.W3S,
@@ -173,7 +195,8 @@ export const w3sContracts: Artifacts = [
             {
                 name: 'grantVolunteerRole',
                 exec: (address) => {
-                    const newVolunteer = '0x0000000000000000000000000000000000000002' as Hex
+                    const newVolunteer =
+                        '0x0000000000000000000000000000000000000002' as Hex
                     return env.wallet.writeContract({
                         address,
                         abi: abis.W3S,
@@ -188,7 +211,9 @@ export const w3sContracts: Artifacts = [
                 exec: (address) => {
                     const tokenAddress = w3sToTokenMap.get(address)
                     if (!tokenAddress) {
-                        throw new Error(`Mock token not deployed for W3S at ${address}`)
+                        throw new Error(
+                            `Mock token not deployed for W3S at ${address}`,
+                        )
                     }
                     return env.wallet.writeContract({
                         address,
@@ -252,7 +277,8 @@ export const w3sContracts: Artifacts = [
             {
                 name: 'revokeVolunteerRole',
                 exec: (address) => {
-                    const volunteerToRevoke = '0x0000000000000000000000000000000000000002' as Hex
+                    const volunteerToRevoke =
+                        '0x0000000000000000000000000000000000000002' as Hex
                     return env.wallet.writeContract({
                         address,
                         abi: abis.W3S,

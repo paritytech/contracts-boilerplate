@@ -8,7 +8,8 @@ import { Hex } from 'viem'
 
 const codegenDir = join(import.meta.dirname!, '..', '..', 'codegen')
 
-const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? Deno.env.get('RPC_URL') ?? 'http://localhost:8545'
+const rpcUrl = Deno.env.get('ETH_RPC_URL') ?? Deno.env.get('RPC_URL') ??
+    'http://localhost:8545'
 
 /// load private keys from PRIVATE_KEYS env var (comma-separated) or fallback to defaults
 function loadPrivateKeys(): readonly [Hex, Hex] {
@@ -18,7 +19,9 @@ function loadPrivateKeys(): readonly [Hex, Hex] {
             return (trimmed.startsWith('0x') ? trimmed : '0x' + trimmed) as Hex
         })
         if (keys.length < 2) {
-            throw new Error('PRIVATE_KEYS must contain at least 2 comma-separated keys')
+            throw new Error(
+                'PRIVATE_KEYS must contain at least 2 comma-separated keys',
+            )
         }
         return [keys[0], keys[1]]
     }

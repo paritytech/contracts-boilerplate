@@ -23,10 +23,22 @@ const COLORS = {
 }
 
 const CATEGORY_COLORS = [
-    COLORS.primary, COLORS.success, COLORS.warning, COLORS.danger,
-    COLORS.info, COLORS.purple, COLORS.orange, COLORS.teal,
-    COLORS.pink, COLORS.secondary, COLORS.primaryLight, COLORS.successLight,
-    COLORS.warningLight, COLORS.dangerLight, COLORS.infoLight, COLORS.purpleLight,
+    COLORS.primary,
+    COLORS.success,
+    COLORS.warning,
+    COLORS.danger,
+    COLORS.info,
+    COLORS.purple,
+    COLORS.orange,
+    COLORS.teal,
+    COLORS.pink,
+    COLORS.secondary,
+    COLORS.primaryLight,
+    COLORS.successLight,
+    COLORS.warningLight,
+    COLORS.dangerLight,
+    COLORS.infoLight,
+    COLORS.purpleLight,
 ]
 
 interface ChartData {
@@ -61,11 +73,17 @@ export function groupedBarChart(
     canvasId: string,
     labels: string[],
     datasets: Array<{ label: string; data: (number | null)[]; color: string }>,
-    options: { title?: string; xLabel?: string; yLabel?: string; horizontal?: boolean; logScale?: boolean } = {}
+    options: {
+        title?: string
+        xLabel?: string
+        yLabel?: string
+        horizontal?: boolean
+        logScale?: boolean
+    } = {},
 ): string {
     const chartData: ChartData = {
         labels,
-        datasets: datasets.map(ds => ({
+        datasets: datasets.map((ds) => ({
             label: ds.label,
             data: ds.data,
             backgroundColor: ds.color,
@@ -89,12 +107,17 @@ export function groupedBarChart(
         maintainAspectRatio: false,
         indexAxis: options.horizontal ? 'y' : 'x',
         plugins: {
-            title: options.title ? { display: true, text: options.title } : { display: false },
+            title: options.title
+                ? { display: true, text: options.title }
+                : { display: false },
             legend: { position: 'top' },
         },
         scales: {
             x: {
-                title: { display: !!options.xLabel, text: options.xLabel || '' },
+                title: {
+                    display: !!options.xLabel,
+                    text: options.xLabel || '',
+                },
                 ticks: { maxRotation: 45, minRotation: 45 },
             },
             y: yScale,
@@ -114,11 +137,16 @@ export function stackedBarChart(
     canvasId: string,
     labels: string[],
     datasets: Array<{ label: string; data: number[]; color: string }>,
-    options: { title?: string; xLabel?: string; yLabel?: string; horizontal?: boolean } = {}
+    options: {
+        title?: string
+        xLabel?: string
+        yLabel?: string
+        horizontal?: boolean
+    } = {},
 ): string {
     const chartData: ChartData = {
         labels,
-        datasets: datasets.map(ds => ({
+        datasets: datasets.map((ds) => ({
             label: ds.label,
             data: ds.data,
             backgroundColor: ds.color,
@@ -132,18 +160,26 @@ export function stackedBarChart(
         maintainAspectRatio: false,
         indexAxis: options.horizontal ? 'y' : 'x',
         plugins: {
-            title: options.title ? { display: true, text: options.title } : { display: false },
+            title: options.title
+                ? { display: true, text: options.title }
+                : { display: false },
             legend: { position: 'top' },
         },
         scales: {
             x: {
                 stacked: true,
-                title: { display: !!options.xLabel, text: options.xLabel || '' },
+                title: {
+                    display: !!options.xLabel,
+                    text: options.xLabel || '',
+                },
                 ticks: { maxRotation: 45, minRotation: 45 },
             },
             y: {
                 stacked: true,
-                title: { display: !!options.yLabel, text: options.yLabel || '' },
+                title: {
+                    display: !!options.yLabel,
+                    text: options.yLabel || '',
+                },
                 beginAtZero: true,
             },
         },
@@ -163,20 +199,24 @@ export function weightBreakdownChart(
     labels: string[],
     evmData: { refTime: (number | null)[]; meteredPct: (number | null)[] },
     pvmData: { refTime: (number | null)[]; meteredPct: (number | null)[] },
-    rustData: { refTime: (number | null)[]; meteredPct: (number | null)[] } | null,
-    options: { title?: string; yLabel?: string } = {}
+    rustData:
+        | { refTime: (number | null)[]; meteredPct: (number | null)[] }
+        | null,
+    options: { title?: string; yLabel?: string } = {},
 ): string {
     // Calculate metered and overhead portions for each
-    const calcMetered = (data: { refTime: (number | null)[]; meteredPct: (number | null)[] }) =>
-        data.refTime.map((rt, i) => {
-            if (rt === null || data.meteredPct[i] === null) return null
-            return rt * (data.meteredPct[i]! / 100)
-        })
-    const calcOverhead = (data: { refTime: (number | null)[]; meteredPct: (number | null)[] }) =>
-        data.refTime.map((rt, i) => {
-            if (rt === null || data.meteredPct[i] === null) return null
-            return rt * (1 - data.meteredPct[i]! / 100)
-        })
+    const calcMetered = (
+        data: { refTime: (number | null)[]; meteredPct: (number | null)[] },
+    ) => data.refTime.map((rt, i) => {
+        if (rt === null || data.meteredPct[i] === null) return null
+        return rt * (data.meteredPct[i]! / 100)
+    })
+    const calcOverhead = (
+        data: { refTime: (number | null)[]; meteredPct: (number | null)[] },
+    ) => data.refTime.map((rt, i) => {
+        if (rt === null || data.meteredPct[i] === null) return null
+        return rt * (1 - data.meteredPct[i]! / 100)
+    })
 
     const evmMetered = calcMetered(evmData)
     const evmOverhead = calcOverhead(evmData)
@@ -249,7 +289,10 @@ export function weightBreakdownChart(
             intersect: false,
         },
         plugins: {
-            title: { display: true, text: 'Weight (ref_time) by Dataset (click to drill down)' },
+            title: {
+                display: true,
+                text: 'Weight (ref_time) by Dataset (click to drill down)',
+            },
             legend: { position: 'top' },
         },
         scales: {
@@ -268,7 +311,9 @@ export function weightBreakdownChart(
         (function() {
             window.weightEvmMeteredPct = ${jsonStringify(evmData.meteredPct)};
             window.weightPvmMeteredPct = ${jsonStringify(pvmData.meteredPct)};
-            window.weightRustMeteredPct = ${jsonStringify(rustData?.meteredPct ?? [])};
+            window.weightRustMeteredPct = ${
+        jsonStringify(rustData?.meteredPct ?? [])
+    };
             new Chart(document.getElementById('${canvasId}'), {
                 type: 'bar',
                 data: ${jsonStringify(chartData)},
@@ -299,7 +344,9 @@ export function weightBreakdownChart(
     `
 }
 
-export function buildCategoryColorMap(categories: string[]): Record<string, string> {
+export function buildCategoryColorMap(
+    categories: string[],
+): Record<string, string> {
     const map: Record<string, string> = {}
     for (let i = 0; i < categories.length; i++) {
         map[categories[i]] = CATEGORY_COLORS[i % CATEGORY_COLORS.length]

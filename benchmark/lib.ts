@@ -301,8 +301,8 @@ export async function deploy(contracts: Artifacts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
             : artifact.pvmOnly
-                ? artifact.srcs.filter((src) => !src.supportEvm())
-                : artifact.srcs
+            ? artifact.srcs.filter((src) => !src.supportEvm())
+            : artifact.srcs
 
         for (const src of srcs) {
             const contract = src.getName()
@@ -337,8 +337,8 @@ export async function execute(contracts: Artifacts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
             : artifact.pvmOnly
-                ? artifact.srcs.filter((src) => !src.supportEvm())
-                : artifact.srcs
+            ? artifact.srcs.filter((src) => !src.supportEvm())
+            : artifact.srcs
         for (const src of srcs) {
             for (const call of artifact.calls) {
                 const contract = src.getName()
@@ -398,26 +398,25 @@ async function updateStats(
 
     // Calculate intrinsic gas costs for Geth by removing forwarded gas for call opcodes
     const rawLogs = typedTrace.structLogs ?? []
-    const structLogs =
-        chainName === 'Geth'
-            ? rawLogs.map((log, i) => {
-                  if (!CALL_OPCODES.has(log.op)) {
-                      return log
-                  }
+    const structLogs = chainName === 'Geth'
+        ? rawLogs.map((log, i) => {
+            if (!CALL_OPCODES.has(log.op)) {
+                return log
+            }
 
-                  // For call opcodes, check if next entry has higher depth (child call started)
-                  const nextLog = rawLogs[i + 1]
-                  if (nextLog && nextLog.depth > log.depth) {
-                      // Intrinsic cost = total gasCost - gas forwarded to child
-                      const gasForwarded = nextLog.gas
-                      const intrinsicCost = log.gasCost - gasForwarded
-                      return { ...log, gasCost: intrinsicCost }
-                  }
+            // For call opcodes, check if next entry has higher depth (child call started)
+            const nextLog = rawLogs[i + 1]
+            if (nextLog && nextLog.depth > log.depth) {
+                // Intrinsic cost = total gasCost - gas forwarded to child
+                const gasForwarded = nextLog.gas
+                const intrinsicCost = log.gasCost - gasForwarded
+                return { ...log, gasCost: intrinsicCost }
+            }
 
-                  // No child call (e.g., call to precompile or empty account)
-                  return log
-              })
-            : rawLogs
+            // No child call (e.g., call to precompile or empty account)
+            return log
+        })
+        : rawLogs
     const weightConsumed = typedTrace.weightConsumed
     const baseCallWeight = typedTrace.baseCallWeight
 

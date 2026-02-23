@@ -24,10 +24,14 @@ export async function report(contracts: Artifacts) {
 async function generateOpcodeAnalysis() {
     let markdown = `# Opcode Analysis\n\n`
     markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
-    markdown += `> **Unattributed** = \`weight_consumed_ref_time - SUM(step weights)\`. `
-    markdown += `For **EVM** contracts this is near zero (~46 ps/byte of bytecode from code loading). `
-    markdown += `For **PVM** contracts this is the RISC-V interpreter overhead between syscalls — `
-    markdown += `the fuel burned executing PolkaVM instructions that are not traced individually.\n\n`
+    markdown +=
+        `> **Unattributed** = \`weight_consumed_ref_time - SUM(step weights)\`. `
+    markdown +=
+        `For **EVM** contracts this is near zero (~46 ps/byte of bytecode from code loading). `
+    markdown +=
+        `For **PVM** contracts this is the RISC-V interpreter overhead between syscalls — `
+    markdown +=
+        `the fuel burned executing PolkaVM instructions that are not traced individually.\n\n`
 
     const allData = db.prepare(`
         SELECT
@@ -145,9 +149,10 @@ async function generateOpcodeAnalysis() {
             )
 
             const tableData = topOpcodes.map((opcode) => {
-                const avgGas = ((opcode.total_gas_cost ?? 0) / opcode.count).toFixed(
-                    1,
-                )
+                const avgGas = ((opcode.total_gas_cost ?? 0) / opcode.count)
+                    .toFixed(
+                        1,
+                    )
 
                 const row: Record<string, string | null | undefined> = {
                     'Opcode': opcode.op,
@@ -178,12 +183,14 @@ async function generateOpcodeAnalysis() {
                     row['% of proof size'] = `${percentOfProofSize}%`
                 } else {
                     const percentOfOpcodes =
-                        (((opcode.total_gas_cost ?? 0) / totalGasFromOpcodes) * 100)
+                        (((opcode.total_gas_cost ?? 0) / totalGasFromOpcodes) *
+                            100)
                             .toFixed(1)
                     const percentOfTxGas =
-                        (((opcode.total_gas_cost ?? 0) / tx.gas_used) * 100).toFixed(
-                            1,
-                        )
+                        (((opcode.total_gas_cost ?? 0) / tx.gas_used) * 100)
+                            .toFixed(
+                                1,
+                            )
                     row['% of opcodes'] = `${percentOfOpcodes}%`
                     row['% of tx Gas'] = `${percentOfTxGas}%`
                 }
@@ -205,7 +212,7 @@ async function generateOpcodeAnalysis() {
                     totalAttributedRefTime
                 const unattributedProofSize =
                     (tx.weight_consumed_proof_size ?? 0) -
-                        totalAttributedProofSize
+                    totalAttributedProofSize
                 const pctRefTime =
                     ((unattributedRefTime / tx.weight_consumed_ref_time) * 100)
                         .toFixed(1)
@@ -234,7 +241,6 @@ async function generateOpcodeAnalysis() {
         markdown,
     )
 }
-
 
 async function generateCategoryAnalysis() {
     let markdown = `# Opcode Category Analysis\n\n`
@@ -361,13 +367,17 @@ async function generateCategoryAnalysis() {
                         opcodes: [],
                     }
                 }
-                categoryData[category].total_gas_cost += opcode.total_gas_cost ?? 0
+                categoryData[category].total_gas_cost +=
+                    opcode.total_gas_cost ?? 0
                 categoryData[category].count += opcode.count
                 categoryData[category].total_weight_cost_ref_time +=
                     opcode.total_weight_cost_ref_time ?? 0
                 categoryData[category].total_weight_cost_proof_size +=
                     opcode.total_weight_cost_proof_size ?? 0
-                if (opcode.op && !categoryData[category].opcodes.includes(opcode.op)) {
+                if (
+                    opcode.op &&
+                    !categoryData[category].opcodes.includes(opcode.op)
+                ) {
                     categoryData[category].opcodes.push(opcode.op)
                 }
             }
@@ -377,12 +387,15 @@ async function generateCategoryAnalysis() {
             )
 
             // Sort categories by cost (descending)
-            const sortedCategories = Object.entries(categoryData).sort((a, b) => {
-                if (hasWeightCost) {
-                    return b[1].total_weight_cost_ref_time - a[1].total_weight_cost_ref_time
-                }
-                return b[1].total_gas_cost - a[1].total_gas_cost
-            })
+            const sortedCategories = Object.entries(categoryData).sort(
+                (a, b) => {
+                    if (hasWeightCost) {
+                        return b[1].total_weight_cost_ref_time -
+                            a[1].total_weight_cost_ref_time
+                    }
+                    return b[1].total_gas_cost - a[1].total_gas_cost
+                },
+            )
 
             const totalGasFromCategories = sumOf(
                 sortedCategories,
@@ -398,9 +411,8 @@ async function generateCategoryAnalysis() {
                 }
 
                 if (hasWeightCost && tx.weight_consumed_ref_time) {
-                    const percentOfRefTime =
-                        ((data.total_weight_cost_ref_time /
-                            tx.weight_consumed_ref_time) * 100).toFixed(1)
+                    const percentOfRefTime = ((data.total_weight_cost_ref_time /
+                        tx.weight_consumed_ref_time) * 100).toFixed(1)
 
                     const percentOfProofSize = tx.weight_consumed_proof_size
                         ? ((data.total_weight_cost_proof_size /
@@ -557,17 +569,20 @@ async function generateContractComparison() {
                                 ((totalRefTime / bestRefTime - 1) * 100)
                                     .toFixed(1)
                             }%`
-                        const vsBestMetered = row.weight_consumed_ref_time === bestMeteredRefTime
-                            ? '-'
-                            : `+${
-                                ((row.weight_consumed_ref_time / bestMeteredRefTime - 1) * 100)
-                                    .toFixed(1)
-                            }%`
+                        const vsBestMetered =
+                            row.weight_consumed_ref_time === bestMeteredRefTime
+                                ? '-'
+                                : `+${
+                                    ((row.weight_consumed_ref_time /
+                                            bestMeteredRefTime - 1) * 100)
+                                        .toFixed(1)
+                                }%`
 
                         result['ref_time'] = totalRefTime
                             .toLocaleString()
                         result['vs Best'] = vsBest
-                        result['metered_ref_time'] = row.weight_consumed_ref_time
+                        result['metered_ref_time'] = row
+                            .weight_consumed_ref_time
                             .toLocaleString()
                         result['vs Best (metered)'] = vsBestMetered
                         result['% metered'] = `${meterPercent}%`
