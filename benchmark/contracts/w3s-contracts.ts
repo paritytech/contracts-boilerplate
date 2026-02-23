@@ -4,10 +4,6 @@ import { Artifacts, solidity } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { Hex, keccak256, toHex, encodePacked } from 'viem'
 
-// Role hashes (keccak256 of role names)
-const W3F_ROLE = keccak256(toHex('W3F'))
-const VOLUNTEER_ROLE = keccak256(toHex('VOLUNTEER'))
-
 // Ticket types enum
 const TicketType = {
     Standard: 0,
@@ -149,7 +145,7 @@ export const w3sContracts: Artifacts = [
             // Configure payment token (admin)
             {
                 name: 'configurePaymentToken',
-                exec: async (address) => {
+                exec: (address) => {
                     // Configure a new token (use a dummy address)
                     const dummyToken = '0x0000000000000000000000000000000000000001' as Hex
                     return env.wallet.writeContract({
@@ -189,7 +185,7 @@ export const w3sContracts: Artifacts = [
             // Buy ticket with ERC20
             {
                 name: 'buyTicket',
-                exec: async (address) => {
+                exec: (address) => {
                     const tokenAddress = w3sToTokenMap.get(address)
                     if (!tokenAddress) {
                         throw new Error(`Mock token not deployed for W3S at ${address}`)

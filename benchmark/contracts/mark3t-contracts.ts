@@ -10,8 +10,6 @@ const METADATA_HASH = 'QmTest123456789'
 const ITEM_NAME = 'Test Item'
 const ITEM_CATEGORY = 'electronics'
 const ITEM_PRICE = parseEther('0.1')
-const SHOP_NAME = 'Test Shop'
-const SHOP_METADATA_CID = 'QmTestShopMetadata'
 const SHOP_PUBLIC_KEY = '0x' + '0'.repeat(64)
 const DISPUTE_METADATA_CID = 'QmDisputeEvidence123'
 const COUNTER_EVIDENCE_CID = 'QmCounterEvidence456'
@@ -95,7 +93,7 @@ export const mark3tContracts: Artifacts = [
             // Shop operations
             {
                 name: 'registerShop',
-                exec: async (address) => {
+                exec: (address) => {
                     // Register a new shop with unique name
                     return env.wallet.writeContract({
                         address,
@@ -441,7 +439,7 @@ export const mark3tContracts: Artifacts = [
         calls: [
             {
                 name: 'createDispute',
-                exec: async (address) => {
+                exec: (address) => {
                     const uniquePurchaseId = uniqueDisputeId()
                     return env.wallet.writeContract({
                         address,

@@ -29,7 +29,7 @@ const CATEGORY_COLORS = [
     COLORS.warningLight, COLORS.dangerLight, COLORS.infoLight, COLORS.purpleLight,
 ]
 
-export interface ChartData {
+interface ChartData {
     labels: string[]
     datasets: Array<{
         label: string
@@ -40,7 +40,7 @@ export interface ChartData {
     }>
 }
 
-export interface ChartOptions {
+interface ChartOptions {
     responsive?: boolean
     maintainAspectRatio?: boolean
     indexAxis?: 'x' | 'y'
@@ -146,76 +146,6 @@ export function stackedBarChart(
                 title: { display: !!options.yLabel, text: options.yLabel || '' },
                 beginAtZero: true,
             },
-        },
-    }
-
-    return `
-        new Chart(document.getElementById('${canvasId}'), {
-            type: 'bar',
-            data: ${jsonStringify(chartData)},
-            options: ${jsonStringify(chartOptions)}
-        });
-    `
-}
-
-export function comboBarLineChart(
-    canvasId: string,
-    labels: string[],
-    barDatasets: Array<{ label: string; data: (number | null)[]; color: string }>,
-    lineDataset: { label: string; data: (number | null)[]; color: string },
-    options: { title?: string; xLabel?: string; yLabel?: string; logScale?: boolean } = {}
-): string {
-    const datasets = [
-        // Bar datasets
-        ...barDatasets.map(ds => ({
-            type: 'bar' as const,
-            label: ds.label,
-            data: ds.data,
-            backgroundColor: ds.color,
-            borderColor: ds.color.replace('0.8', '1'),
-            borderWidth: 1,
-            order: 2,
-        })),
-        // Line dataset
-        {
-            type: 'line' as const,
-            label: lineDataset.label,
-            data: lineDataset.data,
-            borderColor: lineDataset.color.replace('0.8', '1'),
-            backgroundColor: 'transparent',
-            borderWidth: 2,
-            pointRadius: 4,
-            pointBackgroundColor: lineDataset.color.replace('0.8', '1'),
-            tension: 0.1,
-            order: 1,
-        },
-    ]
-
-    const chartData = { labels, datasets }
-
-    const yScale = options.logScale
-        ? {
-            type: 'logarithmic',
-            title: { display: !!options.yLabel, text: options.yLabel || '' },
-        }
-        : {
-            title: { display: !!options.yLabel, text: options.yLabel || '' },
-            beginAtZero: true,
-        }
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            title: options.title ? { display: true, text: options.title } : { display: false },
-            legend: { position: 'top' },
-        },
-        scales: {
-            x: {
-                title: { display: !!options.xLabel, text: options.xLabel || '' },
-                ticks: { maxRotation: 45, minRotation: 45 },
-            },
-            y: yScale,
         },
     }
 
@@ -369,236 +299,6 @@ export function weightBreakdownChart(
     `
 }
 
-// Colors for Fibonacci implementations
-const FIBONACCI_COLORS = [
-    'rgba(78, 121, 167, 0.8)',   // EVM Solidity - blue
-    'rgba(89, 161, 79, 0.8)',    // PVM Solidity - green
-    'rgba(242, 142, 44, 0.8)',   // Ink - orange
-    'rgba(225, 87, 89, 0.8)',    // Rust - red
-    'rgba(118, 183, 178, 0.8)',  // Rust u128 - teal
-    'rgba(176, 122, 161, 0.8)',  // Rust u256 - purple
-]
-
-export interface FibonacciChartData {
-    variant: string
-    label: string
-    transaction_name: string
-    ref_time: number | null
-}
-
-export function fibonacciComparisonChart(
-    canvasId: string,
-    data: FibonacciChartData[],
-    options: { title?: string } = {}
-): string {
-    // Group by transaction, then by variant
-    const transactions = [...new Set(data.map(d => d.transaction_name))].filter(t => t !== 'deploy')
-    const variants = [...new Set(data.map(d => d.label))]
-
-    const chartData = {
-        labels: transactions,
-        datasets: variants.map((variant, idx) => ({
-            label: variant,
-            data: transactions.map(tx => {
-                const entry = data.find(d => d.label === variant && d.transaction_name === tx)
-                return entry?.ref_time ?? null
-            }),
-            backgroundColor: FIBONACCI_COLORS[idx % FIBONACCI_COLORS.length],
-            borderColor: FIBONACCI_COLORS[idx % FIBONACCI_COLORS.length].replace('0.8', '1'),
-            borderWidth: 1,
-        })),
-    }
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            title: { display: true, text: options.title || 'Fibonacci Implementations Comparison' },
-            legend: { position: 'top' },
-        },
-        scales: {
-            x: {
-                ticks: { maxRotation: 45, minRotation: 45 },
-            },
-            y: {
-                title: { display: true, text: 'ref_time' },
-                beginAtZero: true,
-            },
-        },
-    }
-
-    return `
-        (function() {
-            new Chart(document.getElementById('${canvasId}'), {
-                type: 'bar',
-                data: ${jsonStringify(chartData)},
-                options: ${jsonStringify(chartOptions)}
-            });
-        })();
-    `
-}
-
-export function divergingBarChart(
-    canvasId: string,
-    labels: string[],
-    data: number[],
-    options: { title?: string; xLabel?: string } = {}
-): string {
-    const colors = data.map(v => v >= 0 ? COLORS.danger : COLORS.success)
-
-    const chartData: ChartData = {
-        labels,
-        datasets: [{
-            label: '% Difference from EVM',
-            data,
-            backgroundColor: colors,
-            borderColor: colors.map(c => c.replace('0.8', '1')),
-            borderWidth: 1,
-        }],
-    }
-
-    const chartOptions: ChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        plugins: {
-            title: options.title ? { display: true, text: options.title } : { display: false },
-            legend: { display: false },
-        },
-        scales: {
-            x: {
-                title: { display: !!options.xLabel, text: options.xLabel || '' },
-            },
-            y: {
-                ticks: { font: { size: 10 } },
-            },
-        },
-    }
-
-    return `
-        new Chart(document.getElementById('${canvasId}'), {
-            type: 'bar',
-            data: ${jsonStringify(chartData)},
-            options: ${jsonStringify(chartOptions)}
-        });
-    `
-}
-
-export function scatterChart(
-    canvasId: string,
-    data: Array<{ x: number; y: number; label: string }>,
-    options: { title?: string; xLabel?: string; yLabel?: string } = {}
-): string {
-    const chartData = {
-        datasets: [{
-            label: 'Transactions',
-            data: data.map(d => ({ x: d.x, y: d.y })),
-            backgroundColor: COLORS.primary,
-            borderColor: COLORS.primary.replace('0.8', '1'),
-            pointRadius: 6,
-            pointHoverRadius: 8,
-        }],
-    }
-
-    const labels = data.map(d => d.label)
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            title: options.title ? { display: true, text: options.title } : { display: false },
-        },
-        scales: {
-            x: {
-                title: { display: !!options.xLabel, text: options.xLabel || '' },
-                type: 'linear',
-                position: 'bottom',
-            },
-            y: {
-                title: { display: !!options.yLabel, text: options.yLabel || '' },
-                beginAtZero: true,
-            },
-        },
-    }
-
-    return `
-        (function() {
-            const labels = ${jsonStringify(labels)};
-            new Chart(document.getElementById('${canvasId}'), {
-                type: 'scatter',
-                data: ${jsonStringify(chartData)},
-                options: {
-                    ...${jsonStringify(chartOptions)},
-                    plugins: {
-                        ...${jsonStringify(chartOptions.plugins)},
-                        tooltip: {
-                            callbacks: {
-                                label: function(ctx) {
-                                    return labels[ctx.dataIndex] + ': (' + ctx.parsed.x.toLocaleString() + ', ' + ctx.parsed.y.toLocaleString() + ')';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        })();
-    `
-}
-
-export function radarChart(
-    canvasId: string,
-    labels: string[],
-    datasets: Array<{ label: string; data: number[]; color: string }>,
-    options: { title?: string } = {}
-): string {
-    const chartData: ChartData = {
-        labels,
-        datasets: datasets.map(ds => ({
-            label: ds.label,
-            data: ds.data,
-            backgroundColor: ds.color.replace('0.8', '0.2'),
-            borderColor: ds.color,
-            borderWidth: 2,
-        })),
-    }
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            title: options.title ? { display: true, text: options.title } : { display: false },
-            legend: { position: 'top' },
-        },
-        scales: {
-            r: {
-                beginAtZero: true,
-                ticks: { font: { size: 10 } },
-            },
-        },
-    }
-
-    return `
-        new Chart(document.getElementById('${canvasId}'), {
-            type: 'radar',
-            data: ${jsonStringify(chartData)},
-            options: ${jsonStringify(chartOptions)}
-        });
-    `
-}
-
-export function horizontalBarChart(
-    canvasId: string,
-    labels: string[],
-    datasets: Array<{ label: string; data: number[]; color: string }>,
-    options: { title?: string; xLabel?: string } = {}
-): string {
-    return groupedBarChart(canvasId, labels, datasets, { ...options, horizontal: true })
-}
-
-export function getCategoryColor(index: number): string {
-    return CATEGORY_COLORS[index % CATEGORY_COLORS.length]
-}
-
 export function buildCategoryColorMap(categories: string[]): Record<string, string> {
     const map: Record<string, string> = {}
     for (let i = 0; i < categories.length; i++) {
@@ -607,4 +307,4 @@ export function buildCategoryColorMap(categories: string[]): Record<string, stri
     return map
 }
 
-export { COLORS, CATEGORY_COLORS }
+export { COLORS }

@@ -29,12 +29,6 @@ function fmtPct(a: number, b: number): string {
 	return b === 0 ? '—' : pct((a - b) / b * 100)
 }
 
-function boldPct(val: number | null): string {
-	if (val == null) return '—'
-	const s = pct(val)
-	return val < 0 ? `**${s}**` : s
-}
-
 function fileSize(path: string): number | null {
 	try { return Deno.statSync(path).size } catch { return null }
 }
@@ -54,16 +48,6 @@ const EVM_TO_RUST: Record<string, string> = {
 const EVM_TO_INK: Record<string, string> = {
 	Fibonacci: 'fibonacci',
 	SimpleToken: 'simple_token',
-}
-
-const CONTRACT_DISPLAY: Record<string, string> = {
-	DocumentAccessManagement: 'DocAccessMgmt',
-	NonFungibleCredential: 'NFCredential',
-	FungibleCredential: 'FungibleCred',
-}
-
-function displayContract(name: string): string {
-	return CONTRACT_DISPLAY[name] ?? name
 }
 
 function rustBytecodeSizeFn(dbName: string): number | null {

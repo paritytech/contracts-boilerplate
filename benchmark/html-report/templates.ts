@@ -1107,10 +1107,6 @@ function formatWeight(value: number | null): string {
     return value !== null ? value.toLocaleString() : 'N/A'
 }
 
-function formatMetered(value: number | null): string {
-    return value !== null ? `${value.toFixed(1)}%` : 'N/A'
-}
-
 function formatWeightWithPct(weight: number | null, pct: number | null): string {
     if (weight === null) return 'N/A'
     const pctStr = pct !== null ? ` (${pct.toFixed(1)}%)` : ''
@@ -1788,24 +1784,6 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
     let rowId = 2000 // Start from 2000 to avoid conflicts with other table IDs
     const rows: string[] = []
     const { allCategories, datasets, categoryDescriptions = {} } = data
-
-    // Recalculate category percentages for a set of transactions
-    function recalcCategoryPcts(txs: CategoryHierarchyRow[]): Record<string, number> {
-        const catTotals: Record<string, number> = {}
-        let cost = 0
-        for (const cat of allCategories) catTotals[cat] = 0
-        for (const tx of txs) {
-            cost += tx.total_cost
-            for (const cat of allCategories) {
-                catTotals[cat] += (tx.categories[cat] ?? 0) * tx.total_cost / 100
-            }
-        }
-        const result: Record<string, number> = {}
-        for (const cat of allCategories) {
-            result[cat] = cost > 0 ? (catTotals[cat] / cost) * 100 : 0
-        }
-        return result
-    }
 
     // Calculate totals
     const totals: Record<string, number> = {}
