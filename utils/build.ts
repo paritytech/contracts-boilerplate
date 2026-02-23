@@ -119,7 +119,7 @@ async function compileWithBinary(
     await checkCompilerExists(compiler)
     logger.info(`Compiling with ${compiler} ${compilerVersions[compiler]}`)
 
-    const optimizerSettings = compiler === 'resolc'
+    const optimizerSettings = compiler.includes('resolc')
         ? { enabled: true, mode: 'z' }
         : { enabled: true, runs: 200 }
 
@@ -231,9 +231,9 @@ export async function compile(options: {
             if (contract?.evm?.bytecode?.object) {
                 const bytecodeHex = contract.evm.bytecode.object
                 if (bytecodeHex.length > 0) {
-                    const ext = compiler === 'resolc' ? 'polkavm' : 'bin'
+                    const ext = compiler.includes('resolc') ? 'polkavm' : 'bin'
                     const outputFile = join(outputDir, `${contractName}.${ext}`)
-                    const label = compiler === 'resolc' ? 'PVM' : 'EVM'
+                    const label = compiler.includes('resolc') ? 'PVM' : 'EVM'
                     logger.info(`📜 Add ${label} contract ${contractName}`)
                     const bytecode = new Uint8Array(
                         bytecodeHex
@@ -262,7 +262,7 @@ export async function compile(options: {
             }
 
             const libs = getLibraries(contract)
-            if (Object.keys(libs).length == 0) continue
+            if (Object.keys(libs).length === 0) continue
             logger.info(`📜 Add libraries for ${contractName}`)
             const libsName = `${contractName}Libs`
             const tsContent = `export const ${libsName} = ${

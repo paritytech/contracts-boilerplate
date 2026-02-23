@@ -33,7 +33,7 @@ fi
 echo "Building PVM contracts"
 cd rust/contracts
 cargo pvm-contract build -b simple_token_no_alloc
-cargo pvm-contract build -b erc20_with_alloc
+cargo pvm-contract build -b simple_token_with_alloc
 cargo pvm-contract build -b fibonacci
 cargo pvm-contract build -b fibonacci_u128
 cargo pvm-contract build -b fibonacci_u256
@@ -41,8 +41,7 @@ cd ../..
 
 # Build Solidity EVM and resolc contracts
 echo "Building PVM and resolc contracts..."
-deno task build --filter MyToken
-deno task build --filter Fibonacci
+deno task build --filter simple_token
 deno task build --filter Fibonacci
 
 echo "All contracts built successfully!"

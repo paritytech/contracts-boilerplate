@@ -14,6 +14,7 @@
     "npm:@openzeppelin/contracts-upgradeable@^5.1.0": "5.4.0_@openzeppelin+contracts@5.4.0",
     "npm:@openzeppelin/contracts@^5.1.0": "5.4.0",
     "npm:@polkadot/api@^16.5.4": "16.5.4_@polkadot+util@14.0.1_@polkadot+util-crypto@14.0.1__@polkadot+util@14.0.1__@polkadot+x-randomvalues@14.0.1___@polkadot+util@14.0.1___@polkadot+wasm-util@7.5.4____@polkadot+util@14.0.1__@polkadot+wasm-util@7.5.4___@polkadot+util@14.0.1",
+    "npm:@types/node@*": "24.2.0",
     "npm:cli-table3@~0.6.5": "0.6.5",
     "npm:ink@^6.5.1": "6.6.0_react@19.2.4",
     "npm:react@^19.2.3": "19.2.4",

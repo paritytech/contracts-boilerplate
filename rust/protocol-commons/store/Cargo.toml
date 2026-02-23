@@ -1,0 +1,18 @@
+[package]
+name = "pc-store"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "Protocol Commons Store contract for pallet-revive"
+
+[[bin]]
+name = "store"
+path = "src/main.rs"
+
+[dependencies]
+pc-revive-common.workspace = true
+parity-scale-codec.workspace = true
+polkavm-derive.workspace = true
+
+[features]
+default = []

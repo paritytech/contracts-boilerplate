@@ -45,5 +45,6 @@
         "singleQuote": true,
         "proseWrap": "preserve"
     },
-    "nodeModulesDir": "auto"
+    "nodeModulesDir": "auto",
+    "exclude": ["codegen/", "node_modules/", "benchmark/reports/"]
 }
