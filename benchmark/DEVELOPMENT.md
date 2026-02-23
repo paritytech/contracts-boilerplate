@@ -91,8 +91,12 @@ Create the contract source files and run the benchmark.
 
 ## Generated Reports
 
+The latest interactive HTML report is published at:
+**https://paritytech.github.io/contracts-boilerplate/benchmark/reports/benchmark_report.html**
+
 Reports are saved to `benchmark/reports/`:
 
+- **benchmark_report.html**: Interactive HTML report with charts
 - **opcode_analysis.md**: Opcode usage breakdown per transaction
 - **contract_comparison.md**: Performance comparison across implementations
 - **bytecode_size_comparison.md**: Compiled bytecode size comparison
