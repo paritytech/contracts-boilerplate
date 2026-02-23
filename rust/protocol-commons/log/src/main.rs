@@ -230,7 +230,7 @@ fn handle_create(input: &mut Input) {
     EventBuilder::new(b"LogCreated(uint64,address,bool)")
         .topic(&id_padded)
         .topic(&owner_padded)
-        .data_raw(&[if permissioned { 1 } else { 0 }])
+        .data_abi_bool(permissioned)
         .emit();
 
     let mut output = Output::new();
@@ -267,11 +267,14 @@ fn handle_append(input: &mut Input) {
     log_id_padded[24..32].copy_from_slice(&log_id.to_be_bytes());
     let author_padded = pc_revive_common::from_account_id(&author);
 
+    let mut index_padded = [0u8; 32];
+    index_padded[24..32].copy_from_slice(&index.to_be_bytes());
+
     EventBuilder::new(b"EntryAppended(uint64,uint64,address,bytes32)")
         .topic(&log_id_padded)
+        .topic(&index_padded)
         .topic(&author_padded)
-        .data_raw(&index.to_be_bytes())
-        .data(&content_cid)
+        .data_abi_bytes32(&content_cid)
         .emit();
 
     let mut output = Output::new();
@@ -324,8 +327,8 @@ fn handle_append_batch(input: &mut Input) {
     EventBuilder::new(b"BatchAppended(uint64,address,uint64,uint64)")
         .topic(&log_id_padded)
         .topic(&author_padded)
-        .data_raw(&start_index.to_be_bytes())
-        .data_raw(&(count as u64).to_be_bytes())
+        .data_abi_u64(start_index)
+        .data_abi_u64(count as u64)
         .emit();
 
     let mut output = Output::new();

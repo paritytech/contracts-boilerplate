@@ -347,9 +347,10 @@ fn handle_register(input: &mut Input) {
     // Emit event
     let owner_padded = pc_revive_common::from_account_id(&caller_addr);
 
-    EventBuilder::new(b"NameRegistered(bytes32,bytes,address)")
+    EventBuilder::new(b"NameRegistered(bytes32,string,address)")
         .topic(&node)
         .topic(&owner_padded)
+        .data_abi_with_string(0, &[], name_info.full_name.as_bytes())
         .emit();
 
     let mut output = Output::new();
@@ -410,15 +411,17 @@ fn handle_set_address(input: &mut Input) {
         revert(b"name expired");
     }
 
+    let old_address = name_info.address;
     name_info.address = new_address;
     save_name(&name_info);
 
     // Emit event
+    let old_padded = pc_revive_common::from_account_id(&old_address);
     let new_padded = pc_revive_common::from_account_id(&new_address);
 
-    EventBuilder::new(b"AddressUpdated(bytes32,bytes,address,address)")
+    EventBuilder::new(b"AddressUpdated(bytes32,string,address,address)")
         .topic(&node)
-        .topic(&new_padded)
+        .data_abi_with_string(0, &[old_padded, new_padded], name_info.full_name.as_bytes())
         .emit();
 
     return_value(&[]);
@@ -443,9 +446,9 @@ fn handle_set_metadata(input: &mut Input) {
     save_name(&name_info);
 
     // Emit event
-    EventBuilder::new(b"MetadataUpdated(bytes32,bytes,bytes32)")
+    EventBuilder::new(b"MetadataUpdated(bytes32,string,bytes32)")
         .topic(&node)
-        .data(&metadata_cid)
+        .data_abi_with_string(0, &[metadata_cid], name_info.full_name.as_bytes())
         .emit();
 
     return_value(&[]);
@@ -476,10 +479,11 @@ fn handle_transfer(input: &mut Input) {
     let from_padded = pc_revive_common::from_account_id(&old_owner);
     let to_padded = pc_revive_common::from_account_id(&new_owner);
 
-    EventBuilder::new(b"NameTransferred(bytes32,bytes,address,address)")
+    EventBuilder::new(b"NameTransferred(bytes32,string,address,address)")
         .topic(&node)
         .topic(&from_padded)
         .topic(&to_padded)
+        .data_abi_with_string(0, &[], name_info.full_name.as_bytes())
         .emit();
 
     return_value(&[]);
@@ -510,9 +514,9 @@ fn handle_renew(input: &mut Input) {
     let mut expiry_padded = [0u8; 32];
     expiry_padded[24..32].copy_from_slice(&name_info.expiry.to_be_bytes());
 
-    EventBuilder::new(b"NameRenewed(bytes32,bytes,uint64)")
+    EventBuilder::new(b"NameRenewed(bytes32,string,uint64)")
         .topic(&node)
-        .data(&expiry_padded)
+        .data_abi_with_string(0, &[expiry_padded], name_info.full_name.as_bytes())
         .emit();
 
     return_value(&[]);
@@ -533,12 +537,19 @@ fn handle_release(input: &mut Input) {
         revert(b"not owner");
     }
 
+    // Capture name before removal
+    let full_name_bytes_len = name_info.full_name.len;
+    let mut full_name_copy = [0u8; 96]; // MAX_NAME_LENGTH
+    full_name_copy[..full_name_bytes_len as usize]
+        .copy_from_slice(&name_info.full_name.data[..full_name_bytes_len as usize]);
+
     // Remove the name
     remove_name(&node);
 
     // Emit event
-    EventBuilder::new(b"NameReleased(bytes32,bytes)")
+    EventBuilder::new(b"NameReleased(bytes32,string)")
         .topic(&node)
+        .data_abi_with_string(0, &[], &full_name_copy[..full_name_bytes_len as usize])
         .emit();
 
     return_value(&[]);
@@ -793,10 +804,11 @@ fn handle_create_subdomain(input: &mut Input) {
     // Emit event
     let owner_padded = pc_revive_common::from_account_id(&owner);
 
-    EventBuilder::new(b"SubdomainCreated(bytes32,bytes32,bytes,address)")
+    EventBuilder::new(b"SubdomainCreated(bytes32,bytes32,string,address)")
         .topic(&node)
         .topic(&parent_node)
         .topic(&owner_padded)
+        .data_abi_with_string(0, &[], name_info.label.as_bytes())
         .emit();
 
     let mut output = Output::new();
@@ -846,10 +858,11 @@ fn handle_set_subdomain_owner(input: &mut Input) {
     let from_padded = pc_revive_common::from_account_id(&old_owner);
     let to_padded = pc_revive_common::from_account_id(&new_owner);
 
-    EventBuilder::new(b"NameTransferred(bytes32,bytes,address,address)")
+    EventBuilder::new(b"NameTransferred(bytes32,string,address,address)")
         .topic(&node)
         .topic(&from_padded)
         .topic(&to_padded)
+        .data_abi_with_string(0, &[], name_info.full_name.as_bytes())
         .emit();
 
     return_value(&[]);

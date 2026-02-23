@@ -566,8 +566,8 @@ fn handle_update_signed_prekey(input: &mut Input, data: &[u8]) {
     let owner_padded = pc_revive_common::from_account_id(&owner);
     EventBuilder::new(b"SignedPrekeyUpdated(address,bytes32,uint64)")
         .topic(&owner_padded)
-        .data(&signed_prekey)
-        .data_raw(&new_spk_id.to_be_bytes())
+        .data_abi_bytes32(&signed_prekey)
+        .data_abi_u64(new_spk_id)
         .emit();
 
     return_value(&[]);
@@ -655,7 +655,7 @@ fn handle_upload_otks(input: &mut Input, data: &[u8]) {
     let owner_padded = pc_revive_common::from_account_id(&owner);
     EventBuilder::new(b"OneTimePrekeysUploaded(address,uint64)")
         .topic(&owner_padded)
-        .data_raw(&stored_count.to_be_bytes())
+        .data_abi_u64(stored_count)
         .emit();
 
     return_value(&[]);

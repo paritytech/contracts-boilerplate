@@ -24,6 +24,10 @@ export async function report(contracts: Artifacts) {
 async function generateOpcodeAnalysis() {
     let markdown = `# Opcode Analysis\n\n`
     markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
+    markdown += `> **Unattributed** = \`weight_consumed_ref_time - SUM(step weights)\`. `
+    markdown += `For **EVM** contracts this is near zero (~46 ps/byte of bytecode from code loading). `
+    markdown += `For **PVM** contracts this is the RISC-V interpreter overhead between syscalls — `
+    markdown += `the fuel burned executing PolkaVM instructions that are not traced individually.\n\n`
 
     const allData = db.prepare(`
         SELECT
@@ -187,6 +191,40 @@ async function generateOpcodeAnalysis() {
                 return row
             })
 
+            // Add unattributed ref_time row when weight data is available
+            if (hasWeightCost && tx.weight_consumed_ref_time) {
+                const totalAttributedRefTime = sumOf(
+                    opcodes,
+                    (op) => op.total_weight_cost_ref_time ?? 0,
+                )
+                const totalAttributedProofSize = sumOf(
+                    opcodes,
+                    (op) => op.total_weight_cost_proof_size ?? 0,
+                )
+                const unattributedRefTime = tx.weight_consumed_ref_time -
+                    totalAttributedRefTime
+                const unattributedProofSize =
+                    (tx.weight_consumed_proof_size ?? 0) -
+                        totalAttributedProofSize
+                const pctRefTime =
+                    ((unattributedRefTime / tx.weight_consumed_ref_time) * 100)
+                        .toFixed(1)
+                const pctProofSize = tx.weight_consumed_proof_size
+                    ? ((unattributedProofSize /
+                        tx.weight_consumed_proof_size) * 100).toFixed(1)
+                    : '0.0'
+                tableData.push({
+                    'Opcode': '**Unattributed**',
+                    'Total Gas': '-',
+                    'Call Count': '-',
+                    'Avg Gas/Call': '-',
+                    'ref time': unattributedRefTime.toLocaleString(),
+                    'proof size': unattributedProofSize.toLocaleString(),
+                    '% of ref time': `${pctRefTime}%`,
+                    '% of proof size': `${pctProofSize}%`,
+                })
+            }
+
             markdown += table(tableData) + '\n\n'
         }
     }
@@ -196,6 +234,7 @@ async function generateOpcodeAnalysis() {
         markdown,
     )
 }
+
 
 async function generateCategoryAnalysis() {
     let markdown = `# Opcode Category Analysis\n\n`

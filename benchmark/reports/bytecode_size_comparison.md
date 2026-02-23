@@ -1,27 +1,28 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-02-11
+Generated on: 2026-02-20
 
 ## Fibonacci Implementations
 
 | Contract            | VM Type | Size (bytes) | vs Smallest |
 | ------------------- | ------- | ------------ | ----------- |
 | fibonacci_rust      | PVM     | 209          | -           |
+| Fibonacci_evm       | EVM     | 233          | +11.5%      |
 | fibonacci_u128_rust | PVM     | 285          | +36.4%      |
-| Fibonacci_evm       | EVM     | 300          | +43.5%      |
 | fibonacci_u256_rust | PVM     | 686          | +228.2%     |
 | fibonacci_ink       | PVM     | 1,102        | +427.3%     |
-| Fibonacci_pvm       | PVM     | 1,546        | +639.7%     |
+| Fibonacci_pvm       | PVM     | 1,268        | +506.7%     |
 
 
 ## SimpleToken Implementations
 
-| Contract                   | VM Type | Size (bytes) | vs Smallest |
-| -------------------------- | ------- | ------------ | ----------- |
-| SimpleToken_evm            | EVM     | 487          | -           |
-| simple_token_no_alloc_rust | PVM     | 4,360        | +795.3%     |
-| SimpleToken_pvm            | PVM     | 5,073        | +941.7%     |
-| simple_token_ink           | PVM     | 7,251        | +1388.9%    |
+| Contract                     | VM Type | Size (bytes) | vs Smallest |
+| ---------------------------- | ------- | ------------ | ----------- |
+| SimpleToken_evm              | EVM     | 487          | -           |
+| simple_token_no_alloc_rust   | PVM     | 3,972        | +715.6%     |
+| SimpleToken_pvm              | PVM     | 5,073        | +941.7%     |
+| simple_token_ink             | PVM     | 7,251        | +1388.9%    |
+| simple_token_with_alloc_rust | PVM     | 24,704       | +4972.7%    |
 
 
 ## TetherToken Implementations
@@ -77,7 +78,7 @@ Generated on: 2026-02-11
 | Contract   | VM Type | Size (bytes) | vs Smallest |
 | ---------- | ------- | ------------ | ----------- |
 | Store_evm  | EVM     | 7,835        | -           |
-| store_rust | PVM     | 30,858       | +293.8%     |
+| store_rust | PVM     | 31,544       | +302.6%     |
 | Store_pvm  | PVM     | 74,006       | +844.6%     |
 
 
@@ -86,7 +87,7 @@ Generated on: 2026-02-11
 | Contract | VM Type | Size (bytes) | vs Smallest |
 | -------- | ------- | ------------ | ----------- |
 | Log_evm  | EVM     | 6,297        | -           |
-| log_rust | PVM     | 16,793       | +166.7%     |
+| log_rust | PVM     | 16,459       | +161.4%     |
 | Log_pvm  | PVM     | 54,127       | +759.6%     |
 
 
@@ -95,7 +96,7 @@ Generated on: 2026-02-11
 | Contract                     | VM Type | Size (bytes) | vs Smallest |
 | ---------------------------- | ------- | ------------ | ----------- |
 | NonFungibleCredential_evm    | EVM     | 6,684        | -           |
-| non_fungible_credential_rust | PVM     | 17,863       | +167.3%     |
+| non_fungible_credential_rust | PVM     | 18,986       | +184.1%     |
 | NonFungibleCredential_pvm    | PVM     | 65,361       | +877.9%     |
 
 
@@ -104,7 +105,7 @@ Generated on: 2026-02-11
 | Contract                 | VM Type | Size (bytes) | vs Smallest |
 | ------------------------ | ------- | ------------ | ----------- |
 | FungibleCredential_evm   | EVM     | 7,235        | -           |
-| fungible_credential_rust | PVM     | 17,330       | +139.5%     |
+| fungible_credential_rust | PVM     | 17,642       | +143.8%     |
 | FungibleCredential_pvm   | PVM     | 65,747       | +808.7%     |
 
 
@@ -113,7 +114,7 @@ Generated on: 2026-02-11
 | Contract   | VM Type | Size (bytes) | vs Smallest |
 | ---------- | ------- | ------------ | ----------- |
 | DotNS_evm  | EVM     | 8,168        | -           |
-| dotns_rust | PVM     | 23,120       | +183.1%     |
+| dotns_rust | PVM     | 22,935       | +180.8%     |
 | DotNS_pvm  | PVM     | 75,443       | +823.6%     |
 
 
@@ -122,7 +123,7 @@ Generated on: 2026-02-11
 | Contract          | VM Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | ------------ | ----------- |
 | KeyRegistry_evm   | EVM     | 4,298        | -           |
-| key_registry_rust | PVM     | 18,243       | +324.5%     |
+| key_registry_rust | PVM     | 18,566       | +332.0%     |
 | KeyRegistry_pvm   | PVM     | 38,843       | +803.7%     |
 
 
@@ -131,7 +132,7 @@ Generated on: 2026-02-11
 | Contract    | VM Type | Size (bytes) | vs Smallest |
 | ----------- | ------- | ------------ | ----------- |
 | Escrow_evm  | EVM     | 4,226        | -           |
-| escrow_rust | PVM     | 12,434       | +194.2%     |
+| escrow_rust | PVM     | 12,816       | +203.3%     |
 | Escrow_pvm  | PVM     | 33,827       | +700.4%     |
 
 

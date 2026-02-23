@@ -74,24 +74,22 @@ fn set_total_supply(amount: U256) {
     api::set_storage(StorageFlags::empty(), &key, &amount.to_be_bytes::<32>());
 }
 
-/// Get the balance for a given address from storage
+/// Get the balance for a given storage key
 #[inline]
-fn get_balance(addr: &[u8; 20]) -> U256 {
-    let key = balance_key(addr);
+fn get_balance_by_key(key: &[u8; 32]) -> U256 {
     let mut balance_bytes = vec![0u8; 32];
     let mut balance_output = balance_bytes.as_mut_slice();
 
-    match api::get_storage(StorageFlags::empty(), &key, &mut balance_output) {
+    match api::get_storage(StorageFlags::empty(), key, &mut balance_output) {
         Ok(_) => U256::from_be_bytes::<32>(balance_output[0..32].try_into().unwrap()),
         Err(_) => U256::ZERO,
     }
 }
 
-/// Set the balance for a given address in storage
+/// Set the balance for a given storage key
 #[inline]
-fn set_balance(addr: &[u8; 20], amount: U256) {
-    let key = balance_key(addr);
-    api::set_storage(StorageFlags::empty(), &key, &amount.to_be_bytes::<32>());
+fn set_balance_by_key(key: &[u8; 32], amount: U256) {
+    api::set_storage(StorageFlags::empty(), key, &amount.to_be_bytes::<32>());
 }
 
 /// Emit a Transfer event
@@ -144,27 +142,27 @@ pub extern "C" fn call() {
                 .expect("Failed to decode transfer call");
 
             let caller = get_caller();
-            let sender_balance = get_balance(&caller);
+            let sender_key = balance_key(&caller);
+            let sender_balance = get_balance_by_key(&sender_key);
 
             if sender_balance < amount {
                 revert_insufficient_balance();
             }
 
-            let new_sender_balance = sender_balance - amount;
+            let to_key = balance_key(&to.into_array());
+            let recipient_balance = get_balance_by_key(&to_key);
 
-            let recipient_balance = get_balance(&to.into_array());
-            let new_recipient_balance = recipient_balance + amount;
-
-            set_balance(&caller, new_sender_balance);
-            set_balance(&to.into_array(), new_recipient_balance);
+            set_balance_by_key(&sender_key, sender_balance - amount);
+            set_balance_by_key(&to_key, recipient_balance + amount);
             emit_transfer(Address::from(caller), to, amount);
         }
         MyToken::mintCall::SELECTOR => {
             let MyToken::mintCall { to, amount } = MyToken::mintCall::abi_decode(&call_data, true)
                 .expect("Failed to decode mint call");
 
-            let new_recipient_balance = get_balance(&to.into_array()).saturating_add(amount);
-            set_balance(&to.0 .0, new_recipient_balance);
+            let to_key = balance_key(&to.into_array());
+            let balance = get_balance_by_key(&to_key);
+            set_balance_by_key(&to_key, balance.saturating_add(amount));
 
             let new_supply = get_total_supply().saturating_add(amount);
             set_total_supply(new_supply);

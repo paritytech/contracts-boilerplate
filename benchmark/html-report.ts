@@ -16,6 +16,18 @@ import {
     getCategoryMappingHtml,
     DATASET_DESCRIPTIONS,
     DATASET_METHODOLOGY,
+    getBaseVsMetered,
+    getTopOps,
+    getExecTotals,
+    getExecTotalsPairCount,
+    getThreeWayTotals,
+    getPerTxMedians,
+    getDeployTotals,
+    getDeployThreeWay,
+    getSyscallCosts,
+    getCostDecomposition7,
+    getCostGapDecomposition,
+    getBytecodeSizeComparison,
 } from './html-report/queries.ts'
 
 import {
@@ -78,6 +90,9 @@ export async function generateHtmlReport(): Promise<void> {
     const bytecodeSection = generateBytecodeSection()
     content += bytecodeSection.html
     scripts.push(bytecodeSection.scripts)
+
+    // Section 6: EVM vs PVM Analysis
+    content += generateEvmPvmAnalysis()
 
     // Generate final HTML
     const html = htmlDocument(content, scripts.join('\n'))
@@ -425,6 +440,156 @@ function generateBytecodeSection(): { html: string; scripts: string } {
     `)
 
     return { html, scripts: scripts.join('\n') }
+}
+
+function generateEvmPvmAnalysis(): string {
+    const fmt = (n: number) => n.toLocaleString()
+    let content = ''
+
+    // ── RQ1: Where do we spend the most? ──
+    content += card('RQ1: Where do we spend the most?', '')
+
+    // Base vs metered weight
+    const baseVsMetered = getBaseVsMetered()
+    if (baseVsMetered.length > 0) {
+        const valPct = (v: number, p: number | null) => p != null ? `${fmt(v)} (${p}%)` : fmt(v)
+        content += card('Base weight vs metered weight (deploy vs execution)', dataTable(
+            ['Type', 'Avg base ref_time', 'Avg metered ref_time', 'Avg base proof_size', 'Avg metered proof_size'],
+            baseVsMetered.map(r => [
+                r.tx_type,
+                valPct(r.avg_base_rt, r.base_rt_pct),
+                valPct(r.avg_metered_rt, r.metered_rt_pct),
+                valPct(r.avg_base_pov, r.base_pov_pct),
+                valPct(r.avg_metered_pov, r.metered_pov_pct),
+            ]),
+        ))
+    }
+
+    // Top ops (execution)
+    const execOps = getTopOps(false)
+    if (execOps.length > 0) {
+        content += card('Cost breakdown by operation category (execution)', dataTable(
+            ['Category', 'Total ref_time', '% of ref_time', 'Total proof_size', '% of proof_size', 'Calls'],
+            execOps.map(r => [
+                r.category,
+                fmt(r.total_rt),
+                r.rt_pct,
+                fmt(r.total_pov),
+                r.pov_pct,
+                r.calls > 0 ? fmt(r.calls) : '—',
+            ]),
+            { numberColumns: [1, 3, 5] },
+        ))
+    }
+
+    // ── RQ2: What are the cost differences? ──
+    content += card('RQ2: What are the cost differences?', '')
+
+    // 93 EVM↔PVM/Sol execution cost totals
+    const execTotals = getExecTotals()
+    const execPairCount = getExecTotalsPairCount()
+    if (execTotals.length > 0) {
+        content += card(`${execPairCount} EVM↔PVM/Solidity execution pairs (excl. CoinTool_App)`, dataTable(
+            ['Metric', 'EVM', 'PVM/Solidity', 'Diff'],
+            execTotals.map(r => [r.metric, fmt(r.evm), fmt(r.pvm_sol), r.diff]),
+            { numberColumns: [1, 2] },
+        ))
+    }
+
+    // 46 three-way comparison
+    const threeWay = getThreeWayTotals()
+    if (threeWay.rows.length > 0) {
+        content += card(`${threeWay.pairCount} three-way pairs (7 polkadot-contracts)`, dataTable(
+            ['Metric', 'EVM', 'PVM/Sol', 'vs EVM', 'PVM/Rust', 'vs EVM'],
+            threeWay.rows.map(r => [r.metric, fmt(r.evm), fmt(r.pvm_sol), r.vs_evm_sol, fmt(r.pvm_rust), r.vs_evm_rust]),
+            { numberColumns: [1, 2, 4] },
+        ))
+    }
+
+    // Per-transaction medians
+    const medians = getPerTxMedians()
+    if (medians.length > 0) {
+        content += card('Per-transaction medians', dataTable(
+            ['Comparison', 'Median ref_time', 'Txs cheaper', 'Median proof_size', 'Txs cheaper'],
+            medians.map(r => [r.comparison, r.median_ref_time, r.txs_cheaper_rt, r.median_proof_size, r.txs_cheaper_pov]),
+        ))
+    }
+
+    // Deploy totals
+    const deployTotals = getDeployTotals()
+    if (deployTotals.rows.length > 0) {
+        content += card(`${deployTotals.pairCount} EVM↔PVM/Solidity deploy pairs`, dataTable(
+            ['Metric', 'EVM', 'PVM/Sol', 'vs EVM'],
+            deployTotals.rows.map(r => [r.metric, fmt(r.evm), fmt(r.pvm_sol), r.vs_evm]),
+            { numberColumns: [1, 2] },
+        ))
+    }
+
+    // Deploy three-way
+    const deployThreeWay = getDeployThreeWay()
+    if (deployThreeWay.rows.length > 0) {
+        content += card(`${deployThreeWay.pairCount} deploy pairs where PVM/Rust exists`, dataTable(
+            ['Metric', 'EVM', 'PVM/Sol', 'vs EVM', 'PVM/Rust', 'vs EVM'],
+            deployThreeWay.rows.map(r => [r.metric, fmt(r.evm), fmt(r.pvm_sol), r.vs_evm_sol, fmt(r.pvm_rust), r.vs_evm_rust]),
+            { numberColumns: [1, 2, 4] },
+        ))
+    }
+
+    // Bytecode size comparison
+    const bytecodeComp = getBytecodeSizeComparison()
+    if (bytecodeComp.length > 0) {
+        content += card('Bytecode size comparison', dataTable(
+            ['Contract', 'EVM bytes', 'PVM/Sol bytes', 'Ratio', 'PVM/Rust bytes', 'Ratio', 'ink! bytes', 'Ratio'],
+            bytecodeComp.map(r => [r.contract, fmt(r.evm_bytes), fmt(r.pvm_sol_bytes), r.ratio, r.pvm_rust_bytes, r.rust_ratio, r.ink_bytes, r.ink_ratio]),
+            { numberColumns: [1, 2] },
+        ))
+    }
+
+    // ── RQ3: What are the sources? ──
+    content += card('RQ3: What are the sources of cost differences?', '')
+
+    // Per-call syscall costs
+    const syscallCosts = getSyscallCosts()
+    if (syscallCosts.length > 0) {
+        content += card('Per-call syscall costs across VMs', dataTable(
+            ['Operation', 'EVM avg ref_time', 'PVM/Sol avg', 'PVM/Rust avg', 'Sol vs EVM', 'Rust vs EVM'],
+            syscallCosts.map(r => [r.operation, fmt(r.evm_avg), r.pvm_sol_avg, r.pvm_rust_avg, r.evm_vs_sol, r.evm_vs_rust]),
+            { numberColumns: [1] },
+        ))
+    }
+
+    // Cost decomposition (7 polkadot-contracts)
+    const decomp7 = getCostDecomposition7()
+    if (decomp7.length > 0) {
+        content += card('Cost decomposition (7 polkadot-contracts, three-way)', dataTable(
+            ['Category', 'EVM total (calls)', 'EVM avg', 'PVM/Sol total (calls)', 'PVM/Sol avg', 'Rust total (calls)', 'Rust avg'],
+            decomp7.map(r => [r.category, r.evm_total, r.evm_avg, r.pvm_sol_total, r.pvm_sol_avg, r.rust_total, r.rust_avg]),
+        ))
+    }
+
+    // PVM cost gap decomposition
+    const costGap = getCostGapDecomposition()
+    if (costGap.pairCount > 0) {
+        const gapTotals = card(`PVM cost gap overview (${costGap.pairCount} pairs, excl. CoinTool_App)`, dataTable(
+            ['Metric', 'EVM total', 'PVM total', 'PVM - EVM', 'Diff'],
+            [
+                ['Metered ref_time', fmt(costGap.totals.evm_rt), fmt(costGap.totals.pvm_rt),
+                    fmt(costGap.totals.pvm_rt - costGap.totals.evm_rt), costGap.totals.rt_diff],
+                ['Metered proof_size', fmt(costGap.totals.evm_pov), fmt(costGap.totals.pvm_pov),
+                    fmt(costGap.totals.pvm_pov - costGap.totals.evm_pov), costGap.totals.pov_diff],
+            ],
+            { numberColumns: [1, 2, 3] },
+        ))
+
+        const gapSources = card('PVM cost gap decomposition', dataTable(
+            ['Source', 'ref_time (ps)', '% of gap', 'proof_size (bytes)', '% of gap'],
+            costGap.sources.map(r => [r.source, r.ref_time_delta, r.rt_pct_of_gap, r.proof_size_delta, r.pov_pct_of_gap]),
+        ))
+
+        content += gapTotals + gapSources
+    }
+
+    return sectionCard('evm-pvm-analysis', 'EVM vs PVM Analysis', content)
 }
 
 if (import.meta.main) {

@@ -228,7 +228,12 @@ fn add_credential_to_indexes_into(cred: &Credential, buf: &mut [u8]) {
 /// issue(address to, string class, bytes32 metadata_cid, bool transferable, uint64 expiry)
 fn handle_issue(input: &mut Input) {
     let to = input.read_address().unwrap_or([0u8; 20]);
-    let class_hash = keccak256(input.read_dynamic_bytes().unwrap_or(&[]));
+    let class_bytes_raw = input.read_dynamic_bytes().unwrap_or(&[]);
+    // Copy class name to stack buffer before hashing
+    let mut class_buf = [0u8; 128];
+    let class_len = class_bytes_raw.len().min(128);
+    class_buf[..class_len].copy_from_slice(&class_bytes_raw[..class_len]);
+    let class_hash = keccak256(&class_buf[..class_len]);
     let metadata_cid = input.read_word().unwrap_or([0u8; 32]);
     let transferable = input.read_bool().unwrap_or(true);
     let expiry_raw = input.read_u64().unwrap_or(0);
@@ -265,11 +270,11 @@ fn handle_issue(input: &mut Input) {
     let issuer_padded = pc_revive_common::from_account_id(&issuer);
     let holder_padded = pc_revive_common::from_account_id(&to);
 
-    EventBuilder::new(b"CredentialIssued(uint64,address,address,bytes32)")
+    EventBuilder::new(b"CredentialIssued(uint64,address,address,string)")
         .topic(&id_padded)
         .topic(&issuer_padded)
         .topic(&holder_padded)
-        .data(&class_hash)
+        .data_abi_with_string(0, &[], &class_buf[..class_len])
         .emit();
 
     // Return the ID
@@ -326,7 +331,7 @@ fn handle_issue_batch(input: &mut Input) {
 
     EventBuilder::new(b"BatchIssued(address,uint64)")
         .topic(&issuer_padded)
-        .data_raw(&(count as u64).to_be_bytes())
+        .data_abi_u64(count as u64)
         .emit();
 
     // Return IDs

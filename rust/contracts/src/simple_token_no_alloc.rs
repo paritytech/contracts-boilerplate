@@ -74,24 +74,22 @@ fn set_total_supply(amount: u128) {
     api::set_storage(StorageFlags::empty(), &key, &bytes);
 }
 
-/// Get the balance for a given address from storage
-fn get_balance(addr: &[u8; 20]) -> u128 {
-    let key = balance_key(addr);
+/// Get the balance for a given storage key
+fn get_balance_by_key(key: &[u8; 32]) -> u128 {
     let mut balance_bytes = [0u8; 16];
     let mut balance_slice = &mut balance_bytes[..];
 
-    match api::get_storage(StorageFlags::empty(), &key, &mut balance_slice) {
+    match api::get_storage(StorageFlags::empty(), key, &mut balance_slice) {
         Ok(_) => u128::from_be_bytes(balance_bytes),
         Err(_) => 0u128,
     }
 }
 
-/// Set the balance for a given address in storage
+/// Set the balance for a given storage key
 #[inline(always)]
-fn set_balance(addr: &[u8; 20], amount: u128) {
-    let key = balance_key(addr);
+fn set_balance_by_key(key: &[u8; 32], amount: u128) {
     let bytes = amount.to_be_bytes();
-    api::set_storage(StorageFlags::empty(), &key, &bytes);
+    api::set_storage(StorageFlags::empty(), key, &bytes);
 }
 
 /// Emit a Transfer event
@@ -171,18 +169,18 @@ pub extern "C" fn call() {
             let amount = decode_u128(&call_data[36..68]);
 
             let caller = get_caller();
-            let sender_balance = get_balance(&caller);
+            let sender_key = balance_key(&caller);
+            let sender_balance = get_balance_by_key(&sender_key);
 
             if sender_balance < amount {
                 revert_insufficient_balance();
             }
 
-            let new_sender_balance = sender_balance - amount;
-            let recipient_balance = get_balance(&to);
-            let new_recipient_balance = recipient_balance + amount;
+            let to_key = balance_key(&to);
+            let recipient_balance = get_balance_by_key(&to_key);
 
-            set_balance(&caller, new_sender_balance);
-            set_balance(&to, new_recipient_balance);
+            set_balance_by_key(&sender_key, sender_balance - amount);
+            set_balance_by_key(&to_key, recipient_balance + amount);
             emit_transfer(&caller, &to, amount);
         }
         MINT_SELECTOR => {
@@ -194,8 +192,9 @@ pub extern "C" fn call() {
             let to = decode_address(&call_data[4..36]);
             let amount = decode_u128(&call_data[36..68]);
 
-            let new_recipient_balance = get_balance(&to).saturating_add(amount);
-            set_balance(&to, new_recipient_balance);
+            let to_key = balance_key(&to);
+            let new_recipient_balance = get_balance_by_key(&to_key).saturating_add(amount);
+            set_balance_by_key(&to_key, new_recipient_balance);
 
             let new_supply = get_total_supply().saturating_add(amount);
             set_total_supply(new_supply);

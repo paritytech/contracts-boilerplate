@@ -221,7 +221,12 @@ fn add_holder_to_class_into(class_id: u64, holder: &AccountId, buf: &mut [u8]) {
 // ============================================================================
 
 fn handle_create_class(input: &mut Input) {
-    let name_hash = keccak256(input.read_dynamic_bytes().unwrap_or(&[]));
+    let name_bytes_raw = input.read_dynamic_bytes().unwrap_or(&[]);
+    // Copy name to stack buffer before hashing (read_dynamic_bytes borrows input)
+    let mut name_buf = [0u8; 128];
+    let name_len = name_bytes_raw.len().min(128);
+    name_buf[..name_len].copy_from_slice(&name_bytes_raw[..name_len]);
+    let name_hash = keccak256(&name_buf[..name_len]);
     let metadata_cid = input.read_word().unwrap_or([0u8; 32]);
     let max_supply_raw = input.read_u128().unwrap_or(0);
     let max_supply = if max_supply_raw == 0 { None } else { Some(max_supply_raw) };
@@ -249,10 +254,10 @@ fn handle_create_class(input: &mut Input) {
     id_padded[24..32].copy_from_slice(&class_id.to_be_bytes());
     let issuer_padded = pc_revive_common::from_account_id(&issuer);
 
-    EventBuilder::new(b"ClassCreated(uint64,address,bytes32)")
+    EventBuilder::new(b"ClassCreated(uint64,address,string)")
         .topic(&id_padded)
         .topic(&issuer_padded)
-        .data(&name_hash)
+        .data_abi_with_string(0, &[], &name_buf[..name_len])
         .emit();
 
     let mut output = Output::new();
@@ -299,7 +304,7 @@ fn handle_issue(input: &mut Input) {
     EventBuilder::new(b"TokensIssued(uint64,address,uint128)")
         .topic(&id_padded)
         .topic(&to_padded)
-        .data_raw(&amount.to_be_bytes())
+        .data_abi_u128(amount)
         .emit();
 
     return_value(&[]);
@@ -358,8 +363,8 @@ fn handle_issue_batch(input: &mut Input) {
 
     EventBuilder::new(b"BatchIssued(uint64,uint64,uint128)")
         .topic(&id_padded)
-        .data_raw(&(recipient_count as u64).to_be_bytes())
-        .data_raw(&total_amount.to_be_bytes())
+        .data_abi_u64(recipient_count as u64)
+        .data_abi_u128(total_amount)
         .emit();
 
     return_value(&[]);
@@ -405,6 +410,7 @@ fn handle_transfer(input: &mut Input) {
         .topic(&id_padded)
         .topic(&from_padded)
         .topic(&to_padded)
+        .data_abi_u128(amount)
         .emit();
 
     return_value(&[]);
@@ -439,6 +445,7 @@ fn handle_burn(input: &mut Input) {
     EventBuilder::new(b"TokensBurned(uint64,address,uint128)")
         .topic(&id_padded)
         .topic(&holder_padded)
+        .data_abi_u128(amount)
         .emit();
 
     return_value(&[]);
@@ -478,6 +485,7 @@ fn handle_revoke(input: &mut Input) {
     EventBuilder::new(b"TokensRevoked(uint64,address,uint128)")
         .topic(&id_padded)
         .topic(&from_padded)
+        .data_abi_u128(amount)
         .emit();
 
     return_value(&[]);

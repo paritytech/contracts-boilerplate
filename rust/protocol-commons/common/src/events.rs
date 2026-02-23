@@ -12,8 +12,8 @@ use uapi::{HostFn, HostFnImpl as api};
 /// Maximum number of topics per event
 pub const MAX_TOPICS: usize = 4;
 
-/// Maximum event data size (reduced from 4096 to avoid stack overflow in PolkaVM)
-pub const MAX_EVENT_DATA: usize = 512;
+/// Maximum event data size
+pub const MAX_EVENT_DATA: usize = 1024;
 
 /// Event builder for constructing and emitting events
 pub struct EventBuilder {
@@ -99,21 +99,139 @@ impl EventBuilder {
         self
     }
 
-    /// Add a dynamic string to event data (ABI-encoded)
-    ///
-    /// For Solidity compatibility, strings are encoded as:
-    /// - Offset pointer (32 bytes, points to string data start)
-    /// - String length (32 bytes)
-    /// - String content (padded to 32-byte boundary)
-    ///
-    /// Note: When used with other data, caller must manage offsets properly.
-    /// This method writes: offset (relative to current position) + length + data
-    pub fn data_dynamic_string(mut self, s: &[u8]) -> Self {
-        // For a single string, offset is always 32 (points past the offset slot)
-        // But if there are multiple dynamic types, this needs adjustment
-        // For now, assume this is used for single-string or at end of data
+    /// ABI-encode a 20-byte address as a 32-byte left-padded word in data
+    pub fn data_abi_address(mut self, addr: &[u8; 20]) -> Self {
+        let new_len = self.data_len + 32;
+        if new_len <= MAX_EVENT_DATA {
+            // bytes 0..12 are zero (already zero-initialized)
+            self.data[self.data_len + 12..new_len].copy_from_slice(addr);
+            self.data_len = new_len;
+        }
+        self
+    }
 
-        // Write length (32 bytes, big-endian)
+    /// ABI-encode a u64 as a 32-byte big-endian left-padded word in data
+    pub fn data_abi_u64(mut self, v: u64) -> Self {
+        let new_len = self.data_len + 32;
+        if new_len <= MAX_EVENT_DATA {
+            self.data[self.data_len + 24..new_len].copy_from_slice(&v.to_be_bytes());
+            self.data_len = new_len;
+        }
+        self
+    }
+
+    /// ABI-encode a u128 as a 32-byte big-endian left-padded word in data
+    pub fn data_abi_u128(mut self, v: u128) -> Self {
+        let new_len = self.data_len + 32;
+        if new_len <= MAX_EVENT_DATA {
+            self.data[self.data_len + 16..new_len].copy_from_slice(&v.to_be_bytes());
+            self.data_len = new_len;
+        }
+        self
+    }
+
+    /// ABI-encode a u128 as a uint256 (32-byte big-endian left-padded word) in data
+    pub fn data_abi_u256_from_u128(self, v: u128) -> Self {
+        // Same encoding as u128 - upper 16 bytes are zero
+        self.data_abi_u128(v)
+    }
+
+    /// ABI-encode a bool as a 32-byte word in data (0 or 1)
+    pub fn data_abi_bool(mut self, v: bool) -> Self {
+        let new_len = self.data_len + 32;
+        if new_len <= MAX_EVENT_DATA {
+            self.data[new_len - 1] = if v { 1 } else { 0 };
+            self.data_len = new_len;
+        }
+        self
+    }
+
+    /// ABI-encode a bytes32 as raw 32 bytes in data
+    pub fn data_abi_bytes32(mut self, v: &[u8; 32]) -> Self {
+        let new_len = self.data_len + 32;
+        if new_len <= MAX_EVENT_DATA {
+            self.data[self.data_len..new_len].copy_from_slice(v);
+            self.data_len = new_len;
+        }
+        self
+    }
+
+    /// ABI-encode non-indexed params containing exactly one dynamic string.
+    ///
+    /// Produces a valid ABI tuple encoding where:
+    /// - `string_pos`: 0-based position of the string among all params
+    /// - `static_words`: all static param values in order (excluding the string)
+    /// - `string_val`: the string bytes
+    ///
+    /// Head section: for each param position, writes either the offset to the
+    /// string tail data (if it's the string position) or the next static word.
+    /// Tail section: string length (32 bytes) + string content (padded to 32).
+    pub fn data_abi_with_string(
+        mut self,
+        string_pos: usize,
+        static_words: &[[u8; 32]],
+        string_val: &[u8],
+    ) -> Self {
+        let n_static = static_words.len();
+        let n_params = n_static + 1; // static params + 1 string
+
+        // The string tail starts after all head slots
+        let tail_offset = (n_params * 32) as u64;
+
+        let mut static_idx = 0usize;
+        // Write head slots
+        for pos in 0..n_params {
+            if pos == string_pos {
+                // Write offset pointer to string tail
+                let new_len = self.data_len + 32;
+                if new_len <= MAX_EVENT_DATA {
+                    self.data[self.data_len + 24..new_len]
+                        .copy_from_slice(&tail_offset.to_be_bytes());
+                    self.data_len = new_len;
+                }
+            } else {
+                // Write static word
+                if static_idx < n_static {
+                    let new_len = self.data_len + 32;
+                    if new_len <= MAX_EVENT_DATA {
+                        self.data[self.data_len..new_len]
+                            .copy_from_slice(&static_words[static_idx]);
+                        self.data_len = new_len;
+                    }
+                    static_idx += 1;
+                }
+            }
+        }
+
+        // Write tail: string length
+        let str_len = string_val.len();
+        {
+            let new_len = self.data_len + 32;
+            if new_len <= MAX_EVENT_DATA {
+                self.data[self.data_len + 24..new_len]
+                    .copy_from_slice(&(str_len as u64).to_be_bytes());
+                self.data_len = new_len;
+            }
+        }
+
+        // Write tail: string content (padded to 32-byte boundary)
+        let padded_len = ((str_len + 31) / 32) * 32;
+        if padded_len > 0 {
+            let new_len = self.data_len + padded_len;
+            if new_len <= MAX_EVENT_DATA && str_len > 0 {
+                self.data[self.data_len..self.data_len + str_len]
+                    .copy_from_slice(string_val);
+                // rest is already zero-initialized
+                self.data_len = new_len;
+            }
+        }
+
+        self
+    }
+
+    /// Add a dynamic string to event data (legacy, missing ABI offset pointer)
+    #[deprecated(note = "Use data_abi_with_string for proper ABI encoding")]
+    pub fn data_dynamic_string(mut self, s: &[u8]) -> Self {
         let len = s.len();
         let mut len_bytes = [0u8; 32];
         len_bytes[24..32].copy_from_slice(&(len as u64).to_be_bytes());
@@ -124,15 +242,11 @@ impl EventBuilder {
             self.data_len = new_len;
         }
 
-        // Write string content (padded to 32-byte boundary)
         let padded_len = ((len + 31) / 32) * 32;
         let new_len = self.data_len + padded_len;
         if new_len <= MAX_EVENT_DATA && len > 0 {
             self.data[self.data_len..self.data_len + len].copy_from_slice(s);
-            // Zero-pad the rest (already zero-initialized)
             self.data_len = new_len;
-        } else if len == 0 {
-            // Empty string, no content to write
         }
 
         self
@@ -196,8 +310,8 @@ pub const EVENT_LOG_CREATED: &[u8] = b"LogCreated(uint64,address,bool)";
 /// Log: EntryAppended(uint64 indexed log_id, uint64 index, address indexed author, bytes32 content_cid)
 pub const EVENT_ENTRY_APPENDED: &[u8] = b"EntryAppended(uint64,uint64,address,bytes32)";
 
-/// Escrow: EscrowCreated(uint64 indexed id, address indexed depositor, address indexed recipient, uint256 amount)
-pub const EVENT_ESCROW_CREATED: &[u8] = b"EscrowCreated(uint64,address,address,uint256)";
+/// Escrow: EscrowCreated(uint64 indexed id, address indexed depositor, address indexed beneficiary, address arbiter, uint256 amount)
+pub const EVENT_ESCROW_CREATED: &[u8] = b"EscrowCreated(uint64,address,address,address,uint256)";
 
 /// Escrow: EscrowReleased(uint64 indexed id, address recipient, uint256 amount)
 pub const EVENT_ESCROW_RELEASED: &[u8] = b"EscrowReleased(uint64,address,uint256)";

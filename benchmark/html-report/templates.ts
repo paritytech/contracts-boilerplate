@@ -29,6 +29,7 @@ export function htmlDocument(content: string, scripts: string): string {
                 <li><a href="#weight">Weight Analysis</a></li>
                 <li><a href="#categories">Category Profiling</a></li>
                 <li><a href="#bytecode">Bytecode Size</a></li>
+                <li><a href="#evm-pvm-analysis">EVM vs PVM Analysis</a></li>
             </ul>
         </div>
     </nav>
@@ -1770,6 +1771,7 @@ export interface CategoryHierarchyRow {
     total_cost: number
     categories_proof_size: Record<string, number>
     total_cost_proof_size: number
+    opcodes?: Array<{ op: string; category: string; pct: number; pct_proof_size: number }>
 }
 
 export interface CategoryHierarchyData {
@@ -1836,10 +1838,22 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
             `)
 
             for (const tx of contract.transactions) {
+                // Build tooltip text per category from opcode detail
+                const opcodeTips: Record<string, string> = {}
+                if (tx.opcodes) {
+                    for (const op of tx.opcodes) {
+                        if (!opcodeTips[op.category]) opcodeTips[op.category] = ''
+                        opcodeTips[op.category] += `${op.op}: ${op.pct.toFixed(1)}%\n`
+                    }
+                }
+
                 rows.push(`
                     <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
                         <td>${tx.name}</td>
-                        ${allCategories.map(cat => `<td class="number">${(tx.categories[cat] ?? 0).toFixed(1)}%</td>`).join('')}
+                        ${allCategories.map(cat => {
+                            const tip = opcodeTips[cat] ? ` title="${escAttr(opcodeTips[cat].trimEnd())}"` : ''
+                            return `<td class="number"${tip}>${(tx.categories[cat] ?? 0).toFixed(1)}%</td>`
+                        }).join('')}
                     </tr>
                 `)
             }
@@ -2096,7 +2110,7 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                 }
             });
 
-            // Update level-2 transaction rows
+            // Update level-2 transaction rows (values + tooltips)
             table.querySelectorAll('tr.level-2').forEach(function(row) {
                 var txName = row.dataset.txname;
                 var dsName = row.dataset.dataset;
@@ -2110,6 +2124,18 @@ export function drilldownCategoryChartScript(hierarchy: CategoryHierarchyData, c
                 var cells = row.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
                     cells[i + 1].innerHTML = tx ? fmtCatPct(catField(tx)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
+                    // Update tooltip for metric switch
+                    if (tx && tx.opcodes) {
+                        var tip = '';
+                        for (var j = 0; j < tx.opcodes.length; j++) {
+                            var op = tx.opcodes[j];
+                            if (op.category === allCats[i]) {
+                                var pv = categoryMetric === 'proof_size' ? op.pct_proof_size : op.pct;
+                                tip += op.op + ': ' + pv.toFixed(1) + '%\\n';
+                            }
+                        }
+                        cells[i + 1].title = tip.trimEnd();
+                    }
                 }
             });
 
@@ -2487,3 +2513,4 @@ export function drilldownBytecodeChartScript(hierarchy: BytecodeHierarchyData): 
         };
     `
 }
+

@@ -393,8 +393,7 @@ fn handle_set(input: &mut Input, data: &[u8]) {
     let owner_padded = pc_revive_common::from_account_id(&owner);
     EventBuilder::new(b"EntrySet(address,string,bytes32)")
         .topic(&owner_padded)
-        .data_dynamic_string(key)
-        .data(&value)
+        .data_abi_with_string(0, &[value], key)
         .emit();
 
     return_value(&[]);
@@ -428,8 +427,7 @@ fn handle_set_for(input: &mut Input, data: &[u8]) {
     let owner_padded = pc_revive_common::from_account_id(&owner);
     EventBuilder::new(b"EntrySet(address,string,bytes32)")
         .topic(&owner_padded)
-        .data_dynamic_string(key)
-        .data(&value)
+        .data_abi_with_string(0, &[value], key)
         .emit();
 
     return_value(&[]);
@@ -506,8 +504,7 @@ fn handle_set_batch(input: &mut Input, data: &[u8]) {
         let owner_padded = pc_revive_common::from_account_id(&owner);
         EventBuilder::new(b"EntrySet(address,string,bytes32)")
             .topic(&owner_padded)
-            .data_dynamic_string(key)
-            .data(&value)
+            .data_abi_with_string(0, &[value], key)
             .emit();
     }
 
@@ -590,8 +587,7 @@ fn handle_set_for_batch(input: &mut Input, data: &[u8]) {
         let owner_padded = pc_revive_common::from_account_id(&owner);
         EventBuilder::new(b"EntrySet(address,string,bytes32)")
             .topic(&owner_padded)
-            .data_dynamic_string(key)
-            .data(&value)
+            .data_abi_with_string(0, &[value], key)
             .emit();
     }
 
@@ -639,7 +635,7 @@ fn handle_delete(input: &mut Input, _data: &[u8]) {
     let owner_padded = pc_revive_common::from_account_id(&owner);
     EventBuilder::new(b"EntryDeleted(address,string)")
         .topic(&owner_padded)
-        .data_dynamic_string(key)
+        .data_abi_with_string(0, &[], key)
         .emit();
 
     return_value(&[]);
@@ -663,7 +659,7 @@ fn handle_delete_for(input: &mut Input, _data: &[u8]) {
     let owner_padded = pc_revive_common::from_account_id(&owner);
     EventBuilder::new(b"EntryDeleted(address,string)")
         .topic(&owner_padded)
-        .data_dynamic_string(key)
+        .data_abi_with_string(0, &[], key)
         .emit();
 
     return_value(&[]);
@@ -718,7 +714,7 @@ fn handle_delegate(input: &mut Input, _data: &[u8]) {
     EventBuilder::new(b"DelegationCreated(address,address,string)")
         .topic(&owner_padded)
         .topic(&delegate_padded)
-        .data_dynamic_string(prefix_bytes)
+        .data_abi_with_string(0, &[], prefix_bytes)
         .emit();
 
     return_value(&[]);
@@ -764,7 +760,7 @@ fn handle_revoke_delegation(input: &mut Input, _data: &[u8]) {
     EventBuilder::new(b"DelegationRevoked(address,address,string)")
         .topic(&owner_padded)
         .topic(&delegate_padded)
-        .data_dynamic_string(prefix_bytes)
+        .data_abi_with_string(0, &[], prefix_bytes)
         .emit();
 
     return_value(&[]);

@@ -222,10 +222,12 @@ fn handle_create(input: &mut Input) {
     let depositor_padded = pc_revive_common::from_account_id(&depositor);
     let beneficiary_padded = pc_revive_common::from_account_id(&beneficiary);
 
-    EventBuilder::new(b"EscrowCreated(uint64,address,address,address,uint128)")
+    EventBuilder::new(b"EscrowCreated(uint64,address,address,address,uint256)")
         .topic(&id_padded)
         .topic(&depositor_padded)
         .topic(&beneficiary_padded)
+        .data_abi_address(&arbiter)
+        .data_abi_u256_from_u128(amount)
         .emit();
 
     let mut output = Output::new();

@@ -42,6 +42,7 @@ export const testContracts: Artifacts = [
         srcs: [
             ink('simple_token'),
             rust('simple_token_no_alloc'),
+            rust('simple_token_with_alloc'),
             ...solidity('simple_token.sol', 'SimpleToken'),
         ],
         deploy: (id, name, bytecode) => {

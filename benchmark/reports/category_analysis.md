@@ -1,6 +1,6 @@
 # Opcode Category Analysis
 
-Generated on: 2026-02-11
+Generated on: 2026-02-20
 
 Opcodes grouped by functional category.
 
@@ -2190,18 +2190,18 @@ Opcodes grouped by functional category.
 
 ### DocumentAccessManagement_pvm - createDocument2
 
-- **Total Gas Used:** 1,483,137
-- **Base Call Weight:** ref_time=916,712,342, proof_size=9,311
-- **Total Weight:** ref_time=5,101,059,956, proof_size=397,025
+- **Total Gas Used:** 1,481,137
+- **Base Call Weight:** ref_time=916,700,015, proof_size=9,308
+- **Total Weight:** ref_time=5,101,047,629, proof_size=397,022
 - **Weight Consumed:** ref_time=4,184,347,614 (82.0% of total), proof_size=387,714
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear      | 541,721   | 29         | 3,326,139,830 | 297,838    | 79.5%         | 76.8%           |
-| Crypto    | hash_keccak_256                                | 2,733     | 9          | 136,750,701   | 0          | 3.3%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear      | 541,726   | 29         | 3,326,139,830 | 297,838    | 79.5%         | 76.8%           |
+| Crypto    | hash_keccak_256                                | 2,736     | 9          | 136,750,701   | 0          | 3.3%          | 0.0%            |
 | Events    | deposit_event                                  | 1,118     | 1          | 55,891,404    | 0          | 1.3%          | 0.0%            |
 | Calldata  | call_data_copy, call_data_load, call_data_size | 95        | 13         | 4,760,158     | 0          | 0.1%          | 0.0%            |
-| Context   | caller, now                                    | 16        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
+| Context   | caller, now                                    | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                              | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 
@@ -2491,17 +2491,17 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - createSubdomain
 
-- **Total Gas Used:** 955,007
+- **Total Gas Used:** 958,087
 - **Base Call Weight:** ref_time=915,911,087, proof_size=9,116
-- **Total Weight:** ref_time=2,944,556,095, proof_size=83,914
-- **Weight Consumed:** ref_time=2,028,645,008 (68.9% of total), proof_size=74,798
+- **Total Weight:** ref_time=3,098,559,557, proof_size=83,729
+- **Weight Consumed:** ref_time=2,182,648,470 (70.4% of total), proof_size=74,613
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 133,217   | 5          | 650,781,315 | 51,678     | 32.1%         | 69.1%           |
-| Crypto   | hash_keccak_256          | 5,142     | 17         | 257,208,156 | 0          | 12.7%         | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.3%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 133,215   | 5          | 650,781,315 | 51,678     | 29.8%         | 69.3%           |
+| Crypto   | hash_keccak_256          | 5,143     | 17         | 257,211,699 | 0          | 11.8%         | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 1.4%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
 
@@ -2539,132 +2539,132 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - deploy
 
-- **Total Gas Used:** 67,154,711
-- **Base Call Weight:** ref_time=1,883,360,269, proof_size=6,934
-- **Total Weight:** ref_time=1,884,716,168, proof_size=6,934
+- **Total Gas Used:** 66,736,552
+- **Base Call Weight:** ref_time=1,880,432,459, proof_size=6,934
+- **Total Weight:** ref_time=1,881,788,358, proof_size=6,934
 - **Weight Consumed:** ref_time=1,355,899 (0.1% of total), proof_size=0
 
 | Category | Opcodes Used | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Return   | seal_return  | 11        | 1          | 529,465  | 0          | 39.0%         | 0.0%            |
+| Return   | seal_return  | 10        | 1          | 529,465  | 0          | 39.0%         | 0.0%            |
 
 
 ### DotNS_evm - register
 
-- **Total Gas Used:** 1,132,499
+- **Total Gas Used:** 1,132,475
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=4,429,144,532, proof_size=255,278
-- **Weight Consumed:** ref_time=3,514,835,955 (79.4% of total), proof_size=246,552
+- **Total Weight:** ref_time=4,427,952,692, proof_size=255,278
+- **Weight Consumed:** ref_time=3,513,644,115 (79.4% of total), proof_size=246,552
 
 | Category     | Opcodes Used                                                                                                                                                                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 585,541   | 24         | 2,877,144,188 | 246,552    | 81.9%         | 100.0%          |
-| Crypto       | KECCAK256                                                                                                                                                                                 | 5,162     | 17         | 258,012,417   | 0          | 7.3%          | 0.0%            |
-| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 2,861     | 3,154      | 142,761,040   | 0          | 4.1%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 2,253     | 1,327      | 113,270,640   | 0          | 3.2%          | 0.0%            |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 585,544   | 24         | 2,877,144,188 | 246,552    | 81.9%         | 100.0%          |
+| Crypto       | KECCAK256                                                                                                                                                                                 | 5,160     | 17         | 258,012,417   | 0          | 7.3%          | 0.0%            |
+| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 2,845     | 3,140      | 142,149,840   | 0          | 4.0%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 2,253     | 1,325      | 112,965,040   | 0          | 3.2%          | 0.0%            |
 | Events       | LOG3                                                                                                                                                                                      | 612       | 1          | 30,607,500    | 0          | 0.9%          | 0.0%            |
-| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 510       | 553        | 25,349,520    | 0          | 0.7%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 481       | 529        | 24,249,360    | 0          | 0.7%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 453       | 490        | 22,461,600    | 0          | 0.6%          | 0.0%            |
-| Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                                             | 313       | 336        | 15,493,920    | 0          | 0.4%          | 0.0%            |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 505       | 551        | 25,257,840    | 0          | 0.7%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 479       | 525        | 24,066,000    | 0          | 0.7%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 456       | 490        | 22,461,600    | 0          | 0.6%          | 0.0%            |
+| Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                                             | 309       | 336        | 15,493,920    | 0          | 0.4%          | 0.0%            |
 | Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                  | 57        | 15         | 2,833,238     | 0          | 0.1%          | 0.0%            |
-| Context      | CALLER, TIMESTAMP                                                                                                                                                                         | 40        | 5          | 1,959,000     | 0          | 0.1%          | 0.0%            |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                         | 39        | 5          | 1,959,000     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas    | CALLVALUE                                                                                                                                                                                 | 7         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                                                                                                                    | 0         | 1          | 0             | 0          | 0.0%          | 0.0%            |
 
 
 ### DotNS_pvm - register
 
-- **Total Gas Used:** 1,191,459
+- **Total Gas Used:** 1,191,426
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=7,377,144,941, proof_size=351,270
-- **Weight Consumed:** ref_time=6,462,836,364 (87.6% of total), proof_size=342,544
+- **Total Weight:** ref_time=7,375,471,121, proof_size=351,270
+- **Weight Consumed:** ref_time=6,461,162,544 (87.6% of total), proof_size=342,544
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
 | Storage   | get_storage_or_zero, set_storage_or_clear      | 590,459   | 26         | 3,122,880,441 | 267,101    | 48.3%         | 78.0%           |
-| Crypto    | hash_keccak_256                                | 5,158     | 17         | 258,012,417   | 0          | 4.0%          | 0.0%            |
-| Events    | deposit_event                                  | 613       | 1          | 30,607,500    | 0          | 0.5%          | 0.0%            |
+| Crypto    | hash_keccak_256                                | 5,164     | 17         | 258,012,417   | 0          | 4.0%          | 0.0%            |
+| Events    | deposit_event                                  | 612       | 1          | 30,607,500    | 0          | 0.5%          | 0.0%            |
 | Calldata  | call_data_copy, call_data_load, call_data_size | 83        | 10         | 4,196,858     | 0          | 0.1%          | 0.0%            |
-| Context   | caller, now                                    | 40        | 5          | 1,959,000     | 0          | 0.0%          | 0.0%            |
+| Context   | caller, now                                    | 39        | 5          | 1,959,000     | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                              | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### dotns_rust - register
 
-- **Total Gas Used:** 791,332
+- **Total Gas Used:** 794,068
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=2,400,804,491, proof_size=72,874
-- **Weight Consumed:** ref_time=1,486,495,914 (61.9% of total), proof_size=64,148
+- **Total Weight:** ref_time=2,537,577,453, proof_size=72,689
+- **Weight Consumed:** ref_time=1,623,268,876 (64.0% of total), proof_size=63,963
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 239,021   | 4          | 581,082,307 | 41,028     | 39.1%         | 64.0%           |
-| Crypto   | hash_keccak_256          | 3,933     | 13         | 196,662,330 | 0          | 13.2%         | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.4%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 239,023   | 4          | 581,082,307 | 41,028     | 35.8%         | 64.1%           |
+| Crypto   | hash_keccak_256          | 3,931     | 13         | 196,665,873 | 0          | 12.1%         | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 1.9%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
 
 
 ### DotNS_evm - register_with_duration
 
-- **Total Gas Used:** 1,132,226
+- **Total Gas Used:** 1,132,214
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=4,415,487,556, proof_size=255,310
-- **Weight Consumed:** ref_time=3,501,178,979 (79.3% of total), proof_size=246,584
+- **Total Weight:** ref_time=4,414,891,636, proof_size=255,310
+- **Weight Consumed:** ref_time=3,500,583,059 (79.3% of total), proof_size=246,584
 
 | Category     | Opcodes Used                                                                                                                                                                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 585,544   | 24         | 2,877,186,684 | 246,584    | 82.2%         | 100.0%          |
-| Crypto       | KECCAK256                                                                                                                                                                                 | 5,160     | 17         | 258,008,874   | 0          | 7.4%          | 0.0%            |
-| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 2,758     | 3,037      | 137,474,160   | 0          | 3.9%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 2,167     | 1,267      | 108,090,720   | 0          | 3.1%          | 0.0%            |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 585,543   | 24         | 2,877,186,684 | 246,584    | 82.2%         | 100.0%          |
+| Crypto       | KECCAK256                                                                                                                                                                                 | 5,158     | 17         | 258,008,874   | 0          | 7.4%          | 0.0%            |
+| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 2,744     | 3,030      | 137,168,560   | 0          | 3.9%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 2,167     | 1,266      | 107,937,920   | 0          | 3.1%          | 0.0%            |
 | Events       | LOG3                                                                                                                                                                                      | 612       | 1          | 30,607,500    | 0          | 0.9%          | 0.0%            |
-| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 485       | 533        | 24,432,720    | 0          | 0.7%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 450       | 501        | 22,965,840    | 0          | 0.7%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 429       | 473        | 21,682,320    | 0          | 0.6%          | 0.0%            |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 490       | 532        | 24,386,880    | 0          | 0.7%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 453       | 499        | 22,874,160    | 0          | 0.7%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 430       | 473        | 21,682,320    | 0          | 0.6%          | 0.0%            |
 | Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                                             | 298       | 323        | 14,898,000    | 0          | 0.4%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                  | 59        | 15         | 2,832,629     | 0          | 0.1%          | 0.0%            |
-| Context      | CALLER, TIMESTAMP                                                                                                                                                                         | 47        | 6          | 2,306,000     | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                  | 57        | 15         | 2,832,629     | 0          | 0.1%          | 0.0%            |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                         | 46        | 6          | 2,306,000     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas    | CALLVALUE                                                                                                                                                                                 | 7         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                                                                                                                    | 0         | 1          | 0             | 0          | 0.0%          | 0.0%            |
 
 
 ### DotNS_pvm - register_with_duration
 
-- **Total Gas Used:** 1,189,167
+- **Total Gas Used:** 1,189,134
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=7,262,551,219, proof_size=351,172
-- **Weight Consumed:** ref_time=6,348,242,642 (87.4% of total), proof_size=342,446
+- **Total Weight:** ref_time=7,260,877,399, proof_size=351,172
+- **Weight Consumed:** ref_time=6,346,568,822 (87.4% of total), proof_size=342,446
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear      | 590,376   | 26         | 3,118,721,577 | 267,003    | 49.1%         | 78.0%           |
-| Crypto    | hash_keccak_256                                | 5,158     | 17         | 258,008,874   | 0          | 4.1%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear      | 590,370   | 26         | 3,118,721,577 | 267,003    | 49.1%         | 78.0%           |
+| Crypto    | hash_keccak_256                                | 5,162     | 17         | 258,008,874   | 0          | 4.1%          | 0.0%            |
 | Events    | deposit_event                                  | 612       | 1          | 30,607,500    | 0          | 0.5%          | 0.0%            |
 | Calldata  | call_data_copy, call_data_load, call_data_size | 83        | 10         | 4,196,519     | 0          | 0.1%          | 0.0%            |
-| Context   | caller, now                                    | 47        | 6          | 2,306,000     | 0          | 0.0%          | 0.0%            |
-| Return    | seal_return                                    | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
+| Context   | caller, now                                    | 46        | 6          | 2,306,000     | 0          | 0.0%          | 0.0%            |
+| Return    | seal_return                                    | 10        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                              | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### dotns_rust - register_with_duration
 
-- **Total Gas Used:** 684,110
+- **Total Gas Used:** 686,841
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=2,399,699,298, proof_size=72,914
-- **Weight Consumed:** ref_time=1,485,390,721 (61.9% of total), proof_size=64,188
+- **Total Weight:** ref_time=2,536,226,110, proof_size=72,729
+- **Weight Consumed:** ref_time=1,621,917,533 (64.0% of total), proof_size=64,003
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 131,822   | 4          | 581,112,947 | 41,068     | 39.1%         | 64.0%           |
-| Crypto   | hash_keccak_256          | 3,933     | 13         | 196,658,787 | 0          | 13.2%         | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.4%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Context  | caller, now              | 14        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 131,821   | 4          | 581,112,947 | 41,068     | 35.8%         | 64.2%           |
+| Crypto   | hash_keccak_256          | 3,934     | 13         | 196,662,330 | 0          | 12.1%         | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 1.9%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
 
 
 ### DotNS_evm - release
@@ -2711,18 +2711,18 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - release
 
-- **Total Gas Used:** 416,485
+- **Total Gas Used:** 419,080
 - **Base Call Weight:** ref_time=913,914,113, proof_size=8,630
-- **Total Weight:** ref_time=1,758,439,495, proof_size=52,970
-- **Weight Consumed:** ref_time=844,525,382 (48.0% of total), proof_size=44,340
+- **Total Weight:** ref_time=1,888,172,567, proof_size=52,785
+- **Weight Consumed:** ref_time=974,258,454 (51.6% of total), proof_size=44,155
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,810     | 2          | 240,521,076 | 21,220     | 28.5%         | 47.9%           |
-| Crypto   | hash_keccak_256          | 2,119     | 7          | 105,871,935 | 0          | 12.5%         | 0.0%            |
-| Events   | deposit_event            | 106       | 1          | 5,323,596   | 0          | 0.6%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,810     | 2          | 240,521,076 | 21,220     | 24.7%         | 48.1%           |
+| Crypto   | hash_keccak_256          | 2,118     | 7          | 105,875,478 | 0          | 10.9%         | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 3.1%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -2770,18 +2770,18 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - renew
 
-- **Total Gas Used:** 553,515
+- **Total Gas Used:** 555,038
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=1,879,958,265, proof_size=53,066
-- **Weight Consumed:** ref_time=965,649,688 (51.4% of total), proof_size=44,340
+- **Total Weight:** ref_time=1,956,079,867, proof_size=52,881
+- **Weight Consumed:** ref_time=1,041,771,290 (53.3% of total), proof_size=44,155
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,815     | 2          | 240,719,462 | 21,220     | 24.9%         | 47.9%           |
-| Crypto   | hash_keccak_256          | 2,118     | 7          | 105,886,107 | 0          | 11.0%         | 0.0%            |
-| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.4%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,814     | 2          | 240,719,462 | 21,220     | 23.1%         | 48.1%           |
+| Crypto   | hash_keccak_256          | 2,118     | 7          | 105,889,650 | 0          | 10.2%         | 0.0%            |
+| Events   | deposit_event            | 780       | 1          | 39,035,468  | 0          | 3.7%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 | Context  | now                      | 7         | 1          | 347,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -2829,18 +2829,18 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - setAddress
 
-- **Total Gas Used:** 553,771
+- **Total Gas Used:** 556,276
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=1,892,744,940, proof_size=53,066
-- **Weight Consumed:** ref_time=978,436,363 (51.7% of total), proof_size=44,340
+- **Total Weight:** ref_time=2,017,968,128, proof_size=52,881
+- **Weight Consumed:** ref_time=1,103,659,551 (54.7% of total), proof_size=44,155
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,815     | 2          | 240,719,462 | 21,220     | 24.6%         | 47.9%           |
-| Crypto   | hash_keccak_256          | 2,118     | 7          | 105,925,080 | 0          | 10.8%         | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.5%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,814     | 2          | 240,719,462 | 21,220     | 21.8%         | 48.1%           |
+| Crypto   | hash_keccak_256          | 2,119     | 7          | 105,928,623 | 0          | 9.6%          | 0.0%            |
+| Events   | deposit_event            | 949       | 1          | 47,463,436  | 0          | 4.3%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -2888,18 +2888,18 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - setMetadata
 
-- **Total Gas Used:** 553,869
+- **Total Gas Used:** 555,328
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=1,897,652,777, proof_size=53,066
-- **Weight Consumed:** ref_time=983,344,200 (51.8% of total), proof_size=44,340
+- **Total Weight:** ref_time=1,970,574,429, proof_size=52,881
+- **Weight Consumed:** ref_time=1,056,265,852 (53.6% of total), proof_size=44,155
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,814     | 2          | 240,719,462 | 21,220     | 24.5%         | 47.9%           |
-| Crypto   | hash_keccak_256          | 2,118     | 7          | 105,900,279 | 0          | 10.8%         | 0.0%            |
-| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.4%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,814     | 2          | 240,719,462 | 21,220     | 22.8%         | 48.1%           |
+| Crypto   | hash_keccak_256          | 2,118     | 7          | 105,903,822 | 0          | 10.0%         | 0.0%            |
+| Events   | deposit_event            | 781       | 1          | 39,035,468  | 0          | 3.7%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -2947,18 +2947,18 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - setSubdomainOwner
 
-- **Total Gas Used:** 771,653
+- **Total Gas Used:** 774,789
 - **Base Call Weight:** ref_time=915,504,296, proof_size=9,017
-- **Total Weight:** ref_time=3,086,817,132, proof_size=84,521
-- **Weight Consumed:** ref_time=2,171,312,836 (70.3% of total), proof_size=75,504
+- **Total Weight:** ref_time=3,243,626,704, proof_size=84,336
+- **Weight Consumed:** ref_time=2,328,122,408 (71.8% of total), proof_size=75,319
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 13,031    | 5          | 651,605,570 | 52,384     | 30.0%         | 69.4%           |
-| Crypto   | hash_keccak_256          | 5,145     | 17         | 257,169,183 | 0          | 11.8%         | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.2%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 13,032    | 5          | 651,605,570 | 52,384     | 28.0%         | 69.5%           |
+| Crypto   | hash_keccak_256          | 5,143     | 17         | 257,172,726 | 0          | 11.0%         | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 1.3%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -3006,18 +3006,18 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - transfer
 
-- **Total Gas Used:** 672,821
+- **Total Gas Used:** 675,937
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=2,485,254,949, proof_size=73,580
-- **Weight Consumed:** ref_time=1,570,946,372 (63.2% of total), proof_size=64,854
+- **Total Weight:** ref_time=2,641,030,691, proof_size=73,395
+- **Weight Consumed:** ref_time=1,726,722,114 (65.4% of total), proof_size=64,669
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 118,838   | 4          | 581,906,562 | 41,734     | 37.0%         | 64.4%           |
-| Crypto   | hash_keccak_256          | 3,026     | 10         | 151,322,049 | 0          | 9.6%          | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.3%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 118,838   | 4          | 581,906,562 | 41,734     | 33.7%         | 64.5%           |
+| Crypto   | hash_keccak_256          | 3,027     | 10         | 151,325,592 | 0          | 8.8%          | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 1.8%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -3065,17 +3065,17 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - create_simple
 
-- **Total Gas Used:** 866,535
-- **Base Call Weight:** ref_time=914,394,866, proof_size=8,747
-- **Total Weight:** ref_time=2,940,917,079, proof_size=92,996
-- **Weight Consumed:** ref_time=2,026,522,213 (68.9% of total), proof_size=84,249
+- **Total Gas Used:** 872,351
+- **Base Call Weight:** ref_time=914,407,193, proof_size=8,750
+- **Total Weight:** ref_time=3,131,723,864, proof_size=93,381
+- **Weight Consumed:** ref_time=2,217,316,671 (70.8% of total), proof_size=84,631
 
 | Category  | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage, set_storage | 299,653   | 7          | 1,092,715,285 | 71,815     | 53.9%         | 85.2%           |
-| Crypto    | hash_keccak_256          | 3,022     | 10         | 151,137,813   | 0          | 7.5%          | 0.0%            |
-| Events    | deposit_event            | 107       | 1          | 5,323,596     | 0          | 0.3%          | 0.0%            |
-| Calldata  | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Storage   | get_storage, set_storage | 299,656   | 7          | 1,092,715,285 | 71,815     | 49.3%         | 84.9%           |
+| Crypto    | hash_keccak_256          | 3,025     | 10         | 151,137,813   | 0          | 6.8%          | 0.0%            |
+| Events    | deposit_event            | 444       | 1          | 22,179,532    | 0          | 1.0%          | 0.0%            |
+| Calldata  | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Context   | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return              | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred        | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
@@ -3125,17 +3125,17 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - create_with_arbiter
 
-- **Total Gas Used:** 661,735
-- **Base Call Weight:** ref_time=914,394,866, proof_size=8,747
-- **Total Weight:** ref_time=2,940,941,591, proof_size=93,028
-- **Weight Consumed:** ref_time=2,026,546,725 (68.9% of total), proof_size=84,281
+- **Total Gas Used:** 667,551
+- **Base Call Weight:** ref_time=914,407,193, proof_size=8,750
+- **Total Weight:** ref_time=3,131,748,376, proof_size=93,413
+- **Weight Consumed:** ref_time=2,217,341,183 (70.8% of total), proof_size=84,663
 
 | Category  | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage, set_storage | 94,854    | 7          | 1,092,739,797 | 71,847     | 53.9%         | 85.2%           |
-| Crypto    | hash_keccak_256          | 3,022     | 10         | 151,137,813   | 0          | 7.5%          | 0.0%            |
-| Events    | deposit_event            | 106       | 1          | 5,323,596     | 0          | 0.3%          | 0.0%            |
-| Calldata  | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Storage   | get_storage, set_storage | 94,855    | 7          | 1,092,739,797 | 71,847     | 49.3%         | 84.9%           |
+| Crypto    | hash_keccak_256          | 3,025     | 10         | 151,137,813   | 0          | 6.8%          | 0.0%            |
+| Events    | deposit_event            | 443       | 1          | 22,179,532    | 0          | 1.0%          | 0.0%            |
+| Calldata  | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Context   | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return              | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred        | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
@@ -3185,17 +3185,17 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - create_with_expiry
 
-- **Total Gas Used:** 661,735
-- **Base Call Weight:** ref_time=914,394,866, proof_size=8,747
-- **Total Weight:** ref_time=2,940,941,591, proof_size=93,028
-- **Weight Consumed:** ref_time=2,026,546,725 (68.9% of total), proof_size=84,281
+- **Total Gas Used:** 667,551
+- **Base Call Weight:** ref_time=914,407,193, proof_size=8,750
+- **Total Weight:** ref_time=3,131,748,376, proof_size=93,413
+- **Weight Consumed:** ref_time=2,217,341,183 (70.8% of total), proof_size=84,663
 
 | Category  | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage, set_storage | 94,854    | 7          | 1,092,739,797 | 71,847     | 53.9%         | 85.2%           |
-| Crypto    | hash_keccak_256          | 3,022     | 10         | 151,137,813   | 0          | 7.5%          | 0.0%            |
-| Events    | deposit_event            | 106       | 1          | 5,323,596     | 0          | 0.3%          | 0.0%            |
-| Calldata  | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Storage   | get_storage, set_storage | 94,855    | 7          | 1,092,739,797 | 71,847     | 49.3%         | 84.9%           |
+| Crypto    | hash_keccak_256          | 3,025     | 10         | 151,137,813   | 0          | 6.8%          | 0.0%            |
+| Events    | deposit_event            | 443       | 1          | 22,179,532    | 0          | 1.0%          | 0.0%            |
+| Calldata  | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Context   | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return              | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred        | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
@@ -3245,17 +3245,17 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - create_with_releaseTime
 
-- **Total Gas Used:** 661,735
-- **Base Call Weight:** ref_time=914,394,866, proof_size=8,747
-- **Total Weight:** ref_time=2,940,941,591, proof_size=93,028
-- **Weight Consumed:** ref_time=2,026,546,725 (68.9% of total), proof_size=84,281
+- **Total Gas Used:** 667,551
+- **Base Call Weight:** ref_time=914,407,193, proof_size=8,750
+- **Total Weight:** ref_time=3,131,748,376, proof_size=93,413
+- **Weight Consumed:** ref_time=2,217,341,183 (70.8% of total), proof_size=84,663
 
 | Category  | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage, set_storage | 94,854    | 7          | 1,092,739,797 | 71,847     | 53.9%         | 85.2%           |
-| Crypto    | hash_keccak_256          | 3,022     | 10         | 151,137,813   | 0          | 7.5%          | 0.0%            |
-| Events    | deposit_event            | 106       | 1          | 5,323,596     | 0          | 0.3%          | 0.0%            |
-| Calldata  | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Storage   | get_storage, set_storage | 94,855    | 7          | 1,092,739,797 | 71,847     | 49.3%         | 84.9%           |
+| Crypto    | hash_keccak_256          | 3,025     | 10         | 151,137,813   | 0          | 6.8%          | 0.0%            |
+| Events    | deposit_event            | 443       | 1          | 22,179,532    | 0          | 1.0%          | 0.0%            |
+| Calldata  | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Context   | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return              | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred        | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
@@ -3298,10 +3298,10 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - deploy
 
-- **Total Gas Used:** 43,048,828
-- **Base Call Weight:** ref_time=1,714,243,633, proof_size=6,934
-- **Total Weight:** ref_time=1,948,584,928, proof_size=17,191
-- **Weight Consumed:** ref_time=234,341,295 (12.0% of total), proof_size=10,257
+- **Total Gas Used:** 43,912,270
+- **Base Call Weight:** ref_time=1,720,289,165, proof_size=6,934
+- **Total Weight:** ref_time=1,954,679,690, proof_size=17,191
+- **Weight Consumed:** ref_time=234,390,525 (12.0% of total), proof_size=10,257
 
 | Category | Opcodes Used    | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | --------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
@@ -3358,16 +3358,16 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - refund
 
-- **Total Gas Used:** 376,751
+- **Total Gas Used:** 377,722
 - **Base Call Weight:** ref_time=913,125,185, proof_size=8,438
-- **Total Weight:** ref_time=2,641,761,441, proof_size=77,988
-- **Weight Consumed:** ref_time=1,728,636,256 (65.4% of total), proof_size=69,550
+- **Total Weight:** ref_time=2,690,311,153, proof_size=78,370
+- **Weight Consumed:** ref_time=1,777,185,968 (66.1% of total), proof_size=69,932
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 13,005    | 5          | 650,319,126 | 51,522     | 37.6%         | 74.1%           |
-| Calls    | call                     | 8,528     | 1          | 426,390,360 | 5,594      | 24.7%         | 8.0%            |
-| Crypto   | hash_keccak_256          | 1,811     | 6          | 90,464,439  | 0          | 5.2%          | 0.0%            |
+| Storage  | get_storage, set_storage | 13,005    | 5          | 650,319,126 | 51,522     | 36.6%         | 73.7%           |
+| Calls    | call                     | 8,528     | 1          | 426,390,360 | 5,594      | 24.0%         | 8.0%            |
+| Crypto   | hash_keccak_256          | 1,811     | 6          | 90,464,439  | 0          | 5.1%          | 0.0%            |
 | Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.3%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
@@ -3422,20 +3422,20 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - release
 
-- **Total Gas Used:** 426,449
+- **Total Gas Used:** 427,420
 - **Base Call Weight:** ref_time=913,125,185, proof_size=8,438
-- **Total Weight:** ref_time=2,636,639,186, proof_size=77,986
-- **Weight Consumed:** ref_time=1,723,514,001 (65.4% of total), proof_size=69,548
+- **Total Weight:** ref_time=2,685,188,898, proof_size=78,368
+- **Weight Consumed:** ref_time=1,772,063,713 (66.0% of total), proof_size=69,930
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 62,808    | 5          | 650,316,791 | 51,520     | 37.7%         | 74.1%           |
-| Calls    | call                     | 8,528     | 1          | 426,390,360 | 5,594      | 24.7%         | 8.0%            |
-| Crypto   | hash_keccak_256          | 1,808     | 6          | 90,464,439  | 0          | 5.2%          | 0.0%            |
+| Storage  | get_storage, set_storage | 62,808    | 5          | 650,316,791 | 51,520     | 36.7%         | 73.7%           |
+| Calls    | call                     | 8,528     | 1          | 426,390,360 | 5,594      | 24.1%         | 8.0%            |
+| Crypto   | hash_keccak_256          | 1,808     | 6          | 90,464,439  | 0          | 5.1%          | 0.0%            |
 | Events   | deposit_event            | 106       | 1          | 5,323,596   | 0          | 0.3%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 
 
 ### FiatTokenProxy_evm - approve
@@ -3835,31 +3835,31 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_evm - deploy
 
-- **Total Gas Used:** 15,557,530
-- **Base Call Weight:** ref_time=1,522,210,949, proof_size=6,934
-- **Total Weight:** ref_time=1,523,685,771, proof_size=6,934
-- **Weight Consumed:** ref_time=1,474,822 (0.1% of total), proof_size=0
+- **Total Gas Used:** 15,404,608
+- **Base Call Weight:** ref_time=1,521,150,607, proof_size=6,934
+- **Total Weight:** ref_time=1,522,612,234, proof_size=6,934
+- **Weight Consumed:** ref_time=1,461,627 (0.1% of total), proof_size=0
 
-| Category     | Opcodes Used                          | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
-| ------------ | ------------------------------------- | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Code         | CODECOPY                              | 10        | 1          | 544,622  | 0          | 36.9%         | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 9         | 9          | 412,560  | 0          | 28.0%         | 0.0%            |
-| Ether/Gas    | CALLVALUE                             | 6         | 1          | 319,000  | 0          | 21.6%         | 0.0%            |
-| Control Flow | JUMPI                                 | 3         | 1          | 152,800  | 0          | 10.4%         | 0.0%            |
-| Memory       | MSTORE                                | 1         | 1          | 45,840   | 0          | 3.1%          | 0.0%            |
-| Return       | RETURN                                | 0         | 1          | 0        | 0          | 0.0%          | 0.0%            |
+| Category     | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
+| ------------ | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
+| Code         | CODECOPY                       | 11        | 1          | 531,427  | 0          | 36.4%         | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, SWAP1 | 7         | 9          | 412,560  | 0          | 28.2%         | 0.0%            |
+| Ether/Gas    | CALLVALUE                      | 7         | 1          | 319,000  | 0          | 21.8%         | 0.0%            |
+| Control Flow | JUMPI                          | 3         | 1          | 152,800  | 0          | 10.5%         | 0.0%            |
+| Memory       | MSTORE                         | 1         | 1          | 45,840   | 0          | 3.1%          | 0.0%            |
+| Return       | RETURN                         | 0         | 1          | 0        | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_pvm - deploy
 
-- **Total Gas Used:** 18,382,827
-- **Base Call Weight:** ref_time=1,541,930,145, proof_size=6,934
-- **Total Weight:** ref_time=1,552,523,142, proof_size=6,934
-- **Weight Consumed:** ref_time=10,592,997 (0.7% of total), proof_size=0
+- **Total Gas Used:** 17,754,460
+- **Base Call Weight:** ref_time=1,537,530,517, proof_size=6,934
+- **Total Weight:** ref_time=1,548,172,744, proof_size=6,934
+- **Weight Consumed:** ref_time=10,642,227 (0.7% of total), proof_size=0
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata  | call_data_copy, call_data_size | 16        | 2          | 826,576  | 0          | 7.8%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_size | 17        | 2          | 826,576  | 0          | 7.8%          | 0.0%            |
 | Return    | seal_return                    | 10        | 1          | 529,465  | 0          | 5.0%          | 0.0%            |
 | Ether/Gas | value_transferred              | 7         | 1          | 319,000  | 0          | 3.0%          | 0.0%            |
 
@@ -3881,36 +3881,35 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_evm - fib_10
 
-- **Total Gas Used:** 346,268
+- **Total Gas Used:** 343,357
 - **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-- **Total Weight:** ref_time=1,317,572,855, proof_size=8,432
-- **Weight Consumed:** ref_time=404,472,324 (30.7% of total), proof_size=0
+- **Total Weight:** ref_time=1,172,043,145, proof_size=8,432
+- **Weight Consumed:** ref_time=258,942,614 (22.1% of total), proof_size=0
 
-| Category     | Opcodes Used                                                    | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
-| ------------ | --------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 3,549     | 3,979      | 177,798,080 | 0          | 44.0%         | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 3,334     | 1,883      | 166,597,840 | 0          | 41.2%         | 0.0%            |
-| Bitwise      | AND, NOT, SHR                                                   | 567       | 621        | 28,466,640  | 0          | 7.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                        | 377       | 409        | 18,748,560  | 0          | 4.6%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                         | 252       | 269        | 12,330,960  | 0          | 3.0%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                       | 6         | 1          | 319,000     | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 3         | 4          | 152,800     | 0          | 0.0%          | 0.0%            |
-| Memory       | MSTORE                                                          | 1         | 1          | 45,840      | 0          | 0.0%          | 0.0%            |
-| Return       | STOP                                                            | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
+| Category     | Opcodes Used                                             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
+| ------------ | -------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 2,170     | 2,459      | 108,961,680 | 0          | 42.1%         | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                    | 2,038     | 1,267      | 102,055,120 | 0          | 39.4%         | 0.0%            |
+| Bitwise      | AND, NOT, SHR                                            | 575       | 621        | 28,466,640  | 0          | 11.0%         | 0.0%            |
+| Arithmetic   | ADD, SUB                                                 | 382       | 409        | 18,748,560  | 0          | 7.2%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                | 6         | 1          | 319,000     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                      | 5         | 5          | 229,200     | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                               | 3         | 4          | 152,800     | 0          | 0.1%          | 0.0%            |
+| Return       | STOP                                                     | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_pvm - fib_10
 
-- **Total Gas Used:** 347,222
+- **Total Gas Used:** 344,421
 - **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-- **Total Weight:** ref_time=1,365,307,158, proof_size=9,978
-- **Weight Consumed:** ref_time=452,206,627 (33.1% of total), proof_size=1,546
+- **Total Weight:** ref_time=1,225,241,050, proof_size=9,700
+- **Weight Consumed:** ref_time=312,140,519 (25.5% of total), proof_size=1,268
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
-| Calldata  | call_data_load, call_data_size | 20        | 3          | 1,016,000 | 0          | 0.2%          | 0.0%            |
-| Return    | seal_return                    | 11        | 1          | 529,465   | 0          | 0.1%          | 0.0%            |
-| Ether/Gas | value_transferred              | 6         | 1          | 319,000   | 0          | 0.1%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size | 20        | 3          | 1,016,000 | 0          | 0.3%          | 0.0%            |
+| Return    | seal_return                    | 11        | 1          | 529,465   | 0          | 0.2%          | 0.0%            |
+| Ether/Gas | value_transferred              | 7         | 1          | 319,000   | 0          | 0.1%          | 0.0%            |
 
 
 ### fibonacci_ink - fib_10
@@ -4008,16 +4007,16 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - burn
 
-- **Total Gas Used:** 425,514
-- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,979,891,008, proof_size=67,157
-- **Weight Consumed:** ref_time=1,066,383,686 (53.9% of total), proof_size=58,626
+- **Total Gas Used:** 425,677
+- **Base Call Weight:** ref_time=913,494,995, proof_size=8,528
+- **Total Weight:** ref_time=2,088,053,151, proof_size=67,466
+- **Weight Consumed:** ref_time=1,174,558,156 (56.3% of total), proof_size=58,938
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 9,596     | 4          | 479,781,840 | 41,296     | 45.0%         | 70.4%           |
-| Crypto   | hash_keccak_256          | 1,510     | 5          | 75,496,275  | 0          | 7.1%          | 0.0%            |
-| Events   | deposit_event            | 106       | 1          | 5,323,596   | 0          | 0.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 9,596     | 4          | 479,781,840 | 41,296     | 40.8%         | 70.1%           |
+| Crypto   | hash_keccak_256          | 1,511     | 5          | 75,496,275  | 0          | 6.4%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.2%          | 0.0%            |
 | Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
@@ -4067,42 +4066,42 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - createClass_nontransferable
 
-- **Total Gas Used:** 760,222
+- **Total Gas Used:** 761,867
 - **Base Call Weight:** ref_time=915,109,832, proof_size=8,921
-- **Total Weight:** ref_time=1,895,301,460, proof_size=57,038
-- **Weight Consumed:** ref_time=980,191,628 (51.7% of total), proof_size=48,117
+- **Total Weight:** ref_time=1,977,537,815, proof_size=57,350
+- **Weight Consumed:** ref_time=1,062,427,983 (53.7% of total), proof_size=48,429
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 84,608    | 3          | 410,377,615 | 30,787     | 41.9%         | 64.0%           |
-| Crypto   | hash_keccak_256          | 1,507     | 5          | 75,329,754  | 0          | 7.7%          | 0.0%            |
-| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.4%          | 0.0%            |
+| Storage  | get_storage, set_storage | 84,608    | 3          | 410,377,615 | 30,787     | 38.6%         | 63.6%           |
+| Crypto   | hash_keccak_256          | 1,507     | 5          | 75,326,211  | 0          | 7.1%          | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 2.9%          | 0.0%            |
 | Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.1%          | 0.0%            |
 
 
 ### FungibleCredential_evm - createClass_transferable
 
-- **Total Gas Used:** 905,853
-- **Base Call Weight:** ref_time=915,097,505, proof_size=8,918
-- **Total Weight:** ref_time=2,536,818,525, proof_size=132,226
+- **Total Gas Used:** 907,853
+- **Base Call Weight:** ref_time=915,109,832, proof_size=8,921
+- **Total Weight:** ref_time=2,536,830,852, proof_size=132,229
 - **Weight Consumed:** ref_time=1,621,721,020 (63.9% of total), proof_size=123,308
 
 | Category     | Opcodes Used                                                                                                                                                                                                    | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                                                                                                                   | 242,002   | 12         | 1,540,056,693 | 123,308    | 95.0%         | 100.0%          |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                   | 242,000   | 12         | 1,540,056,693 | 123,308    | 95.0%         | 100.0%          |
 | Events       | LOG3                                                                                                                                                                                                            | 612       | 1          | 30,607,500    | 0          | 1.9%          | 0.0%            |
-| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP10, SWAP11, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 329       | 367        | 16,609,360    | 0          | 1.0%          | 0.0%            |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP10, SWAP11, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 330       | 367        | 16,609,360    | 0          | 1.0%          | 0.0%            |
 | Crypto       | KECCAK256                                                                                                                                                                                                       | 304       | 1          | 15,219,717    | 0          | 0.9%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                           | 123       | 56         | 6,050,880     | 0          | 0.4%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                          | 68        | 75         | 3,438,000     | 0          | 0.2%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                                                                                                        | 64        | 67         | 3,071,280     | 0          | 0.2%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                        | 35        | 19         | 1,701,844     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                         | 33        | 36         | 1,650,240     | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                                                                                                                                   | 29        | 33         | 1,512,720     | 0          | 0.1%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                           | 118       | 56         | 6,050,880     | 0          | 0.4%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                          | 70        | 75         | 3,438,000     | 0          | 0.2%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                        | 63        | 67         | 3,071,280     | 0          | 0.2%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                        | 33        | 19         | 1,701,844     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                         | 34        | 36         | 1,650,240     | 0          | 0.1%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                   | 33        | 33         | 1,512,720     | 0          | 0.1%          | 0.0%            |
 | Context      | CALLER, TIMESTAMP                                                                                                                                                                                               | 23        | 3          | 1,153,000     | 0          | 0.1%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                                                                                                                                                                       | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                       | 7         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                                                                                                                                          | 0         | 1          | 0             | 0          | 0.0%          | 0.0%            |
 
 
@@ -4126,19 +4125,19 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - createClass_transferable
 
-- **Total Gas Used:** 756,814
+- **Total Gas Used:** 758,469
 - **Base Call Weight:** ref_time=915,109,832, proof_size=8,921
-- **Total Weight:** ref_time=1,884,908,481, proof_size=57,038
-- **Weight Consumed:** ref_time=969,798,649 (51.5% of total), proof_size=48,117
+- **Total Weight:** ref_time=1,967,637,136, proof_size=57,350
+- **Weight Consumed:** ref_time=1,052,527,304 (53.5% of total), proof_size=48,429
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 81,408    | 3          | 410,368,623 | 30,787     | 42.3%         | 64.0%           |
-| Crypto   | hash_keccak_256          | 1,507     | 5          | 75,333,297  | 0          | 7.8%          | 0.0%            |
-| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.4%          | 0.0%            |
+| Storage  | get_storage, set_storage | 81,408    | 3          | 410,368,623 | 30,787     | 39.0%         | 63.6%           |
+| Crypto   | hash_keccak_256          | 1,507     | 5          | 75,329,754  | 0          | 7.2%          | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 2.9%          | 0.0%            |
 | Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.1%          | 0.0%            |
 
 
 ### FungibleCredential_evm - deploy
@@ -4178,14 +4177,14 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - deploy
 
-- **Total Gas Used:** 54,123,337
-- **Base Call Weight:** ref_time=1,791,727,729, proof_size=6,934
-- **Total Weight:** ref_time=2,026,016,251, proof_size=17,191
-- **Weight Consumed:** ref_time=234,288,522 (11.6% of total), proof_size=10,257
+- **Total Gas Used:** 54,828,552
+- **Base Call Weight:** ref_time=1,796,665,441, proof_size=6,934
+- **Total Weight:** ref_time=2,030,806,273, proof_size=17,191
+- **Weight Consumed:** ref_time=234,140,832 (11.5% of total), proof_size=10,257
 
 | Category | Opcodes Used    | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | --------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage     | 54,612    | 1          | 170,586,806 | 10,257     | 72.8%         | 100.0%          |
+| Storage  | set_storage     | 54,612    | 1          | 170,586,806 | 10,257     | 72.9%         | 100.0%          |
 | Crypto   | hash_keccak_256 | 301       | 1          | 15,056,739  | 0          | 6.4%          | 0.0%            |
 | Return   | seal_return     | 11        | 1          | 529,465     | 0          | 0.2%          | 0.0%            |
 
@@ -4234,16 +4233,16 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - issue
 
-- **Total Gas Used:** 834,774
+- **Total Gas Used:** 836,166
 - **Base Call Weight:** ref_time=913,914,113, proof_size=8,630
-- **Total Weight:** ref_time=3,652,907,398, proof_size=149,280
-- **Weight Consumed:** ref_time=2,738,993,285 (75.0% of total), proof_size=140,650
+- **Total Weight:** ref_time=3,722,505,344, proof_size=149,592
+- **Weight Consumed:** ref_time=2,808,591,231 (75.4% of total), proof_size=140,962
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 340,599   | 12         | 1,540,024,853 | 123,320    | 56.2%         | 87.7%           |
-| Crypto   | hash_keccak_256          | 3,930     | 13         | 196,488,723   | 0          | 7.2%          | 0.0%            |
-| Events   | deposit_event            | 191       | 1          | 9,537,580     | 0          | 0.3%          | 0.0%            |
+| Storage  | get_storage, set_storage | 340,601   | 12         | 1,540,024,853 | 123,320    | 54.8%         | 87.5%           |
+| Crypto   | hash_keccak_256          | 3,930     | 13         | 196,488,723   | 0          | 7.0%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564    | 0          | 0.5%          | 0.0%            |
 | Calldata | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
@@ -4293,18 +4292,18 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - issue_more
 
-- **Total Gas Used:** 495,864
+- **Total Gas Used:** 497,279
 - **Base Call Weight:** ref_time=913,914,113, proof_size=8,630
-- **Total Weight:** ref_time=2,197,400,844, proof_size=77,514
-- **Weight Consumed:** ref_time=1,283,486,731 (58.4% of total), proof_size=68,884
+- **Total Weight:** ref_time=2,268,131,080, proof_size=77,826
+- **Weight Consumed:** ref_time=1,354,216,967 (59.7% of total), proof_size=69,196
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 10,978    | 5          | 548,897,920 | 51,554     | 42.8%         | 74.8%           |
-| Crypto   | hash_keccak_256          | 1,812     | 6          | 90,652,218  | 0          | 7.1%          | 0.0%            |
-| Events   | deposit_event            | 191       | 1          | 9,537,580   | 0          | 0.7%          | 0.0%            |
+| Storage  | get_storage, set_storage | 10,978    | 5          | 548,897,920 | 51,554     | 40.5%         | 74.5%           |
+| Crypto   | hash_keccak_256          | 1,812     | 6          | 90,652,218  | 0          | 6.7%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.0%          | 0.0%            |
 | Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -4352,16 +4351,16 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - revoke
 
-- **Total Gas Used:** 492,169
+- **Total Gas Used:** 494,335
 - **Base Call Weight:** ref_time=913,914,113, proof_size=8,630
-- **Total Weight:** ref_time=2,012,645,452, proof_size=67,256
-- **Weight Consumed:** ref_time=1,098,731,339 (54.6% of total), proof_size=58,626
+- **Total Weight:** ref_time=2,120,918,382, proof_size=67,568
+- **Weight Consumed:** ref_time=1,207,004,269 (56.9% of total), proof_size=58,938
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 9,596     | 4          | 479,781,840 | 41,296     | 43.7%         | 70.4%           |
-| Crypto   | hash_keccak_256          | 1,510     | 5          | 75,499,818  | 0          | 6.9%          | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 9,596     | 4          | 479,781,840 | 41,296     | 39.7%         | 70.1%           |
+| Crypto   | hash_keccak_256          | 1,509     | 5          | 75,499,818  | 0          | 6.3%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.1%          | 0.0%            |
 | Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
@@ -4393,35 +4392,35 @@ Opcodes grouped by functional category.
 
 ### FungibleCredential_pvm - transfer
 
-- **Total Gas Used:** 852,513
-- **Base Call Weight:** ref_time=913,901,786, proof_size=8,627
-- **Total Weight:** ref_time=4,289,839,492, proof_size=331,119
+- **Total Gas Used:** 850,513
+- **Base Call Weight:** ref_time=913,889,459, proof_size=8,624
+- **Total Weight:** ref_time=4,289,827,165, proof_size=331,116
 - **Weight Consumed:** ref_time=3,375,937,706 (78.7% of total), proof_size=322,492
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 367,603   | 25         | 2,540,199,727 | 256,745    | 75.2%         | 79.6%           |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 367,605   | 25         | 2,540,199,727 | 256,745    | 75.2%         | 79.6%           |
 | Crypto    | hash_keccak_256                           | 6,387     | 21         | 319,387,305   | 0          | 9.5%          | 0.0%            |
 | Events    | deposit_event                             | 275       | 1          | 13,751,564    | 0          | 0.4%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 34        | 5          | 1,702,000     | 0          | 0.1%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 33        | 5          | 1,702,000     | 0          | 0.1%          | 0.0%            |
 | Context   | caller                                    | 32        | 4          | 1,612,000     | 0          | 0.0%          | 0.0%            |
-| Return    | seal_return                               | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
+| Return    | seal_return                               | 10        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                         | 7         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### fungible_credential_rust - transfer
 
-- **Total Gas Used:** 783,593
+- **Total Gas Used:** 786,102
 - **Base Call Weight:** ref_time=913,901,786, proof_size=8,627
-- **Total Weight:** ref_time=3,753,857,328, proof_size=159,464
-- **Weight Consumed:** ref_time=2,839,955,542 (75.7% of total), proof_size=150,837
+- **Total Weight:** ref_time=3,879,311,528, proof_size=159,776
+- **Weight Consumed:** ref_time=2,965,409,742 (76.4% of total), proof_size=151,149
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 290,781   | 13         | 1,609,047,692 | 133,507    | 56.7%         | 88.5%           |
-| Crypto   | hash_keccak_256          | 4,233     | 14         | 211,740,327   | 0          | 7.5%          | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596     | 0          | 0.2%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 290,781   | 13         | 1,609,047,692 | 133,507    | 54.3%         | 88.3%           |
+| Crypto   | hash_keccak_256          | 4,237     | 14         | 211,740,327   | 0          | 7.1%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564    | 0          | 0.5%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
 
@@ -4459,14 +4458,14 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - deploy
 
-- **Total Gas Used:** 56,131,145
-- **Base Call Weight:** ref_time=1,806,176,867, proof_size=6,934
-- **Total Weight:** ref_time=1,807,434,306, proof_size=6,934
+- **Total Gas Used:** 56,861,227
+- **Base Call Weight:** ref_time=1,811,288,665, proof_size=6,934
+- **Total Weight:** ref_time=1,812,546,104, proof_size=6,934
 - **Weight Consumed:** ref_time=1,257,439 (0.1% of total), proof_size=0
 
 | Category | Opcodes Used | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Return   | seal_return  | 10        | 1          | 529,465  | 0          | 42.1%         | 0.0%            |
+| Return   | seal_return  | 11        | 1          | 529,465  | 0          | 42.1%         | 0.0%            |
 
 
 ### KeyRegistry_evm - fetchPrekeyBundle
@@ -4513,16 +4512,16 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - fetchPrekeyBundle
 
-- **Total Gas Used:** 430,216
+- **Total Gas Used:** 430,825
 - **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
-- **Total Weight:** ref_time=3,354,986,475, proof_size=150,056
-- **Weight Consumed:** ref_time=2,441,885,944 (72.8% of total), proof_size=141,624
+- **Total Weight:** ref_time=3,385,432,988, proof_size=150,379
+- **Weight Consumed:** ref_time=2,472,332,457 (73.0% of total), proof_size=141,947
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 70,903    | 12         | 1,235,683,456 | 123,381    | 50.6%         | 87.1%           |
-| Crypto   | hash_keccak_256          | 3,929     | 13         | 196,520,610   | 0          | 8.0%          | 0.0%            |
-| Events   | deposit_event            | 106       | 1          | 5,323,596     | 0          | 0.2%          | 0.0%            |
+| Storage  | get_storage, set_storage | 70,901    | 12         | 1,235,683,456 | 123,381    | 50.0%         | 86.9%           |
+| Crypto   | hash_keccak_256          | 3,930     | 13         | 196,520,610   | 0          | 7.9%          | 0.0%            |
+| Events   | deposit_event            | 107       | 1          | 5,323,596     | 0          | 0.2%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 587,065       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
@@ -4572,19 +4571,19 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - registerIdentity
 
-- **Total Gas Used:** 1,002,413
+- **Total Gas Used:** 1,003,418
 - **Base Call Weight:** ref_time=915,504,296, proof_size=9,017
-- **Total Weight:** ref_time=2,454,839,108, proof_size=88,802
-- **Weight Consumed:** ref_time=1,539,334,812 (62.7% of total), proof_size=79,785
+- **Total Weight:** ref_time=2,505,076,081, proof_size=89,125
+- **Weight Consumed:** ref_time=1,589,571,785 (63.5% of total), proof_size=80,108
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 259,813   | 6          | 820,684,712 | 61,542     | 53.3%         | 77.1%           |
-| Crypto   | hash_keccak_256          | 2,116     | 7          | 105,840,048 | 0          | 6.9%          | 0.0%            |
+| Storage  | get_storage, set_storage | 259,814   | 6          | 820,684,712 | 61,542     | 51.6%         | 76.8%           |
+| Crypto   | hash_keccak_256          | 2,118     | 7          | 105,840,048 | 0          | 6.7%          | 0.0%            |
 | Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 0.9%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Context  | caller, now              | 16        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 
 
 ### KeyRegistry_evm - updateSignedPrekey
@@ -4631,19 +4630,19 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - updateSignedPrekey
 
-- **Total Gas Used:** 621,383
+- **Total Gas Used:** 622,548
 - **Base Call Weight:** ref_time=914,715,368, proof_size=8,825
-- **Total Weight:** ref_time=1,973,323,859, proof_size=68,452
-- **Weight Consumed:** ref_time=1,058,608,491 (53.6% of total), proof_size=59,627
+- **Total Weight:** ref_time=2,031,604,858, proof_size=68,775
+- **Weight Consumed:** ref_time=1,116,889,490 (55.0% of total), proof_size=59,950
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 7,570     | 4          | 378,452,595 | 41,384     | 35.8%         | 69.4%           |
-| Crypto   | hash_keccak_256          | 1,511     | 5          | 75,535,248  | 0          | 7.1%          | 0.0%            |
-| Events   | deposit_event            | 317       | 1          | 15,858,556  | 0          | 1.5%          | 0.0%            |
-| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 7,570     | 4          | 378,452,595 | 41,384     | 33.9%         | 69.0%           |
+| Crypto   | hash_keccak_256          | 1,510     | 5          | 75,535,248  | 0          | 6.8%          | 0.0%            |
+| Events   | deposit_event            | 444       | 1          | 22,179,532  | 0          | 2.0%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 
 
 ### KeyRegistry_evm - uploadOneTimePrekeys
@@ -4690,17 +4689,17 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - uploadOneTimePrekeys
 
-- **Total Gas Used:** 919,132
+- **Total Gas Used:** 920,256
 - **Base Call Weight:** ref_time=914,715,368, proof_size=8,825
-- **Total Weight:** ref_time=3,340,792,881, proof_size=150,244
-- **Weight Consumed:** ref_time=2,426,077,513 (72.6% of total), proof_size=141,419
+- **Total Weight:** ref_time=3,397,006,220, proof_size=150,567
+- **Weight Consumed:** ref_time=2,482,290,852 (73.1% of total), proof_size=141,742
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 299,167   | 12         | 1,438,386,290 | 123,176    | 59.3%         | 87.1%           |
-| Crypto   | hash_keccak_256          | 3,934     | 13         | 196,559,583   | 0          | 8.1%          | 0.0%            |
-| Events   | deposit_event            | 148       | 1          | 7,430,588     | 0          | 0.3%          | 0.0%            |
-| Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 299,169   | 12         | 1,438,386,290 | 123,176    | 57.9%         | 86.9%           |
+| Crypto   | hash_keccak_256          | 3,930     | 13         | 196,559,583   | 0          | 7.9%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564    | 0          | 0.6%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
 
@@ -4749,18 +4748,18 @@ Opcodes grouped by functional category.
 
 ### log_rust - addWriter
 
-- **Total Gas Used:** 587,829
+- **Total Gas Used:** 588,700
 - **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
-- **Total Weight:** ref_time=2,265,620,313, proof_size=86,914
-- **Weight Consumed:** ref_time=1,352,100,664 (59.7% of total), proof_size=78,380
+- **Total Weight:** ref_time=2,309,199,869, proof_size=86,580
+- **Weight Consumed:** ref_time=1,395,680,220 (60.4% of total), proof_size=78,046
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 168,983   | 6          | 719,177,366 | 61,587     | 53.2%         | 78.6%           |
-| Crypto   | hash_keccak_256          | 2,115     | 7          | 105,698,328 | 0          | 7.8%          | 0.0%            |
-| Events   | deposit_event            | 106       | 1          | 5,323,596   | 0          | 0.4%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 168,985   | 6          | 719,177,366 | 61,587     | 51.5%         | 78.9%           |
+| Crypto   | hash_keccak_256          | 2,115     | 7          | 105,698,328 | 0          | 7.6%          | 0.0%            |
+| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.4%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -4808,19 +4807,19 @@ Opcodes grouped by functional category.
 
 ### log_rust - append
 
-- **Total Gas Used:** 491,282
+- **Total Gas Used:** 492,499
 - **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
-- **Total Weight:** ref_time=1,928,283,496, proof_size=56,188
-- **Weight Consumed:** ref_time=1,014,763,847 (52.6% of total), proof_size=47,654
+- **Total Weight:** ref_time=1,989,152,680, proof_size=55,854
+- **Weight Consumed:** ref_time=1,075,633,031 (54.1% of total), proof_size=47,320
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 73,010    | 3          | 410,452,208 | 30,861     | 40.4%         | 64.8%           |
-| Crypto   | hash_keccak_256          | 1,207     | 4          | 60,336,789  | 0          | 5.9%          | 0.0%            |
-| Events   | deposit_event            | 317       | 1          | 15,858,556  | 0          | 1.6%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 73,007    | 3          | 410,452,208 | 30,861     | 38.2%         | 65.2%           |
+| Crypto   | hash_keccak_256          | 1,207     | 4          | 60,336,789  | 0          | 5.6%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.3%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
 
 
 ### Log_evm - append_2
@@ -4849,37 +4848,37 @@ Opcodes grouped by functional category.
 
 ### Log_pvm - append_2
 
-- **Total Gas Used:** 652,518
-- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=2,770,079,386, proof_size=196,191
+- **Total Gas Used:** 654,518
+- **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
+- **Total Weight:** ref_time=2,770,091,713, proof_size=196,194
 - **Weight Consumed:** ref_time=1,856,572,064 (67.0% of total), proof_size=187,660
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
 | Storage   | get_storage_or_zero, set_storage_or_clear | 241,354   | 13         | 1,507,653,197 | 133,533    | 81.2%         | 71.2%           |
-| Crypto    | hash_keccak_256                           | 912       | 3          | 45,659,151    | 0          | 2.5%          | 0.0%            |
-| Events    | deposit_event                             | 275       | 1          | 13,751,564    | 0          | 0.7%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 27        | 4          | 1,359,000     | 0          | 0.1%          | 0.0%            |
-| Context   | caller, now                               | 23        | 3          | 1,153,000     | 0          | 0.1%          | 0.0%            |
-| Return    | seal_return                               | 10        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
+| Crypto    | hash_keccak_256                           | 914       | 3          | 45,659,151    | 0          | 2.5%          | 0.0%            |
+| Events    | deposit_event                             | 276       | 1          | 13,751,564    | 0          | 0.7%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 26        | 4          | 1,359,000     | 0          | 0.1%          | 0.0%            |
+| Context   | caller, now                               | 24        | 3          | 1,153,000     | 0          | 0.1%          | 0.0%            |
+| Return    | seal_return                               | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                         | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### log_rust - append_2
 
-- **Total Gas Used:** 491,282
+- **Total Gas Used:** 492,499
 - **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
-- **Total Weight:** ref_time=1,928,283,496, proof_size=56,188
-- **Weight Consumed:** ref_time=1,014,763,847 (52.6% of total), proof_size=47,654
+- **Total Weight:** ref_time=1,989,152,680, proof_size=55,854
+- **Weight Consumed:** ref_time=1,075,633,031 (54.1% of total), proof_size=47,320
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 73,010    | 3          | 410,452,208 | 30,861     | 40.4%         | 64.8%           |
-| Crypto   | hash_keccak_256          | 1,207     | 4          | 60,336,789  | 0          | 5.9%          | 0.0%            |
-| Events   | deposit_event            | 317       | 1          | 15,858,556  | 0          | 1.6%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 73,007    | 3          | 410,452,208 | 30,861     | 38.2%         | 65.2%           |
+| Crypto   | hash_keccak_256          | 1,207     | 4          | 60,336,789  | 0          | 5.6%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.3%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
 
 
 ### Log_evm - create_nonpermissioned
@@ -4926,19 +4925,19 @@ Opcodes grouped by functional category.
 
 ### log_rust - create_nonpermissioned
 
-- **Total Gas Used:** 528,999
+- **Total Gas Used:** 530,362
 - **Base Call Weight:** ref_time=913,112,858, proof_size=8,435
-- **Total Weight:** ref_time=2,304,135,026, proof_size=76,529
-- **Weight Consumed:** ref_time=1,391,022,168 (60.4% of total), proof_size=68,094
+- **Total Weight:** ref_time=2,372,272,766, proof_size=76,195
+- **Weight Consumed:** ref_time=1,459,159,908 (61.5% of total), proof_size=67,760
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 176,029   | 5          | 751,501,209 | 51,301     | 54.0%         | 75.3%           |
-| Crypto   | hash_keccak_256          | 2,112     | 7          | 105,623,925 | 0          | 7.6%          | 0.0%            |
-| Events   | deposit_event            | 112       | 1          | 5,586,970   | 0          | 0.4%          | 0.0%            |
-| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 176,030   | 5          | 751,501,209 | 51,301     | 51.5%         | 75.7%           |
+| Crypto   | hash_keccak_256          | 2,113     | 7          | 105,623,925 | 0          | 7.2%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 0.9%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
 
 
 ### Log_evm - create_permissioned
@@ -4985,19 +4984,19 @@ Opcodes grouped by functional category.
 
 ### log_rust - create_permissioned
 
-- **Total Gas Used:** 426,599
+- **Total Gas Used:** 427,962
 - **Base Call Weight:** ref_time=913,112,858, proof_size=8,435
-- **Total Weight:** ref_time=2,304,147,282, proof_size=76,545
-- **Weight Consumed:** ref_time=1,391,034,424 (60.4% of total), proof_size=68,110
+- **Total Weight:** ref_time=2,372,285,022, proof_size=76,211
+- **Weight Consumed:** ref_time=1,459,172,164 (61.5% of total), proof_size=67,776
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 73,629    | 5          | 751,513,465 | 51,317     | 54.0%         | 75.3%           |
-| Crypto   | hash_keccak_256          | 2,112     | 7          | 105,623,925 | 0          | 7.6%          | 0.0%            |
-| Events   | deposit_event            | 112       | 1          | 5,586,970   | 0          | 0.4%          | 0.0%            |
-| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 73,631    | 5          | 751,513,465 | 51,317     | 51.5%         | 75.7%           |
+| Crypto   | hash_keccak_256          | 2,113     | 7          | 105,623,925 | 0          | 7.2%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 0.9%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 535,865     | 0          | 0.0%          | 0.0%            |
 
 
 ### Log_evm - deploy
@@ -5037,16 +5036,16 @@ Opcodes grouped by functional category.
 
 ### log_rust - deploy
 
-- **Total Gas Used:** 52,909,521
-- **Base Call Weight:** ref_time=1,783,229,167, proof_size=6,934
-- **Total Weight:** ref_time=2,016,230,623, proof_size=17,191
-- **Weight Consumed:** ref_time=233,001,456 (11.6% of total), proof_size=10,257
+- **Total Gas Used:** 52,154,576
+- **Base Call Weight:** ref_time=1,777,943,283, proof_size=6,934
+- **Total Weight:** ref_time=2,010,993,969, proof_size=17,191
+- **Weight Consumed:** ref_time=233,050,686 (11.6% of total), proof_size=10,257
 
 | Category | Opcodes Used    | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | --------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage     | 54,611    | 1          | 170,586,806 | 10,257     | 73.2%         | 100.0%          |
+| Storage  | set_storage     | 54,612    | 1          | 170,586,806 | 10,257     | 73.2%         | 100.0%          |
 | Crypto   | hash_keccak_256 | 301       | 1          | 15,049,653  | 0          | 6.5%          | 0.0%            |
-| Return   | seal_return     | 10        | 1          | 529,465     | 0          | 0.2%          | 0.0%            |
+| Return   | seal_return     | 11        | 1          | 529,465     | 0          | 0.2%          | 0.0%            |
 
 
 ### Log_evm - removeWriter
@@ -5093,42 +5092,42 @@ Opcodes grouped by functional category.
 
 ### log_rust - removeWriter
 
-- **Total Gas Used:** 421,391
+- **Total Gas Used:** 422,261
 - **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
-- **Total Weight:** ref_time=1,673,726,144, proof_size=56,145
-- **Weight Consumed:** ref_time=760,206,495 (45.4% of total), proof_size=47,611
+- **Total Weight:** ref_time=1,717,256,470, proof_size=55,811
+- **Weight Consumed:** ref_time=803,736,821 (46.8% of total), proof_size=47,277
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 6,177     | 3          | 308,884,834 | 30,818     | 40.6%         | 64.7%           |
-| Crypto   | hash_keccak_256          | 1,209     | 4          | 60,450,165  | 0          | 8.0%          | 0.0%            |
-| Events   | deposit_event            | 106       | 1          | 5,323,596   | 0          | 0.7%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 6,178     | 3          | 308,884,834 | 30,818     | 38.4%         | 65.2%           |
+| Crypto   | hash_keccak_256          | 1,209     | 4          | 60,450,165  | 0          | 7.5%          | 0.0%            |
+| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.7%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### Log_evm - transfer
 
-- **Total Gas Used:** 554,120
-- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=3,130,194,969, proof_size=224,536
+- **Total Gas Used:** 556,120
+- **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
+- **Total Weight:** ref_time=3,130,207,296, proof_size=224,539
 - **Weight Consumed:** ref_time=2,216,687,647 (70.8% of total), proof_size=216,005
 
 | Category     | Opcodes Used                                                                                                                        | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                                       | 146,826   | 21         | 2,061,170,597 | 216,005    | 93.0%         | 100.0%          |
-| Crypto       | KECCAK256                                                                                                                           | 2,422     | 8          | 121,190,856   | 0          | 5.5%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 278       | 312        | 13,996,480    | 0          | 0.6%          | 0.0%            |
+| Storage      | SLOAD, SSTORE                                                                                                                       | 146,821   | 21         | 2,061,170,597 | 216,005    | 93.0%         | 100.0%          |
+| Crypto       | KECCAK256                                                                                                                           | 2,423     | 8          | 121,190,856   | 0          | 5.5%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 286       | 312        | 13,996,480    | 0          | 0.6%          | 0.0%            |
 | Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                               | 147       | 72         | 7,288,560     | 0          | 0.3%          | 0.0%            |
 | Events       | LOG4                                                                                                                                | 107       | 1          | 5,323,596     | 0          | 0.2%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                              | 63        | 70         | 3,208,800     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                              | 61        | 70         | 3,208,800     | 0          | 0.1%          | 0.0%            |
 | Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                             | 33        | 35         | 1,604,400     | 0          | 0.1%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                            | 21        | 25         | 1,146,000     | 0          | 0.1%          | 0.0%            |
-| Memory       | MSTORE                                                                                                                              | 12        | 12         | 550,080       | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                            | 22        | 25         | 1,146,000     | 0          | 0.1%          | 0.0%            |
+| Memory       | MSTORE                                                                                                                              | 10        | 12         | 550,080       | 0          | 0.0%          | 0.0%            |
 | Context      | CALLER                                                                                                                              | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas    | CALLVALUE                                                                                                                           | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                          | 5         | 5          | 198,640       | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                          | 4         | 5          | 198,640       | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                                                                                | 0         | 1          | 0             | 0          | 0.0%          | 0.0%            |
 
 
@@ -5152,18 +5151,18 @@ Opcodes grouped by functional category.
 
 ### log_rust - transfer
 
-- **Total Gas Used:** 419,531
+- **Total Gas Used:** 420,779
 - **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
-- **Total Weight:** ref_time=1,580,752,478, proof_size=45,931
-- **Weight Consumed:** ref_time=667,232,829 (42.2% of total), proof_size=37,397
+- **Total Weight:** ref_time=1,643,137,894, proof_size=45,597
+- **Weight Consumed:** ref_time=729,618,245 (44.4% of total), proof_size=37,063
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,797     | 2          | 239,827,186 | 20,604     | 35.9%         | 55.1%           |
-| Crypto   | hash_keccak_256          | 905       | 3          | 45,226,905  | 0          | 6.8%          | 0.0%            |
-| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.8%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,797     | 2          | 239,827,186 | 20,604     | 32.9%         | 55.6%           |
+| Crypto   | hash_keccak_256          | 904       | 3          | 45,226,905  | 0          | 6.2%          | 0.0%            |
+| Events   | deposit_event            | 106       | 1          | 5,323,596   | 0          | 0.7%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.1%          | 0.0%            |
 
 
@@ -5951,16 +5950,16 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - deploy
 
-- **Total Gas Used:** 55,328,067
-- **Base Call Weight:** ref_time=1,800,162,987, proof_size=6,934
-- **Total Weight:** ref_time=2,033,558,283, proof_size=17,191
-- **Weight Consumed:** ref_time=233,395,296 (11.5% of total), proof_size=10,257
+- **Total Gas Used:** 57,866,404
+- **Base Call Weight:** ref_time=1,817,935,585, proof_size=6,934
+- **Total Weight:** ref_time=2,051,380,111, proof_size=17,191
+- **Weight Consumed:** ref_time=233,444,526 (11.4% of total), proof_size=10,257
 
 | Category | Opcodes Used    | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | --------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage     | 54,612    | 1          | 170,586,806 | 10,257     | 73.1%         | 100.0%          |
+| Storage  | set_storage     | 54,611    | 1          | 170,586,806 | 10,257     | 73.1%         | 100.0%          |
 | Crypto   | hash_keccak_256 | 301       | 1          | 15,049,653  | 0          | 6.4%          | 0.0%            |
-| Return   | seal_return     | 11        | 1          | 529,465     | 0          | 0.2%          | 0.0%            |
+| Return   | seal_return     | 10        | 1          | 529,465     | 0          | 0.2%          | 0.0%            |
 
 
 ### NonFungibleCredential_evm - issue_nontransferable
@@ -6007,16 +6006,16 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - issue_nontransferable
 
-- **Total Gas Used:** 1,064,816
+- **Total Gas Used:** 1,066,899
 - **Base Call Weight:** ref_time=915,504,296, proof_size=9,017
-- **Total Weight:** ref_time=3,794,967,350, proof_size=150,012
-- **Weight Consumed:** ref_time=2,879,463,054 (75.9% of total), proof_size=140,995
+- **Total Weight:** ref_time=3,899,147,416, proof_size=151,135
+- **Weight Consumed:** ref_time=2,983,643,120 (76.5% of total), proof_size=142,118
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 311,824   | 12         | 1,641,273,162 | 123,132    | 57.0%         | 87.3%           |
-| Crypto   | hash_keccak_256          | 4,237     | 14         | 211,835,988   | 0          | 7.4%          | 0.0%            |
-| Events   | deposit_event            | 276       | 1          | 13,751,564    | 0          | 0.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 311,825   | 12         | 1,641,273,162 | 123,132    | 55.0%         | 86.6%           |
+| Crypto   | hash_keccak_256          | 4,239     | 14         | 211,832,445   | 0          | 7.1%          | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500    | 0          | 1.0%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.0%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
@@ -6066,16 +6065,16 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - issue_transferable
 
-- **Total Gas Used:** 1,167,006
+- **Total Gas Used:** 1,169,100
 - **Base Call Weight:** ref_time=915,504,296, proof_size=9,017
-- **Total Weight:** ref_time=3,784,496,773, proof_size=149,980
-- **Weight Consumed:** ref_time=2,868,992,477 (75.8% of total), proof_size=140,963
+- **Total Weight:** ref_time=3,889,169,139, proof_size=151,103
+- **Weight Consumed:** ref_time=2,973,664,843 (76.5% of total), proof_size=142,086
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 414,225   | 12         | 1,641,235,802 | 123,100    | 57.2%         | 87.3%           |
-| Crypto   | hash_keccak_256          | 4,237     | 14         | 211,839,531   | 0          | 7.4%          | 0.0%            |
-| Events   | deposit_event            | 275       | 1          | 13,751,564    | 0          | 0.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 414,225   | 12         | 1,641,235,802 | 123,100    | 55.2%         | 86.6%           |
+| Crypto   | hash_keccak_256          | 4,237     | 14         | 211,835,988   | 0          | 7.1%          | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500    | 0          | 1.0%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.0%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
@@ -6125,19 +6124,19 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - issue_with_expiry
 
-- **Total Gas Used:** 1,015,416
+- **Total Gas Used:** 1,017,509
 - **Base Call Weight:** ref_time=915,504,296, proof_size=9,017
-- **Total Weight:** ref_time=3,804,987,759, proof_size=150,028
-- **Weight Consumed:** ref_time=2,889,483,463 (75.9% of total), proof_size=141,011
+- **Total Weight:** ref_time=3,909,660,125, proof_size=151,151
+- **Weight Consumed:** ref_time=2,994,155,829 (76.6% of total), proof_size=142,134
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 262,227   | 12         | 1,641,296,338 | 123,148    | 56.8%         | 87.3%           |
-| Crypto   | hash_keccak_256          | 4,237     | 14         | 211,839,531   | 0          | 7.3%          | 0.0%            |
-| Events   | deposit_event            | 275       | 1          | 13,751,564    | 0          | 0.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 262,225   | 12         | 1,641,296,338 | 123,148    | 54.8%         | 86.6%           |
+| Crypto   | hash_keccak_256          | 4,237     | 14         | 211,835,988   | 0          | 7.1%          | 0.0%            |
+| Events   | deposit_event            | 613       | 1          | 30,607,500    | 0          | 1.0%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.0%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 535,865       | 0          | 0.0%          | 0.0%            |
 
 
 ### NonFungibleCredential_evm - revoke
@@ -6184,18 +6183,18 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - revoke
 
-- **Total Gas Used:** 353,831
+- **Total Gas Used:** 354,818
 - **Base Call Weight:** ref_time=913,112,858, proof_size=8,435
-- **Total Weight:** ref_time=1,595,732,890, proof_size=47,058
-- **Weight Consumed:** ref_time=682,620,032 (42.8% of total), proof_size=38,623
+- **Total Weight:** ref_time=1,645,104,233, proof_size=48,181
+- **Weight Consumed:** ref_time=731,991,375 (44.5% of total), proof_size=39,746
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,801     | 2          | 240,053,152 | 20,760     | 35.2%         | 53.8%           |
-| Crypto   | hash_keccak_256          | 904       | 3          | 45,258,792  | 0          | 6.6%          | 0.0%            |
-| Events   | deposit_event            | 106       | 1          | 5,323,596   | 0          | 0.8%          | 0.0%            |
-| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,801     | 2          | 240,053,152 | 20,760     | 32.8%         | 52.2%           |
+| Crypto   | hash_keccak_256          | 906       | 3          | 45,258,792  | 0          | 6.2%          | 0.0%            |
+| Events   | deposit_event            | 107       | 1          | 5,323,596   | 0          | 0.7%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.1%          | 0.0%            |
 
 
@@ -6243,17 +6242,17 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - transfer
 
-- **Total Gas Used:** 648,911
+- **Total Gas Used:** 650,286
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=2,909,745,020, proof_size=108,696
-- **Weight Consumed:** ref_time=1,996,237,698 (68.6% of total), proof_size=100,165
+- **Total Weight:** ref_time=2,978,463,753, proof_size=109,819
+- **Weight Consumed:** ref_time=2,064,956,431 (69.3% of total), proof_size=101,288
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 226,013   | 8          | 1,060,629,398 | 82,302     | 53.1%         | 82.2%           |
-| Crypto   | hash_keccak_256          | 2,728     | 9          | 136,364,514   | 0          | 6.8%          | 0.0%            |
+| Storage  | get_storage, set_storage | 226,012   | 8          | 1,060,629,398 | 82,302     | 51.4%         | 81.3%           |
+| Crypto   | hash_keccak_256          | 2,727     | 9          | 136,364,514   | 0          | 6.6%          | 0.0%            |
 | Events   | deposit_event            | 107       | 1          | 5,323,596     | 0          | 0.3%          | 0.0%            |
-| Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
 
@@ -6302,18 +6301,18 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - updateMetadata
 
-- **Total Gas Used:** 420,517
+- **Total Gas Used:** 421,509
 - **Base Call Weight:** ref_time=913,519,649, proof_size=8,534
-- **Total Weight:** ref_time=1,630,061,703, proof_size=47,157
-- **Weight Consumed:** ref_time=716,542,054 (44.0% of total), proof_size=38,623
+- **Total Weight:** ref_time=1,679,629,966, proof_size=48,280
+- **Weight Consumed:** ref_time=766,110,317 (45.6% of total), proof_size=39,746
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,801     | 2          | 240,053,152 | 20,760     | 33.5%         | 53.8%           |
-| Crypto   | hash_keccak_256          | 906       | 3          | 45,251,706  | 0          | 6.3%          | 0.0%            |
-| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.9%          | 0.0%            |
-| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,801     | 2          | 240,053,152 | 20,760     | 31.3%         | 52.2%           |
+| Crypto   | hash_keccak_256          | 904       | 3          | 45,251,706  | 0          | 5.9%          | 0.0%            |
+| Events   | deposit_event            | 275       | 1          | 13,751,564  | 0          | 1.8%          | 0.0%            |
+| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.1%          | 0.0%            |
 
 
@@ -6421,16 +6420,31 @@ Opcodes grouped by functional category.
 
 ### simple_token_no_alloc_rust - mint
 
-- **Total Gas Used:** 521,627
+- **Total Gas Used:** 521,085
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,505,548,558, proof_size=53,919
-- **Weight Consumed:** ref_time=592,041,236 (39.3% of total), proof_size=45,388
+- **Total Weight:** ref_time=1,478,457,309, proof_size=53,531
+- **Weight Consumed:** ref_time=564,949,987 (38.2% of total), proof_size=45,000
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 115,189   | 4          | 479,411,626 | 41,028     | 81.0%         | 90.4%           |
-| Crypto   | hash_keccak_256                | 610       | 2          | 30,439,434  | 0          | 5.1%          | 0.0%            |
-| Events   | deposit_event                  | 275       | 1          | 13,751,564  | 0          | 2.3%          | 0.0%            |
+| Storage  | get_storage, set_storage       | 115,189   | 4          | 479,411,626 | 41,028     | 84.9%         | 91.2%           |
+| Crypto   | hash_keccak_256                | 305       | 1          | 15,219,717  | 0          | 2.7%          | 0.0%            |
+| Events   | deposit_event                  | 275       | 1          | 13,751,564  | 0          | 2.4%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 16        | 2          | 834,260     | 0          | 0.1%          | 0.0%            |
+
+
+### simple_token_with_alloc_rust - mint
+
+- **Total Gas Used:** 530,880
+- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
+- **Total Weight:** ref_time=1,648,163,305, proof_size=74,263
+- **Weight Consumed:** ref_time=734,655,983 (44.6% of total), proof_size=65,732
+
+| Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
+| -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
+| Storage  | get_storage, set_storage       | 121,588   | 4          | 479,429,610 | 41,028     | 65.3%         | 62.4%           |
+| Crypto   | hash_keccak_256                | 304       | 1          | 15,219,717  | 0          | 2.1%          | 0.0%            |
+| Events   | deposit_event                  | 275       | 1          | 13,751,564  | 0          | 1.9%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size | 18        | 2          | 834,260     | 0          | 0.1%          | 0.0%            |
 
 
@@ -6495,16 +6509,32 @@ Opcodes grouped by functional category.
 
 ### simple_token_no_alloc_rust - transfer
 
-- **Total Gas Used:** 469,958
+- **Total Gas Used:** 468,906
 - **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
-- **Total Weight:** ref_time=1,562,094,984, proof_size=53,951
-- **Weight Consumed:** ref_time=648,587,662 (41.5% of total), proof_size=45,420
+- **Total Weight:** ref_time=1,509,505,424, proof_size=53,563
+- **Weight Consumed:** ref_time=595,998,102 (39.5% of total), proof_size=45,032
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 62,389    | 4          | 479,448,986 | 41,060     | 73.9%         | 90.4%           |
-| Crypto   | hash_keccak_256                | 1,216     | 4          | 60,878,868  | 0          | 9.4%          | 0.0%            |
-| Events   | deposit_event                  | 275       | 1          | 13,751,564  | 0          | 2.1%          | 0.0%            |
+| Storage  | get_storage, set_storage       | 62,389    | 4          | 479,448,986 | 41,060     | 80.4%         | 91.2%           |
+| Crypto   | hash_keccak_256                | 608       | 2          | 30,439,434  | 0          | 5.1%          | 0.0%            |
+| Events   | deposit_event                  | 275       | 1          | 13,751,564  | 0          | 2.3%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 16        | 2          | 834,260     | 0          | 0.1%          | 0.0%            |
+| Context  | caller                         | 8         | 1          | 403,000     | 0          | 0.1%          | 0.0%            |
+
+
+### simple_token_with_alloc_rust - transfer
+
+- **Total Gas Used:** 475,524
+- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
+- **Total Weight:** ref_time=1,680,381,070, proof_size=74,327
+- **Weight Consumed:** ref_time=766,873,748 (45.6% of total), proof_size=65,796
+
+| Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
+| -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
+| Storage  | get_storage, set_storage       | 65,591    | 4          | 479,504,330 | 41,092     | 62.5%         | 62.5%           |
+| Crypto   | hash_keccak_256                | 609       | 2          | 30,439,434  | 0          | 4.0%          | 0.0%            |
+| Events   | deposit_event                  | 275       | 1          | 13,751,564  | 0          | 1.8%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size | 18        | 2          | 834,260     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                         | 8         | 1          | 403,000     | 0          | 0.1%          | 0.0%            |
 
@@ -6553,19 +6583,19 @@ Opcodes grouped by functional category.
 
 ### store_rust - delegate
 
-- **Total Gas Used:** 757,481
-- **Base Call Weight:** ref_time=914,296,250, proof_size=8,723
-- **Total Weight:** ref_time=2,348,226,144, proof_size=90,866
-- **Weight Consumed:** ref_time=1,433,929,894 (61.1% of total), proof_size=82,143
+- **Total Gas Used:** 761,018
+- **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
+- **Total Weight:** ref_time=2,425,100,065, proof_size=91,555
+- **Weight Consumed:** ref_time=1,510,791,488 (62.3% of total), proof_size=82,829
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 209,602   | 5          | 650,110,270 | 51,285     | 45.3%         | 62.4%           |
-| Crypto   | hash_keccak_256          | 2,122     | 7          | 106,141,203 | 0          | 7.4%          | 0.0%            |
-| Events   | deposit_event            | 443       | 1          | 22,179,532  | 0          | 1.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 209,601   | 5          | 650,110,270 | 51,285     | 43.0%         | 61.9%           |
+| Crypto   | hash_keccak_256          | 2,122     | 7          | 106,141,203 | 0          | 7.0%          | 0.0%            |
+| Events   | deposit_event            | 613       | 1          | 30,607,500  | 0          | 2.0%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Context  | caller, now              | 14        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 
 
 ### Store_evm - delete_
@@ -6612,18 +6642,18 @@ Opcodes grouped by functional category.
 
 ### store_rust - delete_
 
-- **Total Gas Used:** 427,153
-- **Base Call Weight:** ref_time=913,901,786, proof_size=8,627
-- **Total Weight:** ref_time=2,761,857,091, proof_size=122,047
-- **Weight Consumed:** ref_time=1,847,955,305 (66.9% of total), proof_size=113,420
+- **Total Gas Used:** 430,315
+- **Base Call Weight:** ref_time=913,914,113, proof_size=8,630
+- **Total Weight:** ref_time=2,819,925,152, proof_size=122,736
+- **Weight Consumed:** ref_time=1,906,011,039 (67.6% of total), proof_size=114,106
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 21,215    | 8          | 1,060,733,899 | 82,562     | 57.4%         | 72.8%           |
-| Crypto   | hash_keccak_256          | 3,032     | 10         | 151,541,715   | 0          | 8.2%          | 0.0%            |
-| Events   | deposit_event            | 444       | 1          | 22,179,532    | 0          | 1.2%          | 0.0%            |
+| Storage  | get_storage, set_storage | 21,216    | 8          | 1,060,733,899 | 82,562     | 55.7%         | 72.4%           |
+| Crypto   | hash_keccak_256          | 3,029     | 10         | 151,541,715   | 0          | 8.0%          | 0.0%            |
+| Events   | deposit_event            | 612       | 1          | 30,607,500    | 0          | 1.6%          | 0.0%            |
 | Calldata | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
 
 
@@ -6671,16 +6701,16 @@ Opcodes grouped by functional category.
 
 ### store_rust - deleteFor
 
-- **Total Gas Used:** 499,173
+- **Total Gas Used:** 500,333
 - **Base Call Weight:** ref_time=914,296,250, proof_size=8,723
-- **Total Weight:** ref_time=3,162,842,439, proof_size=142,783
-- **Weight Consumed:** ref_time=2,248,546,189 (71.1% of total), proof_size=134,060
+- **Total Weight:** ref_time=3,220,848,943, proof_size=143,469
+- **Weight Consumed:** ref_time=2,306,552,693 (71.6% of total), proof_size=134,746
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 23,984    | 10         | 1,199,160,615 | 103,202    | 53.3%         | 77.0%           |
-| Crypto   | hash_keccak_256          | 3,635     | 12         | 181,825,257   | 0          | 8.1%          | 0.0%            |
-| Events   | deposit_event            | 443       | 1          | 22,179,532    | 0          | 1.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 23,984    | 10         | 1,199,160,615 | 103,202    | 52.0%         | 76.6%           |
+| Crypto   | hash_keccak_256          | 3,635     | 12         | 181,825,257   | 0          | 7.9%          | 0.0%            |
+| Events   | deposit_event            | 613       | 1          | 30,607,500    | 0          | 1.3%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000       | 0          | 0.0%          | 0.0%            |
@@ -6719,9 +6749,9 @@ Opcodes grouped by functional category.
 
 ### store_rust - deploy
 
-- **Total Gas Used:** 84,645,038
-- **Base Call Weight:** ref_time=2,005,821,857, proof_size=6,934
-- **Total Weight:** ref_time=2,007,079,296, proof_size=6,934
+- **Total Gas Used:** 86,195,615
+- **Base Call Weight:** ref_time=2,016,678,493, proof_size=6,934
+- **Total Weight:** ref_time=2,017,935,932, proof_size=6,934
 - **Weight Consumed:** ref_time=1,257,439 (0.1% of total), proof_size=0
 
 | Category | Opcodes Used | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -6773,18 +6803,18 @@ Opcodes grouped by functional category.
 
 ### store_rust - revokeDelegation
 
-- **Total Gas Used:** 539,344
+- **Total Gas Used:** 540,886
 - **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
-- **Total Weight:** ref_time=2,301,387,721, proof_size=91,339
-- **Weight Consumed:** ref_time=1,387,079,144 (60.3% of total), proof_size=82,613
+- **Total Weight:** ref_time=2,378,495,465, proof_size=92,025
+- **Weight Consumed:** ref_time=1,464,186,888 (61.6% of total), proof_size=83,299
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 10,982    | 5          | 549,126,406 | 51,755     | 39.6%         | 62.6%           |
-| Crypto   | hash_keccak_256          | 2,121     | 7          | 106,162,461 | 0          | 7.7%          | 0.0%            |
-| Events   | deposit_event            | 443       | 1          | 22,179,532  | 0          | 1.6%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
-| Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 10,984    | 5          | 549,126,406 | 51,755     | 37.5%         | 62.1%           |
+| Crypto   | hash_keccak_256          | 2,123     | 7          | 106,162,461 | 0          | 7.3%          | 0.0%            |
+| Events   | deposit_event            | 613       | 1          | 30,607,500  | 0          | 2.1%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
+| Return   | seal_return              | 11        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 403,000     | 0          | 0.0%          | 0.0%            |
 
 
@@ -6832,16 +6862,16 @@ Opcodes grouped by functional category.
 
 ### store_rust - set
 
-- **Total Gas Used:** 897,507
-- **Base Call Weight:** ref_time=914,296,250, proof_size=8,723
-- **Total Weight:** ref_time=2,799,528,941, proof_size=111,380
-- **Weight Consumed:** ref_time=1,885,232,691 (67.3% of total), proof_size=102,657
+- **Total Gas Used:** 899,745
+- **Base Call Weight:** ref_time=914,308,577, proof_size=8,726
+- **Total Weight:** ref_time=2,811,419,262, proof_size=112,069
+- **Weight Consumed:** ref_time=1,897,110,685 (67.5% of total), proof_size=103,343
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 347,428   | 7          | 991,364,248 | 71,799     | 52.6%         | 69.9%           |
-| Crypto   | hash_keccak_256          | 2,728     | 9          | 136,321,998 | 0          | 7.2%          | 0.0%            |
-| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 1.6%          | 0.0%            |
+| Storage  | get_storage, set_storage | 347,426   | 7          | 991,364,248 | 71,799     | 52.3%         | 69.5%           |
+| Crypto   | hash_keccak_256          | 2,726     | 9          | 136,321,998 | 0          | 7.2%          | 0.0%            |
+| Events   | deposit_event            | 781       | 1          | 39,035,468  | 0          | 2.1%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 14        | 2          | 750,000     | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.0%          | 0.0%            |
@@ -6891,18 +6921,18 @@ Opcodes grouped by functional category.
 
 ### store_rust - set_update
 
-- **Total Gas Used:** 546,965
+- **Total Gas Used:** 547,248
 - **Base Call Weight:** ref_time=914,296,250, proof_size=8,723
-- **Total Weight:** ref_time=1,652,430,111, proof_size=60,279
-- **Weight Consumed:** ref_time=738,133,861 (44.7% of total), proof_size=51,556
+- **Total Weight:** ref_time=1,666,572,685, proof_size=60,965
+- **Weight Consumed:** ref_time=752,276,435 (45.1% of total), proof_size=52,242
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,801     | 2          | 239,963,345 | 20,698     | 32.5%         | 40.1%           |
-| Crypto   | hash_keccak_256          | 1,212     | 4          | 60,563,541  | 0          | 8.2%          | 0.0%            |
-| Events   | deposit_event            | 612       | 1          | 30,607,500  | 0          | 4.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,799     | 2          | 239,963,345 | 20,698     | 31.9%         | 39.6%           |
+| Crypto   | hash_keccak_256          | 1,210     | 4          | 60,563,541  | 0          | 8.1%          | 0.0%            |
+| Events   | deposit_event            | 781       | 1          | 39,035,468  | 0          | 5.2%          | 0.0%            |
 | Calldata | call_data_copy           | 28        | 1          | 1,422,272   | 0          | 0.2%          | 0.0%            |
-| Context  | caller, now              | 14        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
+| Context  | caller, now              | 15        | 2          | 750,000     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 10        | 1          | 529,465     | 0          | 0.1%          | 0.0%            |
 
 
@@ -6950,19 +6980,19 @@ Opcodes grouped by functional category.
 
 ### store_rust - setFor
 
-- **Total Gas Used:** 870,918
+- **Total Gas Used:** 871,158
 - **Base Call Weight:** ref_time=914,703,041, proof_size=8,822
-- **Total Weight:** ref_time=3,210,095,916, proof_size=132,135
-- **Weight Consumed:** ref_time=2,295,392,875 (71.5% of total), proof_size=123,313
+- **Total Weight:** ref_time=3,222,072,370, proof_size=132,821
+- **Weight Consumed:** ref_time=2,307,369,329 (71.6% of total), proof_size=123,999
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 249,398   | 9          | 1,129,809,644 | 92,455     | 49.2%         | 75.0%           |
-| Crypto   | hash_keccak_256          | 3,333     | 11         | 166,605,540   | 0          | 7.3%          | 0.0%            |
-| Events   | deposit_event            | 612       | 1          | 30,607,500    | 0          | 1.3%          | 0.0%            |
-| Calldata | call_data_copy           | 29        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 249,396   | 9          | 1,129,809,644 | 92,455     | 49.0%         | 74.6%           |
+| Crypto   | hash_keccak_256          | 3,333     | 11         | 166,605,540   | 0          | 7.2%          | 0.0%            |
+| Events   | deposit_event            | 781       | 1          | 39,035,468    | 0          | 1.7%          | 0.0%            |
+| Calldata | call_data_copy           | 28        | 1          | 1,422,272     | 0          | 0.1%          | 0.0%            |
 | Context  | caller, now              | 15        | 2          | 750,000       | 0          | 0.0%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 10        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
 
 
 ### TetherToken_evm - approve
@@ -7208,22 +7238,22 @@ Opcodes grouped by functional category.
 
 ### W3S_pvm - checkIn
 
-- **Total Gas Used:** 392,303
-- **Base Call Weight:** ref_time=913,088,204, proof_size=8,429
-- **Total Weight:** ref_time=3,719,358,595, proof_size=317,083
+- **Total Gas Used:** 394,304
+- **Base Call Weight:** ref_time=913,100,531, proof_size=8,432
+- **Total Weight:** ref_time=3,719,370,922, proof_size=317,086
 - **Weight Consumed:** ref_time=2,806,270,391 (75.5% of total), proof_size=308,654
 
 | Category    | Opcodes Used                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ----------- | ----------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage     | get_storage_or_zero, set_storage_or_clear | 88,535    | 17         | 1,786,640,769 | 174,946    | 63.7%         | 56.7%           |
+| Storage     | get_storage_or_zero, set_storage_or_clear | 88,531    | 17         | 1,786,640,769 | 174,946    | 63.7%         | 56.7%           |
 | Calls       | call_evm                                  | 0         | 1          | 344,740,062   | 28,976     | 12.3%         | 9.4%            |
-| Crypto      | hash_keccak_256                           | 2,437     | 8          | 121,757,736   | 0          | 4.3%          | 0.0%            |
+| Crypto      | hash_keccak_256                           | 2,435     | 8          | 121,757,736   | 0          | 4.3%          | 0.0%            |
 | Events      | deposit_event                             | 1,162     | 3          | 58,110,628    | 0          | 2.1%          | 0.0%            |
 | Ether/Gas   | ref_time_left, value_transferred          | 51        | 3          | 2,567,000     | 0          | 0.1%          | 0.0%            |
-| Calldata    | call_data_load, call_data_size            | 47        | 7          | 2,375,000     | 0          | 0.1%          | 0.0%            |
-| Context     | caller, now                               | 37        | 5          | 1,903,000     | 0          | 0.1%          | 0.0%            |
-| Return      | seal_return                               | 22        | 2          | 1,065,330     | 0          | 0.0%          | 0.0%            |
-| Return Data | return_data_size                          | 7         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
+| Calldata    | call_data_load, call_data_size            | 48        | 7          | 2,375,000     | 0          | 0.1%          | 0.0%            |
+| Context     | caller, now                               | 38        | 5          | 1,903,000     | 0          | 0.1%          | 0.0%            |
+| Return      | seal_return                               | 21        | 2          | 1,065,330     | 0          | 0.0%          | 0.0%            |
+| Return Data | return_data_size                          | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### W3S_evm - configurePaymentToken
@@ -7422,21 +7452,21 @@ Opcodes grouped by functional category.
 
 ### W3S_pvm - redeemTicketStaff
 
-- **Total Gas Used:** 857,682
-- **Base Call Weight:** ref_time=913,494,995, proof_size=8,528
-- **Total Weight:** ref_time=5,208,307,931, proof_size=405,206
+- **Total Gas Used:** 859,683
+- **Base Call Weight:** ref_time=913,507,322, proof_size=8,531
+- **Total Weight:** ref_time=5,208,320,258, proof_size=405,209
 - **Weight Consumed:** ref_time=4,294,812,936 (82.5% of total), proof_size=396,678
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 434,873   | 28         | 3,263,538,575 | 287,936    | 76.0%         | 72.6%           |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 434,869   | 28         | 3,263,538,575 | 287,936    | 76.0%         | 72.6%           |
 | Crypto    | hash_keccak_256                           | 4,866     | 16         | 243,246,204   | 0          | 5.7%          | 0.0%            |
 | Code      | code_size                                 | 1,283     | 1          | 64,148,000    | 4,010      | 1.5%          | 1.0%            |
-| Events    | deposit_event                             | 550       | 2          | 27,503,128    | 0          | 0.6%          | 0.0%            |
+| Events    | deposit_event                             | 551       | 2          | 27,503,128    | 0          | 0.6%          | 0.0%            |
 | Context   | caller, now                               | 47        | 6          | 2,362,000     | 0          | 0.1%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 26        | 4          | 1,359,000     | 0          | 0.0%          | 0.0%            |
-| Return    | seal_return                               | 11        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
-| Ether/Gas | value_transferred                         | 7         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 27        | 4          | 1,359,000     | 0          | 0.0%          | 0.0%            |
+| Return    | seal_return                               | 10        | 1          | 529,465       | 0          | 0.0%          | 0.0%            |
+| Ether/Gas | value_transferred                         | 6         | 1          | 319,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### W3S_evm - revokeVolunteerRole
@@ -7628,18 +7658,18 @@ Opcodes grouped by functional category.
 
 ### WETH9_pvm - deposit
 
-- **Total Gas Used:** 349,907
-- **Base Call Weight:** ref_time=912,804,683, proof_size=8,360
-- **Total Weight:** ref_time=1,259,534,400, proof_size=46,070
+- **Total Gas Used:** 347,907
+- **Base Call Weight:** ref_time=912,792,356, proof_size=8,357
+- **Total Weight:** ref_time=1,259,522,073, proof_size=46,067
 - **Weight Consumed:** ref_time=346,729,717 (27.5% of total), proof_size=37,710
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 57,594    | 2          | 239,714,805 | 20,514     | 69.1%         | 54.4%           |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 57,595    | 2          | 239,714,805 | 20,514     | 69.1%         | 54.4%           |
 | Crypto    | hash_keccak_256                           | 304       | 1          | 15,219,717  | 0          | 4.4%          | 0.0%            |
 | Events    | deposit_event                             | 275       | 1          | 13,751,564  | 0          | 4.0%          | 0.0%            |
 | Context   | caller                                    | 16        | 2          | 806,000     | 0          | 0.2%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 14        | 2          | 673,000     | 0          | 0.2%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 13        | 2          | 673,000     | 0          | 0.2%          | 0.0%            |
 | Ether/Gas | value_transferred                         | 12        | 2          | 638,000     | 0          | 0.2%          | 0.0%            |
 | Return    | seal_return                               | 10        | 1          | 529,465     | 0          | 0.2%          | 0.0%            |
 

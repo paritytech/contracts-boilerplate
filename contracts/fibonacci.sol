@@ -15,7 +15,9 @@ contract Fibonacci {
         } else if (n == 1) {
             return 1;
         } else {
+            unchecked {
             return _fibonacci(n - 1) + _fibonacci(n - 2);
+            }
         }
     }
 }
