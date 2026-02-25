@@ -1,20 +1,37 @@
 [package]
 name = "contracts"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 publish = false
+build = "build.rs"
 
 [[bin]]
-name = "simple_token_no_alloc"
-path = "src/simple_token_no_alloc.rs"
+name = "simple_token_u32_no_alloc"
+path = "src/simple_token_u32_no_alloc.rs"
 
 [[bin]]
-name = "erc20_with_alloc"
-path = "src/erc20_with_alloc.rs"
+name = "simple_token_u128_no_alloc"
+path = "src/simple_token_u128_no_alloc.rs"
 
 [[bin]]
-name = "fibonacci"
-path = "src/fibonacci.rs"
+name = "simple_token_u256_no_alloc"
+path = "src/simple_token_u256_no_alloc.rs"
+
+[[bin]]
+name = "simple_token_u32_macro_no_alloc"
+path = "src/simple_token_u32_macro_no_alloc.rs"
+
+[[bin]]
+name = "simple_token_u256_macro_no_alloc"
+path = "src/simple_token_u256_macro_no_alloc.rs"
+
+[[bin]]
+name = "simple_token_u256_macro_bump_alloc"
+path = "src/simple_token_u256_macro_bump_alloc.rs"
+
+[[bin]]
+name = "fibonacci_u32"
+path = "src/fibonacci_u32.rs"
 
 [[bin]]
 name = "fibonacci_u128"
@@ -24,18 +41,29 @@ path = "src/fibonacci_u128.rs"
 name = "fibonacci_u256"
 path = "src/fibonacci_u256.rs"
 
+[[bin]]
+name = "fibonacci_u32_macro_no_alloc"
+path = "src/fibonacci_u32_macro_no_alloc.rs"
+
+[[bin]]
+name = "fibonacci_u32_macro_bump_alloc"
+path = "src/fibonacci_u32_macro_bump_alloc.rs"
+
 [profile.release]
-opt-level = 3
-lto = true
 codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+overflow-checks = false
 
 [dependencies]
-polkavm-derive = { version = "0.30.0" }
-alloy-core = { version = "0.8.0", default-features = false, features = ["sol-types"] }
+polkavm-derive = "0.31.0"
+pallet-revive-uapi = { version = "0.10", default-features = false }
 picoalloc = "5.2.0"
-pallet-revive-uapi = { version = "0.9.0", default-features = false }
+pvm-contract-macros = { path = "/home/pg/github/cargo-pvm-contract/main/crates/pvm-contract-macros" }
+pvm-contract-types = { path = "/home/pg/github/cargo-pvm-contract/main/crates/pvm-contract-types" }
+pvm-bump-allocator = { path = "/home/pg/github/cargo-pvm-contract/main/crates/pvm-bump-allocator" }
+ruint = { version = "1.17", default-features = false }
 
-
-
-
-
+[build-dependencies]
+cargo-pvm-contract-builder = { path = "/home/pg/github/cargo-pvm-contract/main/crates/cargo-pvm-contract-builder" }

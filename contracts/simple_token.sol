@@ -11,8 +11,13 @@ contract SimpleToken {
 
     error InsufficientBalance();
 
+    /// @notice Returns the balance of `account`.
+    function balanceOf(address account) external view returns (uint256) {
+        return balances[account];
+    }
+
     /// @notice Transfers `amount` tokens from the caller to `to`.
-    function transfer(address to, uint256 amount) external {
+    function transfer(address to, uint256 amount) external payable {
         uint256 senderBalance = balances[msg.sender];
         if (senderBalance < amount) {
             revert InsufficientBalance();
@@ -28,7 +33,7 @@ contract SimpleToken {
 
     /// @notice Permissionless mint mirroring the ink! implementation.
     /// Emits a Transfer event with the zero address as the sender.
-    function mint(address to, uint256 amount) external {
+    function mint(address to, uint256 amount) external payable {
         balances[to] += amount;
         totalSupply += amount;
         emit Transfer(address(0), to, amount);

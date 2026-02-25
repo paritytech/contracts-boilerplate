@@ -6,14 +6,16 @@ mod fibonacci {
     #[ink(storage)]
     pub struct Fibonacci;
 
+    // make all methods payable to generate code that does not check wheher or not some value was sent
+    // along.
     impl Fibonacci {
-        #[ink(constructor)]
+        #[ink(constructor, payable)]
         pub fn new() -> Self {
             Self {}
         }
 
-        #[ink(message)]
-        pub fn fibonacci(&self, n: u32) -> Result<(), ()> {
+        #[ink(message, payable)]
+        pub fn fibonacci(&mut self, n: u32) -> Result<(), ()> {
             let result = super::_fibonacci(n);
             if result == 0 {
                 return Err(());

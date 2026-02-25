@@ -1,6 +1,6 @@
 # Opcode Analysis
 
-Generated on: 2026-01-13
+Generated on: 2026-02-25
 
 ## Chain: Geth
 

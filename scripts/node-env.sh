@@ -54,11 +54,11 @@ export PASSET_HUB_WS_URL="wss://testnet-passet-hub.polkadot.io"
 export PASSET_HUB_ETH_HTTP_URL="https://testnet-passet-hub-eth-rpc.polkadot.io"
 
 export PASEO_HUB_WS_URL="wss://sys.ibp.network/asset-hub-paseo"
-export PASEO_HUB_ETH_HTTP_URL=https://services.polkadothub-rpc.com/testnet
+export PASEO_HUB_ETH_HTTP_URL="https://eth-rpc-testnet.polkadot.io"
 
 # Kusama Asset Hub Substrate RPC endpoint
 export KSM_WS_URL="wss://kusama-asset-hub-rpc.polkadot.io"
-export KSM_ETH_HTTP_URL="https://kusama-asset-hub-eth-rpc.polkadot.io"
+export KSM_ETH_HTTP_URL="wss://eth-rpc-kusama.polkadot.io/"
 
 export POLKADOT_ETH_HTTP_URL="https://eth-rpc.polkadot.io"
 export POLKADOT_BLOCK_EXPLORER_URL="https://blockscout.polkadot.io"
@@ -440,6 +440,7 @@ function eth-rpc() {
 					--dev \
 					--rpc-port 8546 \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -457,6 +458,7 @@ function eth-rpc() {
 					--dev \
 					--rpc-port 8546 \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -476,6 +478,7 @@ function eth-rpc() {
 					--dev \
 					--rpc-port 8546 \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 | lnav
 				{ set +x; } 2>/dev/null
@@ -487,6 +490,7 @@ function eth-rpc() {
 					--dev \
 					--rpc-port 8546 \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}"
 				{ set +x; } 2>/dev/null
@@ -536,6 +540,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -552,6 +557,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -570,6 +576,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 | lnav
 				{ set +x; } 2>/dev/null
@@ -580,6 +587,7 @@ function eth-rpc() {
 					--no-prometheus \
 					--dev \
 					--rpc-max-response-size 50 \
+				--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}"
 				{ set +x; } 2>/dev/null
@@ -625,6 +633,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -643,6 +652,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 |
 					tee /tmp/eth-rpc.log |
@@ -663,6 +673,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}" 2>&1 | lnav
 				{ set +x; } 2>/dev/null
@@ -675,6 +686,7 @@ function eth-rpc() {
 					--log="$RUST_LOG" \
 					--no-prometheus \
 					--dev \
+					--rpc-max-connections 2000 \
 					--node-rpc-url "$NODE_RPC_URL" \
 					"${args[@]}"
 				{ set +x; } 2>/dev/null
@@ -703,7 +715,7 @@ function revive_dev_stack() {
 	fi
 
 	# Kill existing 'servers' window if it exists
-	tmux kill-window -t servers 2>/dev/null
+	tmux kill-window -t servers 2>/dev/null || true
 
 	# Parse arguments
 	use_proxy="false"
@@ -1184,6 +1196,129 @@ function westend() {
 	esac
 }
 
+# Builds and runs the Polkadot Asset Hub development environment
+# This function manages the asset-hub-polkadot-runtime using the runtimes repository
+#
+# Usage: polkadot [bacon|build|run] [--retester]
+# Examples:
+#   polkadot build              - Build only the runtime
+#   polkadot run                - Run the already built runtime
+#   polkadot run --retester     - Run with retester chain spec
+#   polkadot                    - Build and run the runtime (default)
+function polkadot() {
+	# Set default logging levels (can be overridden by environment variable)
+	RUST_LOG="${RUST_LOG:-error,sc_rpc_server=info,runtime::revive=debug}"
+
+	# Parse arguments to detect --retester flag
+	retester_spec="false"
+	args=()
+	arg=""
+
+	for var in "$@"; do
+		if [ "$var" = "--retester" ]; then
+			retester_spec="true"
+		elif [ -z "$arg" ] && [[ "$var" =~ ^(bacon|build|run)$ ]]; then
+			arg="$var"
+		else
+			args+=("$var")
+		fi
+	done
+
+	# Build the runtime and create a chain spec with endowed dev accounts
+	build() {
+		if [ "$retester_spec" = "true" ]; then
+			# Build using cargo for retester
+			set -x
+			cargo build --manifest-path "$HOME/github/runtimes/Cargo.toml" -p asset-hub-polkadot-runtime
+			{ set +x; } 2>/dev/null
+
+			# Generate base chain spec using polkadot-omni-node
+			mkdir -p "$HOME/.revive"
+			set -x
+			polkadot-omni-node chain-spec-builder \
+				--chain-spec-path "/tmp/ah-polkadot-spec-base.json" \
+				create \
+				--relay-chain dontcare \
+				--para-id 1000 \
+				--runtime "$HOME/github/runtimes/target/debug/wbuild/asset-hub-polkadot-runtime/asset_hub_polkadot_runtime.wasm" \
+				named-preset development
+			{ set +x; } 2>/dev/null
+
+			patch_chain_spec "/tmp/ah-polkadot-spec-base.json" "$HOME/.revive/ah-polkadot-spec.json" --retester --dev-stakers
+		else
+			# Build the asset-hub-polkadot-runtime
+			set -x
+			cargo build --manifest-path "$HOME/github/runtimes/Cargo.toml" -p asset-hub-polkadot-runtime
+			{ set +x; } 2>/dev/null
+
+			# Create chain spec using chain-spec-builder
+			chain-spec-builder -c /tmp/ah-polkadot-spec.json \
+				create \
+				--para-id 1000 \
+				--relay-chain dontcare \
+				--runtime "$HOME/github/runtimes/target/debug/wbuild/asset-hub-polkadot-runtime/asset_hub_polkadot_runtime.wasm" \
+				named-preset development
+
+			# Use helper function to endow accounts
+			patch_chain_spec /tmp/ah-polkadot-spec.json ~/ah-polkadot-spec.json --dev-balance --dev-stakers
+		fi
+	}
+
+	# Run the polkadot-omni-node with the polkadot chain spec
+	run() {
+		# Determine which chain spec to use
+		local chain_spec
+		if [ "$retester_spec" = "true" ]; then
+			chain_spec="$HOME/.revive/ah-polkadot-spec.json"
+		else
+			chain_spec="$HOME/ah-polkadot-spec.json"
+		fi
+
+		# Check if lnav is installed and pipe output to it if available
+		if command -v lnav &>/dev/null; then
+			set -x
+			polkadot-omni-node \
+				--dev \
+				--log="$RUST_LOG" \
+				--instant-seal \
+				--no-prometheus \
+				--chain "$chain_spec" "${args[@]}" 2>&1 | lnav
+			{ set +x; } 2>/dev/null
+		else
+			set -x
+			polkadot-omni-node \
+				--dev \
+				--log="$RUST_LOG" \
+				--instant-seal \
+				--no-prometheus \
+				--chain "$chain_spec" "${args[@]}"
+			{ set +x; } 2>/dev/null
+		fi
+	}
+
+	# Execute the appropriate command based on the first argument
+	case "$arg" in
+	bacon)
+		# Compile and watch in the background using bacon (https://github.com/Canop/bacon)
+		# This provides continuous compilation feedback during development
+		(cd "$HOME/github/runtimes" && bacon -- -p "asset-hub-polkadot-runtime")
+		;;
+	build)
+		# Build the runtime and generate chain spec
+		build
+		;;
+	run)
+		# Run the already built runtime
+		run
+		;;
+	*)
+		# Default: build and run the runtime
+		build
+		run
+		;;
+	esac
+}
+
 # Configures cast environment for passet Hub testnet
 # Sets up PRIVATE_KEY and ETH_RPC_URL environment variables for cast commands
 # Usage: cast_passet
@@ -1223,7 +1358,7 @@ function cast_paseo() {
 function cast_westend() {
 	export ETH_FROM="0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63"
 	export PRIVATE_KEY=0x2286c61f76910500cb63395dc50b77f821ac9687297081593057a8da0c7d92ba
-	export ETH_RPC_URL=$WESTEND_HUB_ETH_HTTP_URL
+	export ETH_RPC_URL=$WESTEND_ETH_HTTP_URL
 
 	echo "Loading account $ETH_FROM"
 	echo "Setting ETH_RPC_URL to $ETH_RPC_URL"
@@ -1602,7 +1737,7 @@ function eth_hardhat() {
 #   geth_stack --proxy --retester - Run geth with proxy and retester genesis spec
 function geth_stack() {
 	# Kill existing 'servers' window if it exists
-	tmux kill-window -t servers 2>/dev/null
+	tmux kill-window -t servers 2>/dev/null || true
 
 	# Parse arguments
 	mode="run"
@@ -1636,7 +1771,7 @@ function geth_stack() {
 #   passet_stack --proxy - Run both services with proxy
 function passet_stack() {
 	# Kill existing 'servers' window if it exists
-	tmux kill-window -t servers 2>/dev/null
+	tmux kill-window -t servers 2>/dev/null || true
 
 	# Parse arguments
 	use_proxy="false"
@@ -1677,7 +1812,7 @@ function passet_stack() {
 #   westend_stack --build --retester - Build with retester and run
 function westend_stack() {
 	# Kill existing 'servers' window if it exists
-	tmux kill-window -t servers 2>/dev/null
+	tmux kill-window -t servers 2>/dev/null || true
 
 	# Parse arguments
 	use_proxy="false"
@@ -1707,6 +1842,62 @@ function westend_stack() {
 
 	# Create new 'servers' window running westend node
 	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; westend run $retester_flag; exec \$SHELL'"
+
+	# Split the window and run eth-rpc with or without proxy
+	if [ "$use_proxy" = "false" ]; then
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc run ws://localhost:9944; exec \$SHELL'"
+	else
+		tmux split-window -t servers -d "$CURRENT_SHELL -c 'source $SHELL_RC; eth-rpc proxy ws://localhost:9944; exec \$SHELL'"
+	fi
+
+	# Select the first pane
+	tmux select-pane -t servers.1
+
+	# Wait for eth-rpc to be ready
+	wait_for_eth_rpc
+}
+
+# Runs the complete Polkadot Asset Hub stack (polkadot node + eth-rpc) in tmux window
+# This starts both the Polkadot node and Ethereum RPC bridge in separate panes
+# Usage: polkadot_stack [--proxy] [--build] [--retester]
+# Examples:
+#   polkadot_stack                - Run both services without proxy
+#   polkadot_stack --proxy        - Run both services with proxy
+#   polkadot_stack --build        - Build polkadot and eth-rpc before starting
+#   polkadot_stack --retester     - Use retester chainspec
+#   polkadot_stack --build --retester - Build with retester and run
+function polkadot_stack() {
+	# Kill existing 'servers' window if it exists
+	tmux kill-window -t servers 2>/dev/null || true
+
+	# Parse arguments
+	use_proxy="false"
+	build_flag="false"
+	retester_flag=""
+
+	for arg in "$@"; do
+		case "$arg" in
+		--proxy)
+			use_proxy="true"
+			;;
+		--build)
+			build_flag="true"
+			;;
+		--retester)
+			retester_flag="--retester"
+			;;
+		esac
+	done
+
+	# Build binaries if requested
+	if [ "$build_flag" = "true" ]; then
+		echo "Building polkadot and eth-rpc..."
+		polkadot build $retester_flag
+		eth-rpc build
+	fi
+
+	# Create new 'servers' window running polkadot node
+	tmux new-window -d -n servers "$CURRENT_SHELL -c 'source $SHELL_RC; polkadot run $retester_flag; exec \$SHELL'"
 
 	# Split the window and run eth-rpc with or without proxy
 	if [ "$use_proxy" = "false" ]; then
@@ -1846,7 +2037,7 @@ function cast_is_pvm() {
 #   anvil_stack --eth          - Use system anvil from PATH instead of anvil-polkadot
 function anvil_stack() {
 	# Kill existing 'servers' window if it exists
-	tmux kill-window -t servers 2>/dev/null
+	tmux kill-window -t servers 2>/dev/null || true
 
 	# Parse arguments
 	mode="run"

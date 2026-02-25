@@ -49,13 +49,13 @@ export interface ContractInfo {
     build(): Promise<void>
 }
 
-export function ink(name: string): ContractInfo {
+export function ink(name: string, displayName?: string): ContractInfo {
     return {
         supportEvm() {
             return false
         },
         getName() {
-            return `${name}_ink`
+            return displayName ?? `${name}_ink`
         },
         getBytecode() {
             return readBytecode(`./ink/${name}/target/ink/${name}.polkavm`)
@@ -76,7 +76,11 @@ export function ink(name: string): ContractInfo {
     }
 }
 
-export function solidity(fileName: string, name: string): ContractInfo[] {
+export function solidity(
+    fileName: string,
+    name: string,
+    displayName?: string,
+): ContractInfo[] {
     const bytecodes = { pvm: 'polkavm', evm: 'bin' } as const
     let buildRun = false
 
@@ -85,7 +89,7 @@ export function solidity(fileName: string, name: string): ContractInfo[] {
             return type == 'evm'
         },
         getName() {
-            return `${name}_${type}`
+            return `${displayName ?? name}_${type}`
         },
         getBytecode() {
             return readBytecode(`./codegen/${type}/${name}.${ext}`)

@@ -13,12 +13,12 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 }
 
 /// This is the constructor which is called once per contract.
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {}
 
 /// This is the constructor which is called once per contract.
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
     // We want this contract to be called with the following ABI:

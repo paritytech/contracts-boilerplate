@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract Fibonacci {
-    function fibonacci(uint32 n) public {
+    function fibonacci(uint32 n) public payable {
         uint32 result = _fibonacci(n);
         if (result  == 0) {
             revert();
