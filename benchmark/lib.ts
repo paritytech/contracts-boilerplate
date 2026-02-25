@@ -1,8 +1,8 @@
 import { Hex, TransactionReceipt } from 'viem'
-import { env } from '../tools/lib/index.ts'
-import { Abis } from '../codegen/abis.ts'
+import { deploy as deployContract, env } from '../tools/lib/index.ts'
+import type { Abis } from '../codegen/abis.ts'
 import { readBytecode } from '../utils/index.ts'
-import { compile } from '../utils/build.ts'
+import { compile, LinkReferences } from '../utils/build.ts'
 import { join } from '@std/path'
 import { logger } from '../utils/logger.ts'
 import { Buffer } from 'node:buffer'
@@ -36,9 +36,11 @@ CREATE TABLE IF NOT EXISTS transaction_steps (
     gas_cost INTEGER NOT NULL,
     weight_cost_ref_time INTEGER,
     weight_cost_proof_size INTEGER,
-    PRIMARY KEY (hash, chain_name, op),
     FOREIGN KEY (hash, chain_name) REFERENCES transactions(hash, chain_name)
 );
+
+CREATE INDEX IF NOT EXISTS idx_transaction_steps_hash_chain
+    ON transaction_steps(hash, chain_name);
 `,
 )
 
@@ -82,45 +84,57 @@ export function solidity(
     displayName?: string,
 ): ContractInfo[] {
     const bytecodes = { pvm: 'polkavm', evm: 'bin' } as const
-    let buildRun = false
+    const buildRun = { evm: false, pvm: false }
+    const libraryLinks = {
+        evm: undefined as LinkReferences | undefined,
+        pvm: undefined as LinkReferences | undefined,
+    }
 
-    return Object.entries(bytecodes).map(([type, ext]) => ({
-        supportEvm() {
-            return type == 'evm'
-        },
-        getName() {
-            return `${displayName ?? name}_${type}`
-        },
-        getBytecode() {
-            return readBytecode(`./codegen/${type}/${name}.${ext}`)
-        },
-        async build() {
-            if (buildRun) return
-            buildRun = true
+    return Object.entries(bytecodes).map(([type, ext]) => {
+        // Type-specific configuration
+        const buildType = type as 'evm' | 'pvm'
+        const isEvm = type === 'evm'
+        const compiler = isEvm ? 'solc' : 'resolc'
 
-            const rootDir = join(import.meta.dirname!, '..')
-            const contractsDir = join(rootDir, 'contracts')
-            const sourceFilePath = join(contractsDir, fileName)
-            const sourceContent = Deno.readTextFileSync(sourceFilePath)
+        const contract = {
+            supportEvm() {
+                return isEvm
+            },
+            getName() {
+                return `${name}_${type}`
+            },
+            getBytecode() {
+                return readBytecode(`./codegen/${type}/${name}.${ext}`)
+            },
+            async build() {
+                const libs = libraryLinks[buildType]
+                const shouldBuild = !buildRun[buildType] || libs
 
-            // Compile with resolc for PVM
-            await compile({
-                fileName,
-                sourceContent,
-                rootDir,
-                compiler: 'resolc',
-            })
+                if (!shouldBuild) return
 
-            // Compile with solc for EVM
-            await compile({
-                fileName,
-                sourceContent,
-                rootDir,
-                compiler: 'solc',
-                generateAbi: true,
-            })
-        },
-    }))
+                const rootDir = join(import.meta.dirname!, '..')
+                const contractsDir = join(rootDir, 'contracts')
+                const sourceFilePath = join(contractsDir, fileName)
+                const sourceContent = Deno.readTextFileSync(sourceFilePath)
+
+                await compile({
+                    fileName,
+                    sources: { [fileName]: { content: sourceContent } },
+                    rootDir,
+                    compiler,
+                    generateAbi: isEvm,
+                    libraries: libs,
+                })
+
+                buildRun[buildType] = true
+            },
+
+            setLibraries(libs: LinkReferences) {
+                libraryLinks[buildType] = libs
+            },
+        }
+        return contract
+    })
 }
 
 export function rust(name: string): ContractInfo {
@@ -150,9 +164,38 @@ export function rust(name: string): ContractInfo {
     }
 }
 
+export function pcRust(name: string): ContractInfo {
+    const pcRoot = join(import.meta.dirname!, '..', 'rust', 'protocol-commons')
+    return {
+        supportEvm() {
+            return false
+        },
+        getName() {
+            return `${name}_rust`
+        },
+        getBytecode() {
+            return readBytecode(join(pcRoot, name, `${name}.polkavm`))
+        },
+        async build() {
+            const cmd = new Deno.Command('make', {
+                args: [name],
+                cwd: pcRoot,
+                stdout: 'inherit',
+                stderr: 'inherit',
+            })
+            const result = await cmd.output()
+            if (!result.success) {
+                throw new Error(`Failed to build pc rust contract: ${name}`)
+            }
+        },
+    }
+}
+
 export type Artifacts = Array<{
     id: string
     srcs: ContractInfo[]
+    /** Skip deploying the EVM variant (e.g. contract too large for EVM) */
+    pvmOnly?: boolean
     deploy: (
         id: keyof Abis,
         name: string,
@@ -162,6 +205,7 @@ export type Artifacts = Array<{
         name: string
         exec: (address: Hex) => Promise<Hex>
     }>
+    setup?: () => Promise<void>
 }>
 
 export function deleteChainData(chainName: string) {
@@ -192,16 +236,82 @@ export async function build(contracts: Artifacts) {
     }
 }
 
+async function resolveLibraryLinks(
+    src: ContractInfo,
+    deployedAddresses: Record<string, string>,
+) {
+    // currently we only support library linking for solidity contracts
+    const solidityContract = src as ContractInfo & {
+        setLibraries?: (libs: LinkReferences) => void
+    }
+    if (!solidityContract.setLibraries) return
+
+    const contractName = src.getName()
+    const match = contractName.match(/_(evm|pvm)$/)
+
+    const suffix = match?.[0] ?? ''
+    const baseName = suffix
+        ? contractName.slice(0, -suffix.length)
+        : contractName
+    const type = src.supportEvm() ? 'evm' : 'pvm'
+
+    // Load library dependencies
+    const { libs } = await import('../codegen/libs.ts')
+    if (!(baseName in libs)) return // contract does not require library linking
+
+    const lib = libs[baseName as keyof typeof libs]
+    const libRefs: LinkReferences = {}
+
+    for (const [libSrc, LibContracts] of Object.entries(lib)) {
+        for (const libName of LibContracts) {
+            let libAddress = deployedAddresses[`${libName}${suffix}`]
+            if (!libAddress) {
+                // not deployed library -> deploy it
+                const ext = src.supportEvm() ? 'bin' : 'polkavm'
+                const receipt = await deployContract({
+                    name: {
+                        id: libName as keyof Abis,
+                        name: `${libName}${suffix}`,
+                    },
+                    args: [],
+                    bytecode: readBytecode(
+                        `./codegen/${type}/${libName}.${ext}`,
+                    ),
+                })
+                if (!receipt.contractAddress) {
+                    throw new Error(
+                        `${contractName} library link: Unable to deploy library contract ${libName}`,
+                    )
+                }
+                libAddress = receipt.contractAddress
+                // Track deployed library to avoid redeployment
+                deployedAddresses[`${libName}${suffix}`] = libAddress
+            }
+            libRefs[libSrc] ??= {}
+            libRefs[libSrc][libName] = libAddress
+        }
+    }
+
+    // Set libraries and trigger recompilation
+    solidityContract.setLibraries(libRefs)
+    await src.build()
+}
+
 export async function deploy(contracts: Artifacts) {
+    // Track deployed libraries to avoid redeployment within this session
+    const deployedAddresses: Record<string, string> = {}
+
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
+            : artifact.pvmOnly
+            ? artifact.srcs.filter((src) => !src.supportEvm())
             : artifact.srcs
 
         for (const src of srcs) {
             const contract = src.getName()
             logger.debug(`Deploying ${contract}...`)
-
+            await resolveLibraryLinks(src, deployedAddresses)
             const receipt = await artifact.deploy(
                 artifact.id as keyof Abis,
                 contract,
@@ -215,18 +325,23 @@ export async function deploy(contracts: Artifacts) {
                 receipt.transactionHash,
             )
         }
+
+        if (artifact.setup) {
+            logger.debug(`Running setup for ${artifact.id}...`)
+            await artifact.setup()
+        }
     }
 }
 
 export async function execute(contracts: Artifacts) {
-    const addresses = await import('../codegen/addresses.ts') as Record<
-        string,
-        Hex
-    >
+    // Use loadAddresses to avoid module caching issues
+    const addresses = await loadAddresses()
 
     for (const artifact of contracts) {
         const srcs = env.chain.name == 'Geth'
             ? artifact.srcs.filter((src) => src.supportEvm())
+            : artifact.pvmOnly
+            ? artifact.srcs.filter((src) => !src.supportEvm())
             : artifact.srcs
         for (const src of srcs) {
             for (const call of artifact.calls) {
@@ -238,6 +353,16 @@ export async function execute(contracts: Artifacts) {
         }
     }
 }
+
+// CALL-type opcodes where gasCost includes forwarded gas
+const CALL_OPCODES = new Set([
+    'CALL',
+    'DELEGATECALL',
+    'STATICCALL',
+    'CALLCODE',
+    'CREATE',
+    'CREATE2',
+])
 
 async function updateStats(
     contractId: string,
@@ -268,12 +393,34 @@ async function updateStats(
             op: string
             gas: number
             gasCost: number
+            depth: number
             weightCost?: { ref_time: number; proof_size: number }
         }>
         weightConsumed?: { ref_time: number; proof_size: number }
         baseCallWeight?: { ref_time: number; proof_size: number }
     }
-    const structLogs = typedTrace.structLogs ?? []
+
+    // Calculate intrinsic gas costs for Geth by removing forwarded gas for call opcodes
+    const rawLogs = typedTrace.structLogs ?? []
+    const structLogs = chainName === 'Geth'
+        ? rawLogs.map((log, i) => {
+            if (!CALL_OPCODES.has(log.op)) {
+                return log
+            }
+
+            // For call opcodes, check if next entry has higher depth (child call started)
+            const nextLog = rawLogs[i + 1]
+            if (nextLog && nextLog.depth > log.depth) {
+                // Intrinsic cost = total gasCost - gas forwarded to child
+                const gasForwarded = nextLog.gas
+                const intrinsicCost = log.gasCost - gasForwarded
+                return { ...log, gasCost: intrinsicCost }
+            }
+
+            // No child call (e.g., call to precompile or empty account)
+            return log
+        })
+        : rawLogs
     const weightConsumed = typedTrace.weightConsumed
     const baseCallWeight = typedTrace.baseCallWeight
 
@@ -303,19 +450,19 @@ INSERT OR REPLACE INTO transactions (
             contractId,
             contract,
             action,
-            receipt.gasUsed.toString(),
+            Number(receipt.gasUsed),
             statusValue,
-            weight ? weight.ref_time.toString() : null,
-            weight ? weight.proof_size.toString() : null,
-            weightConsumed ? weightConsumed.ref_time.toString() : null,
-            weightConsumed ? weightConsumed.proof_size.toString() : null,
-            baseCallWeight ? baseCallWeight.ref_time.toString() : null,
-            baseCallWeight ? baseCallWeight.proof_size.toString() : null,
+            weight ? Number(weight.ref_time) : null,
+            weight ? Number(weight.proof_size) : null,
+            weightConsumed ? Number(weightConsumed.ref_time) : null,
+            weightConsumed ? Number(weightConsumed.proof_size) : null,
+            baseCallWeight ? Number(baseCallWeight.ref_time) : null,
+            baseCallWeight ? Number(baseCallWeight.proof_size) : null,
         )
 
         const insertStep = db.prepare(
             `
-INSERT OR REPLACE INTO transaction_steps (
+INSERT INTO transaction_steps (
     hash,
     chain_name,
     op,
@@ -342,4 +489,15 @@ INSERT OR REPLACE INTO transaction_steps (
         db.exec('ROLLBACK')
         throw error
     }
+}
+
+let nameCounter = 0
+export function uniqueName(base: string): string {
+    return `${base}${Date.now().toString(36)}${(nameCounter++).toString(36)}`
+}
+
+export async function loadAddresses(): Promise<Record<string, Hex>> {
+    // Add cache busting to get fresh addresses
+    const mod = await import(`../codegen/addresses.ts?t=${Date.now()}`)
+    return mod as Record<string, Hex>
 }

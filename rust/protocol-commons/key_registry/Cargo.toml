@@ -1,0 +1,20 @@
+[package]
+name = "pc-key-registry"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "Protocol Commons KeyRegistry contract for X3DH key management on pallet-revive"
+
+[[bin]]
+name = "key_registry"
+path = "src/main.rs"
+
+[dependencies]
+pc-revive-common.workspace = true
+parity-scale-codec.workspace = true
+polkavm-derive.workspace = true
+ed25519-dalek.workspace = true
+
+[features]
+default = []
+verify-signatures = []

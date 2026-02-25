@@ -24,7 +24,7 @@ pop build --release
 cd ../..
 
 # Check if cargo-pvm-contract is installed
-if ! cargo pvm-contract help &>/dev/null; then
+if ! cargo pvm-contract --version &>/dev/null; then
 	echo "cargo-pvm-contract is not installed. Installing..."
 	cargo install --force --locked cargo-pvm-contract
 fi
@@ -32,12 +32,16 @@ fi
 # Build PVM contracts
 echo "Building PVM contracts"
 cd rust/contracts
-cargo pvm-contract build
+cargo pvm-contract build -b simple_token_no_alloc
+cargo pvm-contract build -b simple_token_with_alloc
+cargo pvm-contract build -b fibonacci
+cargo pvm-contract build -b fibonacci_u128
+cargo pvm-contract build -b fibonacci_u256
 cd ../..
 
 # Build Solidity EVM and resolc contracts
-echo "Building Solidity EVM and resolc contracts..."
+echo "Building PVM and resolc contracts..."
 deno task build --filter simple_token
-deno task build --filter fibonacci
+deno task build --filter Fibonacci
 
 echo "All contracts built successfully!"

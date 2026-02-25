@@ -2,11 +2,8 @@
 #![no_std]
 
 use pallet_revive_uapi::{HostFn, HostFnImpl as api, ReturnFlags, StorageFlags};
-use ruint::aliases::U256;
-
+//
 // Function selectors
-const TOTAL_SUPPLY_SELECTOR: [u8; 4] = [0x18, 0x16, 0x0d, 0xdd]; // totalSupply()
-const BALANCE_OF_SELECTOR: [u8; 4] = [0x70, 0xa0, 0x82, 0x31]; // balanceOf(address)
 const TRANSFER_SELECTOR: [u8; 4] = [0xa9, 0x05, 0x9c, 0xbb]; // transfer(address,uint256)
 const MINT_SELECTOR: [u8; 4] = [0x40, 0xc1, 0x0f, 0x19]; // mint(address,uint256)
 
@@ -28,14 +25,22 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
     }
 }
 
+/// Storage key for totalSupply (slot 0)
 #[inline(always)]
 fn total_supply_key() -> [u8; 32] {
-    [0u8; 32]
+    [0u8; 32] // Slot 0
 }
 
+/// Helper function to compute storage key for balances[address]
+/// Storage slot for balances mapping is 1 (totalSupply is at slot 0)
+/// Follows Solidity convention: keccak256(leftPad32(key) ++ leftPad32(slot))
 fn balance_key(addr: &[u8; 20]) -> [u8; 32] {
-    let mut input = [0u8; 64];
+    let mut input = [0u8; 64]; // 32 bytes (padded address) + 32 bytes (slot)
+
+    // First 32 bytes: address left-padded to 32 bytes (12 zeros + 20 address bytes)
     input[12..32].copy_from_slice(addr);
+
+    // Last 32 bytes: slot 1 for balances mapping (slot 0 is totalSupply)
     input[63] = 1;
 
     let mut key = [0u8; 32];
@@ -43,40 +48,52 @@ fn balance_key(addr: &[u8; 20]) -> [u8; 32] {
     key
 }
 
-fn get_total_supply() -> U256 {
+/// Get totalSupply from storage
+fn get_total_supply() -> u128 {
     let key = total_supply_key();
-    let mut buf = [0u8; 32];
-    let mut slice = &mut buf[..];
+    let mut supply_bytes = [0u8; 16];
+    let mut supply_slice = &mut supply_bytes[..];
 
-    match api::get_storage(StorageFlags::empty(), &key, &mut slice) {
-        Ok(_) => U256::from_be_bytes(buf),
-        Err(_) => U256::ZERO,
-    }
-}
-
-fn set_total_supply(amount: U256) {
-    let key = total_supply_key();
-    api::set_storage(StorageFlags::empty(), &key, &amount.to_be_bytes::<32>());
-}
-
-fn get_balance(addr: &[u8; 20]) -> U256 {
-    let key = balance_key(addr);
-    let mut buf = [0u8; 32];
-    let mut slice = &mut buf[..];
-
-    match api::get_storage(StorageFlags::empty(), &key, &mut slice) {
-        Ok(_) => U256::from_be_bytes(buf),
-        Err(_) => U256::ZERO,
+    match api::get_storage(StorageFlags::empty(), &key, &mut supply_slice) {
+        Ok(_) => u128::from_be_bytes(supply_bytes),
+        Err(_) => 0u128,
     }
 }
 
 #[inline(always)]
-fn set_balance(addr: &[u8; 20], amount: U256) {
-    let key = balance_key(addr);
-    api::set_storage(StorageFlags::empty(), &key, &amount.to_be_bytes::<32>());
+fn to_word(v: u128) -> [u8; 32] {
+    let mut out = [0u8; 32];
+    out[16..].copy_from_slice(&v.to_be_bytes());
+    out
 }
 
-fn emit_transfer(from: &[u8; 20], to: &[u8; 20], value: U256) {
+/// Set totalSupply in storage
+fn set_total_supply(amount: u128) {
+    let key = total_supply_key();
+    let bytes = amount.to_be_bytes();
+    api::set_storage(StorageFlags::empty(), &key, &bytes);
+}
+
+/// Get the balance for a given storage key
+fn get_balance_by_key(key: &[u8; 32]) -> u128 {
+    let mut balance_bytes = [0u8; 16];
+    let mut balance_slice = &mut balance_bytes[..];
+
+    match api::get_storage(StorageFlags::empty(), key, &mut balance_slice) {
+        Ok(_) => u128::from_be_bytes(balance_bytes),
+        Err(_) => 0u128,
+    }
+}
+
+/// Set the balance for a given storage key
+#[inline(always)]
+fn set_balance_by_key(key: &[u8; 32], amount: u128) {
+    let bytes = amount.to_be_bytes();
+    api::set_storage(StorageFlags::empty(), key, &bytes);
+}
+
+/// Emit a Transfer event
+fn emit_transfer(from: &[u8; 20], to: &[u8; 20], value: u128) {
     let mut from_topic = [0u8; 32];
     from_topic[12..32].copy_from_slice(from);
 
@@ -84,15 +101,17 @@ fn emit_transfer(from: &[u8; 20], to: &[u8; 20], value: U256) {
     to_topic[12..32].copy_from_slice(to);
 
     let topics = [TRANSFER_EVENT_SIGNATURE, from_topic, to_topic];
-    let data = value.to_be_bytes::<32>();
+    let data = to_word(value);
     api::deposit_event(&topics, &data);
 }
 
+/// Revert with an InsufficientBalance error
 #[inline(always)]
 fn revert_insufficient_balance() -> ! {
     api::return_value(ReturnFlags::REVERT, &INSUFFICIENT_BALANCE_ERROR);
 }
 
+/// Get the caller's address
 #[inline(always)]
 fn get_caller() -> [u8; 20] {
     let mut caller = [0u8; 20];
@@ -100,6 +119,7 @@ fn get_caller() -> [u8; 20] {
     caller
 }
 
+/// Decode address from ABI-encoded data (32 bytes, address is in the last 20 bytes)
 #[inline]
 fn decode_address(data: &[u8]) -> [u8; 20] {
     let mut addr = [0u8; 20];
@@ -107,22 +127,24 @@ fn decode_address(data: &[u8]) -> [u8; 20] {
     addr
 }
 
+/// Decode u128 from ABI-encoded data (32 bytes)
 #[inline]
-fn decode_u256(data: &[u8]) -> U256 {
-    let mut buf = [0u8; 32];
-    buf.copy_from_slice(&data[0..32]);
-    U256::from_be_bytes(buf)
+fn decode_u128(data: &[u8]) -> u128 {
+    u128::from_be_bytes(data[16..32].try_into().unwrap())
 }
 
-#[unsafe(no_mangle)]
+/// This is the constructor which is called once per contract.
+#[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {}
 
-#[unsafe(no_mangle)]
+/// This is the regular entry point when the contract is called.
+#[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
     let call_data_len = api::call_data_size() as usize;
 
+    // Fixed buffer for call data
     let mut call_data = [0u8; 256];
     if call_data_len > call_data.len() {
         panic!("Call data too large");
@@ -137,51 +159,42 @@ pub extern "C" fn call() {
     let selector: [u8; 4] = call_data[0..4].try_into().unwrap();
 
     match selector {
-        TOTAL_SUPPLY_SELECTOR => {
-            let result = get_total_supply();
-            api::return_value(ReturnFlags::empty(), &result.to_be_bytes::<32>());
-        }
-        BALANCE_OF_SELECTOR => {
-            if call_data_len < 36 {
-                panic!("Invalid balanceOf call data");
-            }
-            let account = decode_address(&call_data[4..36]);
-            let result = get_balance(&account);
-            api::return_value(ReturnFlags::empty(), &result.to_be_bytes::<32>());
-        }
         TRANSFER_SELECTOR => {
+            // ABI encoding: selector(4) + address(32) + uint256(32)
             if call_data_len < 68 {
                 panic!("Invalid transfer call data");
             }
 
             let to = decode_address(&call_data[4..36]);
-            let amount = decode_u256(&call_data[36..68]);
+            let amount = decode_u128(&call_data[36..68]);
 
             let caller = get_caller();
-            let sender_balance = get_balance(&caller);
+            let sender_key = balance_key(&caller);
+            let sender_balance = get_balance_by_key(&sender_key);
 
             if sender_balance < amount {
                 revert_insufficient_balance();
             }
 
-            let new_sender_balance = sender_balance - amount;
-            let recipient_balance = get_balance(&to);
-            let new_recipient_balance = recipient_balance + amount;
+            let to_key = balance_key(&to);
+            let recipient_balance = get_balance_by_key(&to_key);
 
-            set_balance(&caller, new_sender_balance);
-            set_balance(&to, new_recipient_balance);
+            set_balance_by_key(&sender_key, sender_balance - amount);
+            set_balance_by_key(&to_key, recipient_balance + amount);
             emit_transfer(&caller, &to, amount);
         }
         MINT_SELECTOR => {
+            // ABI encoding: selector(4) + address(32) + uint256(32)
             if call_data_len < 68 {
                 panic!("Invalid mint call data");
             }
 
             let to = decode_address(&call_data[4..36]);
-            let amount = decode_u256(&call_data[36..68]);
+            let amount = decode_u128(&call_data[36..68]);
 
-            let new_recipient_balance = get_balance(&to).saturating_add(amount);
-            set_balance(&to, new_recipient_balance);
+            let to_key = balance_key(&to);
+            let new_recipient_balance = get_balance_by_key(&to_key).saturating_add(amount);
+            set_balance_by_key(&to_key, new_recipient_balance);
 
             let new_supply = get_total_supply().saturating_add(amount);
             set_total_supply(new_supply);

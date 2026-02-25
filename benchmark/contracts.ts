@@ -1,113 +1,37 @@
 #!/usr/bin/env -S deno run --env-file --allow-all
-import { deploy as deployContract, env } from '../tools/lib/index.ts'
-import { abis } from '../codegen/abis.ts'
+import { env } from '../tools/lib/index.ts'
 import { logger } from '../utils/logger.ts'
-import {
-    Artifacts,
-    build,
-    deleteChainData,
-    deploy,
-    execute,
-    ink,
-    rust,
-    solidity,
-} from './lib.ts'
+import { build, deleteChainData, deploy, execute } from './lib.ts'
 import { parseArgs } from '@std/cli'
-import { parseEther } from 'viem'
 
-export const contracts: Artifacts = [
-    {
-        id: 'Fibonacci',
-        srcs: [
-            ink('fibonacci', 'fibonacci_u32_ink'),
-            rust('fibonacci_u32'),
-            rust('fibonacci_u128'),
-            rust('fibonacci_u256'),
-            rust('fibonacci_u32_macro_no_alloc'),
-            rust('fibonacci_u32_macro_bump_alloc'),
-            ...solidity('fibonacci.sol', 'Fibonacci', 'Fibonacci_u32'),
-        ],
-        deploy: (id, name, bytecode) => {
-            return deployContract({
-                name: { id, name },
-                bytecode,
-                args: [],
-            })
-        },
-        calls: [
-            {
-                name: 'fib_10',
-                exec: async (address) => {
-                    return await env.wallet.writeContract({
-                        address,
-                        abi: abis.Fibonacci,
-                        functionName: 'fibonacci',
-                        args: [10],
-                    })
-                },
-            },
-        ],
-    },
-    {
-        id: 'SimpleToken',
-        srcs: [
-            ink('simple_token', 'simple_token_u256_ink'),
-            rust('simple_token_u32_no_alloc'),
-            rust('simple_token_u32_macro_no_alloc'),
-            rust('simple_token_u128_no_alloc'),
-            rust('simple_token_u256_no_alloc'),
-            rust('simple_token_u256_macro_no_alloc'),
-            rust('simple_token_u256_macro_bump_alloc'),
-            ...solidity('simple_token.sol', 'SimpleToken', 'SimpleToken_u256'),
-        ],
-        deploy: (id, name, bytecode) => {
-            return deployContract({
-                name: { id, name },
-                bytecode,
-                args: [],
-            })
-        },
-        calls: [
-            {
-                name: 'mint',
-                exec: (address) => {
-                    return env.wallet.writeContract({
-                        address,
-                        abi: abis.SimpleToken,
-                        functionName: 'mint',
-                        args: [
-                            env.wallet.account.address,
-                            10_000_000_000_000_000_000_000_000n,
-                        ],
-                    })
-                },
-            },
-            {
-                name: 'transfer',
-                exec: async (address) => {
-                    // fund destination first
-                    await env.wallet.sendTransaction({
-                        to: '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63',
-                        value: parseEther('1'),
-                    })
+// Import contract definitions
+import { testContracts } from './contracts/test-contracts.ts'
+import { ethereumContracts } from './contracts/ethereum-contracts.ts'
+import { protocolCommonsContracts } from './contracts/protocol-commons-contracts.ts'
+import { hackm3Contracts } from './contracts/hackm3-contracts.ts'
+import { w3sContracts } from './contracts/w3s-contracts.ts'
+import { mark3tContracts } from './contracts/mark3t-contracts.ts'
 
-                    return env.wallet.writeContract({
-                        address,
-                        abi: abis.SimpleToken,
-                        functionName: 'transfer',
-                        args: [
-                            '0x3d26c9637dFaB74141bA3C466224C0DBFDfF4A63',
-                            10_000_000_000_000_000_000_000_000n,
-                        ],
-                    })
-                },
-            },
-        ],
-    },
+/**
+ * Combined contracts array for benchmarking
+ * - testContracts: Simple test contracts (Fibonacci, SimpleToken)
+ * - ethereumContracts: Real Ethereum contracts (USDT, WETH, USDC, XEN)
+ * - protocolCommonsContracts: Protocol Commons contracts (Store, Log, NFC, FC, Escrow, DotNS, KeyRegistry)
+ * - hackm3Contracts: HackM3 contracts (DocumentAccessManagement)
+ * - w3sContracts: W3S Ticketing contracts
+ * - mark3tContracts: mark3t Marketplace contracts (Marketplace, MockMobRule)
+ */
+export const contracts = [
+    ...testContracts,
+    ...ethereumContracts,
+    ...protocolCommonsContracts,
+    ...hackm3Contracts,
+    ...w3sContracts,
+    ...(env.chain.name !== 'Geth' ? mark3tContracts : []), // mark3t contracts are too big to be tested w/ geth
 ]
 
 const cli = parseArgs(Deno.args, {
-    boolean: ['build', 'execute', 'report', 'clean'],
+    boolean: ['build', 'execute', 'report', 'html-report', 'clean'],
 })
 
 if (cli.build) {
@@ -129,4 +53,10 @@ if (cli.report) {
     logger.info(`Generating reports...`)
     const { report } = await import('./reports.ts')
     await report(contracts)
+}
+
+if (cli['html-report']) {
+    logger.info(`Generating HTML report...`)
+    const { generateHtmlReport } = await import('./html-report.ts')
+    await generateHtmlReport()
 }

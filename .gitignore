@@ -18,7 +18,12 @@ codegen/*.json
 codegen/abi/*
 codegen/pvm/*
 codegen/evm/*
+codegen/libs/*
 *.sha256.txt
+
+# Rust build artifacts
+**/target/
+*.polkavm
 
 # Benchmark artifacts
 stats.db

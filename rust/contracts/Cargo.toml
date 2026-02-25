@@ -14,6 +14,10 @@ name = "simple_token_u128_no_alloc"
 path = "src/simple_token_u128_no_alloc.rs"
 
 [[bin]]
+name = "simple_token_with_alloc"
+path = "src/simple_token_with_alloc.rs"
+
+[[bin]]
 name = "simple_token_u256_no_alloc"
 path = "src/simple_token_u256_no_alloc.rs"
 
