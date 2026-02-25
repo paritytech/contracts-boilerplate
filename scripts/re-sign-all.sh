@@ -12,7 +12,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Source node-env.sh to get cast_local function
 if [ -f "$SCRIPT_DIR/node-env.sh" ]; then
 	source "$SCRIPT_DIR/node-env.sh"
-	# Load the local account
 	cast_local
 else
 	echo "Warning: node-env.sh not found, skipping cast_local"
