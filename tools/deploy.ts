@@ -31,8 +31,3 @@ await deploy({
     args: [],
     // bytecodeType: 'polkavm', // Specify `pvm` for PVM bytecode deployment
 })
-
-await deploy({
-    name: 'StorageBench',
-    args: [],
-})
