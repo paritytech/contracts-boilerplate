@@ -81,7 +81,7 @@ export function ink(name: string, displayName?: string): ContractInfo {
 export function solidity(
     fileName: string,
     name: string,
-    displayName?: string,
+    _displayName?: string,
 ): ContractInfo[] {
     const bytecodes = { pvm: 'polkavm', evm: 'bin' } as const
     const buildRun = { evm: false, pvm: false }
