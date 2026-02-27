@@ -51,19 +51,20 @@ export interface ContractInfo {
     build(): Promise<void>
 }
 
-export function ink(name: string, displayName?: string): ContractInfo {
+export function ink(name: string): ContractInfo {
+    const dir = name.replace(/_ink$/, '')
     return {
         supportEvm() {
             return false
         },
         getName() {
-            return displayName ?? `${name}_ink`
+            return name
         },
         getBytecode() {
-            return readBytecode(`./ink/${name}/target/ink/${name}.polkavm`)
+            return readBytecode(`./ink/${dir}/target/ink/${dir}.polkavm`)
         },
         async build() {
-            const cwd = join(import.meta.dirname!, '..', 'ink', name)
+            const cwd = join(import.meta.dirname!, '..', 'ink', dir)
             const cmd = new Deno.Command('cargo', {
                 args: ['contract', 'build', '--release'],
                 cwd,
