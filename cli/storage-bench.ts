@@ -14,7 +14,8 @@ const method = args._[0]?.toString()
 const numBytes = BigInt(args._[1] ?? 0)
 
 if (!method || !['write', 'read', 'noop'].includes(method)) {
-    console.log(`Usage: ./cli/storage-bench.ts <write|read|noop> [numBytes] [--trace]
+    console.log(
+        `Usage: ./cli/storage-bench.ts <write|read|noop> [numBytes] [--trace]
 
 Methods:
   write <numBytes>   Write numBytes to storage (rounds up to 32-byte slots)
@@ -22,19 +23,21 @@ Methods:
   noop               Do nothing (measure base transaction overhead)
 
 Flags:
-  --trace            Enable debug tracing`)
+  --trace            Enable debug tracing`,
+    )
     Deno.exit(1)
 }
 
 const abi = abis.StorageBench
 
-const fnArgs = method === 'noop' ? [] : [numBytes]
+type Method = 'write' | 'read' | 'noop'
+const fnArgs = method === 'noop' ? ([] as const) : ([numBytes] as const)
 
 if (args.trace) {
     const data = encodeFunctionData({
         abi,
-        functionName: method as 'write' | 'read' | 'noop',
-        args: fnArgs,
+        functionName: method as Method,
+        args: fnArgs as readonly [] | readonly [bigint],
     })
 
     const result = await env.debugClient.traceCall(
@@ -47,8 +50,8 @@ if (args.trace) {
     const { request } = await env.wallet.simulateContract({
         address: StorageBench,
         abi,
-        functionName: method as 'write' | 'read' | 'noop',
-        args: fnArgs,
+        functionName: method as Method,
+        args: fnArgs as readonly [] | readonly [bigint],
     })
 
     const hash = await env.wallet.writeContract(request)

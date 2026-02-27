@@ -11,9 +11,11 @@ export const testContracts: Artifacts = [
         id: 'Fibonacci',
         srcs: [
             ink('fibonacci'),
-            rust('fibonacci'),
+            rust('fibonacci_u32'),
             rust('fibonacci_u128'),
             rust('fibonacci_u256'),
+            rust('fibonacci_u32_macro_no_alloc'),
+            rust('fibonacci_u32_macro_bump_alloc'),
             ...solidity('fibonacci.sol', 'Fibonacci'),
         ],
         deploy: (id, name, bytecode) => {
@@ -41,8 +43,13 @@ export const testContracts: Artifacts = [
         id: 'SimpleToken',
         srcs: [
             ink('simple_token'),
-            rust('simple_token_no_alloc'),
+            rust('simple_token_u32_no_alloc'),
+            rust('simple_token_u128_no_alloc'),
+            rust('simple_token_u256_no_alloc'),
             rust('simple_token_with_alloc'),
+            rust('simple_token_u32_macro_no_alloc'),
+            rust('simple_token_u256_macro_no_alloc'),
+            rust('simple_token_u256_macro_bump_alloc'),
             ...solidity('simple_token.sol', 'SimpleToken'),
         ],
         deploy: (id, name, bytecode) => {
