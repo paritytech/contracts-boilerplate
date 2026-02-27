@@ -46,7 +46,6 @@ export const testContracts: Artifacts = [
             rust('simple_token_u32_no_alloc'),
             rust('simple_token_u128_no_alloc'),
             rust('simple_token_u256_no_alloc'),
-            rust('simple_token_with_alloc'),
             rust('simple_token_u32_macro_no_alloc'),
             rust('simple_token_u256_macro_no_alloc'),
             rust('simple_token_u256_macro_bump_alloc'),

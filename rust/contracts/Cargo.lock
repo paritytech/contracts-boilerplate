@@ -35,6 +35,7 @@ checksum = "812e12b5285cc515a9c72a5c1d3b6d46a19dac5acfef5265968c166106e31dd3"
 [[package]]
 name = "cargo-pvm-contract-builder"
 version = "0.3.0"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#ab2cbbd87963b14a45b0721f41a98536b06bba10"
 dependencies = [
  "anyhow",
  "log",
@@ -376,10 +377,12 @@ dependencies = [
 [[package]]
 name = "pvm-bump-allocator"
 version = "0.3.0"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#ab2cbbd87963b14a45b0721f41a98536b06bba10"
 
 [[package]]
 name = "pvm-contract-macros"
 version = "0.3.0"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#ab2cbbd87963b14a45b0721f41a98536b06bba10"
 dependencies = [
  "proc-macro2",
  "pvm-contract-types",
@@ -391,6 +394,7 @@ dependencies = [
 [[package]]
 name = "pvm-contract-types"
 version = "0.3.0"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#ab2cbbd87963b14a45b0721f41a98536b06bba10"
 dependencies = [
  "ruint",
 ]

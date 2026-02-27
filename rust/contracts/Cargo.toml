@@ -14,10 +14,6 @@ name = "simple_token_u128_no_alloc"
 path = "src/simple_token_u128_no_alloc.rs"
 
 [[bin]]
-name = "simple_token_with_alloc"
-path = "src/simple_token_with_alloc.rs"
-
-[[bin]]
 name = "simple_token_u256_no_alloc"
 path = "src/simple_token_u256_no_alloc.rs"
 
@@ -64,10 +60,10 @@ overflow-checks = false
 polkavm-derive = "0.31.0"
 pallet-revive-uapi = { version = "0.10", default-features = false }
 picoalloc = "5.2.0"
-pvm-contract-macros = { path = "/home/pg/github/cargo-pvm-contract/main/crates/pvm-contract-macros" }
-pvm-contract-types = { path = "/home/pg/github/cargo-pvm-contract/main/crates/pvm-contract-types" }
-pvm-bump-allocator = { path = "/home/pg/github/cargo-pvm-contract/main/crates/pvm-bump-allocator" }
+pvm-contract-macros = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
+pvm-contract-types = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
+pvm-bump-allocator = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
 ruint = { version = "1.17", default-features = false }
 
 [build-dependencies]
-cargo-pvm-contract-builder = { path = "/home/pg/github/cargo-pvm-contract/main/crates/cargo-pvm-contract-builder" }
+cargo-pvm-contract-builder = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
