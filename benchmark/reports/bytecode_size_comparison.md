@@ -1,28 +1,33 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-02-23
+Generated on: 2026-03-02
 
 ## Fibonacci Implementations
 
-| Contract            | VM Type | Size (bytes) | vs Smallest |
-| ------------------- | ------- | ------------ | ----------- |
-| fibonacci_rust      | PVM     | 209          | -           |
-| Fibonacci_evm       | EVM     | 233          | +11.5%      |
-| fibonacci_u128_rust | PVM     | 285          | +36.4%      |
-| fibonacci_u256_rust | PVM     | 686          | +228.2%     |
-| fibonacci_ink       | PVM     | 1,102        | +427.3%     |
-| Fibonacci_pvm       | PVM     | 1,268        | +506.7%     |
+| Contract                            | VM Type | Size (bytes) | vs Smallest |
+| ----------------------------------- | ------- | ------------ | ----------- |
+| Fibonacci_evm                       | EVM     | 229          | -           |
+| fibonacci_u32_rust                  | PVM     | 234          | +2.2%       |
+| fibonacci_u128_rust                 | PVM     | 315          | +37.6%      |
+| fibonacci_u32_macro_bump_alloc_rust | PVM     | 431          | +88.2%      |
+| fibonacci_u32_macro_no_alloc_rust   | PVM     | 477          | +108.3%     |
+| fibonacci_u32_ink                   | PVM     | 824          | +259.8%     |
+| fibonacci_u256_rust                 | PVM     | 980          | +327.9%     |
+| Fibonacci_pvm                       | PVM     | 1,200        | +424.0%     |
 
 
 ## SimpleToken Implementations
 
-| Contract                     | VM Type | Size (bytes) | vs Smallest |
-| ---------------------------- | ------- | ------------ | ----------- |
-| SimpleToken_evm              | EVM     | 487          | -           |
-| simple_token_no_alloc_rust   | PVM     | 3,972        | +715.6%     |
-| SimpleToken_pvm              | PVM     | 5,073        | +941.7%     |
-| simple_token_ink             | PVM     | 7,251        | +1388.9%    |
-| simple_token_with_alloc_rust | PVM     | 24,704       | +4972.7%    |
+| Contract                                | VM Type | Size (bytes) | vs Smallest |
+| --------------------------------------- | ------- | ------------ | ----------- |
+| SimpleToken_evm                         | EVM     | 555          | -           |
+| simple_token_u32_no_alloc_rust          | PVM     | 2,211        | +298.4%     |
+| simple_token_u128_no_alloc_rust         | PVM     | 2,940        | +429.7%     |
+| simple_token_u256_no_alloc_rust         | PVM     | 2,997        | +440.0%     |
+| simple_token_u256_macro_no_alloc_rust   | PVM     | 3,765        | +578.4%     |
+| simple_token_u256_macro_bump_alloc_rust | PVM     | 4,430        | +698.2%     |
+| SimpleToken_pvm                         | PVM     | 5,374        | +868.3%     |
+| simple_token_u256_ink                   | PVM     | 8,483        | +1428.5%    |
 
 
 ## TetherToken Implementations
@@ -132,7 +137,7 @@ Generated on: 2026-02-23
 | Contract    | VM Type | Size (bytes) | vs Smallest |
 | ----------- | ------- | ------------ | ----------- |
 | Escrow_evm  | EVM     | 4,226        | -           |
-| escrow_rust | PVM     | 12,816       | +203.3%     |
+| escrow_rust | PVM     | 12,827       | +203.5%     |
 | Escrow_pvm  | PVM     | 33,827       | +700.4%     |
 
 

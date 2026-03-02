@@ -10,7 +10,7 @@ export const testContracts: Artifacts = [
     {
         id: 'Fibonacci',
         srcs: [
-            ink('fibonacci_u32_ink'),
+            ink('fibonacci_u32_ink', 'fibonacci'),
             rust('fibonacci_u32'),
             rust('fibonacci_u128'),
             rust('fibonacci_u256'),
@@ -42,11 +42,11 @@ export const testContracts: Artifacts = [
     {
         id: 'SimpleToken',
         srcs: [
-            ink('simple_token_u256_ink'),
+            ink('simple_token_u256_ink', 'simple_token'),
             rust('simple_token_u32_no_alloc'),
             rust('simple_token_u128_no_alloc'),
             rust('simple_token_u256_no_alloc'),
-            rust('simple_token_u32_macro_no_alloc'),
+            // rust('simple_token_u32_macro_no_alloc'),  Different mint and transfer abi
             rust('simple_token_u256_macro_no_alloc'),
             rust('simple_token_u256_macro_bump_alloc'),
             ...solidity('simple_token.sol', 'SimpleToken'),

@@ -51,7 +51,7 @@ export interface ContractInfo {
     build(): Promise<void>
 }
 
-export function ink(name: string): ContractInfo {
+export function ink(name: string, crateName: string): ContractInfo {
     const dir = name.replace(/_ink$/, '')
     return {
         supportEvm() {
@@ -61,7 +61,7 @@ export function ink(name: string): ContractInfo {
             return name
         },
         getBytecode() {
-            return readBytecode(`./ink/${dir}/target/ink/${dir}.polkavm`)
+            return readBytecode(`./ink/${dir}/target/ink/${crateName}.polkavm`)
         },
         async build() {
             const cwd = join(import.meta.dirname!, '..', 'ink', dir)
@@ -147,12 +147,12 @@ export function rust(name: string): ContractInfo {
             return `${name}_rust`
         },
         getBytecode() {
-            return readBytecode(`./rust/contracts/${name}.polkavm`)
+            return readBytecode(`./rust/contracts/target/${name}.release.polkavm`)
         },
         async build() {
             const cwd = join(import.meta.dirname!, '..', 'rust', 'contracts')
             const cmd = new Deno.Command('cargo', {
-                args: ['pvm-contract', 'build', '-b', name],
+                args: ['build', '--release', '--bin', name],
                 cwd,
                 stdout: 'inherit',
                 stderr: 'inherit',
