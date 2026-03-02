@@ -147,7 +147,9 @@ export function rust(name: string): ContractInfo {
             return `${name}_rust`
         },
         getBytecode() {
-            return readBytecode(`./rust/contracts/target/${name}.release.polkavm`)
+            return readBytecode(
+                `./rust/contracts/target/${name}.release.polkavm`,
+            )
         },
         async build() {
             const cwd = join(import.meta.dirname!, '..', 'rust', 'contracts')
