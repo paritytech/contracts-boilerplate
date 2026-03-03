@@ -1073,7 +1073,8 @@ export async function generateEvmPvmSummary() {
     await ensureDir(REPORTS_DIR)
 
     const resolcVersion = new TextDecoder().decode(
-        new Deno.Command('resolc', { args: ['--version'], stdout: 'piped' }).outputSync().stdout,
+        new Deno.Command('resolc', { args: ['--version'], stdout: 'piped' })
+            .outputSync().stdout,
     ).trim()
     let md = `# EVM vs PVM Cost Summary\n\n`
     md += `Generated on: ${new Date().toISOString().split('T')[0]}\n`

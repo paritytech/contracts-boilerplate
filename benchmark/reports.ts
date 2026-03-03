@@ -9,7 +9,10 @@ import { getOpcodeCategory } from './opcode-categories.ts'
 const REPORTS_DIR = join(import.meta.dirname!, 'reports')
 
 function getResolcVersion(): string {
-    const result = new Deno.Command('resolc', { args: ['--version'], stdout: 'piped' }).outputSync()
+    const result = new Deno.Command('resolc', {
+        args: ['--version'],
+        stdout: 'piped',
+    }).outputSync()
     return new TextDecoder().decode(result.stdout).trim()
 }
 
