@@ -52,18 +52,19 @@ export interface ContractInfo {
 }
 
 export function ink(name: string): ContractInfo {
+    const dir = name.replace(/_ink$/, '')
     return {
         supportEvm() {
             return false
         },
         getName() {
-            return `${name}_ink`
+            return name
         },
         getBytecode() {
-            return readBytecode(`./ink/${name}/target/ink/${name}.polkavm`)
+            return readBytecode(`./ink/${dir}/target/ink/${dir}.polkavm`)
         },
         async build() {
-            const cwd = join(import.meta.dirname!, '..', 'ink', name)
+            const cwd = join(import.meta.dirname!, '..', 'ink', dir)
             const cmd = new Deno.Command('cargo', {
                 args: ['contract', 'build', '--release'],
                 cwd,
@@ -78,7 +79,11 @@ export function ink(name: string): ContractInfo {
     }
 }
 
-export function solidity(fileName: string, name: string): ContractInfo[] {
+export function solidity(
+    fileName: string,
+    name: string,
+    _displayName?: string,
+): ContractInfo[] {
     const bytecodes = { pvm: 'polkavm', evm: 'bin' } as const
     const buildRun = { evm: false, pvm: false }
     const libraryLinks = {
@@ -142,12 +147,14 @@ export function rust(name: string): ContractInfo {
             return `${name}_rust`
         },
         getBytecode() {
-            return readBytecode(`./rust/contracts/${name}.polkavm`)
+            return readBytecode(
+                `./rust/contracts/target/${name}.release.polkavm`,
+            )
         },
         async build() {
             const cwd = join(import.meta.dirname!, '..', 'rust', 'contracts')
             const cmd = new Deno.Command('cargo', {
-                args: ['pvm-contract', 'build', '-b', name],
+                args: ['build', '--release', '--bin', name],
                 cwd,
                 stdout: 'inherit',
                 stderr: 'inherit',

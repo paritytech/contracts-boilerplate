@@ -1,7 +1,7 @@
 #![no_main]
 #![no_std]
 
-use alloy_core::primitives::U256;
+use ruint::aliases::U256;
 use pallet_revive_uapi::{HostFn, HostFnImpl as api, ReturnFlags};
 
 #[global_allocator]
@@ -22,23 +22,13 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
     }
 }
 
-/// This is the constructor which is called once per contract.
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {}
 
-/// This is the constructor which is called once per contract.
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    // We want this contract to be called with the following ABI:
-    // function fibonacci(uint256) external;
-    // event FibonacciComputed(uint256 indexed n, uint256 result);
-
-    // ❯ cast calldata "Fibonacci(uint256)" "42" | xxd -r -p | xxd -c 32 -g 1
-    //00000000: 50 7a 10 34 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-    //00000020: 00 00 00 2a
-
     // The input is abi encoded as follows:
     // - 4 byte selector
     // - 32 byte integer
@@ -50,7 +40,7 @@ pub extern "C" fn call() {
     let n = U256::from_be_bytes(input);
     let result = _fibonacci(n);
 
-    if result == 0 {
+    if result == U256::ZERO {
         api::return_value(ReturnFlags::REVERT, &[0u8; 0]);
     }
 }
@@ -59,8 +49,8 @@ fn _fibonacci(n: U256) -> U256 {
     if n == U256::ZERO {
         U256::ZERO
     } else if n == U256::from(1) {
-        U256::ONE
+        U256::from(1)
     } else {
-        _fibonacci(n - U256::ONE) + _fibonacci(n - U256::from(2))
+        _fibonacci(n - U256::from(1)) + _fibonacci(n - U256::from(2))
     }
 }

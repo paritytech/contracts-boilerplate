@@ -14,12 +14,12 @@ fi
 
 # Build ink token contract
 echo "Building ink token contract..."
-cd ink/simple_token
+cd ink/simple_token_u256
 pop build --release
 cd ../..
 
 echo "Building ink fibonacci contract..."
-cd ink/fibonacci
+cd ink/fibonacci_u32
 pop build --release
 cd ../..
 
@@ -32,16 +32,17 @@ fi
 # Build PVM contracts
 echo "Building PVM contracts"
 cd rust/contracts
-cargo pvm-contract build -b simple_token_no_alloc
-cargo pvm-contract build -b simple_token_with_alloc
-cargo pvm-contract build -b fibonacci
-cargo pvm-contract build -b fibonacci_u128
-cargo pvm-contract build -b fibonacci_u256
+cargo build --release
 cd ../..
 
-# Build Solidity EVM and resolc contracts
-echo "Building PVM and resolc contracts..."
-deno task build --filter simple_token
-deno task build --filter Fibonacci
+# Build protocol-commons rust contracts
+echo "Building protocol-commons rust contracts"
+cd rust/protocol-commons
+make all
+cd ../..
+
+# Build Solidity EVM and PVM solidity contracts
+echo "Building EVM and PVM solidity contracts..."
+deno task build
 
 echo "All contracts built successfully!"

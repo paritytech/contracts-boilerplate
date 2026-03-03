@@ -3,6 +3,10 @@ import { getStyles } from './styles.ts'
 export function htmlDocument(content: string, scripts: string): string {
     const styles = getStyles()
     const date = new Date().toISOString().split('T')[0]
+    const resolcVersion = new TextDecoder().decode(
+        new Deno.Command('resolc', { args: ['--version'], stdout: 'piped' })
+            .outputSync().stdout,
+    ).trim()
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -18,6 +22,7 @@ export function htmlDocument(content: string, scripts: string): string {
         <div class="container">
             <h1>Contract Benchmark Report</h1>
             <p>Generated on ${date}</p>
+            <p>resolc: ${resolcVersion}</p>
         </div>
     </header>
 

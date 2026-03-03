@@ -40,7 +40,7 @@ mod simple_token {
 
     impl InkErc20 {
         /// Creates a new ERC-20 contract with the specified initial supply.
-        #[ink(constructor)]
+        #[ink(constructor, payable)]
         pub fn new() -> Self {
             Self::default()
         }
@@ -51,14 +51,12 @@ mod simple_token {
             self.total_supply
         }
 
-        /// Returns the account balance for the specified `owner`.
-        ///
-        /// Returns `0` if the account is non-existent.
-        ///
-        /// # Note
-        ///
-        /// Prefer to call this method over `balance_of` since this
-        /// works using references which are more efficient.
+        /// Returns the account balance for the specified `account`.
+        #[ink(message)]
+        pub fn balance_of(&self, account: Address) -> U256 {
+            self.balance_of_impl(&account)
+        }
+
         #[inline]
         fn balance_of_impl(&self, owner: &Address) -> U256 {
             self.balances.get(owner).unwrap_or_default()
@@ -72,7 +70,7 @@ mod simple_token {
         ///
         /// Returns `InsufficientBalance` error if there are not enough tokens on
         /// the caller's account balance.
-        #[ink(message)]
+        #[ink(message, payable)]
         pub fn transfer(&mut self, to: Address, amount: U256) -> Result<()> {
             let from = self.env().caller();
             self.transfer_from_to(&from, &to, amount)
@@ -110,7 +108,7 @@ mod simple_token {
         /// This function is permissionless and can be called by anyone.
         ///
         /// On success a `Transfer` event is emitted with `from` set to the zero address.
-        #[ink(message)]
+        #[ink(message, payable)]
         pub fn mint(&mut self, to: Address, value: U256) {
             let to_balance = self.balance_of_impl(&to);
             self.balances

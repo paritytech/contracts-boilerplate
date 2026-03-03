@@ -6,7 +6,7 @@ BUILD_DIR = target/riscv64emac-unknown-none-polkavm/release
 all: $(CONTRACTS)
 
 $(CONTRACTS):
-	RUSTC_BOOTSTRAP=1 cargo +nightly build --release --bin $@
+	cargo +nightly build -Zjson-target-spec --release --bin $@
 	polkatool link --strip --min-stack-size 65536 $(BUILD_DIR)/$@ -o $@/$@.polkavm
 
 clean:

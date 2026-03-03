@@ -8,6 +8,19 @@ import { getOpcodeCategory } from './opcode-categories.ts'
 
 const REPORTS_DIR = join(import.meta.dirname!, 'reports')
 
+function getResolcVersion(): string {
+    const result = new Deno.Command('resolc', {
+        args: ['--version'],
+        stdout: 'piped',
+    }).outputSync()
+    return new TextDecoder().decode(result.stdout).trim()
+}
+
+function reportHeader(title: string): string {
+    const date = new Date().toISOString().split('T')[0]
+    return `# ${title}\n\nGenerated on: ${date}\nresolc: ${getResolcVersion()}\n\n`
+}
+
 function table(data: Record<string, unknown>[]) {
     return tablemark(data, { align: undefined, headerCase: 'preserve' })
 }
@@ -22,8 +35,7 @@ export async function report(contracts: Artifacts) {
 }
 
 async function generateOpcodeAnalysis() {
-    let markdown = `# Opcode Analysis\n\n`
-    markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
+    let markdown = reportHeader('Opcode Analysis')
     markdown +=
         `> **Unattributed** = \`weight_consumed_ref_time - SUM(step weights)\`. `
     markdown +=
@@ -243,8 +255,7 @@ async function generateOpcodeAnalysis() {
 }
 
 async function generateCategoryAnalysis() {
-    let markdown = `# Opcode Category Analysis\n\n`
-    markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
+    let markdown = reportHeader('Opcode Category Analysis')
     markdown += `Opcodes grouped by functional category.\n\n`
 
     const allData = db.prepare(`
@@ -449,8 +460,7 @@ async function generateCategoryAnalysis() {
 }
 
 async function generateContractComparison() {
-    let markdown = `# Revive Contract Comparison\n\n`
-    markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
+    let markdown = reportHeader('Revive Contract Comparison')
     markdown +=
         `Comparison of gas usage across different contract implementations.\n\n`
 
@@ -636,8 +646,7 @@ async function generateContractComparison() {
 }
 
 async function generateBytecodeComparison(contracts: Artifacts) {
-    let markdown = `# Bytecode Size Comparison\n\n`
-    markdown += `Generated on: ${new Date().toISOString().split('T')[0]}\n\n`
+    let markdown = reportHeader('Bytecode Size Comparison')
 
     // Collect bytecode sizes for all contracts
     interface BytecodeEntry {
