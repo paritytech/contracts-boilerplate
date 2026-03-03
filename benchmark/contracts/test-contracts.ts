@@ -98,4 +98,251 @@ export const testContracts: Artifacts = [
             },
         ],
     },
+    {
+        id: 'Flipper',
+        srcs: [
+            ink('flipper_ink'),
+            // @ts-ignore - run `deno task build` to generate ABI
+            ...solidity('flipper.sol', 'flipper'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [false],
+            })
+        },
+        calls: [
+            {
+                name: 'flip',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.flipper,
+                        functionName: 'flip',
+                        args: [],
+                    })
+                },
+            },
+        ],
+    },
+    {
+        id: 'Incrementer',
+        srcs: [
+            ink('incrementer_ink'),
+            // @ts-ignore - run `deno task build` to generate ABI
+            ...solidity('incrementer.sol', 'incrementer'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [0],
+            })
+        },
+        calls: [
+            {
+                name: 'inc',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.incrementer,
+                        functionName: 'inc',
+                        args: [1],
+                    })
+                },
+            },
+        ],
+    },
+    {
+        id: 'BenchStorage',
+        srcs: [
+            ink('storage_ink'),
+            // @ts-ignore - run `deno task build` to generate ABI
+            ...solidity('BenchStorage.sol', 'BenchStorage'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [],
+            })
+        },
+        calls: [
+            {
+                name: 'write_100',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.BenchStorage,
+                        functionName: 'write',
+                        args: [env.wallet.account.address, 100],
+                    })
+                },
+            },
+            {
+                name: 'read_100',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.BenchStorage,
+                        functionName: 'read',
+                        args: [env.wallet.account.address, 100],
+                    })
+                },
+            },
+            {
+                name: 'readWrite_100',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.BenchStorage,
+                        functionName: 'readWrite',
+                        args: [env.wallet.account.address, 100],
+                    })
+                },
+            },
+        ],
+    },
+    {
+        id: 'Computation',
+        srcs: [
+            ink('computation_ink'),
+            // @ts-ignore - run `deno task build` to generate ABI
+            ...solidity('Computation.sol', 'Computation'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [],
+            })
+        },
+        calls: [
+            {
+                name: 'triangle_10',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.Computation,
+                        functionName: 'triangleNumber',
+                        args: [10],
+                    })
+                },
+            },
+            {
+                name: 'odd_product_10',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.Computation,
+                        functionName: 'oddProduct',
+                        args: [10],
+                    })
+                },
+            },
+        ],
+    },
+    {
+        id: 'BenchERC20',
+        srcs: [
+            ink('erc20_ink'),
+            // @ts-ignore - run `deno task build` to generate ABI
+            ...solidity('BenchERC20.sol', 'BenchERC20'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [10_000_000_000_000_000_000_000_000n],
+            })
+        },
+        calls: [
+            {
+                name: 'transfer',
+                exec: async (address) => {
+                    const fundTx = await env.wallet.sendTransaction({
+                        to: externalRecipient,
+                        value: parseEther('1'),
+                    })
+                    await env.wallet.waitForTransactionReceipt({ hash: fundTx })
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.BenchERC20,
+                        functionName: 'transfer',
+                        args: [
+                            externalRecipient,
+                            1_000_000_000_000_000_000n,
+                        ],
+                    })
+                },
+            },
+        ],
+    },
+    {
+        id: 'BenchERC721',
+        srcs: [
+            ink('erc721_ink'),
+            // @ts-ignore - run `deno task build` to generate ABI
+            ...solidity('BenchERC721.sol', 'BenchERC721'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [],
+            })
+        },
+        calls: [
+            {
+                name: 'mint',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.BenchERC721,
+                        functionName: 'mint',
+                        args: [1],
+                    })
+                },
+            },
+        ],
+    },
+    {
+        id: 'BenchERC1155',
+        srcs: [
+            ink('erc1155_ink'),
+            // @ts-ignore - run `deno task build` to generate ABI
+            ...solidity('BenchERC1155.sol', 'BenchERC1155'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [],
+            })
+        },
+        calls: [
+            {
+                name: 'create',
+                exec: (address) => {
+                    // @ts-ignore - run `deno task build` to generate ABI
+                    return env.wallet.writeContract({
+                        address,
+                        abi: abis.BenchERC1155,
+                        functionName: 'create',
+                        args: [1000],
+                    })
+                },
+            },
+        ],
+    },
 ]
