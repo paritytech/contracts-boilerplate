@@ -1,5 +1,5 @@
 [package]
-name = "fibonacci"
+name = "fibonacci_u32"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2024"

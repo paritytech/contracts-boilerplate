@@ -1,5 +1,5 @@
 [package]
-name = "simple_token"
+name = "simple_token_u256"
 version = "6.0.0-beta.1"
 authors = ["Use Ink <ink@use.ink>"]
 edition = "2024"
