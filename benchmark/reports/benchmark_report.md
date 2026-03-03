@@ -1,4 +1,5 @@
 # pallet-revive: EVM vs PVM Benchmark Report
+Date: 03-03-2026
 
 **Scope:** 19 contracts, 94 execution transactions, 19 deploy transactions.
 **VMs compared:** EVM, PVM/Solidity (resolc v1.0.0), PVM/Rust (hand-written), PVM/ink!.
@@ -122,16 +123,16 @@ The Fibonacci Rust contract (234 bytes) is comparable to EVM (229 bytes) due to 
 | --- | --- | --- |
 | fibonacci_u32_rust (native u32) | 121M | -8.2% |
 | fibonacci_u32_macro_bump_alloc_rust | 126M | -5.0% |
-| Fibonacci_evm (native u256) | 132M | — |
+| Fibonacci_evm (uint32) | 132M | — |
 | fibonacci_u32_macro_no_alloc_rust | 133M | +0.2% |
 | fibonacci_u128_rust | 282M | +113.2% |
-| Fibonacci_pvm (resolc u256) | 420M | +217.7% |
+| Fibonacci_pvm (resolc uint32 → u256) | 420M | +217.7% |
 | fibonacci_u32_ink | 453M | +242.5% |
 | fibonacci_u256_rust (emulated) | 3,585M | +2610.8% |
 
 At native u32, PVM/Rust is slightly faster than EVM (-8%).
-However, wider integers are dramatically more expensive: u128 (+113%), resolc u256 (+218%), and software-emulated u256 (+2611%).
-ink! at u32 is +243%, indicating substantial framework overhead.
+However, wider integers are dramatically more expensive: u128 (+113%), resolc (+218%), and software-emulated u256 (+2611%).
+ink! at u32 is +243%, indicating substantial framework overhead. Note: the Solidity source uses uint32, but resolc currently treats all values as 256-bit types — so storage reads/writes and arithmetic all operate on 256-bit words.
 For SimpleToken, resolc (+17%) is cheapest after EVM; u32 no-alloc Rust is close (+21%), while ink! adds significant overhead (+80%).
 
 ---
@@ -182,10 +183,59 @@ Two effects are visible. **Call count:** Rust uses ~half the storage operations 
 
 ## RQ4: How can we improve?
 
-**1. Interpreter performance and weight calibration (highest impact).** The unattributed overhead is 93% of the PVM/Sol ref_time gap. JIT compilation would directly reduce fuel-to-ref_time conversion rates. Zeroing out unattributed cost would bring PVM/Sol overhead from ~+36% to ~+3% vs EVM. After interpreter improvements, `CodeLoadToken` weights should be re-benchmarked.
+**1. Interpreter performance and weight calibration (highest impact).**
+The unattributed overhead is 93% of the PVM/Sol ref_time gap (+72.5B out of +78.0B). Since EVM's unattributed is negligible (0.5% of its total), the gap is almost entirely PVM interpreter cost.
 
-**2. Bytecode size reduction (high impact, compounds with #1).** resolc produces 4-11x larger bytecodes (typically 8-10x). Any reduction compounds across deploy base weight (+47%), proof_size per call (+28%), and instruction count. Potential optimizations include integer narrowing (emitting native RISC-V where values provably fit in 64 bits).
+| Scenario | 93-pair ref_time vs EVM | Derivation |
+| --- | --- | --- |
+| Current | +36.4% | measured |
+| 50% interpreter speedup | ~+19% | gap shrinks by ~36.3B (half of 72.5B unattr gap) |
+| Zero interpreter overhead | ~+3% | only attributed gap remains: +5.4B / 214.0B |
 
-**3. PVM-optimized libraries (Rust ecosystem).** Software-emulated U256 costs +2611% vs EVM on Fibonacci. The no-alloc u32 SimpleToken (2.2KB) is already compact, but moving to u256 with macro + bump allocator grows to 4.4KB. A performant no-alloc U256 implementation and compact ABI encoding would make efficient Rust contracts practical without hand-rolling byte manipulation.
+JIT compilation would directly reduce fuel-to-ref_time conversion rates. Proof_size is unaffected by interpreter speed — proof_size overhead is driven by bytecode loading (#2), not execution.
 
-**4. EVM code-loading weight (fixed).** The previous benchmark bug in `call_with_evm_code_per_byte` has been fixed. EVM now charges 1,534 ref_time/byte + 1 proof_size/byte, comparable to PVM's 1,653 + 1. Both VMs are now on a level playing field for code-loading costs.
+**2. Bytecode size reduction (high impact, compounds with #1).**
+resolc produces 4-11x larger bytecodes (typically 8-10x). Larger bytecodes increase cost through two quantifiable mechanisms:
+
+*Deploy base weight* scales with bytecode size via `CodeLoadToken`. The 7-contract data provides a direct comparison: Rust contracts at ~3x EVM have +13.5% deploy base overhead, vs resolc's +52% at ~9x. If resolc achieved Rust-like sizes, deploy base savings would follow.
+
+*Proof_size per call* is charged at 1 byte per byte of code via `CodeLoadToken`. The bytecode-driven proof gap is +4.5M (78.6% of the +5.7M total proof gap). This excess scales with (PVM_size − EVM_size):
+
+| Bytecode ratio | Unattr proof gap | Total proof_size vs EVM | Derivation |
+| --- | --- | --- | --- |
+| Current (~9x) | +4.5M | +27.5% | measured |
+| ~3x (Rust-like) | ~+1.1M | ~+11% | excess shrinks from 8×EVM to 2×EVM (75% reduction) |
+| ~1x (EVM-like) | ~0 | ~+6% | only attributed proof gap remains |
+
+Bytecode reduction may also reduce instruction count (fewer RISC-V instructions to execute), which would lower unattributed ref_time and compound with #1. However, the relationship between bytecode size and instruction count depends on the nature of the bloat (dead code vs less efficient instruction selection) and cannot be quantified from this data alone.
+
+**3. PVM-optimized Rust libraries and SDK.**
+Hand-written Rust contracts already match or beat EVM: -10% median ref_time and -54% median proof_size across 46 pairs (see RQ2).
+A mature Rust SDK is needed to make this performance accessible to developers.
+
+The most acute library gap is U256 arithmetic. EVM operates on 256-bit words natively; resolc also promotes all values to 256-bit on RISC-V. Rust contracts can choose their integer width, the cost impact depends on the workload:
+
+*Fibonacci (fib_10) — Solidity source: uint32, compute-heavy:*
+
+| Implementation | ref_time | vs EVM |
+| --- | --- | --- |
+| EVM (uint32) | 132M | — |
+| Rust u32 | 121M | -8% |
+| Rust u128 | 282M | +113% |
+| resolc (uint32 → u256) | 420M | +218% |
+| Rust u256 (ruint) | 3,585M | +2611% |
+
+*SimpleToken (mint) — Solidity source: uint256, storage-heavy:*
+
+| Implementation | ref_time | vs EVM |
+| --- | --- | --- |
+| EVM (uint256) | 505M | — |
+| resolc (uint256) | 591M | +17% |
+| Rust u32 | 610M | +21% |
+| Rust u128 | 611M | +21% |
+| Rust u256 (ruint) | 666M | +32% |
+
+On compute-heavy Fibonacci, the ruint u256 crate is **8.5x slower** than resolc's u256 emulation. On storage-heavy SimpleToken, the u256 overhead is smaller (+32% vs +17% for resolc) since storage operations account for most of the cost.
+
+**4. EVM code-loading weight (fixed).**
+The previous benchmark bug in `call_with_evm_code_per_byte` has been fixed. EVM now charges 1,534 ref_time/byte + 1 proof_size/byte, comparable to PVM's 1,653 + 1 (8% gap). Both VMs are now on a level playing field for code-loading costs.
