@@ -1,7 +1,7 @@
 # Opcode Analysis
 
 Generated on: 2026-03-03
-resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.llvm-18.1.8
+resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 > **Unattributed** = `weight_consumed_ref_time - SUM(step weights)`. For **EVM** contracts this is near zero (~46 ps/byte of bytecode from code loading). For **PVM** contracts this is the RISC-V interpreter overhead between syscalls — the fuel burned executing PolkaVM instructions that are not traced individually.
 
@@ -2700,19 +2700,19 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### CoinTool_App_pvm - deploy
 
-- **Total Gas Used:** 85,032,006
-- **Base Call Weight:** ref_time=1,980,956,227, proof_size=6,934
-- **Total Weight:** ref_time=2,359,495,042, proof_size=27,448
+- **Total Gas Used:** 85,316,807
+- **Base Call Weight:** ref_time=1,982,985,709, proof_size=6,934
+- **Total Weight:** ref_time=2,361,524,524, proof_size=27,448
 - **Weight Consumed:** ref_time=378,538,815 (16.0% of total), proof_size=20,514
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 44.7%         | 50.0%           |
-| set_immutable_data   | 2,047     | 1          | 2047.0       | 102,397,331 | 0          | 27.1%         | 0.0%            |
-| get_storage_or_zero  | 1,358     | 1          | 1358.0       | 67,927,717  | 10,257     | 17.9%         | 50.0%           |
+| set_immutable_data   | 2,048     | 1          | 2048.0       | 102,397,331 | 0          | 27.1%         | 0.0%            |
+| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 17.9%         | 50.0%           |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
-| origin               | 8         | 1          | 8.0          | 375,000     | 0          | 0.1%          | 0.0%            |
-| address              | 7         | 1          | 7.0          | 365,000     | 0          | 0.1%          | 0.0%            |
+| origin               | 7         | 1          | 7.0          | 375,000     | 0          | 0.1%          | 0.0%            |
+| address              | 8         | 1          | 8.0          | 365,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
 | **Unattributed**     | -         | -          | -            | 37,272,388  | 0          | 9.8%          | 0.0%            |
@@ -2752,33 +2752,34 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### CoinTool_App_pvm - t
 
-- **Total Gas Used:** 543,112,183
+- **Total Gas Used:** 561,213,405
 - **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
-- **Total Weight:** ref_time=125,573,336,474, proof_size=10,769,571
-- **Weight Consumed:** ref_time=124,660,351,042 (99.3% of total), proof_size=10,760,301
+- **Total Weight:** ref_time=223,394,450,438, proof_size=17,147,683
+- **Weight Consumed:** ref_time=222,481,465,006 (99.6% of total), proof_size=17,138,413
 
-| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time       | proof size | % of ref time | % of proof size |
-| -------------------- | --------- | ---------- | ------------ | -------------- | ---------- | ------------- | --------------- |
-| call_evm             | 798,451   | 100        | 7984.5       | 39,923,486,750 | 6,291,450  | 32.0%         | 58.5%           |
-| instantiate          | 514,305   | 50         | 10286.1      | 25,717,170,950 | 366,750    | 20.6%         | 3.4%            |
-| delegate_call_evm    | 276,340   | 100        | 2763.4       | 13,817,788,050 | 1,930,200  | 11.1%         | 17.9%           |
-| get_storage_or_zero  | 206,599   | 152        | 1359.2       | 10,329,985,784 | 1,562,264  | 8.3%          | 14.5%           |
-| set_immutable_data   | 102,397   | 50         | 2047.9       | 5,119,866,550  | 0          | 4.1%          | 0.0%            |
-| get_immutable_data   | 95,387    | 150        | 635.9        | 4,769,345,100  | 570,150    | 3.8%          | 5.3%            |
-| hash_keccak_256      | 25,870    | 104        | 248.8        | 1,293,476,852  | 0          | 1.0%          | 0.0%            |
-| ref_time_left        | 8,513     | 200        | 42.6         | 425,800,000    | 0          | 0.3%          | 0.0%            |
-| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625    | 10,257     | 0.1%          | 0.1%            |
-| call_data_load       | 2,408     | 356        | 6.8          | 120,328,000    | 0          | 0.1%          | 0.0%            |
-| seal_return          | 2,212     | 201        | 11.0         | 110,589,798    | 0          | 0.1%          | 0.0%            |
-| return_data_size     | 1,712     | 250        | 6.8          | 85,500,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 1,278     | 201        | 6.4          | 63,918,000     | 0          | 0.1%          | 0.0%            |
-| caller               | 1,231     | 153        | 8.0          | 61,506,000     | 0          | 0.0%          | 0.0%            |
-| now                  | 709       | 100        | 7.1          | 35,600,000     | 0          | 0.0%          | 0.0%            |
-| address              | 367       | 50         | 7.3          | 18,250,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 335       | 50         | 6.7          | 16,800,000     | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 233       | 253        | 0.9          | 11,607,692     | 0          | 0.0%          | 0.0%            |
-| origin               | 7         | 1          | 7.0          | 375,000        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 22,569,663,891 | 29,230     | 18.1%         | 0.3%            |
+| Opcode               | Total Gas  | Call Count | Avg Gas/Call | ref time       | proof size | % of ref time | % of proof size |
+| -------------------- | ---------- | ---------- | ------------ | -------------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 17,303,352 | 401        | 43150.5      | 67,887,603,489 | 4,116,225  | 30.5%         | 24.0%           |
+| call_evm             | 798,867    | 100        | 7988.7       | 39,944,893,100 | 6,304,400  | 18.0%         | 36.8%           |
+| instantiate          | 514,450    | 50         | 10289.0      | 25,724,113,550 | 370,950    | 11.6%         | 2.2%            |
+| get_storage_or_zero  | 478,465    | 352        | 1359.3       | 23,922,938,656 | 3,618,432  | 10.8%         | 21.1%           |
+| delegate_call_evm    | 282,974    | 100        | 2829.7       | 14,150,174,300 | 2,128,900  | 6.4%          | 12.4%           |
+| set_immutable_data   | 102,398    | 50         | 2048.0       | 5,119,866,550  | 0          | 2.3%          | 0.0%            |
+| get_immutable_data   | 95,388     | 150        | 635.9        | 4,769,345,100  | 570,150    | 2.1%          | 3.3%            |
+| hash_keccak_256      | 38,329     | 154        | 248.9        | 1,916,379,652  | 0          | 0.9%          | 0.0%            |
+| deposit_event        | 22,221     | 50         | 444.4        | 1,111,078,400  | 0          | 0.5%          | 0.0%            |
+| ref_time_left        | 8,516      | 200        | 42.6         | 425,800,000    | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 3,423      | 506        | 6.8          | 171,028,000    | 0          | 0.1%          | 0.0%            |
+| seal_return          | 2,768      | 251        | 11.0         | 138,416,498    | 0          | 0.1%          | 0.0%            |
+| caller               | 2,440      | 303        | 8.1          | 121,806,000    | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 1,594      | 251        | 6.4          | 79,818,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 1,370      | 200        | 6.8          | 68,400,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 711        | 100        | 7.1          | 35,600,000     | 0          | 0.0%          | 0.0%            |
+| address              | 366        | 50         | 7.3          | 18,250,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 336        | 50         | 6.7          | 16,800,000     | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 228        | 253        | 0.9          | 11,607,692     | 0          | 0.0%          | 0.0%            |
+| origin               | 8          | 1          | 8.0          | 375,000        | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -          | -          | -            | 36,847,171,019 | 29,356     | 16.6%         | 0.2%            |
 
 
 ### DocumentAccessManagement_evm - configurePublicAccess
@@ -2815,23 +2816,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - configurePublicAccess
 
-- **Total Gas Used:** 541,923
+- **Total Gas Used:** 541,932
 - **Base Call Weight:** ref_time=909,187,592, proof_size=8,400
-- **Total Weight:** ref_time=1,760,323,000, proof_size=149,657
-- **Weight Consumed:** ref_time=851,135,408 (48.4% of total), proof_size=141,257
+- **Total Weight:** ref_time=1,760,774,143, proof_size=149,808
+- **Weight Consumed:** ref_time=851,586,551 (48.4% of total), proof_size=141,408
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 5,436     | 4          | 1359.0       | 271,860,052 | 41,124     | 31.9%         | 29.1%           |
+| get_storage_or_zero  | 5,437     | 4          | 1359.3       | 271,860,052 | 41,124     | 31.9%         | 29.1%           |
 | set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 19.9%         | 7.3%            |
 | hash_keccak_256      | 997       | 4          | 249.3        | 49,832,224  | 0          | 5.9%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.6%          | 0.0%            |
-| call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 343,397,525 | 89,876     | 40.3%         | 63.6%           |
+| **Unattributed**     | -         | -          | -            | 343,848,668 | 90,027     | 40.4%         | 63.7%           |
 
 
 ### DocumentAccessManagement_evm - createDocument
@@ -2868,25 +2869,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - createDocument
 
-- **Total Gas Used:** 1,538,715
+- **Total Gas Used:** 1,538,705
 - **Base Call Weight:** ref_time=912,147,288, proof_size=9,078
-- **Total Weight:** ref_time=5,239,951,898, proof_size=396,728
-- **Weight Consumed:** ref_time=4,327,804,610 (82.6% of total), proof_size=387,650
+- **Total Weight:** ref_time=5,239,462,521, proof_size=396,879
+- **Weight Consumed:** ref_time=4,327,315,233 (82.6% of total), proof_size=387,801
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 572,048   | 13         | 44003.7      | 2,202,415,061 | 133,534    | 50.9%         | 34.4%           |
 | get_storage_or_zero  | 21,742    | 16         | 1358.9       | 1,087,042,384 | 164,240    | 25.1%         | 42.4%           |
 | hash_keccak_256      | 2,237     | 9          | 248.6        | 111,896,520   | 0          | 2.6%          | 0.0%            |
-| deposit_event        | 1,118     | 1          | 1118.0       | 55,928,704    | 0          | 1.3%          | 0.0%            |
-| call_data_load       | 66        | 10         | 6.6          | 3,380,000     | 0          | 0.1%          | 0.0%            |
+| deposit_event        | 1,119     | 1          | 1119.0       | 55,928,704    | 0          | 1.3%          | 0.0%            |
+| call_data_load       | 68        | 10         | 6.8          | 3,380,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 2          | 1.0          | 88,180        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 865,091,563   | 89,876     | 20.0%         | 23.2%           |
+| call_data_copy       | 1         | 2          | 0.5          | 88,180        | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 864,602,186   | 90,027     | 20.0%         | 23.2%           |
 
 
 ### DocumentAccessManagement_evm - createDocument2
@@ -2923,25 +2924,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - createDocument2
 
-- **Total Gas Used:** 1,485,917
+- **Total Gas Used:** 1,485,907
 - **Base Call Weight:** ref_time=912,147,288, proof_size=9,078
-- **Total Weight:** ref_time=5,240,014,362, proof_size=396,792
-- **Weight Consumed:** ref_time=4,327,867,074 (82.6% of total), proof_size=387,714
+- **Total Weight:** ref_time=5,239,524,985, proof_size=396,943
+- **Weight Consumed:** ref_time=4,327,377,697 (82.6% of total), proof_size=387,865
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 519,247   | 13         | 39942.1      | 2,202,427,797 | 133,566    | 50.9%         | 34.4%           |
+| set_storage_or_clear | 519,248   | 13         | 39942.2      | 2,202,427,797 | 133,566    | 50.9%         | 34.4%           |
 | get_storage_or_zero  | 21,743    | 16         | 1358.9       | 1,087,092,112 | 164,272    | 25.1%         | 42.4%           |
 | hash_keccak_256      | 2,237     | 9          | 248.6        | 111,896,520   | 0          | 2.6%          | 0.0%            |
 | deposit_event        | 1,119     | 1          | 1119.0       | 55,928,704    | 0          | 1.3%          | 0.0%            |
-| call_data_load       | 66        | 10         | 6.6          | 3,380,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 68        | 10         | 6.8          | 3,380,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 2         | 2          | 1.0          | 88,180        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 865,091,563   | 89,876     | 20.0%         | 23.2%           |
+| **Unattributed**     | -         | -          | -            | 864,602,186   | 90,027     | 20.0%         | 23.2%           |
 
 
 ### DocumentAccessManagement_evm - deploy
@@ -2969,18 +2970,18 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - deploy
 
-- **Total Gas Used:** 218,048,992
-- **Base Call Weight:** ref_time=2,957,781,349, proof_size=6,934
-- **Total Weight:** ref_time=2,970,776,347, proof_size=6,934
-- **Weight Consumed:** ref_time=12,994,998 (0.4% of total), proof_size=0
+- **Total Gas Used:** 218,390,291
+- **Base Call Weight:** ref_time=2,960,213,506, proof_size=6,934
+- **Total Weight:** ref_time=2,972,738,244, proof_size=6,934
+- **Weight Consumed:** ref_time=12,524,738 (0.4% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.2%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.6%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.4%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.4%          | 0.0%            |
+| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.7%          | 0.0%            |
+| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.5%          | 0.0%            |
 | call_data_copy    | 1         | 1          | 1.0          | 40,556     | 0          | 0.3%          | 0.0%            |
-| **Unattributed**  | -         | -          | -            | 11,750,244 | 0          | 90.4%         | 0.0%            |
+| **Unattributed**  | -         | -          | -            | 11,279,984 | 0          | 90.1%         | 0.0%            |
 
 
 ### DocumentAccessManagement_evm - grantAccessWithShare
@@ -3017,24 +3018,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - grantAccessWithShare
 
-- **Total Gas Used:** 1,305,045
+- **Total Gas Used:** 1,305,120
 - **Base Call Weight:** ref_time=911,728,216, proof_size=8,982
-- **Total Weight:** ref_time=4,676,458,684, proof_size=366,053
-- **Weight Consumed:** ref_time=3,764,730,468 (80.5% of total), proof_size=357,071
+- **Total Weight:** ref_time=4,680,201,647, proof_size=366,204
+- **Weight Consumed:** ref_time=3,768,473,431 (80.5% of total), proof_size=357,222
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 403,491   | 10         | 40349.1      | 1,694,537,186 | 102,763    | 45.0%         | 28.8%           |
-| get_storage_or_zero  | 21,749    | 16         | 1359.3       | 1,087,340,752 | 164,432    | 28.9%         | 46.1%           |
-| hash_keccak_256      | 3,479     | 14         | 248.5        | 173,960,816   | 0          | 4.6%          | 0.0%            |
+| set_storage_or_clear | 403,492   | 10         | 40349.2      | 1,694,537,186 | 102,763    | 45.0%         | 28.8%           |
+| get_storage_or_zero  | 21,747    | 16         | 1359.2       | 1,087,340,752 | 164,432    | 28.9%         | 46.0%           |
+| hash_keccak_256      | 3,480     | 14         | 248.6        | 173,960,816   | 0          | 4.6%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.8%          | 0.0%            |
-| call_data_load       | 68        | 10         | 6.8          | 3,380,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 69        | 10         | 6.9          | 3,380,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 772,499,164   | 89,876     | 20.5%         | 25.2%           |
+| **Unattributed**     | -         | -          | -            | 776,242,127   | 90,027     | 20.6%         | 25.2%           |
 
 
 ### DocumentAccessManagement_evm - registerKeys
@@ -3071,24 +3072,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - registerKeys
 
-- **Total Gas Used:** 655,097
+- **Total Gas Used:** 655,106
 - **Base Call Weight:** ref_time=909,187,592, proof_size=8,400
-- **Total Weight:** ref_time=2,139,039,365, proof_size=159,947
-- **Weight Consumed:** ref_time=1,229,851,773 (57.5% of total), proof_size=151,547
+- **Total Weight:** ref_time=2,139,490,508, proof_size=160,098
+- **Weight Consumed:** ref_time=1,230,302,916 (57.5% of total), proof_size=151,698
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 171,975   | 4          | 42993.8      | 678,755,964 | 41,157     | 55.2%         | 27.2%           |
+| set_storage_or_clear | 171,975   | 4          | 42993.8      | 678,755,964 | 41,157     | 55.2%         | 27.1%           |
 | get_storage_or_zero  | 2,718     | 2          | 1359.0       | 135,855,434 | 20,514     | 11.0%         | 13.5%           |
 | deposit_event        | 782       | 1          | 782.0        | 39,075,136  | 0          | 3.2%          | 0.0%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 1.0%          | 0.0%            |
-| call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 359,990,985 | 89,876     | 29.3%         | 59.3%           |
+| **Unattributed**     | -         | -          | -            | 360,442,128 | 90,027     | 29.3%         | 59.3%           |
 
 
 ### DocumentAccessManagement_evm - revokeAccess
@@ -3125,23 +3126,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - revokeAccess
 
-- **Total Gas Used:** 303,877
+- **Total Gas Used:** 303,888
 - **Base Call Weight:** ref_time=909,187,592, proof_size=8,400
-- **Total Weight:** ref_time=5,698,046,998, proof_size=500,129
-- **Weight Consumed:** ref_time=4,788,859,406 (84.0% of total), proof_size=491,729
+- **Total Weight:** ref_time=5,698,565,321, proof_size=500,280
+- **Weight Consumed:** ref_time=4,789,377,729 (84.0% of total), proof_size=491,880
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 39,431    | 29         | 1359.7       | 1,971,345,905 | 298,381    | 41.2%         | 60.7%           |
-| set_storage_or_clear | 34,051    | 10         | 3405.1       | 1,702,489,978 | 103,472    | 35.6%         | 21.0%           |
-| hash_keccak_256      | 5,207     | 21         | 248.0        | 260,376,264   | 0          | 5.4%          | 0.0%            |
+| get_storage_or_zero  | 39,423    | 29         | 1359.4       | 1,971,345,905 | 298,381    | 41.2%         | 60.7%           |
+| set_storage_or_clear | 34,050    | 10         | 3405.0       | 1,702,489,978 | 103,472    | 35.5%         | 21.0%           |
+| hash_keccak_256      | 5,208     | 21         | 248.0        | 260,376,264   | 0          | 5.4%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.3%          | 0.0%            |
-| call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 28        | 4          | 7.0          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 837,492,277   | 89,876     | 17.5%         | 18.3%           |
+| **Unattributed**     | -         | -          | -            | 838,010,600   | 90,027     | 17.5%         | 18.3%           |
 
 
 ### DocumentAccessManagement_evm - transferOwnership
@@ -3178,16 +3179,16 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - transferOwnership
 
-- **Total Gas Used:** 711,858
+- **Total Gas Used:** 711,865
 - **Base Call Weight:** ref_time=909,187,592, proof_size=8,400
-- **Total Weight:** ref_time=4,977,110,357, proof_size=437,622
-- **Weight Consumed:** ref_time=4,067,922,765 (81.7% of total), proof_size=429,222
+- **Total Weight:** ref_time=4,977,427,140, proof_size=437,773
+- **Weight Consumed:** ref_time=4,068,239,548 (81.7% of total), proof_size=429,373
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | get_storage_or_zero  | 32,627    | 24         | 1359.5       | 1,631,210,040 | 246,776    | 40.1%         | 57.5%           |
-| set_storage_or_clear | 238,287   | 9          | 26476.3      | 1,525,270,033 | 92,570     | 37.5%         | 21.6%           |
-| hash_keccak_256      | 3,725     | 15         | 248.3        | 186,192,888   | 0          | 4.6%          | 0.0%            |
+| set_storage_or_clear | 238,288   | 9          | 26476.4      | 1,525,270,033 | 92,570     | 37.5%         | 21.6%           |
+| hash_keccak_256      | 3,723     | 15         | 248.2        | 186,192,888   | 0          | 4.6%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000     | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 28        | 4          | 7.0          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
@@ -3195,7 +3196,7 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 716,165,606   | 89,876     | 17.6%         | 20.9%           |
+| **Unattributed**     | -         | -          | -            | 716,482,389   | 90,027     | 17.6%         | 21.0%           |
 
 
 ### DocumentAccessManagement_evm - updateDocument
@@ -3232,25 +3233,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DocumentAccessManagement_pvm - updateDocument
 
-- **Total Gas Used:** 952,852
+- **Total Gas Used:** 952,840
 - **Base Call Weight:** ref_time=912,147,288, proof_size=9,078
-- **Total Weight:** ref_time=2,346,787,495, proof_size=181,266
-- **Weight Consumed:** ref_time=1,434,640,207 (61.1% of total), proof_size=172,188
+- **Total Weight:** ref_time=2,346,163,758, proof_size=181,417
+- **Weight Consumed:** ref_time=1,434,016,470 (61.1% of total), proof_size=172,339
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 10,159    | 3          | 3386.3       | 507,916,083 | 30,867     | 35.4%         | 17.9%           |
-| get_storage_or_zero  | 6,798     | 5          | 1359.6       | 339,887,225 | 51,445     | 23.7%         | 29.9%           |
+| set_storage_or_clear | 10,158    | 3          | 3386.0       | 507,916,083 | 30,867     | 35.4%         | 17.9%           |
+| get_storage_or_zero  | 6,796     | 5          | 1359.2       | 339,887,225 | 51,445     | 23.7%         | 29.9%           |
 | hash_keccak_256      | 1,494     | 6          | 249.0        | 74,748,336  | 0          | 5.2%          | 0.0%            |
-| deposit_event        | 781       | 1          | 781.0        | 39,075,136  | 0          | 2.7%          | 0.0%            |
-| call_data_load       | 73        | 11         | 6.6          | 3,718,000   | 0          | 0.3%          | 0.0%            |
+| deposit_event        | 782       | 1          | 782.0        | 39,075,136  | 0          | 2.7%          | 0.0%            |
+| call_data_load       | 75        | 11         | 6.8          | 3,718,000   | 0          | 0.3%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
-| caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 9         | 1          | 9.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 44,090      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 467,289,139 | 89,876     | 32.6%         | 52.2%           |
+| **Unattributed**     | -         | -          | -            | 466,665,402 | 90,027     | 32.5%         | 52.2%           |
 
 
 ### DotNS_evm - createSubdomain
@@ -3287,25 +3288,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - createSubdomain
 
-- **Total Gas Used:** 1,584,310
+- **Total Gas Used:** 1,584,200
 - **Base Call Weight:** ref_time=911,296,048, proof_size=8,883
-- **Total Weight:** ref_time=14,019,705,284, proof_size=382,261
-- **Weight Consumed:** ref_time=13,108,409,236 (93.5% of total), proof_size=373,378
+- **Total Weight:** ref_time=14,014,185,294, proof_size=382,051
+- **Weight Consumed:** ref_time=13,102,889,246 (93.5% of total), proof_size=373,168
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 572,079   | 13         | 44006.1      | 2,203,987,789 | 133,631    | 16.8%         | 35.8%           |
+| set_storage_or_clear | 572,081   | 13         | 44006.2      | 2,203,987,789 | 133,631    | 16.8%         | 35.8%           |
 | get_storage_or_zero  | 21,743    | 16         | 1358.9       | 1,087,141,840 | 164,304    | 8.3%          | 44.0%           |
-| hash_keccak_256      | 5,460     | 22         | 248.2        | 272,989,684   | 0          | 2.1%          | 0.0%            |
+| hash_keccak_256      | 5,463     | 22         | 248.3        | 272,989,684   | 0          | 2.1%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.2%          | 0.0%            |
 | call_data_load       | 47        | 7          | 6.7          | 2,366,000     | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 9         | 13         | 0.7          | 559,262       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 13        | 13         | 1.0          | 559,262       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 9,508,747,775 | 75,443     | 72.5%         | 20.2%           |
+| **Unattributed**     | -         | -          | -            | 9,503,227,785 | 75,233     | 72.5%         | 20.2%           |
 
 
 ### dotns_rust - createSubdomain
@@ -3353,18 +3354,18 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - deploy
 
-- **Total Gas Used:** 185,425,762
-- **Base Call Weight:** ref_time=2,725,309,018, proof_size=6,934
-- **Total Weight:** ref_time=2,738,304,016, proof_size=6,934
-- **Weight Consumed:** ref_time=12,994,998 (0.5% of total), proof_size=0
+- **Total Gas Used:** 184,951,085
+- **Base Call Weight:** ref_time=2,721,926,548, proof_size=6,934
+- **Total Weight:** ref_time=2,734,451,286, proof_size=6,934
+- **Weight Consumed:** ref_time=12,524,738 (0.5% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.2%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.6%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.4%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.4%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 336,000    | 0          | 2.7%          | 0.0%            |
+| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.5%          | 0.0%            |
 | call_data_copy    | 1         | 1          | 1.0          | 40,556     | 0          | 0.3%          | 0.0%            |
-| **Unattributed**  | -         | -          | -            | 11,750,244 | 0          | 90.4%         | 0.0%            |
+| **Unattributed**  | -         | -          | -            | 11,279,984 | 0          | 90.1%         | 0.0%            |
 
 
 ### dotns_rust - deploy
@@ -3382,152 +3383,152 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_evm - register
 
-- **Total Gas Used:** 1,127,743
+- **Total Gas Used:** 1,127,737
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=4,191,362,451, proof_size=263,187
-- **Weight Consumed:** ref_time=3,281,768,883 (78.3% of total), proof_size=254,694
+- **Total Weight:** ref_time=4,191,058,212, proof_size=263,187
+- **Weight Consumed:** ref_time=3,281,464,644 (78.3% of total), proof_size=254,694
 
 | Opcode           | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | ---------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | SSTORE           | 568,631   | 12         | 47385.9      | 2,031,487,052 | 123,084    | 61.9%         | 48.3%           |
 | SLOAD            | 16,316    | 12         | 1359.7       | 815,729,340   | 123,468    | 24.9%         | 48.5%           |
-| KECCAK256        | 4,224     | 17         | 248.5        | 211,066,628   | 0          | 6.4%          | 0.0%            |
+| KECCAK256        | 4,220     | 17         | 248.2        | 211,066,628   | 0          | 6.4%          | 0.0%            |
 | LOG3             | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.9%          | 0.0%            |
-| JUMPI            | 538       | 347        | 1.6          | 27,069,470    | 0          | 0.8%          | 0.0%            |
-| JUMP             | 537       | 422        | 1.3          | 26,336,176    | 0          | 0.8%          | 0.0%            |
-| PUSH1            | 404       | 881        | 0.5          | 20,618,043    | 0          | 0.6%          | 0.0%            |
-| PUSH2            | 367       | 772        | 0.5          | 18,067,116    | 0          | 0.6%          | 0.0%            |
-| DUP2             | 209       | 417        | 0.5          | 9,759,051     | 0          | 0.3%          | 0.0%            |
-| SWAP1            | 151       | 366        | 0.4          | 8,565,498     | 0          | 0.3%          | 0.0%            |
-| ADD              | 163       | 347        | 0.5          | 8,120,841     | 0          | 0.2%          | 0.0%            |
-| MLOAD            | 118       | 245        | 0.5          | 5,733,735     | 0          | 0.2%          | 0.0%            |
-| ISZERO           | 105       | 223        | 0.5          | 5,218,869     | 0          | 0.2%          | 0.0%            |
-| SHL              | 104       | 223        | 0.5          | 5,218,869     | 0          | 0.2%          | 0.0%            |
-| LT               | 87        | 189        | 0.5          | 4,423,167     | 0          | 0.1%          | 0.0%            |
-| JUMPDEST         | 81        | 557        | 0.1          | 4,345,157     | 0          | 0.1%          | 0.0%            |
-| AND              | 70        | 144        | 0.5          | 3,370,032     | 0          | 0.1%          | 0.0%            |
-| SUB              | 70        | 143        | 0.5          | 3,346,629     | 0          | 0.1%          | 0.0%            |
-| NOT              | 70        | 142        | 0.5          | 3,323,226     | 0          | 0.1%          | 0.0%            |
+| JUMPI            | 540       | 346        | 1.6          | 26,991,460    | 0          | 0.8%          | 0.0%            |
+| JUMP             | 526       | 422        | 1.2          | 26,336,176    | 0          | 0.8%          | 0.0%            |
+| PUSH1            | 414       | 879        | 0.5          | 20,571,237    | 0          | 0.6%          | 0.0%            |
+| PUSH2            | 355       | 771        | 0.5          | 18,043,713    | 0          | 0.5%          | 0.0%            |
+| DUP2             | 212       | 416        | 0.5          | 9,735,648     | 0          | 0.3%          | 0.0%            |
+| SWAP1            | 159       | 365        | 0.4          | 8,542,095     | 0          | 0.3%          | 0.0%            |
+| ADD              | 164       | 347        | 0.5          | 8,120,841     | 0          | 0.2%          | 0.0%            |
+| MLOAD            | 112       | 245        | 0.5          | 5,733,735     | 0          | 0.2%          | 0.0%            |
+| ISZERO           | 106       | 222        | 0.5          | 5,195,466     | 0          | 0.2%          | 0.0%            |
+| SHL              | 96        | 222        | 0.4          | 5,195,466     | 0          | 0.2%          | 0.0%            |
+| LT               | 83        | 188        | 0.4          | 4,399,764     | 0          | 0.1%          | 0.0%            |
+| JUMPDEST         | 91        | 557        | 0.2          | 4,345,157     | 0          | 0.1%          | 0.0%            |
+| AND              | 74        | 144        | 0.5          | 3,370,032     | 0          | 0.1%          | 0.0%            |
+| SUB              | 71        | 143        | 0.5          | 3,346,629     | 0          | 0.1%          | 0.0%            |
+| NOT              | 64        | 142        | 0.5          | 3,323,226     | 0          | 0.1%          | 0.0%            |
 | CALLDATACOPY     | 55        | 5          | 11.0         | 2,751,412     | 0          | 0.1%          | 0.0%            |
 | **Unattributed** | -         | -          | -            | 12,489,828    | 8,142      | 0.4%          | 3.2%            |
 
 
 ### DotNS_pvm - register
 
-- **Total Gas Used:** 1,211,268
+- **Total Gas Used:** 1,211,204
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=8,367,605,531, proof_size=351,037
-- **Weight Consumed:** ref_time=7,458,011,963 (89.1% of total), proof_size=342,544
+- **Total Weight:** ref_time=8,364,369,661, proof_size=350,827
+- **Weight Consumed:** ref_time=7,454,776,093 (89.1% of total), proof_size=342,334
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 572,108   | 13         | 44008.3      | 2,205,560,517 | 133,728    | 29.6%         | 39.0%           |
-| get_storage_or_zero  | 17,662    | 13         | 1358.6       | 883,110,049   | 133,373    | 11.8%         | 38.9%           |
+| set_storage_or_clear | 572,110   | 13         | 44008.5      | 2,205,560,517 | 133,728    | 29.6%         | 39.1%           |
+| get_storage_or_zero  | 17,664    | 13         | 1358.8       | 883,110,049   | 133,373    | 11.8%         | 39.0%           |
 | hash_keccak_256      | 4,222     | 17         | 248.4        | 211,066,628   | 0          | 2.8%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.4%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 26        | 4          | 6.5          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 4         | 5          | 0.8          | 214,864       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 4,122,885,019 | 75,443     | 55.3%         | 22.0%           |
+| call_data_copy       | 5         | 5          | 1.0          | 214,864       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 4,119,649,149 | 75,233     | 55.3%         | 22.0%           |
 
 
 ### dotns_rust - register
 
-- **Total Gas Used:** 798,606
+- **Total Gas Used:** 798,601
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=2,764,496,700, proof_size=72,472
-- **Weight Consumed:** ref_time=1,854,903,132 (67.1% of total), proof_size=63,979
+- **Total Weight:** ref_time=2,764,227,980, proof_size=72,472
+- **Weight Consumed:** ref_time=1,854,634,412 (67.1% of total), proof_size=63,979
 
 | Opcode           | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | ---------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage      | 237,560   | 3          | 79186.7      | 507,991,329   | 30,771     | 27.4%         | 48.1%           |
 | hash_keccak_256  | 3,215     | 13         | 247.3        | 160,768,312   | 0          | 8.7%          | 0.0%            |
-| get_storage      | 1,358     | 1          | 1358.0       | 67,927,717    | 10,257     | 3.7%          | 16.0%           |
+| get_storage      | 1,359     | 1          | 1359.0       | 67,927,717    | 10,257     | 3.7%          | 16.0%           |
 | deposit_event    | 613       | 1          | 613.0        | 30,648,352    | 0          | 1.7%          | 0.0%            |
 | call_data_copy   | 19        | 1          | 19.0         | 974,444       | 0          | 0.1%          | 0.0%            |
 | seal_return      | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | caller           | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| now              | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed** | -         | -          | -            | 1,085,278,444 | 22,951     | 58.5%         | 35.9%           |
+| now              | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| **Unattributed** | -         | -          | -            | 1,085,009,724 | 22,951     | 58.5%         | 35.9%           |
 
 
 ### DotNS_evm - register_with_duration
 
-- **Total Gas Used:** 1,127,608
+- **Total Gas Used:** 1,127,602
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=4,184,570,155, proof_size=263,219
-- **Weight Consumed:** ref_time=3,274,976,587 (78.3% of total), proof_size=254,726
+- **Total Weight:** ref_time=4,184,265,916, proof_size=263,219
+- **Weight Consumed:** ref_time=3,274,672,348 (78.3% of total), proof_size=254,726
 
 | Opcode           | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | ---------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | SSTORE           | 568,627   | 12         | 47385.6      | 2,031,512,012 | 123,116    | 62.0%         | 48.3%           |
-| SLOAD            | 16,314    | 12         | 1359.5       | 815,729,340   | 123,468    | 24.9%         | 48.5%           |
-| KECCAK256        | 4,222     | 17         | 248.4        | 211,063,097   | 0          | 6.4%          | 0.0%            |
+| SLOAD            | 16,315    | 12         | 1359.6       | 815,729,340   | 123,468    | 24.9%         | 48.5%           |
+| KECCAK256        | 4,221     | 17         | 248.3        | 211,063,097   | 0          | 6.4%          | 0.0%            |
 | LOG3             | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.9%          | 0.0%            |
-| JUMPI            | 515       | 330        | 1.6          | 25,743,300    | 0          | 0.8%          | 0.0%            |
-| JUMP             | 505       | 404        | 1.3          | 25,212,832    | 0          | 0.8%          | 0.0%            |
-| PUSH1            | 407       | 848        | 0.5          | 19,845,744    | 0          | 0.6%          | 0.0%            |
-| PUSH2            | 335       | 737        | 0.5          | 17,248,011    | 0          | 0.5%          | 0.0%            |
-| DUP2             | 191       | 396        | 0.5          | 9,267,588     | 0          | 0.3%          | 0.0%            |
-| SWAP1            | 176       | 353        | 0.5          | 8,261,259     | 0          | 0.3%          | 0.0%            |
-| ADD              | 147       | 334        | 0.4          | 7,816,602     | 0          | 0.2%          | 0.0%            |
-| MLOAD            | 99        | 233        | 0.4          | 5,452,899     | 0          | 0.2%          | 0.0%            |
-| SHL              | 92        | 213        | 0.4          | 4,984,839     | 0          | 0.2%          | 0.0%            |
-| ISZERO           | 98        | 209        | 0.5          | 4,891,227     | 0          | 0.1%          | 0.0%            |
-| LT               | 85        | 178        | 0.5          | 4,165,734     | 0          | 0.1%          | 0.0%            |
-| JUMPDEST         | 80        | 532        | 0.2          | 4,150,132     | 0          | 0.1%          | 0.0%            |
-| AND              | 64        | 141        | 0.5          | 3,299,823     | 0          | 0.1%          | 0.0%            |
-| SUB              | 67        | 139        | 0.5          | 3,253,017     | 0          | 0.1%          | 0.0%            |
-| NOT              | 69        | 136        | 0.5          | 3,182,808     | 0          | 0.1%          | 0.0%            |
+| JUMPI            | 514       | 329        | 1.6          | 25,665,290    | 0          | 0.8%          | 0.0%            |
+| JUMP             | 514       | 404        | 1.3          | 25,212,832    | 0          | 0.8%          | 0.0%            |
+| PUSH1            | 401       | 846        | 0.5          | 19,798,938    | 0          | 0.6%          | 0.0%            |
+| PUSH2            | 329       | 736        | 0.4          | 17,224,608    | 0          | 0.5%          | 0.0%            |
+| DUP2             | 194       | 395        | 0.5          | 9,244,185     | 0          | 0.3%          | 0.0%            |
+| SWAP1            | 170       | 352        | 0.5          | 8,237,856     | 0          | 0.3%          | 0.0%            |
+| ADD              | 157       | 334        | 0.5          | 7,816,602     | 0          | 0.2%          | 0.0%            |
+| MLOAD            | 97        | 233        | 0.4          | 5,452,899     | 0          | 0.2%          | 0.0%            |
+| SHL              | 103       | 212        | 0.5          | 4,961,436     | 0          | 0.2%          | 0.0%            |
+| ISZERO           | 102       | 208        | 0.5          | 4,867,824     | 0          | 0.1%          | 0.0%            |
+| JUMPDEST         | 81        | 532        | 0.2          | 4,150,132     | 0          | 0.1%          | 0.0%            |
+| LT               | 70        | 177        | 0.4          | 4,142,331     | 0          | 0.1%          | 0.0%            |
+| AND              | 62        | 141        | 0.4          | 3,299,823     | 0          | 0.1%          | 0.0%            |
+| SUB              | 63        | 139        | 0.5          | 3,253,017     | 0          | 0.1%          | 0.0%            |
+| NOT              | 75        | 136        | 0.6          | 3,182,808     | 0          | 0.1%          | 0.0%            |
 | CALLDATACOPY     | 55        | 5          | 11.0         | 2,750,806     | 0          | 0.1%          | 0.0%            |
 | **Unattributed** | -         | -          | -            | 12,489,828    | 8,142      | 0.4%          | 3.2%            |
 
 
 ### DotNS_pvm - register_with_duration
 
-- **Total Gas Used:** 1,208,168
+- **Total Gas Used:** 1,208,126
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=8,212,578,787, proof_size=350,939
-- **Weight Consumed:** ref_time=7,302,985,219 (88.9% of total), proof_size=342,446
+- **Total Weight:** ref_time=8,210,484,977, proof_size=350,729
+- **Weight Consumed:** ref_time=7,300,891,409 (88.9% of total), proof_size=342,236
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 572,049   | 13         | 44003.8      | 2,202,415,061 | 133,534    | 30.2%         | 39.0%           |
-| get_storage_or_zero  | 17,668    | 13         | 1359.1       | 883,259,233   | 133,469    | 12.1%         | 39.0%           |
-| hash_keccak_256      | 4,219     | 17         | 248.2        | 211,063,097   | 0          | 2.9%          | 0.0%            |
+| set_storage_or_clear | 572,046   | 13         | 44003.5      | 2,202,415,061 | 133,534    | 30.2%         | 39.0%           |
+| get_storage_or_zero  | 17,665    | 13         | 1358.8       | 883,259,233   | 133,469    | 12.1%         | 39.0%           |
+| hash_keccak_256      | 4,223     | 17         | 248.4        | 211,063,097   | 0          | 2.9%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.4%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
-| now                  | 15        | 2          | 7.5          | 712,000       | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 26        | 4          | 6.5          | 1,352,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 14        | 2          | 7.0          | 712,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 4         | 5          | 0.8          | 214,522       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 3,970,502,420 | 75,443     | 54.4%         | 22.0%           |
+| **Unattributed**     | -         | -          | -            | 3,968,408,610 | 75,233     | 54.4%         | 22.0%           |
 
 
 ### dotns_rust - register_with_duration
 
-- **Total Gas Used:** 691,369
+- **Total Gas Used:** 691,363
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=2,762,628,049, proof_size=72,512
-- **Weight Consumed:** ref_time=1,853,034,481 (67.1% of total), proof_size=64,019
+- **Total Weight:** ref_time=2,762,359,329, proof_size=72,512
+- **Weight Consumed:** ref_time=1,852,765,761 (67.1% of total), proof_size=64,019
 
 | Opcode           | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | ---------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage      | 130,361   | 3          | 43453.7      | 508,007,249   | 30,811     | 27.4%         | 48.1%           |
-| hash_keccak_256  | 3,216     | 13         | 247.4        | 160,764,781   | 0          | 8.7%          | 0.0%            |
-| get_storage      | 1,358     | 1          | 1358.0       | 67,927,717    | 10,257     | 3.7%          | 16.0%           |
-| deposit_event    | 613       | 1          | 613.0        | 30,648,352    | 0          | 1.7%          | 0.0%            |
+| set_storage      | 130,359   | 3          | 43453.0      | 508,007,249   | 30,811     | 27.4%         | 48.1%           |
+| hash_keccak_256  | 3,215     | 13         | 247.3        | 160,764,781   | 0          | 8.7%          | 0.0%            |
+| get_storage      | 1,359     | 1          | 1359.0       | 67,927,717    | 10,257     | 3.7%          | 16.0%           |
+| deposit_event    | 612       | 1          | 612.0        | 30,648,352    | 0          | 1.7%          | 0.0%            |
 | call_data_copy   | 19        | 1          | 19.0         | 974,444       | 0          | 0.1%          | 0.0%            |
 | seal_return      | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | caller           | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | now              | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed** | -         | -          | -            | 1,083,397,404 | 22,951     | 58.5%         | 35.9%           |
+| **Unattributed** | -         | -          | -            | 1,083,128,684 | 22,951     | 58.5%         | 35.9%           |
 
 
 ### DotNS_evm - release
@@ -3564,24 +3565,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - release
 
-- **Total Gas Used:** 69,600
+- **Total Gas Used:** 69,587
 - **Base Call Weight:** ref_time=909,174,496, proof_size=8,397
-- **Total Weight:** ref_time=7,284,170,687, proof_size=352,421
-- **Weight Consumed:** ref_time=6,374,996,191 (87.5% of total), proof_size=344,024
+- **Total Weight:** ref_time=7,283,554,837, proof_size=352,211
+- **Weight Consumed:** ref_time=6,374,380,341 (87.5% of total), proof_size=343,814
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 40,979    | 12         | 3414.9       | 2,048,964,340 | 124,535    | 32.1%         | 36.2%           |
-| get_storage_or_zero  | 19,033    | 14         | 1359.5       | 951,684,230   | 144,046    | 14.9%         | 41.9%           |
-| hash_keccak_256      | 4,475     | 18         | 248.6        | 223,747,137   | 0          | 3.5%          | 0.0%            |
+| set_storage_or_clear | 40,977    | 12         | 3414.8       | 2,048,964,340 | 124,535    | 32.1%         | 36.2%           |
+| get_storage_or_zero  | 19,035    | 14         | 1359.6       | 951,684,230   | 144,046    | 14.9%         | 41.9%           |
+| hash_keccak_256      | 4,476     | 18         | 248.7        | 223,747,137   | 0          | 3.5%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.5%          | 0.0%            |
 | call_data_load       | 20        | 3          | 6.7          | 1,014,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 3         | 4          | 0.8          | 174,080       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 3,117,157,854 | 75,443     | 48.9%         | 21.9%           |
+| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 4         | 4          | 1.0          | 174,080       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 3,116,542,004 | 75,233     | 48.9%         | 21.9%           |
 
 
 ### dotns_rust - release
@@ -3637,24 +3638,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - renew
 
-- **Total Gas Used:** 595,065
+- **Total Gas Used:** 595,050
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=3,957,424,341, proof_size=125,092
-- **Weight Consumed:** ref_time=3,047,830,773 (77.0% of total), proof_size=116,599
+- **Total Weight:** ref_time=3,956,674,131, proof_size=124,882
+- **Weight Consumed:** ref_time=3,047,080,563 (77.0% of total), proof_size=116,389
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | get_storage_or_zero  | 4,079     | 3          | 1359.7       | 203,932,335   | 30,867     | 6.7%          | 26.5%           |
 | set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361   | 10,289     | 5.6%          | 8.8%            |
-| hash_keccak_256      | 1,238     | 5          | 247.6        | 61,898,339    | 0          | 2.0%          | 0.0%            |
+| hash_keccak_256      | 1,237     | 5          | 247.4        | 61,898,339    | 0          | 2.0%          | 0.0%            |
 | deposit_event        | 781       | 1          | 781.0        | 39,075,136    | 0          | 1.3%          | 0.0%            |
 | call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 4         | 4          | 1.0          | 173,624       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,570,533,780 | 75,443     | 84.3%         | 64.7%           |
+| call_data_copy       | 3         | 4          | 0.8          | 173,624       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,569,783,570 | 75,233     | 84.3%         | 64.6%           |
 
 
 ### dotns_rust - renew
@@ -3710,14 +3711,14 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - setAddress
 
-- **Total Gas Used:** 595,953
+- **Total Gas Used:** 595,938
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=4,001,847,698, proof_size=145,670
-- **Weight Consumed:** ref_time=3,092,254,130 (77.3% of total), proof_size=137,177
+- **Total Weight:** ref_time=4,001,097,488, proof_size=145,460
+- **Weight Consumed:** ref_time=3,091,503,920 (77.3% of total), proof_size=136,967
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 6,799     | 5          | 1359.8       | 339,887,225   | 51,445     | 11.0%         | 37.5%           |
+| get_storage_or_zero  | 6,798     | 5          | 1359.6       | 339,887,225   | 51,445     | 11.0%         | 37.6%           |
 | set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361   | 10,289     | 5.5%          | 7.5%            |
 | hash_keccak_256      | 1,238     | 5          | 247.6        | 61,894,808    | 0          | 2.0%          | 0.0%            |
 | deposit_event        | 950       | 1          | 950.0        | 47,501,920    | 0          | 1.5%          | 0.0%            |
@@ -3726,8 +3727,8 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 3         | 4          | 0.8          | 173,396       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,470,533,222 | 75,443     | 79.9%         | 55.0%           |
+| call_data_copy       | 4         | 4          | 1.0          | 173,396       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,469,783,012 | 75,233     | 79.9%         | 54.9%           |
 
 
 ### dotns_rust - setAddress
@@ -3783,24 +3784,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - setMetadata
 
-- **Total Gas Used:** 645,443
+- **Total Gas Used:** 645,428
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=3,836,328,306, proof_size=125,060
-- **Weight Consumed:** ref_time=2,926,734,738 (76.3% of total), proof_size=116,567
+- **Total Weight:** ref_time=3,835,578,096, proof_size=124,850
+- **Weight Consumed:** ref_time=2,925,984,528 (76.3% of total), proof_size=116,357
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | get_storage_or_zero  | 4,079     | 3          | 1359.7       | 203,932,335   | 30,867     | 7.0%          | 26.5%           |
 | set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625   | 10,257     | 5.8%          | 8.8%            |
-| hash_keccak_256      | 1,237     | 5          | 247.4        | 61,894,808    | 0          | 2.1%          | 0.0%            |
+| hash_keccak_256      | 1,238     | 5          | 247.6        | 61,894,808    | 0          | 2.1%          | 0.0%            |
 | deposit_event        | 781       | 1          | 781.0        | 39,075,136    | 0          | 1.3%          | 0.0%            |
-| call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 26        | 4          | 6.5          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 3         | 4          | 0.8          | 173,396       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,449,408,240 | 75,443     | 83.7%         | 64.7%           |
+| call_data_copy       | 4         | 4          | 1.0          | 173,396       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,448,658,030 | 75,233     | 83.7%         | 64.7%           |
 
 
 ### dotns_rust - setMetadata
@@ -3856,24 +3857,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - setSubdomainOwner
 
-- **Total Gas Used:** 925,234
+- **Total Gas Used:** 925,153
 - **Base Call Weight:** ref_time=910,863,880, proof_size=8,784
-- **Total Weight:** ref_time=10,765,900,382, proof_size=372,418
-- **Weight Consumed:** ref_time=9,855,036,502 (91.5% of total), proof_size=363,634
+- **Total Weight:** ref_time=10,761,858,352, proof_size=372,208
+- **Weight Consumed:** ref_time=9,850,994,472 (91.5% of total), proof_size=363,424
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 30,567    | 9          | 3396.3       | 1,528,428,225 | 92,796     | 15.5%         | 25.5%           |
-| get_storage_or_zero  | 25,829    | 19         | 1359.4       | 1,291,422,271 | 195,395    | 13.1%         | 53.7%           |
-| hash_keccak_256      | 7,946     | 32         | 248.3        | 397,421,942   | 0          | 4.0%          | 0.0%            |
+| set_storage_or_clear | 30,568    | 9          | 3396.4       | 1,528,428,225 | 92,796     | 15.5%         | 25.5%           |
+| get_storage_or_zero  | 25,831    | 19         | 1359.5       | 1,291,422,271 | 195,395    | 13.1%         | 53.8%           |
+| hash_keccak_256      | 7,948     | 32         | 248.4        | 397,421,942   | 0          | 4.0%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.3%          | 0.0%            |
-| call_data_load       | 42        | 6          | 7.0          | 2,028,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 41        | 6          | 6.8          | 2,028,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 9         | 9          | 1.0          | 390,996       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 8         | 9          | 0.9          | 390,996       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 6,603,090,518 | 75,443     | 67.0%         | 20.7%           |
+| **Unattributed**     | -         | -          | -            | 6,599,048,488 | 75,233     | 67.0%         | 20.7%           |
 
 
 ### dotns_rust - setSubdomainOwner
@@ -3929,24 +3930,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### DotNS_pvm - transfer
 
-- **Total Gas Used:** 653,968
+- **Total Gas Used:** 653,953
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=6,902,579,684, proof_size=361,871
-- **Weight Consumed:** ref_time=5,992,986,116 (86.8% of total), proof_size=353,378
+- **Total Weight:** ref_time=6,901,829,474, proof_size=361,661
+- **Weight Consumed:** ref_time=5,992,235,906 (86.8% of total), proof_size=353,168
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 30,601    | 9          | 3400.1       | 1,530,000,953 | 92,893     | 25.5%         | 26.3%           |
 | get_storage_or_zero  | 24,467    | 18         | 1359.3       | 1,223,345,370 | 185,042    | 20.4%         | 52.4%           |
-| hash_keccak_256      | 6,220     | 25         | 248.8        | 310,829,944   | 0          | 5.2%          | 0.0%            |
+| hash_keccak_256      | 6,217     | 25         | 248.7        | 310,829,944   | 0          | 5.2%          | 0.0%            |
 | deposit_event        | 612       | 1          | 612.0        | 30,648,352    | 0          | 0.5%          | 0.0%            |
 | call_data_load       | 25        | 4          | 6.3          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 4          | 0.5          | 173,396       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,895,029,903 | 75,443     | 48.3%         | 21.3%           |
+| call_data_copy       | 4         | 4          | 1.0          | 173,396       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,894,279,693 | 75,233     | 48.3%         | 21.3%           |
 
 
 ### dotns_rust - transfer
@@ -4002,24 +4003,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Escrow_pvm - create_simple
 
-- **Total Gas Used:** 1,057,814
+- **Total Gas Used:** 1,057,813
 - **Base Call Weight:** ref_time=909,698,336, proof_size=8,517
-- **Total Weight:** ref_time=5,174,871,266, proof_size=361,148
-- **Weight Consumed:** ref_time=4,265,172,930 (82.4% of total), proof_size=352,631
+- **Total Weight:** ref_time=5,174,859,695, proof_size=361,141
+- **Weight Consumed:** ref_time=4,265,161,359 (82.4% of total), proof_size=352,624
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 473,345   | 15         | 31556.3      | 2,547,342,167 | 154,564    | 59.7%         | 43.8%           |
-| get_storage_or_zero  | 21,743    | 16         | 1358.9       | 1,087,042,384 | 164,240    | 25.5%         | 46.6%           |
+| set_storage_or_clear | 473,346   | 15         | 31556.4      | 2,547,342,167 | 154,564    | 59.7%         | 43.8%           |
+| get_storage_or_zero  | 21,741    | 16         | 1358.8       | 1,087,042,384 | 164,240    | 25.5%         | 46.6%           |
 | hash_keccak_256      | 1,241     | 5          | 248.2        | 62,064,296    | 0          | 1.5%          | 0.0%            |
 | deposit_event        | 444       | 1          | 444.0        | 22,221,568    | 0          | 0.5%          | 0.0%            |
-| call_data_load       | 32        | 5          | 6.4          | 1,690,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 33        | 5          | 6.6          | 1,690,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 20        | 3          | 6.7          | 1,008,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 541,367,981   | 33,827     | 12.7%         | 9.6%            |
+| **Unattributed**     | -         | -          | -            | 541,356,410   | 33,820     | 12.7%         | 9.6%            |
 
 
 ### escrow_rust - create_simple
@@ -4079,22 +4080,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 899,365
 - **Base Call Weight:** ref_time=909,698,336, proof_size=8,517
-- **Total Weight:** ref_time=5,172,460,778, proof_size=361,275
-- **Weight Consumed:** ref_time=4,262,762,442 (82.4% of total), proof_size=352,758
+- **Total Weight:** ref_time=5,172,449,207, proof_size=361,268
+- **Weight Consumed:** ref_time=4,262,750,871 (82.4% of total), proof_size=352,751
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 314,916   | 15         | 20994.4      | 2,545,807,647 | 154,563    | 59.7%         | 43.8%           |
-| get_storage_or_zero  | 21,743    | 16         | 1358.9       | 1,087,241,296 | 164,368    | 25.5%         | 46.6%           |
-| hash_keccak_256      | 1,242     | 5          | 248.4        | 62,064,296    | 0          | 1.5%          | 0.0%            |
+| set_storage_or_clear | 314,915   | 15         | 20994.3      | 2,545,807,647 | 154,563    | 59.7%         | 43.8%           |
+| get_storage_or_zero  | 21,746    | 16         | 1359.1       | 1,087,241,296 | 164,368    | 25.5%         | 46.6%           |
+| hash_keccak_256      | 1,240     | 5          | 248.0        | 62,064,296    | 0          | 1.5%          | 0.0%            |
 | deposit_event        | 444       | 1          | 444.0        | 22,221,568    | 0          | 0.5%          | 0.0%            |
-| call_data_load       | 32        | 5          | 6.4          | 1,690,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 33        | 5          | 6.6          | 1,690,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 20        | 3          | 6.7          | 1,008,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 540,293,101   | 33,827     | 12.7%         | 9.6%            |
+| **Unattributed**     | -         | -          | -            | 540,281,530   | 33,820     | 12.7%         | 9.6%            |
 
 
 ### escrow_rust - create_with_arbiter
@@ -4154,22 +4155,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 846,536
 - **Base Call Weight:** ref_time=909,698,336, proof_size=8,517
-- **Total Weight:** ref_time=5,171,000,242, proof_size=361,274
-- **Weight Consumed:** ref_time=4,261,301,906 (82.4% of total), proof_size=352,757
+- **Total Weight:** ref_time=5,170,988,671, proof_size=361,267
+- **Weight Consumed:** ref_time=4,261,290,335 (82.4% of total), proof_size=352,750
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 262,084   | 15         | 17472.3      | 2,544,247,655 | 154,498    | 59.7%         | 43.8%           |
-| get_storage_or_zero  | 21,747    | 16         | 1359.2       | 1,087,340,752 | 164,432    | 25.5%         | 46.6%           |
-| hash_keccak_256      | 1,240     | 5          | 248.0        | 62,064,296    | 0          | 1.5%          | 0.0%            |
-| deposit_event        | 444       | 1          | 444.0        | 22,221,568    | 0          | 0.5%          | 0.0%            |
-| call_data_load       | 32        | 5          | 6.4          | 1,690,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 20        | 3          | 6.7          | 1,008,000     | 0          | 0.0%          | 0.0%            |
+| set_storage_or_clear | 262,083   | 15         | 17472.2      | 2,544,247,655 | 154,498    | 59.7%         | 43.8%           |
+| get_storage_or_zero  | 21,748    | 16         | 1359.3       | 1,087,340,752 | 164,432    | 25.5%         | 46.6%           |
+| hash_keccak_256      | 1,241     | 5          | 248.2        | 62,064,296    | 0          | 1.5%          | 0.0%            |
+| deposit_event        | 445       | 1          | 445.0        | 22,221,568    | 0          | 0.5%          | 0.0%            |
+| call_data_load       | 33        | 5          | 6.6          | 1,690,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 19        | 3          | 6.3          | 1,008,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 540,293,101   | 33,827     | 12.7%         | 9.6%            |
+| **Unattributed**     | -         | -          | -            | 540,281,530   | 33,820     | 12.7%         | 9.6%            |
 
 
 ### escrow_rust - create_with_expiry
@@ -4229,22 +4230,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 846,500
 - **Base Call Weight:** ref_time=909,698,336, proof_size=8,517
-- **Total Weight:** ref_time=5,169,208,522, proof_size=361,209
-- **Weight Consumed:** ref_time=4,259,510,186 (82.4% of total), proof_size=352,692
+- **Total Weight:** ref_time=5,169,196,951, proof_size=361,202
+- **Weight Consumed:** ref_time=4,259,498,615 (82.4% of total), proof_size=352,685
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 262,053   | 15         | 17470.2      | 2,542,674,927 | 154,401    | 59.7%         | 43.8%           |
-| get_storage_or_zero  | 21,746    | 16         | 1359.1       | 1,087,390,480 | 164,464    | 25.5%         | 46.6%           |
-| hash_keccak_256      | 1,241     | 5          | 248.2        | 62,064,296    | 0          | 1.5%          | 0.0%            |
-| deposit_event        | 444       | 1          | 444.0        | 22,221,568    | 0          | 0.5%          | 0.0%            |
-| call_data_load       | 32        | 5          | 6.4          | 1,690,000     | 0          | 0.0%          | 0.0%            |
+| set_storage_or_clear | 262,052   | 15         | 17470.1      | 2,542,674,927 | 154,401    | 59.7%         | 43.8%           |
+| get_storage_or_zero  | 21,747    | 16         | 1359.2       | 1,087,390,480 | 164,464    | 25.5%         | 46.6%           |
+| hash_keccak_256      | 1,242     | 5          | 248.4        | 62,064,296    | 0          | 1.5%          | 0.0%            |
+| deposit_event        | 445       | 1          | 445.0        | 22,221,568    | 0          | 0.5%          | 0.0%            |
+| call_data_load       | 33        | 5          | 6.6          | 1,690,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 20        | 3          | 6.7          | 1,008,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 19        | 3          | 6.3          | 1,008,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 540,024,381   | 33,827     | 12.7%         | 9.6%            |
+| **Unattributed**     | -         | -          | -            | 540,012,810   | 33,820     | 12.7%         | 9.6%            |
 
 
 ### escrow_rust - create_with_releaseTime
@@ -4301,20 +4302,20 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Escrow_pvm - deploy
 
-- **Total Gas Used:** 91,470,163
-- **Base Call Weight:** ref_time=2,055,000,106, proof_size=6,934
-- **Total Weight:** ref_time=2,486,343,854, proof_size=37,705
-- **Weight Consumed:** ref_time=431,343,748 (17.3% of total), proof_size=30,771
+- **Total Gas Used:** 91,454,330
+- **Base Call Weight:** ref_time=2,054,887,357, proof_size=6,934
+- **Total Weight:** ref_time=2,485,693,665, proof_size=37,705
+- **Weight Consumed:** ref_time=430,806,308 (17.3% of total), proof_size=30,771
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 112,372   | 2          | 56186.0      | 338,585,250 | 20,514     | 78.5%         | 66.7%           |
-| get_storage_or_zero  | 1,358     | 1          | 1358.0       | 67,927,717  | 10,257     | 15.7%         | 33.3%           |
+| set_storage_or_clear | 112,372   | 2          | 56186.0      | 338,585,250 | 20,514     | 78.6%         | 66.7%           |
+| get_storage_or_zero  | 1,358     | 1          | 1358.0       | 67,927,717  | 10,257     | 15.8%         | 33.3%           |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 23,586,027  | 0          | 5.5%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 23,048,587  | 0          | 5.4%          | 0.0%            |
 
 
 ### escrow_rust - deploy
@@ -4368,25 +4369,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 434,299
 - **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,879,155,364, proof_size=191,281
-- **Weight Consumed:** ref_time=1,970,819,012 (68.5% of total), proof_size=183,076
+- **Total Weight:** ref_time=2,879,143,793, proof_size=191,274
+- **Weight Consumed:** ref_time=1,970,807,441 (68.5% of total), proof_size=183,069
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 13,592    | 10         | 1359.2       | 679,674,994 | 102,826    | 34.5%         | 56.2%           |
+| get_storage_or_zero  | 13,595    | 10         | 1359.5       | 679,674,994 | 102,826    | 34.5%         | 56.2%           |
 | set_storage_or_clear | 66,344    | 4          | 16586.0      | 677,208,708 | 41,124     | 34.4%         | 22.5%           |
 | call_evm             | 8,457     | 1          | 8457.0       | 422,847,699 | 5,299      | 21.5%         | 2.9%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 0.6%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.3%          | 0.0%            |
-| ref_time_left        | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
+| ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 12        | 2          | 6.0          | 676,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 14        | 2          | 7.0          | 676,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000     | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 7         | 1          | 7.0          | 342,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 167,750,357 | 33,827     | 8.5%          | 18.5%           |
+| **Unattributed**     | -         | -          | -            | 167,738,786 | 33,820     | 8.5%          | 18.5%           |
 
 
 ### escrow_rust - refund
@@ -4444,27 +4445,27 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Escrow_pvm - release
 
-- **Total Gas Used:** 434,348
+- **Total Gas Used:** 434,347
 - **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,881,573,844, proof_size=191,281
-- **Weight Consumed:** ref_time=1,973,237,492 (68.5% of total), proof_size=183,076
+- **Total Weight:** ref_time=2,881,562,273, proof_size=191,274
+- **Weight Consumed:** ref_time=1,973,225,921 (68.5% of total), proof_size=183,069
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 13,593    | 10         | 1359.3       | 679,674,994 | 102,826    | 34.4%         | 56.2%           |
+| get_storage_or_zero  | 13,595    | 10         | 1359.5       | 679,674,994 | 102,826    | 34.4%         | 56.2%           |
 | set_storage_or_clear | 66,344    | 4          | 16586.0      | 677,208,708 | 41,124     | 34.3%         | 22.5%           |
 | call_evm             | 8,457     | 1          | 8457.0       | 422,847,699 | 5,299      | 21.4%         | 2.9%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 0.6%          | 0.0%            |
-| deposit_event        | 108       | 1          | 108.0        | 5,368,000   | 0          | 0.3%          | 0.0%            |
+| deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.3%          | 0.0%            |
 | ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 13        | 2          | 6.5          | 676,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 14        | 2          | 7.0          | 676,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
-| now                  | 8         | 1          | 8.0          | 356,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 7         | 1          | 7.0          | 342,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 170,168,837 | 33,827     | 8.6%          | 18.5%           |
+| **Unattributed**     | -         | -          | -            | 170,157,266 | 33,820     | 8.6%          | 18.5%           |
 
 
 ### escrow_rust - release
@@ -4522,28 +4523,28 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - approve
 
-- **Total Gas Used:** 474,410
+- **Total Gas Used:** 474,416
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=1,784,706,397, proof_size=167,342
-- **Weight Consumed:** ref_time=875,964,069 (49.1% of total), proof_size=159,044
+- **Total Weight:** ref_time=1,784,982,448, proof_size=167,509
+- **Weight Consumed:** ref_time=876,240,120 (49.1% of total), proof_size=159,211
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| delegate_call_evm    | 5,703     | 1          | 5703.0       | 285,205,786 | 108,232    | 32.6%         | 68.1%           |
-| get_storage_or_zero  | 4,080     | 3          | 1360.0       | 203,932,335 | 30,867     | 23.3%         | 19.4%           |
+| delegate_call_evm    | 5,703     | 1          | 5703.0       | 285,189,256 | 108,222    | 32.5%         | 68.0%           |
+| get_storage_or_zero  | 4,078     | 3          | 1359.3       | 203,932,335 | 30,867     | 23.3%         | 19.4%           |
 | set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 19.3%         | 6.4%            |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 2.8%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.6%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
-| call_data_load       | 26        | 4          | 6.5          | 1,352,000   | 0          | 0.2%          | 0.0%            |
-| seal_return          | 23        | 2          | 11.5         | 1,113,068   | 0          | 0.1%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.2%          | 0.0%            |
+| seal_return          | 22        | 2          | 11.0         | 1,113,068   | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
 | return_data_size     | 14        | 2          | 7.0          | 684,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 12        | 2          | 6.0          | 636,000     | 0          | 0.1%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 552,464     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 48,308      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 171,167,587 | 9,688      | 19.5%         | 6.1%            |
+| **Unattributed**     | -         | -          | -            | 171,460,168 | 9,865      | 19.6%         | 6.2%            |
 
 
 ### FiatTokenProxy_evm - changeAdmin
@@ -4580,22 +4581,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - changeAdmin
 
-- **Total Gas Used:** 346,233
+- **Total Gas Used:** 346,239
 - **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
-- **Total Weight:** ref_time=1,315,849,870, proof_size=48,754
-- **Weight Consumed:** ref_time=407,539,710 (31.0% of total), proof_size=40,555
+- **Total Weight:** ref_time=1,316,142,451, proof_size=48,931
+- **Weight Consumed:** ref_time=407,832,291 (31.0% of total), proof_size=40,732
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 3,387     | 1          | 3387.0       | 169,305,361 | 10,289     | 41.5%         | 25.4%           |
-| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,954,890 | 20,578     | 33.4%         | 50.7%           |
-| deposit_event        | 445       | 1          | 445.0        | 22,221,568  | 0          | 5.5%          | 0.0%            |
+| set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361 | 10,289     | 41.5%         | 25.3%           |
+| get_storage_or_zero  | 2,720     | 2          | 1360.0       | 135,954,890 | 20,578     | 33.3%         | 50.5%           |
+| deposit_event        | 445       | 1          | 445.0        | 22,221,568  | 0          | 5.4%          | 0.0%            |
 | call_data_load       | 13        | 2          | 6.5          | 676,000     | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 77,775,693  | 9,688      | 19.1%         | 23.9%           |
+| **Unattributed**     | -         | -          | -            | 78,068,274  | 9,865      | 19.1%         | 24.2%           |
 
 
 ### FiatTokenProxy_evm - configureMinter
@@ -4632,28 +4633,28 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - configureMinter
 
-- **Total Gas Used:** 533,452
+- **Total Gas Used:** 533,457
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=2,096,768,647, proof_size=198,145
-- **Weight Consumed:** ref_time=1,188,026,319 (56.7% of total), proof_size=189,847
+- **Total Weight:** ref_time=2,097,044,698, proof_size=198,312
+- **Weight Consumed:** ref_time=1,188,302,370 (56.7% of total), proof_size=190,014
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 6,798     | 5          | 1359.6       | 339,837,497 | 51,413     | 28.6%         | 27.1%           |
+| get_storage_or_zero  | 6,797     | 5          | 1359.4       | 339,837,497 | 51,413     | 28.6%         | 27.1%           |
 | set_storage_or_clear | 112,372   | 2          | 56186.0      | 338,585,250 | 20,514     | 28.5%         | 10.8%           |
-| delegate_call_evm    | 5,704     | 1          | 5704.0       | 285,205,786 | 108,232    | 24.0%         | 57.0%           |
+| delegate_call_evm    | 5,703     | 1          | 5703.0       | 285,189,256 | 108,222    | 24.0%         | 57.0%           |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 2.1%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.2%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
 | call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,113,068   | 0          | 0.1%          | 0.0%            |
-| caller               | 17        | 2          | 8.5          | 804,000     | 0          | 0.1%          | 0.0%            |
+| caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
 | return_data_size     | 14        | 2          | 7.0          | 684,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000     | 0          | 0.1%          | 0.0%            |
-| return_data_copy     | 11        | 1          | 11.0         | 552,464     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 12        | 2          | 6.0          | 636,000     | 0          | 0.1%          | 0.0%            |
+| return_data_copy     | 12        | 1          | 12.0         | 552,464     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 48,308      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 178,032,050 | 9,688      | 15.0%         | 5.1%            |
+| **Unattributed**     | -         | -          | -            | 178,324,631 | 9,865      | 15.0%         | 5.2%            |
 
 
 ### FiatTokenProxy_evm - deploy
@@ -4690,10 +4691,10 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - deploy
 
-- **Total Gas Used:** 36,962,598
-- **Base Call Weight:** ref_time=1,666,218,673, proof_size=6,934
-- **Total Weight:** ref_time=2,115,078,350, proof_size=31,458
-- **Weight Consumed:** ref_time=448,859,677 (21.2% of total), proof_size=24,524
+- **Total Gas Used:** 37,364,682
+- **Base Call Weight:** ref_time=1,669,069,612, proof_size=6,934
+- **Total Weight:** ref_time=2,118,265,189, proof_size=31,458
+- **Weight Consumed:** ref_time=449,195,577 (21.2% of total), proof_size=24,524
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
@@ -4703,8 +4704,8 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| call_data_copy       | 1         | 2          | 0.5          | 84,760      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 44,509,469  | 0          | 9.9%          | 0.0%            |
+| call_data_copy       | 0         | 2          | 0.0          | 84,760      | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 44,845,369  | 0          | 10.0%         | 0.0%            |
 
 
 ### FiatTokenProxy_evm - initialize
@@ -4741,26 +4742,26 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - initialize
 
-- **Total Gas Used:** 1,660,564
+- **Total Gas Used:** 1,660,542
 - **Base Call Weight:** ref_time=913,797,384, proof_size=9,456
-- **Total Weight:** ref_time=4,012,399,521, proof_size=342,901
-- **Weight Consumed:** ref_time=3,098,602,137 (77.2% of total), proof_size=333,445
+- **Total Weight:** ref_time=4,011,264,792, proof_size=343,068
+- **Weight Consumed:** ref_time=3,097,467,408 (77.2% of total), proof_size=333,612
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 452,873   | 9          | 50319.2      | 1,523,646,361 | 92,345     | 49.2%         | 27.7%           |
-| get_storage_or_zero  | 16,304    | 12         | 1358.7       | 815,281,788   | 123,180    | 26.3%         | 36.9%           |
-| delegate_call_evm    | 5,704     | 1          | 5704.0       | 285,281,818   | 108,232    | 9.2%          | 32.5%           |
-| call_data_load       | 88        | 13         | 6.8          | 4,394,000     | 0          | 0.1%          | 0.0%            |
+| set_storage_or_clear | 452,872   | 9          | 50319.1      | 1,523,646,361 | 92,345     | 49.2%         | 27.7%           |
+| get_storage_or_zero  | 16,306    | 12         | 1358.8       | 815,281,788   | 123,180    | 26.3%         | 36.9%           |
+| delegate_call_evm    | 5,705     | 1          | 5705.0       | 285,265,288   | 108,222    | 9.2%          | 32.4%           |
+| call_data_load       | 90        | 13         | 6.9          | 4,394,000     | 0          | 0.1%          | 0.0%            |
 | ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,100,396     | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 14        | 2          | 7.0          | 684,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
-| return_data_copy     | 11        | 1          | 11.0         | 546,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 12        | 2          | 6.0          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 546,000       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 5         | 4          | 1.3          | 215,462       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 463,949,312   | 9,688      | 15.0%         | 2.9%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 4         | 4          | 1.0          | 215,462       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 462,831,113   | 9,865      | 14.9%         | 3.0%            |
 
 
 ### FiatTokenProxy_evm - mint
@@ -4797,28 +4798,28 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - mint
 
-- **Total Gas Used:** 496,725
+- **Total Gas Used:** 496,731
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=2,900,460,746, proof_size=259,848
-- **Weight Consumed:** ref_time=1,991,718,418 (68.7% of total), proof_size=251,550
+- **Total Weight:** ref_time=2,900,736,797, proof_size=260,015
+- **Weight Consumed:** ref_time=1,991,994,469 (68.7% of total), proof_size=251,717
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 13,592    | 10         | 1359.2       | 679,525,810 | 102,730    | 34.1%         | 40.8%           |
-| set_storage_or_clear | 112,372   | 3          | 37457.3      | 509,463,339 | 30,900     | 25.6%         | 12.3%           |
-| delegate_call_evm    | 5,704     | 1          | 5704.0       | 285,205,786 | 108,232    | 14.3%         | 43.0%           |
-| hash_keccak_256      | 1,994     | 8          | 249.3        | 99,664,448  | 0          | 5.0%          | 0.0%            |
-| deposit_event        | 551       | 2          | 275.5        | 27,589,568  | 0          | 1.4%          | 0.0%            |
+| get_storage_or_zero  | 13,591    | 10         | 1359.1       | 679,525,810 | 102,730    | 34.1%         | 40.8%           |
+| set_storage_or_clear | 112,371   | 3          | 37457.0      | 509,463,339 | 30,900     | 25.6%         | 12.3%           |
+| delegate_call_evm    | 5,703     | 1          | 5703.0       | 285,189,256 | 108,222    | 14.3%         | 43.0%           |
+| hash_keccak_256      | 1,992     | 8          | 249.0        | 99,664,448  | 0          | 5.0%          | 0.0%            |
+| deposit_event        | 552       | 2          | 276.0        | 27,589,568  | 0          | 1.4%          | 0.0%            |
 | caller               | 48        | 6          | 8.0          | 2,412,000   | 0          | 0.1%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,113,068   | 0          | 0.1%          | 0.0%            |
-| return_data_size     | 13        | 2          | 6.5          | 684,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 14        | 2          | 7.0          | 684,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 12        | 2          | 6.0          | 636,000     | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 552,464     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 48,308      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 381,006,627 | 9,688      | 19.1%         | 3.9%            |
+| **Unattributed**     | -         | -          | -            | 381,299,208 | 9,865      | 19.1%         | 3.9%            |
 
 
 ### FiatTokenProxy_evm - transfer
@@ -4855,28 +4856,28 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - transfer
 
-- **Total Gas Used:** 492,620
+- **Total Gas Used:** 492,625
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=2,695,180,697, proof_size=249,558
-- **Weight Consumed:** ref_time=1,786,438,369 (66.3% of total), proof_size=241,260
+- **Total Weight:** ref_time=2,695,456,748, proof_size=249,725
+- **Weight Consumed:** ref_time=1,786,714,420 (66.3% of total), proof_size=241,427
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 13,593    | 10         | 1359.3       | 679,625,266 | 102,794    | 38.0%         | 42.6%           |
-| set_storage_or_clear | 59,572    | 2          | 29786.0      | 338,597,986 | 20,546     | 19.0%         | 8.5%            |
-| delegate_call_evm    | 5,704     | 1          | 5704.0       | 285,205,786 | 108,232    | 16.0%         | 44.9%           |
+| get_storage_or_zero  | 13,592    | 10         | 1359.2       | 679,625,266 | 102,794    | 38.0%         | 42.6%           |
+| set_storage_or_clear | 59,571    | 2          | 29785.5      | 338,597,986 | 20,546     | 19.0%         | 8.5%            |
+| delegate_call_evm    | 5,704     | 1          | 5704.0       | 285,189,256 | 108,222    | 16.0%         | 44.8%           |
 | hash_keccak_256      | 2,242     | 9          | 249.1        | 112,122,504 | 0          | 6.3%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 0.8%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000   | 0          | 0.1%          | 0.0%            |
-| seal_return          | 22        | 2          | 11.0         | 1,113,068   | 0          | 0.1%          | 0.0%            |
-| return_data_size     | 13        | 2          | 6.5          | 684,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000     | 0          | 0.0%          | 0.0%            |
+| seal_return          | 23        | 2          | 11.5         | 1,113,068   | 0          | 0.1%          | 0.0%            |
+| return_data_size     | 14        | 2          | 7.0          | 684,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 12        | 2          | 6.0          | 636,000     | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 552,464     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 48,308      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 349,035,203 | 9,688      | 19.5%         | 4.0%            |
+| **Unattributed**     | -         | -          | -            | 349,327,784 | 9,865      | 19.6%         | 4.1%            |
 
 
 ### FiatTokenProxy_evm - transferFrom
@@ -4913,28 +4914,28 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenProxy_pvm - transferFrom
 
-- **Total Gas Used:** 516,405
+- **Total Gas Used:** 516,411
 - **Base Call Weight:** ref_time=909,161,400, proof_size=8,394
-- **Total Weight:** ref_time=3,324,446,115, proof_size=290,938
-- **Weight Consumed:** ref_time=2,415,284,715 (72.7% of total), proof_size=282,544
+- **Total Weight:** ref_time=3,324,722,166, proof_size=291,105
+- **Weight Consumed:** ref_time=2,415,560,766 (72.7% of total), proof_size=282,711
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 17,674    | 13         | 1359.5       | 883,706,785 | 133,757    | 36.6%         | 47.3%           |
+| get_storage_or_zero  | 17,673    | 13         | 1359.5       | 883,706,785 | 133,757    | 36.6%         | 47.3%           |
 | set_storage_or_clear | 10,158    | 3          | 3386.0       | 507,916,083 | 30,867     | 21.0%         | 10.9%           |
-| delegate_call_evm    | 5,704     | 1          | 5704.0       | 285,212,122 | 108,232    | 11.8%         | 38.3%           |
-| hash_keccak_256      | 3,988     | 16         | 249.3        | 199,328,896 | 0          | 8.3%          | 0.0%            |
+| delegate_call_evm    | 5,704     | 1          | 5704.0       | 285,195,592 | 108,222    | 11.8%         | 38.3%           |
+| hash_keccak_256      | 3,990     | 16         | 249.4        | 199,328,896 | 0          | 8.3%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 0.6%          | 0.0%            |
 | ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.1%          | 0.0%            |
-| caller               | 40        | 5          | 8.0          | 2,010,000   | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 33        | 5          | 6.6          | 1,690,000   | 0          | 0.1%          | 0.0%            |
+| caller               | 41        | 5          | 8.2          | 2,010,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 34        | 5          | 6.8          | 1,690,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,113,068   | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 14        | 2          | 7.0          | 684,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 13        | 2          | 6.5          | 636,000     | 0          | 0.0%          | 0.0%            |
-| return_data_copy     | 12        | 1          | 12.0         | 552,464     | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 11        | 1          | 11.0         | 552,464     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 1          | 2.0          | 51,956      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 516,123,557 | 9,688      | 21.4%         | 3.4%            |
+| call_data_copy       | 1         | 1          | 1.0          | 51,956      | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 516,416,138 | 9,865      | 21.4%         | 3.5%            |
 
 
 ### FiatTokenV2_2_evm - deploy
@@ -4971,21 +4972,21 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FiatTokenV2_2_pvm - deploy
 
-- **Total Gas Used:** 249,011,518
-- **Base Call Weight:** ref_time=3,177,947,932, proof_size=6,934
-- **Total Weight:** ref_time=3,860,106,873, proof_size=58,477
-- **Weight Consumed:** ref_time=682,158,941 (17.7% of total), proof_size=51,543
+- **Total Gas Used:** 248,988,904
+- **Base Call Weight:** ref_time=3,177,786,862, proof_size=6,934
+- **Total Weight:** ref_time=3,859,408,363, proof_size=58,477
+- **Weight Consumed:** ref_time=681,621,501 (17.7% of total), proof_size=51,543
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 63,021    | 3          | 21007.0      | 511,048,803 | 31,029     | 74.9%         | 60.2%           |
-| get_storage_or_zero  | 2,718     | 2          | 1359.0       | 135,855,434 | 20,514     | 19.9%         | 39.8%           |
+| set_storage_or_clear | 63,021    | 3          | 21007.0      | 511,048,803 | 31,029     | 75.0%         | 60.2%           |
+| get_storage_or_zero  | 2,717     | 2          | 1358.5       | 135,855,434 | 20,514     | 19.9%         | 39.8%           |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.1%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 33,607,950  | 0          | 4.9%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 33,070,510  | 0          | 4.9%          | 0.0%            |
 
 
 ### Fibonacci_evm - deploy
@@ -5012,18 +5013,18 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Fibonacci_pvm - deploy
 
-- **Total Gas Used:** 17,600,670
-- **Base Call Weight:** ref_time=1,529,477,017, proof_size=6,934
-- **Total Weight:** ref_time=1,542,673,555, proof_size=6,934
-- **Weight Consumed:** ref_time=13,196,538 (0.9% of total), proof_size=0
+- **Total Gas Used:** 17,492,145
+- **Base Call Weight:** ref_time=1,528,703,881, proof_size=6,934
+- **Total Weight:** ref_time=1,540,422,459, proof_size=6,934
+- **Weight Consumed:** ref_time=11,718,578 (0.8% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.2%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 336,000    | 0          | 2.5%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.4%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.7%          | 0.0%            |
+| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.9%          | 0.0%            |
+| call_data_size    | 7         | 1          | 7.0          | 318,000    | 0          | 2.7%          | 0.0%            |
 | call_data_copy    | 1         | 1          | 1.0          | 40,556     | 0          | 0.3%          | 0.0%            |
-| **Unattributed**  | -         | -          | -            | 11,951,784 | 0          | 90.6%         | 0.0%            |
+| **Unattributed**  | -         | -          | -            | 10,473,824 | 0          | 89.4%         | 0.0%            |
 
 
 ### fibonacci_u32_ink - deploy
@@ -5075,17 +5076,17 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Fibonacci_pvm - fib_10
 
-- **Total Gas Used:** 346,487
+- **Total Gas Used:** 346,486
 - **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
-- **Total Weight:** ref_time=1,328,554,301, proof_size=9,399
-- **Weight Consumed:** ref_time=420,244,141 (31.6% of total), proof_size=1,200
+- **Total Weight:** ref_time=1,328,474,957, proof_size=9,351
+- **Weight Consumed:** ref_time=420,164,797 (31.6% of total), proof_size=1,152
 
 | Opcode           | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | ---------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| call_data_load   | 13        | 2          | 6.5          | 676,000     | 0          | 0.2%          | 0.0%            |
+| call_data_load   | 14        | 2          | 7.0          | 676,000     | 0          | 0.2%          | 0.0%            |
 | seal_return      | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | call_data_size   | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed** | -         | -          | -            | 418,699,943 | 1,200      | 99.6%         | 100.0%          |
+| **Unattributed** | -         | -          | -            | 418,620,599 | 1,152      | 99.6%         | 100.0%          |
 
 
 ### fibonacci_u128_rust - fib_10
@@ -5207,23 +5208,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FungibleCredential_pvm - burn
 
-- **Total Gas Used:** 427,515
+- **Total Gas Used:** 427,520
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=2,079,936,790, proof_size=156,357
-- **Weight Consumed:** ref_time=1,171,194,462 (56.3% of total), proof_size=148,059
+- **Total Weight:** ref_time=2,080,193,939, proof_size=156,350
+- **Weight Consumed:** ref_time=1,171,451,611 (56.3% of total), proof_size=148,052
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 8,155     | 6          | 1359.2       | 407,864,670 | 61,734     | 34.8%         | 41.7%           |
-| set_storage_or_clear | 6,773     | 2          | 3386.5       | 338,610,722 | 20,578     | 28.9%         | 13.9%           |
-| hash_keccak_256      | 1,745     | 7          | 249.3        | 87,206,392  | 0          | 7.4%          | 0.0%            |
+| get_storage_or_zero  | 8,158     | 6          | 1359.7       | 407,864,670 | 61,734     | 34.8%         | 41.7%           |
+| set_storage_or_clear | 6,772     | 2          | 3386.0       | 338,610,722 | 20,578     | 28.9%         | 13.9%           |
+| hash_keccak_256      | 1,743     | 7          | 249.0        | 87,206,392  | 0          | 7.4%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.2%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000   | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 319,891,696 | 65,747     | 27.3%         | 44.4%           |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 320,148,845 | 65,740     | 27.3%         | 44.4%           |
 
 
 ### fungible_credential_rust - burn
@@ -5279,25 +5280,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FungibleCredential_pvm - createClass_nontransferable
 
-- **Total Gas Used:** 981,230
+- **Total Gas Used:** 981,215
 - **Base Call Weight:** ref_time=910,444,808, proof_size=8,688
-- **Total Weight:** ref_time=3,565,665,095, proof_size=249,190
-- **Weight Consumed:** ref_time=2,655,220,287 (74.5% of total), proof_size=240,502
+- **Total Weight:** ref_time=3,564,914,544, proof_size=249,183
+- **Weight Consumed:** ref_time=2,654,469,736 (74.5% of total), proof_size=240,495
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 294,538   | 9          | 32726.4      | 1,526,830,025 | 92,635     | 57.5%         | 38.5%           |
-| get_storage_or_zero  | 10,871    | 8          | 1358.9       | 543,521,192   | 82,120     | 20.5%         | 34.1%           |
+| set_storage_or_clear | 294,535   | 9          | 32726.1      | 1,526,830,025 | 92,635     | 57.5%         | 38.5%           |
+| get_storage_or_zero  | 10,872    | 8          | 1359.0       | 543,521,192   | 82,120     | 20.5%         | 34.1%           |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 1.2%          | 0.0%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056    | 0          | 0.5%          | 0.0%            |
 | call_data_load       | 103       | 15         | 6.9          | 5,070,000     | 0          | 0.2%          | 0.0%            |
-| caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
+| caller               | 17        | 2          | 8.5          | 804,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 12        | 1          | 12.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 2          | 1.0          | 84,076        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 534,238,052   | 65,747     | 20.1%         | 27.3%           |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 1         | 2          | 0.5          | 84,076        | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 533,487,501   | 65,740     | 20.1%         | 27.3%           |
 
 
 ### fungible_credential_rust - createClass_nontransferable
@@ -5354,25 +5355,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FungibleCredential_pvm - createClass_transferable
 
-- **Total Gas Used:** 928,431
+- **Total Gas Used:** 928,416
 - **Base Call Weight:** ref_time=910,444,808, proof_size=8,688
-- **Total Weight:** ref_time=3,565,727,787, proof_size=249,254
-- **Weight Consumed:** ref_time=2,655,282,979 (74.5% of total), proof_size=240,566
+- **Total Weight:** ref_time=3,564,977,236, proof_size=249,247
+- **Weight Consumed:** ref_time=2,654,532,428 (74.5% of total), proof_size=240,559
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 241,737   | 9          | 26859.7      | 1,526,842,761 | 92,667     | 57.5%         | 38.5%           |
-| get_storage_or_zero  | 10,871    | 8          | 1358.9       | 543,570,920   | 82,152     | 20.5%         | 34.1%           |
+| set_storage_or_clear | 241,735   | 9          | 26859.4      | 1,526,842,761 | 92,667     | 57.5%         | 38.5%           |
+| get_storage_or_zero  | 10,873    | 8          | 1359.1       | 543,570,920   | 82,152     | 20.5%         | 34.2%           |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 1.2%          | 0.0%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056    | 0          | 0.5%          | 0.0%            |
-| call_data_load       | 104       | 15         | 6.9          | 5,070,000     | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 102       | 15         | 6.8          | 5,070,000     | 0          | 0.2%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 2          | 1.0          | 84,304        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 534,238,052   | 65,747     | 20.1%         | 27.3%           |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 1         | 2          | 0.5          | 84,304        | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 533,487,501   | 65,740     | 20.1%         | 27.3%           |
 
 
 ### fungible_credential_rust - createClass_transferable
@@ -5428,20 +5429,20 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FungibleCredential_pvm - deploy
 
-- **Total Gas Used:** 163,567,378
-- **Base Call Weight:** ref_time=2,569,135,546, proof_size=6,934
-- **Total Weight:** ref_time=2,827,107,048, proof_size=27,448
-- **Weight Consumed:** ref_time=257,971,502 (9.1% of total), proof_size=20,514
+- **Total Gas Used:** 163,551,545
+- **Base Call Weight:** ref_time=2,569,022,797, proof_size=6,934
+- **Total Weight:** ref_time=2,826,456,859, proof_size=27,448
+- **Weight Consumed:** ref_time=257,434,062 (9.1% of total), proof_size=20,514
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 56,185    | 1          | 56185.0      | 169,292,625 | 10,257     | 65.6%         | 50.0%           |
-| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 26.3%         | 50.0%           |
+| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 65.8%         | 50.0%           |
+| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 26.4%         | 50.0%           |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.2%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 19,506,406  | 0          | 7.6%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 18,968,966  | 0          | 7.4%          | 0.0%            |
 
 
 ### fungible_credential_rust - deploy
@@ -5495,21 +5496,21 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 954,764
 - **Base Call Weight:** ref_time=909,174,496, proof_size=8,397
-- **Total Weight:** ref_time=4,022,408,650, proof_size=310,151
-- **Weight Consumed:** ref_time=3,113,234,154 (77.4% of total), proof_size=301,754
+- **Total Weight:** ref_time=4,022,397,079, proof_size=310,144
+- **Weight Consumed:** ref_time=3,113,222,583 (77.4% of total), proof_size=301,747
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 449,486   | 8          | 56185.8      | 1,354,341,000 | 82,056     | 43.5%         | 27.2%           |
-| get_storage_or_zero  | 20,378    | 15         | 1358.5       | 1,019,064,939 | 153,951    | 32.7%         | 51.0%           |
-| hash_keccak_256      | 3,732     | 15         | 248.8        | 186,644,856   | 0          | 6.0%          | 0.0%            |
+| set_storage_or_clear | 449,487   | 8          | 56185.9      | 1,354,341,000 | 82,056     | 43.5%         | 27.2%           |
+| get_storage_or_zero  | 20,385    | 15         | 1359.0       | 1,019,064,939 | 153,951    | 32.7%         | 51.0%           |
+| hash_keccak_256      | 3,733     | 15         | 248.9        | 186,644,856   | 0          | 6.0%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.4%          | 0.0%            |
 | call_data_load       | 28        | 4          | 7.0          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 536,430,377   | 65,747     | 17.2%         | 21.8%           |
+| **Unattributed**     | -         | -          | -            | 536,418,806   | 65,740     | 17.2%         | 21.8%           |
 
 
 ### fungible_credential_rust - issue
@@ -5567,21 +5568,21 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 494,932
 - **Base Call Weight:** ref_time=909,174,496, proof_size=8,397
-- **Total Weight:** ref_time=2,150,788,582, proof_size=166,745
-- **Weight Consumed:** ref_time=1,241,614,086 (57.7% of total), proof_size=158,348
+- **Total Weight:** ref_time=2,150,777,011, proof_size=166,738
+- **Weight Consumed:** ref_time=1,241,602,515 (57.7% of total), proof_size=158,341
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 9,516     | 7          | 1359.4       | 475,842,115 | 72,023     | 38.3%         | 45.5%           |
-| set_storage_or_clear | 6,772     | 2          | 3386.0       | 338,610,722 | 20,578     | 27.3%         | 13.0%           |
-| hash_keccak_256      | 1,745     | 7          | 249.3        | 87,206,392  | 0          | 7.0%          | 0.0%            |
-| deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.1%          | 0.0%            |
+| get_storage_or_zero  | 9,517     | 7          | 1359.6       | 475,842,115 | 72,023     | 38.3%         | 45.5%           |
+| set_storage_or_clear | 6,773     | 2          | 3386.5       | 338,610,722 | 20,578     | 27.3%         | 13.0%           |
+| hash_keccak_256      | 1,744     | 7          | 249.1        | 87,206,392  | 0          | 7.0%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,794,784  | 0          | 1.1%          | 0.0%            |
 | call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 323,201,875 | 65,747     | 26.0%         | 41.5%           |
+| **Unattributed**     | -         | -          | -            | 323,190,304 | 65,740     | 26.0%         | 41.5%           |
 
 
 ### fungible_credential_rust - issue_more
@@ -5637,23 +5638,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FungibleCredential_pvm - revoke
 
-- **Total Gas Used:** 493,515
+- **Total Gas Used:** 493,520
 - **Base Call Weight:** ref_time=909,174,496, proof_size=8,397
-- **Total Weight:** ref_time=2,079,940,756, proof_size=156,456
-- **Weight Consumed:** ref_time=1,170,766,260 (56.3% of total), proof_size=148,059
+- **Total Weight:** ref_time=2,080,197,905, proof_size=156,449
+- **Weight Consumed:** ref_time=1,171,023,409 (56.3% of total), proof_size=148,052
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
 | get_storage_or_zero  | 8,157     | 6          | 1359.5       | 407,864,670 | 61,734     | 34.8%         | 41.7%           |
 | set_storage_or_clear | 6,772     | 2          | 3386.0       | 338,610,722 | 20,578     | 28.9%         | 13.9%           |
-| hash_keccak_256      | 1,743     | 7          | 249.0        | 87,206,392  | 0          | 7.4%          | 0.0%            |
+| hash_keccak_256      | 1,744     | 7          | 249.1        | 87,206,392  | 0          | 7.4%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.2%          | 0.0%            |
-| call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 320,331,494 | 65,747     | 27.4%         | 44.4%           |
+| **Unattributed**     | -         | -          | -            | 320,588,643 | 65,740     | 27.4%         | 44.4%           |
 
 
 ### fungible_credential_rust - revoke
@@ -5709,23 +5710,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### FungibleCredential_pvm - transfer
 
-- **Total Gas Used:** 853,740
+- **Total Gas Used:** 853,739
 - **Base Call Weight:** ref_time=909,161,400, proof_size=8,394
-- **Total Weight:** ref_time=4,351,170,687, proof_size=330,886
-- **Weight Consumed:** ref_time=3,442,009,287 (79.1% of total), proof_size=322,492
+- **Total Weight:** ref_time=4,351,159,116, proof_size=330,879
+- **Weight Consumed:** ref_time=3,441,997,716 (79.1% of total), proof_size=322,485
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 343,886   | 8          | 42985.8      | 1,354,366,472 | 82,120     | 39.3%         | 25.5%           |
-| get_storage_or_zero  | 23,105    | 17         | 1359.1       | 1,155,169,013 | 174,625    | 33.6%         | 54.1%           |
-| hash_keccak_256      | 5,226     | 21         | 248.9        | 261,393,192   | 0          | 7.6%          | 0.0%            |
+| set_storage_or_clear | 343,889   | 8          | 42986.1      | 1,354,366,472 | 82,120     | 39.3%         | 25.5%           |
+| get_storage_or_zero  | 23,101    | 17         | 1358.9       | 1,155,169,013 | 174,625    | 33.6%         | 54.1%           |
+| hash_keccak_256      | 5,228     | 21         | 249.0        | 261,393,192   | 0          | 7.6%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.4%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 28        | 4          | 7.0          | 1,352,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 653,121,628   | 65,747     | 19.0%         | 20.4%           |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 653,110,057   | 65,740     | 19.0%         | 20.4%           |
 
 
 ### fungible_credential_rust - transfer
@@ -5772,18 +5773,18 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### KeyRegistry_pvm - deploy
 
-- **Total Gas Used:** 102,693,972
-- **Base Call Weight:** ref_time=2,135,792,818, proof_size=6,934
-- **Total Weight:** ref_time=2,148,787,816, proof_size=6,934
-- **Weight Consumed:** ref_time=12,994,998 (0.6% of total), proof_size=0
+- **Total Gas Used:** 102,761,772
+- **Base Call Weight:** ref_time=2,136,276,028, proof_size=6,934
+- **Total Weight:** ref_time=2,148,800,766, proof_size=6,934
+- **Weight Consumed:** ref_time=12,524,738 (0.6% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.2%          | 0.0%            |
-| value_transferred | 6         | 1          | 6.0          | 336,000    | 0          | 2.6%          | 0.0%            |
-| call_data_size    | 7         | 1          | 7.0          | 318,000    | 0          | 2.4%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.4%          | 0.0%            |
+| value_transferred | 6         | 1          | 6.0          | 336,000    | 0          | 2.7%          | 0.0%            |
+| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.5%          | 0.0%            |
 | call_data_copy    | 1         | 1          | 1.0          | 40,556     | 0          | 0.3%          | 0.0%            |
-| **Unattributed**  | -         | -          | -            | 11,750,244 | 0          | 90.4%         | 0.0%            |
+| **Unattributed**  | -         | -          | -            | 11,279,984 | 0          | 90.1%         | 0.0%            |
 
 
 ### key_registry_rust - deploy
@@ -5833,23 +5834,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### KeyRegistry_pvm - fetchPrekeyBundle
 
-- **Total Gas Used:** 440,316
+- **Total Gas Used:** 440,304
 - **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
-- **Total Weight:** ref_time=3,380,005,443, proof_size=221,892
-- **Weight Consumed:** ref_time=2,471,695,283 (73.1% of total), proof_size=213,693
+- **Total Weight:** ref_time=3,379,383,233, proof_size=221,922
+- **Weight Consumed:** ref_time=2,471,073,073 (73.1% of total), proof_size=213,723
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 19,030    | 14         | 1359.3       | 951,535,046 | 143,950    | 38.5%         | 67.4%           |
+| get_storage_or_zero  | 19,031    | 14         | 1359.4       | 951,535,046 | 143,950    | 38.5%         | 67.4%           |
 | set_storage_or_clear | 112,372   | 3          | 37457.3      | 509,463,339 | 30,900     | 20.6%         | 14.5%           |
 | hash_keccak_256      | 2,488     | 10         | 248.8        | 124,354,576 | 0          | 5.0%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.2%          | 0.0%            |
 | call_data_load       | 13        | 2          | 6.5          | 676,000     | 0          | 0.0%          | 0.0%            |
-| seal_return          | 12        | 1          | 12.0         | 626,230     | 0          | 0.0%          | 0.0%            |
+| seal_return          | 13        | 1          | 13.0         | 626,230     | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 878,616,092 | 38,843     | 35.5%         | 18.2%           |
+| **Unattributed**     | -         | -          | -            | 877,993,882 | 38,873     | 35.5%         | 18.2%           |
 
 
 ### key_registry_rust - fetchPrekeyBundle
@@ -5905,25 +5906,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### KeyRegistry_pvm - registerIdentity
 
-- **Total Gas Used:** 1,259,476
+- **Total Gas Used:** 1,259,466
 - **Base Call Weight:** ref_time=910,863,880, proof_size=8,784
-- **Total Weight:** ref_time=3,717,976,949, proof_size=222,060
-- **Weight Consumed:** ref_time=2,807,113,069 (75.5% of total), proof_size=213,276
+- **Total Weight:** ref_time=3,717,489,099, proof_size=222,090
+- **Weight Consumed:** ref_time=2,806,625,219 (75.5% of total), proof_size=213,306
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 509,058   | 10         | 50905.8      | 1,692,938,986 | 102,602    | 60.3%         | 48.1%           |
 | get_storage_or_zero  | 9,512     | 7          | 1358.9       | 475,543,747   | 71,831     | 16.9%         | 33.7%           |
-| hash_keccak_256      | 1,493     | 6          | 248.8        | 74,635,344    | 0          | 2.7%          | 0.0%            |
-| deposit_event        | 275       | 1          | 275.0        | 13,794,784    | 0          | 0.5%          | 0.0%            |
+| hash_keccak_256      | 1,492     | 6          | 248.7        | 74,635,344    | 0          | 2.7%          | 0.0%            |
+| deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.5%          | 0.0%            |
 | call_data_load       | 41        | 6          | 6.8          | 2,028,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 47,852        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 544,554,158   | 38,843     | 19.4%         | 18.2%           |
+| **Unattributed**     | -         | -          | -            | 544,066,308   | 38,873     | 19.4%         | 18.2%           |
 
 
 ### key_registry_rust - registerIdentity
@@ -5980,24 +5981,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### KeyRegistry_pvm - updateSignedPrekey
 
-- **Total Gas Used:** 633,897
+- **Total Gas Used:** 633,904
 - **Base Call Weight:** ref_time=910,025,736, proof_size=8,592
-- **Total Weight:** ref_time=2,599,055,400, proof_size=160,614
-- **Weight Consumed:** ref_time=1,689,029,664 (65.0% of total), proof_size=152,022
+- **Total Weight:** ref_time=2,599,373,710, proof_size=160,644
+- **Weight Consumed:** ref_time=1,689,347,974 (65.0% of total), proof_size=152,052
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 20,317    | 6          | 3386.2       | 1,015,832,166 | 61,734     | 60.1%         | 40.6%           |
 | get_storage_or_zero  | 6,799     | 5          | 1359.8       | 339,887,225   | 51,445     | 20.1%         | 33.8%           |
-| hash_keccak_256      | 993       | 4          | 248.3        | 49,606,240    | 0          | 2.9%          | 0.0%            |
-| deposit_event        | 444       | 1          | 444.0        | 22,221,568    | 0          | 1.3%          | 0.0%            |
+| hash_keccak_256      | 992       | 4          | 248.0        | 49,606,240    | 0          | 2.9%          | 0.0%            |
+| deposit_event        | 445       | 1          | 445.0        | 22,221,568    | 0          | 1.3%          | 0.0%            |
 | call_data_load       | 41        | 6          | 6.8          | 2,028,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 256,688,267   | 38,843     | 15.2%         | 25.6%           |
+| **Unattributed**     | -         | -          | -            | 257,006,577   | 38,873     | 15.2%         | 25.6%           |
 
 
 ### key_registry_rust - updateSignedPrekey
@@ -6054,23 +6055,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### KeyRegistry_pvm - uploadOneTimePrekeys
 
-- **Total Gas Used:** 857,652
+- **Total Gas Used:** 857,638
 - **Base Call Weight:** ref_time=910,025,736, proof_size=8,592
-- **Total Weight:** ref_time=3,226,796,031, proof_size=232,317
-- **Weight Consumed:** ref_time=2,316,770,295 (71.8% of total), proof_size=223,725
+- **Total Weight:** ref_time=3,226,106,641, proof_size=232,347
+- **Weight Consumed:** ref_time=2,316,080,905 (71.8% of total), proof_size=223,755
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 231,515   | 6          | 38585.8      | 1,015,781,222 | 61,606     | 43.8%         | 27.5%           |
+| set_storage_or_clear | 231,515   | 6          | 38585.8      | 1,015,781,222 | 61,606     | 43.9%         | 27.5%           |
 | get_storage_or_zero  | 16,312    | 12         | 1359.3       | 815,430,972   | 123,276    | 35.2%         | 55.1%           |
-| hash_keccak_256      | 1,487     | 6          | 247.8        | 74,409,360    | 0          | 3.2%          | 0.0%            |
+| hash_keccak_256      | 1,488     | 6          | 248.0        | 74,409,360    | 0          | 3.2%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.6%          | 0.0%            |
-| call_data_load       | 58        | 9          | 6.4          | 3,042,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 61        | 9          | 6.8          | 3,042,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 391,499,759   | 38,843     | 16.9%         | 17.4%           |
+| **Unattributed**     | -         | -          | -            | 390,810,369   | 38,873     | 16.9%         | 17.4%           |
 
 
 ### key_registry_rust - uploadOneTimePrekeys
@@ -6128,21 +6129,21 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 590,495
 - **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
-- **Total Weight:** ref_time=2,208,949,329, proof_size=154,805
-- **Weight Consumed:** ref_time=1,300,193,905 (58.9% of total), proof_size=146,504
+- **Total Weight:** ref_time=2,208,941,064, proof_size=154,800
+- **Weight Consumed:** ref_time=1,300,185,640 (58.9% of total), proof_size=146,499
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 168,558   | 3          | 56186.0      | 507,877,875 | 30,771     | 39.1%         | 21.0%           |
-| get_storage_or_zero  | 8,154     | 6          | 1359.0       | 407,665,758 | 61,606     | 31.4%         | 42.1%           |
+| set_storage_or_clear | 168,556   | 3          | 56185.3      | 507,877,875 | 30,771     | 39.1%         | 21.0%           |
+| get_storage_or_zero  | 8,155     | 6          | 1359.2       | 407,665,758 | 61,606     | 31.4%         | 42.1%           |
 | hash_keccak_256      | 1,741     | 7          | 248.7        | 87,093,400  | 0          | 6.7%          | 0.0%            |
-| deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.4%          | 0.0%            |
-| call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.1%          | 0.0%            |
+| deposit_event        | 108       | 1          | 108.0        | 5,368,000   | 0          | 0.4%          | 0.0%            |
+| call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 289,568,674 | 54,127     | 22.3%         | 36.9%           |
+| **Unattributed**     | -         | -          | -            | 289,560,409 | 54,122     | 22.3%         | 36.9%           |
 
 
 ### log_rust - addWriter
@@ -6200,22 +6201,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 655,599
 - **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
-- **Total Weight:** ref_time=2,824,124,859, proof_size=195,961
-- **Weight Consumed:** ref_time=1,915,369,435 (67.8% of total), proof_size=187,660
+- **Total Weight:** ref_time=2,824,116,594, proof_size=195,956
+- **Weight Consumed:** ref_time=1,915,361,170 (67.8% of total), proof_size=187,655
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 231,515   | 6          | 38585.8      | 1,015,781,222 | 61,606     | 53.0%         | 32.8%           |
+| set_storage_or_clear | 231,517   | 6          | 38586.2      | 1,015,781,222 | 61,606     | 53.0%         | 32.8%           |
 | get_storage_or_zero  | 9,514     | 7          | 1359.1       | 475,692,931   | 71,927     | 24.8%         | 38.3%           |
-| hash_keccak_256      | 748       | 3          | 249.3        | 37,374,168    | 0          | 2.0%          | 0.0%            |
+| hash_keccak_256      | 747       | 3          | 249.0        | 37,374,168    | 0          | 2.0%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.7%          | 0.0%            |
-| call_data_load       | 21        | 3          | 7.0          | 1,014,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 20        | 3          | 6.7          | 1,014,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
-| seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
+| seal_return          | 12        | 1          | 12.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 369,341,796   | 54,127     | 19.3%         | 28.8%           |
+| **Unattributed**     | -         | -          | -            | 369,333,531   | 54,122     | 19.3%         | 28.8%           |
 
 
 ### log_rust - append
@@ -6272,24 +6273,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Log_pvm - append_2
 
-- **Total Gas Used:** 655,599
-- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
-- **Total Weight:** ref_time=2,824,124,859, proof_size=195,961
-- **Weight Consumed:** ref_time=1,915,369,435 (67.8% of total), proof_size=187,660
+- **Total Gas Used:** 653,598
+- **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
+- **Total Weight:** ref_time=2,824,103,498, proof_size=195,953
+- **Weight Consumed:** ref_time=1,915,361,170 (67.8% of total), proof_size=187,655
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 231,515   | 6          | 38585.8      | 1,015,781,222 | 61,606     | 53.0%         | 32.8%           |
-| get_storage_or_zero  | 9,514     | 7          | 1359.1       | 475,692,931   | 71,927     | 24.8%         | 38.3%           |
+| set_storage_or_clear | 231,514   | 6          | 38585.7      | 1,015,781,222 | 61,606     | 53.0%         | 32.8%           |
+| get_storage_or_zero  | 9,515     | 7          | 1359.3       | 475,692,931   | 71,927     | 24.8%         | 38.3%           |
 | hash_keccak_256      | 748       | 3          | 249.3        | 37,374,168    | 0          | 2.0%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.7%          | 0.0%            |
-| call_data_load       | 21        | 3          | 7.0          | 1,014,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 20        | 3          | 6.7          | 1,014,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 369,341,796   | 54,127     | 19.3%         | 28.8%           |
+| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 369,333,531   | 54,122     | 19.3%         | 28.8%           |
 
 
 ### log_rust - append_2
@@ -6348,22 +6349,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 594,710
 - **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
-- **Total Weight:** ref_time=3,079,695,499, proof_size=216,473
-- **Weight Consumed:** ref_time=2,171,372,243 (70.5% of total), proof_size=208,271
+- **Total Weight:** ref_time=3,079,687,234, proof_size=216,468
+- **Weight Consumed:** ref_time=2,171,363,978 (70.5% of total), proof_size=208,266
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 234,933   | 7          | 33561.9      | 1,186,659,311 | 71,992     | 54.7%         | 34.6%           |
-| get_storage_or_zero  | 10,871    | 8          | 1358.9       | 543,570,920   | 82,152     | 25.0%         | 39.4%           |
+| set_storage_or_clear | 234,932   | 7          | 33561.7      | 1,186,659,311 | 71,992     | 54.7%         | 34.6%           |
+| get_storage_or_zero  | 10,872    | 8          | 1359.0       | 543,570,920   | 82,152     | 25.0%         | 39.4%           |
 | hash_keccak_256      | 745       | 3          | 248.3        | 37,261,176    | 0          | 1.7%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.6%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 14        | 2          | 7.0          | 676,000       | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 13        | 2          | 6.5          | 676,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 386,637,518   | 54,127     | 17.8%         | 26.0%           |
+| **Unattributed**     | -         | -          | -            | 386,629,253   | 54,122     | 17.8%         | 26.0%           |
 
 
 ### log_rust - create_nonpermissioned
@@ -6422,22 +6423,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 - **Total Gas Used:** 489,102
 - **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
-- **Total Weight:** ref_time=3,079,282,987, proof_size=216,601
-- **Weight Consumed:** ref_time=2,170,959,731 (70.5% of total), proof_size=208,399
+- **Total Weight:** ref_time=3,079,274,722, proof_size=216,596
+- **Weight Consumed:** ref_time=2,170,951,466 (70.5% of total), proof_size=208,394
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 129,333   | 7          | 18476.1      | 1,186,684,783 | 72,056     | 54.7%         | 34.6%           |
-| get_storage_or_zero  | 10,872    | 8          | 1359.0       | 543,670,376   | 82,216     | 25.0%         | 39.5%           |
-| hash_keccak_256      | 746       | 3          | 248.7        | 37,261,176    | 0          | 1.7%          | 0.0%            |
-| deposit_event        | 276       | 1          | 276.0        | 13,794,784    | 0          | 0.6%          | 0.0%            |
+| get_storage_or_zero  | 10,875    | 8          | 1359.4       | 543,670,376   | 82,216     | 25.0%         | 39.5%           |
+| hash_keccak_256      | 745       | 3          | 248.3        | 37,261,176    | 0          | 1.7%          | 0.0%            |
+| deposit_event        | 275       | 1          | 275.0        | 13,794,784    | 0          | 0.6%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 14        | 2          | 7.0          | 676,000       | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 13        | 2          | 6.5          | 676,000       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 386,100,078   | 54,127     | 17.8%         | 26.0%           |
+| **Unattributed**     | -         | -          | -            | 386,091,813   | 54,122     | 17.8%         | 26.0%           |
 
 
 ### log_rust - create_permissioned
@@ -6493,20 +6494,20 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Log_pvm - deploy
 
-- **Total Gas Used:** 137,298,439
-- **Base Call Weight:** ref_time=2,381,972,206, proof_size=6,934
-- **Total Weight:** ref_time=2,640,145,248, proof_size=27,448
-- **Weight Consumed:** ref_time=258,173,042 (9.8% of total), proof_size=20,514
+- **Total Gas Used:** 137,287,127
+- **Base Call Weight:** ref_time=2,381,891,671, proof_size=6,934
+- **Total Weight:** ref_time=2,639,527,273, proof_size=27,448
+- **Weight Consumed:** ref_time=257,635,602 (9.8% of total), proof_size=20,514
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 65.6%         | 50.0%           |
-| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 26.3%         | 50.0%           |
+| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 65.7%         | 50.0%           |
+| get_storage_or_zero  | 1,358     | 1          | 1358.0       | 67,927,717  | 10,257     | 26.4%         | 50.0%           |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.2%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 19,707,946  | 0          | 7.6%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
+| call_data_copy       | 0         | 1          | 0.0          | 40,556      | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 19,170,506  | 0          | 7.4%          | 0.0%            |
 
 
 ### log_rust - deploy
@@ -6558,23 +6559,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Log_pvm - removeWriter
 
-- **Total Gas Used:** 289,525
+- **Total Gas Used:** 289,524
 - **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
-- **Total Weight:** ref_time=3,000,417,432, proof_size=237,632
-- **Weight Consumed:** ref_time=2,091,662,008 (69.7% of total), proof_size=229,331
+- **Total Weight:** ref_time=3,000,409,167, proof_size=237,627
+- **Weight Consumed:** ref_time=2,091,653,743 (69.7% of total), proof_size=229,326
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 17,674    | 13         | 1359.5       | 883,706,785 | 133,757    | 42.2%         | 58.3%           |
-| set_storage_or_clear | 13,639    | 4          | 3409.8       | 681,939,628 | 41,447     | 32.6%         | 18.1%           |
-| hash_keccak_256      | 2,482     | 10         | 248.2        | 124,128,592 | 0          | 5.9%          | 0.0%            |
+| get_storage_or_zero  | 17,673    | 13         | 1359.5       | 883,706,785 | 133,757    | 42.2%         | 58.3%           |
+| set_storage_or_clear | 13,638    | 4          | 3409.5       | 681,939,628 | 41,447     | 32.6%         | 18.1%           |
+| hash_keccak_256      | 2,483     | 10         | 248.3        | 124,128,592 | 0          | 5.9%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.3%          | 0.0%            |
-| call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
-| caller               | 9         | 1          | 9.0          | 402,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 393,898,805 | 54,127     | 18.8%         | 23.6%           |
+| **Unattributed**     | -         | -          | -            | 393,890,540 | 54,122     | 18.8%         | 23.6%           |
 
 
 ### log_rust - removeWriter
@@ -6630,23 +6631,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Log_pvm - transfer
 
-- **Total Gas Used:** 562,265
+- **Total Gas Used:** 562,271
 - **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
-- **Total Weight:** ref_time=3,437,415,590, proof_size=278,369
-- **Weight Consumed:** ref_time=2,528,660,166 (73.6% of total), proof_size=270,068
+- **Total Weight:** ref_time=3,437,743,225, proof_size=278,364
+- **Weight Consumed:** ref_time=2,528,987,801 (73.6% of total), proof_size=270,063
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 20,393    | 15         | 1359.5       | 1,019,562,219 | 154,271    | 40.3%         | 57.1%           |
-| set_storage_or_clear | 125,916   | 6          | 20986.0      | 1,015,806,694 | 61,670     | 40.2%         | 22.8%           |
+| get_storage_or_zero  | 20,390    | 15         | 1359.3       | 1,019,562,219 | 154,271    | 40.3%         | 57.1%           |
+| set_storage_or_clear | 125,917   | 6          | 20986.2      | 1,015,806,694 | 61,670     | 40.2%         | 22.8%           |
 | hash_keccak_256      | 1,982     | 8          | 247.8        | 99,099,488    | 0          | 3.9%          | 0.0%            |
-| deposit_event        | 107       | 1          | 107.0        | 5,368,000     | 0          | 0.2%          | 0.0%            |
+| deposit_event        | 108       | 1          | 108.0        | 5,368,000     | 0          | 0.2%          | 0.0%            |
 | call_data_load       | 21        | 3          | 7.0          | 1,014,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 386,203,567   | 54,127     | 15.3%         | 20.0%           |
+| **Unattributed**     | -         | -          | -            | 386,531,202   | 54,122     | 15.3%         | 20.0%           |
 
 
 ### log_rust - transfer
@@ -6670,162 +6671,162 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Marketplace_pvm - deploy
 
-- **Total Gas Used:** 630,663,672
-- **Base Call Weight:** ref_time=5,897,647,096, proof_size=6,934
-- **Total Weight:** ref_time=6,191,765,963, proof_size=27,448
-- **Weight Consumed:** ref_time=294,118,867 (4.8% of total), proof_size=20,514
+- **Total Gas Used:** 630,069,212
+- **Base Call Weight:** ref_time=5,893,410,955, proof_size=6,934
+- **Total Weight:** ref_time=6,187,798,542, proof_size=27,448
+- **Weight Consumed:** ref_time=294,387,587 (4.8% of total), proof_size=20,514
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 57.6%         | 50.0%           |
+| set_storage_or_clear | 56,185    | 1          | 56185.0      | 169,292,625 | 10,257     | 57.5%         | 50.0%           |
 | get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 23.1%         | 50.0%           |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 4.7%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.2%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| call_data_copy       | 0         | 1          | 0.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 41,858,987  | 0          | 14.2%         | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
+| call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 42,127,707  | 0          | 14.3%         | 0.0%            |
 
 
 ### MarketplaceProxy_evm - createItem_digital
 
-- **Total Gas Used:** 1,850,893
+- **Total Gas Used:** 1,850,829
 - **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
-- **Total Weight:** ref_time=9,168,836,055, proof_size=1,022,304
-- **Weight Consumed:** ref_time=8,255,850,623 (90.0% of total), proof_size=1,013,034
+- **Total Weight:** ref_time=9,165,615,277, proof_size=1,021,778
+- **Weight Consumed:** ref_time=8,252,629,845 (90.0% of total), proof_size=1,012,508
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 684,420   | 15         | 45628.0      | 2,541,000,311 | 154,048    | 30.8%         | 15.2%           |
-| get_storage_or_zero  | 36,693    | 27         | 1359.0       | 1,834,694,823 | 277,355    | 22.2%         | 27.4%           |
-| DELEGATECALL         | 22,573    | 2          | 11286.5      | 1,128,693,308 | 554,168    | 13.7%         | 54.7%           |
-| call_evm             | 6,102     | 1          | 6102.0       | 305,134,461   | 6,092      | 3.7%          | 0.6%            |
-| SLOAD                | 2,719     | 2          | 1359.5       | 135,954,890   | 20,578     | 1.6%          | 2.0%            |
-| hash_keccak_256      | 1,984     | 8          | 248.0        | 99,216,011    | 0          | 1.2%          | 0.0%            |
-| deposit_event        | 1,625     | 1          | 1625.0       | 81,209,056    | 0          | 1.0%          | 0.0%            |
-| call_data_load       | 105       | 16         | 6.6          | 5,408,000     | 0          | 0.1%          | 0.0%            |
+| get_storage_or_zero  | 36,692    | 27         | 1359.0       | 1,834,694,823 | 277,355    | 22.2%         | 27.4%           |
+| DELEGATECALL         | 22,554    | 2          | 11277.0      | 1,127,823,830 | 553,642    | 13.7%         | 54.7%           |
+| call_evm             | 6,103     | 1          | 6103.0       | 305,134,461   | 6,092      | 3.7%          | 0.6%            |
+| SLOAD                | 2,720     | 2          | 1360.0       | 135,954,890   | 20,578     | 1.6%          | 2.0%            |
+| hash_keccak_256      | 1,985     | 8          | 248.1        | 99,216,011    | 0          | 1.2%          | 0.0%            |
+| deposit_event        | 1,624     | 1          | 1624.0       | 81,209,056    | 0          | 1.0%          | 0.0%            |
+| call_data_load       | 107       | 16         | 6.7          | 5,408,000     | 0          | 0.1%          | 0.0%            |
 | GAS                  | 86        | 2          | 43.0         | 4,258,000     | 0          | 0.1%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
 | CALLDATACOPY         | 24        | 2          | 12.0         | 1,177,648     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,113,068     | 0          | 0.0%          | 0.0%            |
-| RETURNDATACOPY       | 22        | 2          | 11.0         | 1,104,928     | 0          | 0.0%          | 0.0%            |
+| RETURNDATACOPY       | 23        | 2          | 11.5         | 1,104,928     | 0          | 0.0%          | 0.0%            |
 | CALLER               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 13        | 2          | 6.5          | 672,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 14        | 2          | 7.0          | 672,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 8         | 16         | 0.5          | 374,448       | 0          | 0.0%          | 0.0%            |
 | address              | 7         | 1          | 7.0          | 365,000       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,108,301,787 | 793        | 25.5%         | 0.1%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,105,950,487 | 793        | 25.5%         | 0.1%            |
 
 
 ### MarketplaceProxy_pvm - createItem_digital
 
-- **Total Gas Used:** 1,854,062
+- **Total Gas Used:** 1,854,007
 - **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
-- **Total Weight:** ref_time=9,327,311,519, proof_size=1,051,892
-- **Weight Consumed:** ref_time=8,414,326,087 (90.2% of total), proof_size=1,042,622
+- **Total Weight:** ref_time=9,324,520,521, proof_size=1,051,626
+- **Weight Consumed:** ref_time=8,411,535,089 (90.2% of total), proof_size=1,042,356
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 684,421   | 15         | 45628.1      | 2,541,000,311 | 154,048    | 30.2%         | 14.8%           |
-| get_storage_or_zero  | 39,411    | 29         | 1359.0       | 1,970,649,713 | 297,933    | 23.4%         | 28.6%           |
-| delegate_call_evm    | 22,573    | 2          | 11286.5      | 1,128,693,308 | 554,168    | 13.4%         | 53.2%           |
-| call_evm             | 6,468     | 1          | 6468.0       | 323,472,496   | 17,085     | 3.8%          | 1.6%            |
+| set_storage_or_clear | 684,420   | 15         | 45628.0      | 2,541,000,311 | 154,048    | 30.2%         | 14.8%           |
+| get_storage_or_zero  | 39,416    | 29         | 1359.2       | 1,970,649,713 | 297,933    | 23.4%         | 28.6%           |
+| delegate_call_evm    | 22,555    | 2          | 11277.5      | 1,127,823,830 | 553,642    | 13.4%         | 53.1%           |
+| call_evm             | 6,473     | 1          | 6473.0       | 323,687,386   | 17,215     | 3.8%          | 1.7%            |
 | hash_keccak_256      | 1,984     | 8          | 248.0        | 99,216,011    | 0          | 1.2%          | 0.0%            |
-| deposit_event        | 1,625     | 1          | 1625.0       | 81,209,056    | 0          | 1.0%          | 0.0%            |
-| get_immutable_data   | 1,272     | 2          | 636.0        | 63,591,268    | 7,602      | 0.8%          | 0.7%            |
+| deposit_event        | 1,624     | 1          | 1624.0       | 81,209,056    | 0          | 1.0%          | 0.0%            |
+| get_immutable_data   | 1,270     | 2          | 635.0        | 63,591,268    | 7,602      | 0.8%          | 0.7%            |
 | ref_time_left        | 127       | 3          | 42.3         | 6,387,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 111       | 16         | 6.9          | 5,408,000     | 0          | 0.1%          | 0.0%            |
-| seal_return          | 46        | 4          | 11.5         | 2,226,136     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 108       | 16         | 6.8          | 5,408,000     | 0          | 0.1%          | 0.0%            |
+| seal_return          | 44        | 4          | 11.0         | 2,226,136     | 0          | 0.0%          | 0.0%            |
 | caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 33        | 5          | 6.6          | 1,710,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 27        | 4          | 6.8          | 1,272,000     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 35        | 5          | 7.0          | 1,710,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 25        | 4          | 6.3          | 1,272,000     | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 22        | 2          | 11.0         | 1,104,928     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 14        | 2          | 7.0          | 672,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 12        | 2          | 6.0          | 672,000       | 0          | 0.0%          | 0.0%            |
 | address              | 7         | 1          | 7.0          | 365,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 7         | 6          | 1.2          | 300,336       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,184,682,524 | 11,786     | 26.0%         | 1.1%            |
+| call_data_copy       | 6         | 6          | 1.0          | 300,336       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,182,546,114 | 11,916     | 25.9%         | 1.1%            |
 
 
 ### MarketplaceProxy_evm - createItem_physical
 
-- **Total Gas Used:** 1,794,829
+- **Total Gas Used:** 1,794,764
 - **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
-- **Total Weight:** ref_time=9,005,618,998, proof_size=1,022,368
-- **Weight Consumed:** ref_time=8,092,633,566 (89.9% of total), proof_size=1,013,098
+- **Total Weight:** ref_time=9,002,398,220, proof_size=1,021,842
+- **Weight Consumed:** ref_time=8,089,412,788 (89.9% of total), proof_size=1,012,572
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 631,620   | 15         | 42108.0      | 2,541,013,047 | 154,080    | 31.4%         | 15.2%           |
 | get_storage_or_zero  | 36,696    | 27         | 1359.1       | 1,834,744,551 | 277,387    | 22.7%         | 27.4%           |
-| DELEGATECALL         | 22,573    | 2          | 11286.5      | 1,128,693,308 | 554,168    | 13.9%         | 54.7%           |
-| call_evm             | 6,102     | 1          | 6102.0       | 305,134,461   | 6,092      | 3.8%          | 0.6%            |
-| SLOAD                | 2,719     | 2          | 1359.5       | 135,954,890   | 20,578     | 1.7%          | 2.0%            |
-| hash_keccak_256      | 1,983     | 8          | 247.9        | 99,184,232    | 0          | 1.2%          | 0.0%            |
+| DELEGATECALL         | 22,554    | 2          | 11277.0      | 1,127,823,830 | 553,642    | 13.9%         | 54.7%           |
+| call_evm             | 6,103     | 1          | 6103.0       | 305,134,461   | 6,092      | 3.8%          | 0.6%            |
+| SLOAD                | 2,720     | 2          | 1360.0       | 135,954,890   | 20,578     | 1.7%          | 2.0%            |
+| hash_keccak_256      | 1,984     | 8          | 248.0        | 99,184,232    | 0          | 1.2%          | 0.0%            |
 | deposit_event        | 1,624     | 1          | 1624.0       | 81,209,056    | 0          | 1.0%          | 0.0%            |
-| call_data_load       | 107       | 16         | 6.7          | 5,408,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 108       | 16         | 6.8          | 5,408,000     | 0          | 0.1%          | 0.0%            |
 | GAS                  | 86        | 2          | 43.0         | 4,258,000     | 0          | 0.1%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
 | CALLDATACOPY         | 24        | 2          | 12.0         | 1,177,648     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,113,068     | 0          | 0.0%          | 0.0%            |
 | RETURNDATACOPY       | 23        | 2          | 11.5         | 1,104,928     | 0          | 0.0%          | 0.0%            |
 | CALLER               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 13        | 2          | 6.5          | 672,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 14        | 2          | 7.0          | 672,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 8         | 16         | 0.5          | 374,448       | 0          | 0.0%          | 0.0%            |
 | address              | 7         | 1          | 7.0          | 365,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,945,054,387 | 793        | 24.0%         | 0.1%            |
+| **Unattributed**     | -         | -          | -            | 1,942,703,087 | 793        | 24.0%         | 0.1%            |
 
 
 ### MarketplaceProxy_pvm - createItem_physical
 
-- **Total Gas Used:** 1,797,998
+- **Total Gas Used:** 1,797,942
 - **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
-- **Total Weight:** ref_time=9,164,094,462, proof_size=1,051,956
-- **Weight Consumed:** ref_time=8,251,109,030 (90.0% of total), proof_size=1,042,686
+- **Total Weight:** ref_time=9,161,303,464, proof_size=1,051,690
+- **Weight Consumed:** ref_time=8,248,318,032 (90.0% of total), proof_size=1,042,420
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 631,619   | 15         | 42107.9      | 2,541,013,047 | 154,080    | 30.8%         | 14.8%           |
-| get_storage_or_zero  | 39,416    | 29         | 1359.2       | 1,970,699,441 | 297,965    | 23.9%         | 28.6%           |
-| delegate_call_evm    | 22,574    | 2          | 11287.0      | 1,128,693,308 | 554,168    | 13.7%         | 53.1%           |
-| call_evm             | 6,468     | 1          | 6468.0       | 323,472,496   | 17,085     | 3.9%          | 1.6%            |
-| hash_keccak_256      | 1,984     | 8          | 248.0        | 99,184,232    | 0          | 1.2%          | 0.0%            |
-| deposit_event        | 1,624     | 1          | 1624.0       | 81,209,056    | 0          | 1.0%          | 0.0%            |
-| get_immutable_data   | 1,272     | 2          | 636.0        | 63,591,268    | 7,602      | 0.8%          | 0.7%            |
+| set_storage_or_clear | 631,622   | 15         | 42108.1      | 2,541,013,047 | 154,080    | 30.8%         | 14.8%           |
+| get_storage_or_zero  | 39,413    | 29         | 1359.1       | 1,970,699,441 | 297,965    | 23.9%         | 28.6%           |
+| delegate_call_evm    | 22,555    | 2          | 11277.5      | 1,127,823,830 | 553,642    | 13.7%         | 53.1%           |
+| call_evm             | 6,473     | 1          | 6473.0       | 323,687,386   | 17,215     | 3.9%          | 1.7%            |
+| hash_keccak_256      | 1,985     | 8          | 248.1        | 99,184,232    | 0          | 1.2%          | 0.0%            |
+| deposit_event        | 1,625     | 1          | 1625.0       | 81,209,056    | 0          | 1.0%          | 0.0%            |
+| get_immutable_data   | 1,270     | 2          | 635.0        | 63,591,268    | 7,602      | 0.8%          | 0.7%            |
 | ref_time_left        | 127       | 3          | 42.3         | 6,387,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 109       | 16         | 6.8          | 5,408,000     | 0          | 0.1%          | 0.0%            |
-| seal_return          | 45        | 4          | 11.3         | 2,226,136     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 107       | 16         | 6.7          | 5,408,000     | 0          | 0.1%          | 0.0%            |
+| seal_return          | 44        | 4          | 11.0         | 2,226,136     | 0          | 0.0%          | 0.0%            |
 | caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 35        | 5          | 7.0          | 1,710,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 27        | 4          | 6.8          | 1,272,000     | 0          | 0.0%          | 0.0%            |
-| return_data_copy     | 23        | 2          | 11.5         | 1,104,928     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 14        | 2          | 7.0          | 672,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 25        | 4          | 6.3          | 1,272,000     | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 22        | 2          | 11.0         | 1,104,928     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 12        | 2          | 6.0          | 672,000       | 0          | 0.0%          | 0.0%            |
 | address              | 7         | 1          | 7.0          | 365,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 7         | 6          | 1.2          | 299,994       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,021,435,124 | 11,786     | 24.5%         | 1.1%            |
+| call_data_copy       | 6         | 6          | 1.0          | 299,994       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,019,298,714 | 11,916     | 24.5%         | 1.1%            |
 
 
 ### MarketplaceProxy_evm - deactivateItem
 
-- **Total Gas Used:** 309,754
+- **Total Gas Used:** 309,744
 - **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,931,870,103, proof_size=327,335
-- **Weight Consumed:** ref_time=1,023,533,751 (53.0% of total), proof_size=319,130
+- **Total Weight:** ref_time=1,931,368,184, proof_size=327,072
+- **Weight Consumed:** ref_time=1,023,031,832 (53.0% of total), proof_size=318,867
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| DELEGATECALL         | 0         | 1          | 0.0          | 564,311,806 | 277,084    | 55.1%         | 86.8%           |
-| set_storage_or_clear | 3,418     | 1          | 3418.0       | 170,878,089 | 10,386     | 16.7%         | 3.3%            |
-| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,954,890 | 20,578     | 13.3%         | 6.4%            |
+| DELEGATECALL         | 0         | 1          | 0.0          | 563,877,067 | 276,821    | 55.1%         | 86.8%           |
+| set_storage_or_clear | 3,417     | 1          | 3417.0       | 170,878,089 | 10,386     | 16.7%         | 3.3%            |
+| get_storage_or_zero  | 2,720     | 2          | 1360.0       | 135,954,890 | 20,578     | 13.3%         | 6.5%            |
 | SLOAD                | 1,360     | 1          | 1360.0       | 67,977,445  | 10,289     | 6.6%          | 3.2%            |
-| hash_keccak_256      | 250       | 1          | 250.0        | 12,458,056  | 0          | 1.2%          | 0.0%            |
-| deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.5%          | 0.0%            |
+| hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 1.2%          | 0.0%            |
+| deposit_event        | 108       | 1          | 108.0        | 5,368,000   | 0          | 0.5%          | 0.0%            |
 | GAS                  | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
 | call_data_load       | 14        | 2          | 7.0          | 676,000     | 0          | 0.1%          | 0.0%            |
 | CALLDATACOPY         | 12        | 1          | 12.0         | 553,272     | 0          | 0.1%          | 0.0%            |
@@ -6840,119 +6841,119 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | DUP1                 | 1         | 2          | 0.5          | 46,806      | 0          | 0.0%          | 0.0%            |
 | PUSH0                | 1         | 3          | 0.3          | 46,806      | 0          | 0.0%          | 0.0%            |
 | SWAP1                | 1         | 2          | 0.5          | 46,806      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 60,267,273  | 793        | 5.9%          | 0.2%            |
+| **Unattributed**     | -         | -          | -            | 60,200,093  | 793        | 5.9%          | 0.2%            |
 
 
 ### MarketplaceProxy_pvm - deactivateItem
 
-- **Total Gas Used:** 311,321
+- **Total Gas Used:** 311,316
 - **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,010,252,207, proof_size=342,129
-- **Weight Consumed:** ref_time=1,101,915,855 (54.8% of total), proof_size=333,924
+- **Total Weight:** ref_time=2,009,965,178, proof_size=341,996
+- **Weight Consumed:** ref_time=1,101,628,826 (54.8% of total), proof_size=333,791
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| delegate_call_evm    | 0         | 1          | 0.0          | 564,311,806 | 277,084    | 51.2%         | 83.0%           |
+| delegate_call_evm    | 0         | 1          | 0.0          | 563,877,067 | 276,821    | 51.2%         | 82.9%           |
 | get_storage_or_zero  | 4,079     | 3          | 1359.7       | 203,932,335 | 30,867     | 18.5%         | 9.2%            |
 | set_storage_or_clear | 3,418     | 1          | 3418.0       | 170,878,089 | 10,386     | 15.5%         | 3.1%            |
-| get_immutable_data   | 636       | 1          | 636.0        | 31,795,634  | 3,801      | 2.9%          | 1.1%            |
+| get_immutable_data   | 635       | 1          | 635.0        | 31,795,634  | 3,801      | 2.9%          | 1.1%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 1.1%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.5%          | 0.0%            |
-| ref_time_left        | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
+| ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,100,396   | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
-| return_data_size     | 13        | 2          | 6.5          | 684,000     | 0          | 0.1%          | 0.0%            |
+| return_data_size     | 14        | 2          | 7.0          | 684,000     | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 13        | 2          | 6.5          | 676,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 14        | 2          | 7.0          | 636,000     | 0          | 0.1%          | 0.0%            |
-| return_data_copy     | 11        | 1          | 11.0         | 546,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 13        | 2          | 6.5          | 636,000     | 0          | 0.1%          | 0.0%            |
+| return_data_copy     | 10        | 1          | 10.0         | 546,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 1         | 1          | 1.0          | 44,660      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 106,215,879 | 11,786     | 9.6%          | 3.5%            |
+| call_data_copy       | 0         | 1          | 0.0          | 44,660      | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 106,363,589 | 11,916     | 9.7%          | 3.6%            |
 
 
 ### MarketplaceProxy_evm - deploy
 
-- **Total Gas Used:** 36,444,871
+- **Total Gas Used:** 36,444,859
 - **Base Call Weight:** ref_time=1,557,245,485, proof_size=6,934
-- **Total Weight:** ref_time=6,721,717,243, proof_size=576,411
-- **Weight Consumed:** ref_time=5,164,471,758 (76.8% of total), proof_size=569,477
+- **Total Weight:** ref_time=6,721,148,144, proof_size=576,148
+- **Weight Consumed:** ref_time=5,163,902,659 (76.8% of total), proof_size=569,214
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 406,909   | 11         | 36991.7      | 1,865,415,275 | 113,149    | 36.1%         | 19.9%           |
+| set_storage_or_clear | 406,910   | 11         | 36991.8      | 1,865,415,275 | 113,149    | 36.1%         | 19.9%           |
 | CREATE               | 19,448    | 1          | 19448.0      | 972,428,303   | 6,824      | 18.8%         | 1.2%            |
-| get_storage_or_zero  | 13,591    | 10         | 1359.1       | 679,575,538   | 102,762    | 13.2%         | 18.0%           |
-| DELEGATECALL         | 11,285    | 1          | 11285.0      | 564,311,806   | 277,084    | 10.9%         | 48.7%           |
-| SSTORE               | 168,557   | 3          | 56185.7      | 507,877,875   | 30,771     | 9.8%          | 5.4%            |
-| SLOAD                | 4,077     | 3          | 1359.0       | 203,932,335   | 30,867     | 3.9%          | 5.4%            |
-| EXTCODESIZE          | 2,562     | 2          | 1281.0       | 128,148,000   | 8,020      | 2.5%          | 1.4%            |
+| get_storage_or_zero  | 13,592    | 10         | 1359.2       | 679,575,538   | 102,762    | 13.2%         | 18.1%           |
+| DELEGATECALL         | 11,277    | 1          | 11277.0      | 563,877,067   | 276,821    | 10.9%         | 48.6%           |
+| SSTORE               | 168,558   | 3          | 56186.0      | 507,877,875   | 30,771     | 9.8%          | 5.4%            |
+| SLOAD                | 4,079     | 3          | 1359.7       | 203,932,335   | 30,867     | 3.9%          | 5.4%            |
+| EXTCODESIZE          | 2,563     | 2          | 1281.5       | 128,148,000   | 8,020      | 2.5%          | 1.4%            |
 | LOG1                 | 444       | 1          | 444.0        | 22,221,568    | 0          | 0.4%          | 0.0%            |
-| deposit_event        | 383       | 2          | 191.5        | 19,162,784    | 0          | 0.4%          | 0.0%            |
+| deposit_event        | 384       | 2          | 192.0        | 19,162,784    | 0          | 0.4%          | 0.0%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056    | 0          | 0.2%          | 0.0%            |
 | LOG2                 | 108       | 1          | 108.0        | 5,368,000     | 0          | 0.1%          | 0.0%            |
-| LOG3                 | 107       | 1          | 107.0        | 5,368,000     | 0          | 0.1%          | 0.0%            |
-| CODECOPY             | 91        | 7          | 13.0         | 4,437,696     | 0          | 0.1%          | 0.0%            |
-| PUSH1                | 45        | 91         | 0.5          | 2,129,673     | 0          | 0.0%          | 0.0%            |
+| LOG3                 | 108       | 1          | 108.0        | 5,368,000     | 0          | 0.1%          | 0.0%            |
+| CODECOPY             | 89        | 7          | 12.7         | 4,437,696     | 0          | 0.1%          | 0.0%            |
+| PUSH1                | 41        | 91         | 0.5          | 2,129,673     | 0          | 0.0%          | 0.0%            |
 | GAS                  | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| JUMPI                | 37        | 24         | 1.5          | 1,872,240     | 0          | 0.0%          | 0.0%            |
-| PUSH2                | 17        | 42         | 0.4          | 982,926       | 0          | 0.0%          | 0.0%            |
-| JUMP                 | 14        | 13         | 1.1          | 811,304       | 0          | 0.0%          | 0.0%            |
+| JUMPI                | 34        | 24         | 1.4          | 1,872,240     | 0          | 0.0%          | 0.0%            |
+| PUSH2                | 21        | 42         | 0.5          | 982,926       | 0          | 0.0%          | 0.0%            |
+| JUMP                 | 15        | 13         | 1.2          | 811,304       | 0          | 0.0%          | 0.0%            |
 | call_data_load       | 13        | 2          | 6.5          | 676,000       | 0          | 0.0%          | 0.0%            |
-| CALLVALUE            | 12        | 2          | 6.0          | 672,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 155,862,629   | 0          | 3.0%          | 0.0%            |
+| CALLVALUE            | 13        | 2          | 6.5          | 672,000       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 155,728,269   | 0          | 3.0%          | 0.0%            |
 
 
 ### MarketplaceProxy_pvm - deploy
 
-- **Total Gas Used:** 53,695,733
-- **Base Call Weight:** ref_time=1,700,138,359, proof_size=6,934
-- **Total Weight:** ref_time=6,852,821,592, proof_size=582,863
-- **Weight Consumed:** ref_time=5,152,683,233 (75.2% of total), proof_size=575,929
+- **Total Gas Used:** 53,992,118
+- **Base Call Weight:** ref_time=1,702,232,269, proof_size=6,934
+- **Total Weight:** ref_time=6,856,095,329, proof_size=582,642
+- **Weight Consumed:** ref_time=5,153,863,060 (75.2% of total), proof_size=575,708
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 575,466   | 14         | 41104.7      | 2,373,293,150 | 143,920    | 46.1%         | 25.0%           |
-| get_storage_or_zero  | 17,667    | 13         | 1359.0       | 883,358,689   | 133,533    | 17.1%         | 23.2%           |
-| delegate_call_evm    | 11,285    | 1          | 11285.0      | 564,311,806   | 277,084    | 11.0%         | 48.1%           |
-| instantiate          | 10,486    | 1          | 10486.0      | 524,322,580   | 13,372     | 10.2%         | 2.3%            |
+| set_storage_or_clear | 575,465   | 14         | 41104.6      | 2,373,293,150 | 143,920    | 46.0%         | 25.0%           |
+| get_storage_or_zero  | 17,665    | 13         | 1358.8       | 883,358,689   | 133,533    | 17.1%         | 23.2%           |
+| delegate_call_evm    | 11,276    | 1          | 11276.0      | 563,877,067   | 276,821    | 10.9%         | 48.1%           |
+| instantiate          | 10,487    | 1          | 10487.0      | 524,392,006   | 13,414     | 10.2%         | 2.3%            |
 | code_size            | 2,563     | 2          | 1281.5       | 128,148,000   | 8,020      | 2.5%          | 1.4%            |
 | set_immutable_data   | 2,048     | 1          | 2048.0       | 102,397,331   | 0          | 2.0%          | 0.0%            |
-| deposit_event        | 1,042     | 5          | 208.4        | 52,120,352    | 0          | 1.0%          | 0.0%            |
+| deposit_event        | 1,041     | 5          | 208.2        | 52,120,352    | 0          | 1.0%          | 0.0%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056    | 0          | 0.2%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 33        | 3          | 11.0         | 1,650,594     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 21        | 3          | 7.0          | 1,008,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 20        | 3          | 6.7          | 954,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 20        | 3          | 6.7          | 1,008,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 19        | 3          | 6.3          | 954,000       | 0          | 0.0%          | 0.0%            |
 | call_data_load       | 14        | 2          | 7.0          | 676,000       | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 7         | 1          | 7.0          | 342,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 4         | 4          | 1.0          | 187,760       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 505,325,915   | 0          | 9.8%          | 0.0%            |
+| call_data_copy       | 5         | 4          | 1.3          | 187,760       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 506,871,055   | 0          | 9.8%          | 0.0%            |
 
 
 ### MarketplaceProxy_evm - markAsShipped
 
-- **Total Gas Used:** 806,559
+- **Total Gas Used:** 806,550
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=3,872,123,861, proof_size=502,154
-- **Weight Consumed:** ref_time=2,962,517,197 (76.5% of total), proof_size=493,658
+- **Total Weight:** ref_time=3,871,689,122, proof_size=501,891
+- **Weight Consumed:** ref_time=2,962,082,458 (76.5% of total), proof_size=493,395
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 21,744    | 16         | 1359.0       | 1,087,390,480 | 164,464    | 36.7%         | 33.3%           |
-| set_storage_or_clear | 224,742   | 4          | 56185.5      | 677,170,500   | 41,028     | 22.9%         | 8.3%            |
-| DELEGATECALL         | 11,287    | 1          | 11287.0      | 564,330,814   | 277,084    | 19.0%         | 56.1%           |
+| get_storage_or_zero  | 21,749    | 16         | 1359.3       | 1,087,390,480 | 164,464    | 36.7%         | 33.3%           |
+| set_storage_or_clear | 224,744   | 4          | 56186.0      | 677,170,500   | 41,028     | 22.9%         | 8.3%            |
+| DELEGATECALL         | 11,278    | 1          | 11278.0      | 563,896,075   | 276,821    | 19.0%         | 56.1%           |
 | SLOAD                | 1,359     | 1          | 1359.0       | 67,977,445    | 10,289     | 2.3%          | 2.1%            |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112    | 0          | 0.8%          | 0.0%            |
 | deposit_event        | 214       | 2          | 107.0        | 10,736,000    | 0          | 0.4%          | 0.0%            |
 | GAS                  | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
-| now                  | 22        | 3          | 7.3          | 1,068,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 21        | 3          | 7.0          | 1,068,000     | 0          | 0.0%          | 0.0%            |
 | CALLDATACOPY         | 11        | 1          | 11.0         | 572,664       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 3         | 8          | 0.4          | 187,224       | 0          | 0.0%          | 0.0%            |
 | JUMPI                | 3         | 2          | 1.5          | 156,020       | 0          | 0.0%          | 0.0%            |
 | SUB                  | 1         | 3          | 0.3          | 70,209        | 0          | 0.0%          | 0.0%            |
@@ -6963,16 +6964,16 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### MarketplaceProxy_pvm - markAsShipped
 
-- **Total Gas Used:** 808,129
+- **Total Gas Used:** 808,124
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=3,950,631,877, proof_size=516,948
-- **Weight Consumed:** ref_time=3,041,025,213 (77.0% of total), proof_size=508,452
+- **Total Weight:** ref_time=3,950,412,028, proof_size=516,815
+- **Weight Consumed:** ref_time=3,040,805,364 (77.0% of total), proof_size=508,319
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 23,107    | 17         | 1359.2       | 1,155,367,925 | 174,753    | 38.0%         | 34.4%           |
+| get_storage_or_zero  | 23,106    | 17         | 1359.2       | 1,155,367,925 | 174,753    | 38.0%         | 34.4%           |
 | set_storage_or_clear | 224,743   | 4          | 56185.8      | 677,170,500   | 41,028     | 22.3%         | 8.1%            |
-| delegate_call_evm    | 11,286    | 1          | 11286.0      | 564,330,814   | 277,084    | 18.6%         | 54.5%           |
+| delegate_call_evm    | 11,278    | 1          | 11278.0      | 563,896,075   | 276,821    | 18.5%         | 54.5%           |
 | get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 1.0%          | 0.7%            |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112    | 0          | 0.8%          | 0.0%            |
 | deposit_event        | 214       | 2          | 107.0        | 10,736,000    | 0          | 0.4%          | 0.0%            |
@@ -6981,208 +6982,208 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | seal_return          | 22        | 2          | 11.0         | 1,100,396     | 0          | 0.0%          | 0.0%            |
 | now                  | 21        | 3          | 7.0          | 1,068,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 13        | 2          | 6.5          | 684,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 12        | 2          | 6.0          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 14        | 2          | 7.0          | 684,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 546,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 2          | 1.0          | 97,528        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 567,955,304   | 11,786     | 18.7%         | 2.3%            |
+| call_data_copy       | 1         | 2          | 0.5          | 97,528        | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 568,170,194   | 11,916     | 18.7%         | 2.3%            |
 
 
 ### MarketplaceProxy_evm - purchaseItem_digital
 
-- **Total Gas Used:** 1,364,094
+- **Total Gas Used:** 1,364,072
 - **Base Call Weight:** ref_time=910,536,480, proof_size=8,709
-- **Total Weight:** ref_time=11,448,886,229, proof_size=931,040
-- **Weight Consumed:** ref_time=10,538,349,749 (92.0% of total), proof_size=922,331
+- **Total Weight:** ref_time=11,447,779,690, proof_size=930,777
+- **Weight Consumed:** ref_time=10,537,243,210 (92.0% of total), proof_size=922,068
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 590,983   | 34         | 17381.9      | 5,789,294,938 | 351,575    | 54.9%         | 38.1%           |
-| get_storage_or_zero  | 36,693    | 27         | 1359.0       | 1,834,595,367 | 277,291    | 17.4%         | 30.1%           |
-| DELEGATECALL         | 11,287    | 1          | 11287.0      | 564,343,486   | 277,084    | 5.4%          | 30.0%           |
+| set_storage_or_clear | 590,986   | 34         | 17381.9      | 5,789,294,938 | 351,575    | 54.9%         | 38.1%           |
+| get_storage_or_zero  | 36,690    | 27         | 1358.9       | 1,834,595,367 | 277,291    | 17.4%         | 30.1%           |
+| DELEGATECALL         | 11,278    | 1          | 11278.0      | 563,908,747   | 276,821    | 5.4%          | 30.0%           |
 | call_evm             | 8,457     | 1          | 8457.0       | 422,847,699   | 5,299      | 4.0%          | 0.6%            |
 | SLOAD                | 1,360     | 1          | 1360.0       | 67,977,445    | 10,289     | 0.6%          | 1.1%            |
-| hash_keccak_256      | 997       | 4          | 249.3        | 49,832,224    | 0          | 0.5%          | 0.0%            |
-| deposit_event        | 721       | 2          | 360.5        | 36,016,352    | 0          | 0.3%          | 0.0%            |
-| call_data_load       | 82        | 12         | 6.8          | 4,056,000     | 0          | 0.0%          | 0.0%            |
+| hash_keccak_256      | 996       | 4          | 249.0        | 49,832,224    | 0          | 0.5%          | 0.0%            |
+| deposit_event        | 720       | 2          | 360.0        | 36,016,352    | 0          | 0.3%          | 0.0%            |
+| call_data_load       | 80        | 12         | 6.7          | 4,056,000     | 0          | 0.0%          | 0.0%            |
 | GAS                  | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
 | ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.0%          | 0.0%            |
-| CALLDATACOPY         | 11        | 1          | 11.0         | 585,592       | 0          | 0.0%          | 0.0%            |
-| seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| RETURNDATACOPY       | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
-| CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 6         | 1          | 6.0          | 342,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| PUSH1                | 5         | 8          | 0.6          | 187,224       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,759,038,814 | 793        | 16.7%         | 0.1%            |
-
-
-### MarketplaceProxy_pvm - purchaseItem_digital
-
-- **Total Gas Used:** 1,365,680
-- **Base Call Weight:** ref_time=910,536,480, proof_size=8,709
-- **Total Weight:** ref_time=11,528,192,549, proof_size=945,834
-- **Weight Consumed:** ref_time=10,617,656,069 (92.1% of total), proof_size=937,125
-
-| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
-| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 590,987   | 34         | 17382.0      | 5,789,294,938 | 351,575    | 54.5%         | 37.5%           |
-| get_storage_or_zero  | 38,053    | 28         | 1359.0       | 1,902,572,812 | 287,580    | 17.9%         | 30.7%           |
-| delegate_call_evm    | 11,287    | 1          | 11287.0      | 564,343,486   | 277,084    | 5.3%          | 29.6%           |
-| call_evm             | 8,457     | 1          | 8457.0       | 422,847,699   | 5,299      | 4.0%          | 0.6%            |
-| hash_keccak_256      | 996       | 4          | 249.0        | 49,832,224    | 0          | 0.5%          | 0.0%            |
-| deposit_event        | 721       | 2          | 360.5        | 36,016,352    | 0          | 0.3%          | 0.0%            |
-| get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 0.3%          | 0.4%            |
-| ref_time_left        | 85        | 2          | 42.5         | 4,258,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 81        | 12         | 6.8          | 4,056,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.0%          | 0.0%            |
-| seal_return          | 23        | 2          | 11.5         | 1,113,068     | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 21        | 3          | 7.0          | 1,026,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
-| return_data_copy     | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 3          | 0.7          | 144,012       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,806,465,380 | 11,786     | 17.0%         | 1.3%            |
-
-
-### MarketplaceProxy_evm - purchaseItem_physical
-
-- **Total Gas Used:** 1,834,686
-- **Base Call Weight:** ref_time=912,225,864, proof_size=9,096
-- **Total Weight:** ref_time=11,518,470,175, proof_size=956,835
-- **Weight Consumed:** ref_time=10,606,244,311 (92.1% of total), proof_size=947,739
-
-| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
-| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 812,343   | 37         | 21955.2      | 6,297,160,077 | 382,314    | 59.4%         | 40.3%           |
-| get_storage_or_zero  | 36,693    | 27         | 1359.0       | 1,834,545,639 | 277,259    | 17.3%         | 29.3%           |
-| DELEGATECALL         | 11,287    | 1          | 11287.0      | 564,368,830   | 277,084    | 5.3%          | 29.2%           |
-| SLOAD                | 1,360     | 1          | 1360.0       | 67,977,445    | 10,289     | 0.6%          | 1.1%            |
-| hash_keccak_256      | 1,243     | 5          | 248.6        | 62,177,288    | 0          | 0.6%          | 0.0%            |
-| deposit_event        | 445       | 1          | 445.0        | 22,221,568    | 0          | 0.2%          | 0.0%            |
-| call_data_load       | 75        | 11         | 6.8          | 3,718,000     | 0          | 0.0%          | 0.0%            |
-| GAS                  | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.0%          | 0.0%            |
-| now                  | 29        | 4          | 7.3          | 1,424,000     | 0          | 0.0%          | 0.0%            |
-| CALLDATACOPY         | 13        | 1          | 13.0         | 611,448       | 0          | 0.0%          | 0.0%            |
-| seal_return          | 12        | 1          | 12.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| RETURNDATACOPY       | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
-| CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| PUSH1                | 4         | 8          | 0.5          | 187,224       | 0          | 0.0%          | 0.0%            |
-| JUMPI                | 3         | 2          | 1.5          | 156,020       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 2         | 2          | 1.0          | 90,460        | 0          | 0.0%          | 0.0%            |
-| SUB                  | 1         | 3          | 0.3          | 70,209        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,745,095,836 | 793        | 16.5%         | 0.1%            |
-
-
-### MarketplaceProxy_pvm - purchaseItem_physical
-
-- **Total Gas Used:** 1,836,272
-- **Base Call Weight:** ref_time=912,225,864, proof_size=9,096
-- **Total Weight:** ref_time=11,597,765,231, proof_size=971,629
-- **Weight Consumed:** ref_time=10,685,539,367 (92.1% of total), proof_size=962,533
-
-| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
-| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 812,341   | 37         | 21955.2      | 6,297,160,077 | 382,314    | 58.9%         | 39.7%           |
-| get_storage_or_zero  | 38,048    | 28         | 1358.9       | 1,902,523,084 | 287,548    | 17.8%         | 29.9%           |
-| delegate_call_evm    | 11,287    | 1          | 11287.0      | 564,368,830   | 277,084    | 5.3%          | 28.8%           |
-| hash_keccak_256      | 1,243     | 5          | 248.6        | 62,177,288    | 0          | 0.6%          | 0.0%            |
-| get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 0.3%          | 0.4%            |
-| deposit_event        | 444       | 1          | 444.0        | 22,221,568    | 0          | 0.2%          | 0.0%            |
-| call_data_load       | 74        | 11         | 6.7          | 3,718,000     | 0          | 0.0%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 41        | 5          | 8.2          | 2,010,000     | 0          | 0.0%          | 0.0%            |
-| now                  | 28        | 4          | 7.0          | 1,424,000     | 0          | 0.0%          | 0.0%            |
-| seal_return          | 23        | 2          | 11.5         | 1,113,068     | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 12        | 2          | 6.0          | 684,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
-| return_data_copy     | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 3         | 3          | 1.0          | 167,952       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,792,522,402 | 11,786     | 16.8%         | 1.2%            |
-
-
-### MarketplaceProxy_evm - purchaseItem_with_matchmaker
-
-- **Total Gas Used:** 1,603,112
-- **Base Call Weight:** ref_time=910,536,480, proof_size=8,709
-- **Total Weight:** ref_time=12,839,779,416, proof_size=1,023,158
-- **Weight Consumed:** ref_time=11,929,242,936 (92.9% of total), proof_size=1,014,449
-
-| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
-| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 805,478   | 35         | 23013.7      | 5,953,831,171 | 361,445    | 49.9%         | 35.6%           |
-| get_storage_or_zero  | 47,568    | 35         | 1359.1       | 2,378,315,471 | 359,539    | 19.9%         | 35.4%           |
-| DELEGATECALL         | 11,287    | 1          | 11287.0      | 564,343,486   | 277,084    | 4.7%          | 27.3%           |
-| call_evm             | 8,457     | 1          | 8457.0       | 422,847,699   | 5,299      | 3.5%          | 0.5%            |
-| hash_keccak_256      | 1,743     | 7          | 249.0        | 87,206,392    | 0          | 0.7%          | 0.0%            |
-| SLOAD                | 1,360     | 1          | 1360.0       | 67,977,445    | 10,289     | 0.6%          | 1.0%            |
-| deposit_event        | 1,166     | 3          | 388.7        | 58,237,920    | 0          | 0.5%          | 0.0%            |
-| call_data_load       | 87        | 13         | 6.7          | 4,394,000     | 0          | 0.0%          | 0.0%            |
-| GAS                  | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 34        | 4          | 8.5          | 1,608,000     | 0          | 0.0%          | 0.0%            |
 | CALLDATACOPY         | 11        | 1          | 11.0         | 585,592       | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | RETURNDATACOPY       | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
 | CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 7         | 1          | 7.0          | 342,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 5         | 8          | 0.6          | 187,224       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,381,741,928 | 793        | 20.0%         | 0.1%            |
+| **Unattributed**     | -         | -          | -            | 1,758,367,014 | 793        | 16.7%         | 0.1%            |
+
+
+### MarketplaceProxy_pvm - purchaseItem_digital
+
+- **Total Gas Used:** 1,365,662
+- **Base Call Weight:** ref_time=910,536,480, proof_size=8,709
+- **Total Weight:** ref_time=11,527,300,900, proof_size=945,701
+- **Weight Consumed:** ref_time=10,616,764,420 (92.1% of total), proof_size=936,992
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 590,983   | 34         | 17381.9      | 5,789,294,938 | 351,575    | 54.5%         | 37.5%           |
+| get_storage_or_zero  | 38,050    | 28         | 1358.9       | 1,902,572,812 | 287,580    | 17.9%         | 30.7%           |
+| delegate_call_evm    | 11,278    | 1          | 11278.0      | 563,908,747   | 276,821    | 5.3%          | 29.5%           |
+| call_evm             | 8,457     | 1          | 8457.0       | 422,847,699   | 5,299      | 4.0%          | 0.6%            |
+| hash_keccak_256      | 997       | 4          | 249.3        | 49,832,224    | 0          | 0.5%          | 0.0%            |
+| deposit_event        | 720       | 2          | 360.0        | 36,016,352    | 0          | 0.3%          | 0.0%            |
+| get_immutable_data   | 635       | 1          | 635.0        | 31,795,634    | 3,801      | 0.3%          | 0.4%            |
+| ref_time_left        | 86        | 2          | 43.0         | 4,258,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 82        | 12         | 6.8          | 4,056,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.0%          | 0.0%            |
+| seal_return          | 22        | 2          | 11.0         | 1,113,068     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 21        | 3          | 7.0          | 1,026,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 14        | 2          | 7.0          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 3         | 3          | 1.0          | 144,012       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 1,806,008,470 | 11,916     | 17.0%         | 1.3%            |
+
+
+### MarketplaceProxy_evm - purchaseItem_physical
+
+- **Total Gas Used:** 1,834,664
+- **Base Call Weight:** ref_time=912,225,864, proof_size=9,096
+- **Total Weight:** ref_time=11,517,363,636, proof_size=956,572
+- **Weight Consumed:** ref_time=10,605,137,772 (92.1% of total), proof_size=947,476
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 812,344   | 37         | 21955.2      | 6,297,160,077 | 382,314    | 59.4%         | 40.4%           |
+| get_storage_or_zero  | 36,692    | 27         | 1359.0       | 1,834,545,639 | 277,259    | 17.3%         | 29.3%           |
+| DELEGATECALL         | 11,278    | 1          | 11278.0      | 563,934,091   | 276,821    | 5.3%          | 29.2%           |
+| SLOAD                | 1,360     | 1          | 1360.0       | 67,977,445    | 10,289     | 0.6%          | 1.1%            |
+| hash_keccak_256      | 1,243     | 5          | 248.6        | 62,177,288    | 0          | 0.6%          | 0.0%            |
+| deposit_event        | 444       | 1          | 444.0        | 22,221,568    | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 74        | 11         | 6.7          | 3,718,000     | 0          | 0.0%          | 0.0%            |
+| GAS                  | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 28        | 4          | 7.0          | 1,424,000     | 0          | 0.0%          | 0.0%            |
+| CALLDATACOPY         | 13        | 1          | 13.0         | 611,448       | 0          | 0.0%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
+| RETURNDATACOPY       | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
+| CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| PUSH1                | 4         | 8          | 0.5          | 187,224       | 0          | 0.0%          | 0.0%            |
+| JUMPI                | 3         | 2          | 1.5          | 156,020       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 2         | 2          | 1.0          | 90,460        | 0          | 0.0%          | 0.0%            |
+| SUB                  | 1         | 3          | 0.3          | 70,209        | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 1,744,424,036 | 793        | 16.4%         | 0.1%            |
+
+
+### MarketplaceProxy_pvm - purchaseItem_physical
+
+- **Total Gas Used:** 1,836,254
+- **Base Call Weight:** ref_time=912,225,864, proof_size=9,096
+- **Total Weight:** ref_time=11,596,873,582, proof_size=971,496
+- **Weight Consumed:** ref_time=10,684,647,718 (92.1% of total), proof_size=962,400
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 812,343   | 37         | 21955.2      | 6,297,160,077 | 382,314    | 58.9%         | 39.7%           |
+| get_storage_or_zero  | 38,052    | 28         | 1359.0       | 1,902,523,084 | 287,548    | 17.8%         | 29.9%           |
+| delegate_call_evm    | 11,278    | 1          | 11278.0      | 563,934,091   | 276,821    | 5.3%          | 28.8%           |
+| hash_keccak_256      | 1,244     | 5          | 248.8        | 62,177,288    | 0          | 0.6%          | 0.0%            |
+| get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 0.3%          | 0.4%            |
+| deposit_event        | 445       | 1          | 445.0        | 22,221,568    | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 76        | 11         | 6.9          | 3,718,000     | 0          | 0.0%          | 0.0%            |
+| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 41        | 5          | 8.2          | 2,010,000     | 0          | 0.0%          | 0.0%            |
+| now                  | 29        | 4          | 7.3          | 1,424,000     | 0          | 0.0%          | 0.0%            |
+| seal_return          | 22        | 2          | 11.0         | 1,113,068     | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 14        | 2          | 7.0          | 684,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_copy     | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 4         | 3          | 1.3          | 167,952       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 1,792,065,492 | 11,916     | 16.8%         | 1.2%            |
+
+
+### MarketplaceProxy_evm - purchaseItem_with_matchmaker
+
+- **Total Gas Used:** 1,603,090
+- **Base Call Weight:** ref_time=910,536,480, proof_size=8,709
+- **Total Weight:** ref_time=12,838,672,877, proof_size=1,022,895
+- **Weight Consumed:** ref_time=11,928,136,397 (92.9% of total), proof_size=1,014,186
+
+| Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
+| -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
+| set_storage_or_clear | 805,475   | 35         | 23013.6      | 5,953,831,171 | 361,445    | 49.9%         | 35.6%           |
+| get_storage_or_zero  | 47,567    | 35         | 1359.1       | 2,378,315,471 | 359,539    | 19.9%         | 35.5%           |
+| DELEGATECALL         | 11,277    | 1          | 11277.0      | 563,908,747   | 276,821    | 4.7%          | 27.3%           |
+| call_evm             | 8,457     | 1          | 8457.0       | 422,847,699   | 5,299      | 3.5%          | 0.5%            |
+| hash_keccak_256      | 1,743     | 7          | 249.0        | 87,206,392    | 0          | 0.7%          | 0.0%            |
+| SLOAD                | 1,360     | 1          | 1360.0       | 67,977,445    | 10,289     | 0.6%          | 1.0%            |
+| deposit_event        | 1,166     | 3          | 388.7        | 58,237,920    | 0          | 0.5%          | 0.0%            |
+| call_data_load       | 85        | 13         | 6.5          | 4,394,000     | 0          | 0.0%          | 0.0%            |
+| GAS                  | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 33        | 4          | 8.3          | 1,608,000     | 0          | 0.0%          | 0.0%            |
+| CALLDATACOPY         | 11        | 1          | 11.0         | 585,592       | 0          | 0.0%          | 0.0%            |
+| seal_return          | 12        | 1          | 12.0         | 556,534       | 0          | 0.0%          | 0.0%            |
+| RETURNDATACOPY       | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
+| CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 7         | 1          | 7.0          | 342,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| PUSH1                | 5         | 8          | 0.6          | 187,224       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,381,070,128 | 793        | 20.0%         | 0.1%            |
 
 
 ### MarketplaceProxy_pvm - purchaseItem_with_matchmaker
 
-- **Total Gas Used:** 1,604,698
+- **Total Gas Used:** 1,604,680
 - **Base Call Weight:** ref_time=910,536,480, proof_size=8,709
-- **Total Weight:** ref_time=12,919,085,736, proof_size=1,037,952
-- **Weight Consumed:** ref_time=12,008,549,256 (93.0% of total), proof_size=1,029,243
+- **Total Weight:** ref_time=12,918,194,087, proof_size=1,037,819
+- **Weight Consumed:** ref_time=12,007,657,607 (93.0% of total), proof_size=1,029,110
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 805,476   | 35         | 23013.6      | 5,953,831,171 | 361,445    | 49.6%         | 35.1%           |
-| get_storage_or_zero  | 48,927    | 36         | 1359.1       | 2,446,292,916 | 369,828    | 20.4%         | 35.9%           |
-| delegate_call_evm    | 11,286    | 1          | 11286.0      | 564,343,486   | 277,084    | 4.7%          | 26.9%           |
+| set_storage_or_clear | 805,479   | 35         | 23013.7      | 5,953,831,171 | 361,445    | 49.6%         | 35.1%           |
+| get_storage_or_zero  | 48,925    | 36         | 1359.0       | 2,446,292,916 | 369,828    | 20.4%         | 35.9%           |
+| delegate_call_evm    | 11,278    | 1          | 11278.0      | 563,908,747   | 276,821    | 4.7%          | 26.9%           |
 | call_evm             | 8,457     | 1          | 8457.0       | 422,847,699   | 5,299      | 3.5%          | 0.5%            |
 | hash_keccak_256      | 1,744     | 7          | 249.1        | 87,206,392    | 0          | 0.7%          | 0.0%            |
-| deposit_event        | 1,164     | 3          | 388.0        | 58,237,920    | 0          | 0.5%          | 0.0%            |
-| get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 0.3%          | 0.4%            |
+| deposit_event        | 1,166     | 3          | 388.7        | 58,237,920    | 0          | 0.5%          | 0.0%            |
+| get_immutable_data   | 635       | 1          | 635.0        | 31,795,634    | 3,801      | 0.3%          | 0.4%            |
 | call_data_load       | 89        | 13         | 6.8          | 4,394,000     | 0          | 0.0%          | 0.0%            |
 | ref_time_left        | 85        | 2          | 42.5         | 4,258,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,113,068     | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 21        | 3          | 7.0          | 1,026,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 20        | 3          | 6.7          | 1,026,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 14        | 2          | 7.0          | 636,000       | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
-| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 3         | 3          | 1.0          | 144,012       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 2,429,168,494 | 11,786     | 20.2%         | 1.1%            |
+| call_data_copy       | 4         | 3          | 1.3          | 144,012       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 2,428,711,584 | 11,916     | 20.2%         | 1.2%            |
 
 
 ### MarketplaceProxy_evm - registerMatchMaker
 
-- **Total Gas Used:** 968,098
+- **Total Gas Used:** 968,088
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=4,029,085,585, proof_size=450,710
-- **Weight Consumed:** ref_time=3,119,478,921 (77.4% of total), proof_size=442,214
+- **Total Weight:** ref_time=4,028,583,666, proof_size=450,447
+- **Weight Consumed:** ref_time=3,118,977,002 (77.4% of total), proof_size=441,951
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 400,104   | 9          | 44456.0      | 1,525,231,825 | 92,474     | 48.9%         | 20.9%           |
-| DELEGATECALL         | 11,287    | 1          | 11287.0      | 564,330,814   | 277,084    | 18.1%         | 62.7%           |
-| get_storage_or_zero  | 8,152     | 6          | 1358.7       | 407,616,030   | 61,574     | 13.1%         | 13.9%           |
+| set_storage_or_clear | 400,105   | 9          | 44456.1      | 1,525,231,825 | 92,474     | 48.9%         | 20.9%           |
+| DELEGATECALL         | 11,278    | 1          | 11278.0      | 563,896,075   | 276,821    | 18.1%         | 62.6%           |
+| get_storage_or_zero  | 8,151     | 6          | 1358.5       | 407,616,030   | 61,574     | 13.1%         | 13.9%           |
 | SLOAD                | 1,359     | 1          | 1359.0       | 67,977,445    | 10,289     | 2.2%          | 2.3%            |
 | deposit_event        | 781       | 1          | 781.0        | 39,075,136    | 0          | 1.3%          | 0.0%            |
 | hash_keccak_256      | 747       | 3          | 249.0        | 37,374,168    | 0          | 1.2%          | 0.0%            |
@@ -7194,58 +7195,58 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | RETURNDATACOPY       | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
 | CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 3         | 8          | 0.4          | 187,224       | 0          | 0.0%          | 0.0%            |
 | JUMPI                | 3         | 2          | 1.5          | 156,020       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 2         | 2          | 1.0          | 85,444        | 0          | 0.0%          | 0.0%            |
 | SUB                  | 1         | 3          | 0.3          | 70,209        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 468,653,675   | 793        | 15.0%         | 0.2%            |
+| **Unattributed**     | -         | -          | -            | 468,586,495   | 793        | 15.0%         | 0.2%            |
 
 
 ### MarketplaceProxy_pvm - registerMatchMaker
 
-- **Total Gas Used:** 969,684
+- **Total Gas Used:** 969,678
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=4,108,397,537, proof_size=465,504
-- **Weight Consumed:** ref_time=3,198,790,873 (77.9% of total), proof_size=457,008
+- **Total Weight:** ref_time=4,108,110,508, proof_size=465,371
+- **Weight Consumed:** ref_time=3,198,503,844 (77.9% of total), proof_size=456,875
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 400,104   | 9          | 44456.0      | 1,525,231,825 | 92,474     | 47.7%         | 20.2%           |
-| delegate_call_evm    | 11,287    | 1          | 11287.0      | 564,330,814   | 277,084    | 17.6%         | 60.6%           |
-| get_storage_or_zero  | 9,510     | 7          | 1358.6       | 475,593,475   | 71,863     | 14.9%         | 15.7%           |
-| deposit_event        | 781       | 1          | 781.0        | 39,075,136    | 0          | 1.2%          | 0.0%            |
+| set_storage_or_clear | 400,106   | 9          | 44456.2      | 1,525,231,825 | 92,474     | 47.7%         | 20.2%           |
+| delegate_call_evm    | 11,278    | 1          | 11278.0      | 563,896,075   | 276,821    | 17.6%         | 60.6%           |
+| get_storage_or_zero  | 9,512     | 7          | 1358.9       | 475,593,475   | 71,863     | 14.9%         | 15.7%           |
+| deposit_event        | 782       | 1          | 782.0        | 39,075,136    | 0          | 1.2%          | 0.0%            |
 | hash_keccak_256      | 747       | 3          | 249.0        | 37,374,168    | 0          | 1.2%          | 0.0%            |
 | get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 1.0%          | 0.8%            |
 | ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 27        | 4          | 6.8          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,113,068     | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 14        | 2          | 7.0          | 684,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 12        | 2          | 6.0          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 12        | 2          | 6.0          | 684,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 552,464       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 3         | 3          | 1.0          | 141,048       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 516,080,241   | 11,786     | 16.1%         | 2.6%            |
+| **Unattributed**     | -         | -          | -            | 516,227,951   | 11,916     | 16.1%         | 2.6%            |
 
 
 ### MarketplaceProxy_evm - registerShop
 
-- **Total Gas Used:** 1,524,854
+- **Total Gas Used:** 1,524,967
 - **Base Call Weight:** ref_time=912,566,360, proof_size=9,174
-- **Total Weight:** ref_time=3,986,864,548, proof_size=451,195
-- **Weight Consumed:** ref_time=3,074,298,188 (77.1% of total), proof_size=442,021
+- **Total Weight:** ref_time=3,992,543,189, proof_size=450,932
+- **Weight Consumed:** ref_time=3,079,976,829 (77.1% of total), proof_size=441,758
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 505,674   | 9          | 56186.0      | 1,523,633,625 | 92,313     | 49.6%         | 20.9%           |
-| DELEGATECALL         | 11,287    | 1          | 11287.0      | 564,375,166   | 277,084    | 18.4%         | 62.7%           |
-| get_storage_or_zero  | 8,152     | 6          | 1358.7       | 407,566,302   | 61,542     | 13.3%         | 13.9%           |
+| set_storage_or_clear | 505,673   | 9          | 56185.9      | 1,523,633,625 | 92,313     | 49.5%         | 20.9%           |
+| DELEGATECALL         | 11,279    | 1          | 11279.0      | 563,940,427   | 276,821    | 18.3%         | 62.7%           |
+| get_storage_or_zero  | 8,151     | 6          | 1358.5       | 407,566,302   | 61,542     | 13.2%         | 13.9%           |
 | deposit_event        | 1,961     | 1          | 1961.0       | 98,062,624    | 0          | 3.2%          | 0.0%            |
 | SLOAD                | 1,359     | 1          | 1359.0       | 67,977,445    | 10,289     | 2.2%          | 2.3%            |
-| hash_keccak_256      | 496       | 2          | 248.0        | 24,803,120    | 0          | 0.8%          | 0.0%            |
+| hash_keccak_256      | 495       | 2          | 247.5        | 24,803,120    | 0          | 0.8%          | 0.0%            |
 | call_data_load       | 81        | 12         | 6.8          | 4,056,000     | 0          | 0.1%          | 0.0%            |
 | GAS                  | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
@@ -7254,56 +7255,56 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 3         | 8          | 0.4          | 187,224       | 0          | 0.0%          | 0.0%            |
 | JUMPI                | 3         | 2          | 1.5          | 156,020       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 3         | 3          | 1.0          | 132,612       | 0          | 0.0%          | 0.0%            |
 | SUB                  | 0         | 3          | 0.0          | 70,209        | 0          | 0.0%          | 0.0%            |
 | AND                  | 2         | 2          | 1.0          | 46,806        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 376,824,462   | 793        | 12.3%         | 0.2%            |
+| **Unattributed**     | -         | -          | -            | 382,937,842   | 793        | 12.4%         | 0.2%            |
 
 
 ### MarketplaceProxy_pvm - registerShop
 
-- **Total Gas Used:** 1,526,423
+- **Total Gas Used:** 1,526,541
 - **Base Call Weight:** ref_time=912,566,360, proof_size=9,174
-- **Total Weight:** ref_time=4,065,352,852, proof_size=465,989
-- **Weight Consumed:** ref_time=3,152,786,492 (77.6% of total), proof_size=456,815
+- **Total Weight:** ref_time=4,071,246,383, proof_size=465,856
+- **Weight Consumed:** ref_time=3,158,680,023 (77.6% of total), proof_size=456,682
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 505,674   | 9          | 56186.0      | 1,523,633,625 | 92,313     | 48.3%         | 20.2%           |
-| delegate_call_evm    | 11,287    | 1          | 11287.0      | 564,375,166   | 277,084    | 17.9%         | 60.7%           |
-| get_storage_or_zero  | 9,510     | 7          | 1358.6       | 475,543,747   | 71,831     | 15.1%         | 15.7%           |
+| set_storage_or_clear | 505,673   | 9          | 56185.9      | 1,523,633,625 | 92,313     | 48.2%         | 20.2%           |
+| delegate_call_evm    | 11,279    | 1          | 11279.0      | 563,940,427   | 276,821    | 17.9%         | 60.6%           |
+| get_storage_or_zero  | 9,511     | 7          | 1358.7       | 475,543,747   | 71,831     | 15.1%         | 15.7%           |
 | deposit_event        | 1,961     | 1          | 1961.0       | 98,062,624    | 0          | 3.1%          | 0.0%            |
 | get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 1.0%          | 0.8%            |
-| hash_keccak_256      | 495       | 2          | 247.5        | 24,803,120    | 0          | 0.8%          | 0.0%            |
-| call_data_load       | 80        | 12         | 6.7          | 4,056,000     | 0          | 0.1%          | 0.0%            |
-| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
+| hash_keccak_256      | 496       | 2          | 248.0        | 24,803,120    | 0          | 0.8%          | 0.0%            |
+| call_data_load       | 82        | 12         | 6.8          | 4,056,000     | 0          | 0.1%          | 0.0%            |
+| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,100,396     | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 13        | 2          | 6.5          | 684,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 14        | 2          | 7.0          | 684,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 12        | 2          | 6.0          | 636,000       | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 546,000       | 0          | 0.0%          | 0.0%            |
-| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 3         | 4          | 0.8          | 213,752       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 422,907,428   | 11,786     | 13.4%         | 2.6%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 4         | 4          | 1.0          | 213,752       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 429,235,698   | 11,916     | 13.6%         | 2.6%            |
 
 
 ### MarketplaceProxy_evm - updateItem
 
-- **Total Gas Used:** 1,186,575
+- **Total Gas Used:** 1,186,525
 - **Base Call Weight:** ref_time=912,566,360, proof_size=9,174
-- **Total Weight:** ref_time=5,552,937,069, proof_size=554,438
-- **Weight Consumed:** ref_time=4,640,370,709 (83.6% of total), proof_size=545,264
+- **Total Weight:** ref_time=5,550,419,750, proof_size=554,175
+- **Weight Consumed:** ref_time=4,637,853,390 (83.6% of total), proof_size=545,001
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 136,108   | 9          | 15123.1      | 1,525,282,769 | 92,602     | 32.9%         | 17.0%           |
-| get_storage_or_zero  | 21,748    | 16         | 1359.3       | 1,087,440,208 | 164,496    | 23.4%         | 30.2%           |
-| DELEGATECALL         | 11,287    | 1          | 11287.0      | 564,375,166   | 277,084    | 12.2%         | 50.8%           |
-| hash_keccak_256      | 2,220     | 9          | 246.7        | 111,087,921   | 0          | 2.4%          | 0.0%            |
+| set_storage_or_clear | 136,105   | 9          | 15122.8      | 1,525,282,769 | 92,602     | 32.9%         | 17.0%           |
+| get_storage_or_zero  | 21,751    | 16         | 1359.4       | 1,087,440,208 | 164,496    | 23.4%         | 30.2%           |
+| DELEGATECALL         | 11,278    | 1          | 11278.0      | 563,940,427   | 276,821    | 12.2%         | 50.8%           |
+| hash_keccak_256      | 2,222     | 9          | 246.9        | 111,087,921   | 0          | 2.4%          | 0.0%            |
 | deposit_event        | 1,793     | 1          | 1793.0       | 89,635,840    | 0          | 1.9%          | 0.0%            |
 | SLOAD                | 1,359     | 1          | 1359.0       | 67,977,445    | 10,289     | 1.5%          | 1.9%            |
 | call_data_load       | 60        | 9          | 6.7          | 3,042,000     | 0          | 0.1%          | 0.0%            |
@@ -7313,57 +7314,57 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | CALLER               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 3         | 8          | 0.4          | 187,224       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 4         | 4          | 1.0          | 169,634       | 0          | 0.0%          | 0.0%            |
-| JUMPI                | 2         | 2          | 1.0          | 156,020       | 0          | 0.0%          | 0.0%            |
+| JUMPI                | 3         | 2          | 1.5          | 156,020       | 0          | 0.0%          | 0.0%            |
 | SUB                  | 0         | 3          | 0.0          | 70,209        | 0          | 0.0%          | 0.0%            |
 | AND                  | 2         | 2          | 1.0          | 46,806        | 0          | 0.0%          | 0.0%            |
 | DUP2                 | 2         | 2          | 1.0          | 46,806        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,185,652,894 | 793        | 25.6%         | 0.1%            |
+| **Unattributed**     | -         | -          | -            | 1,183,570,314 | 793        | 25.5%         | 0.1%            |
 
 
 ### MarketplaceProxy_pvm - updateItem
 
-- **Total Gas Used:** 1,188,145
+- **Total Gas Used:** 1,188,099
 - **Base Call Weight:** ref_time=912,566,360, proof_size=9,174
-- **Total Weight:** ref_time=5,631,425,373, proof_size=569,232
-- **Weight Consumed:** ref_time=4,718,859,013 (83.8% of total), proof_size=560,058
+- **Total Weight:** ref_time=5,629,122,944, proof_size=569,099
+- **Weight Consumed:** ref_time=4,716,556,584 (83.8% of total), proof_size=559,925
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 136,106   | 9          | 15122.9      | 1,525,282,769 | 92,602     | 32.3%         | 16.5%           |
-| get_storage_or_zero  | 23,107    | 17         | 1359.2       | 1,155,417,653 | 174,785    | 24.5%         | 31.2%           |
-| delegate_call_evm    | 11,286    | 1          | 11286.0      | 564,375,166   | 277,084    | 12.0%         | 49.5%           |
+| get_storage_or_zero  | 23,108    | 17         | 1359.3       | 1,155,417,653 | 174,785    | 24.5%         | 31.2%           |
+| delegate_call_evm    | 11,278    | 1          | 11278.0      | 563,940,427   | 276,821    | 12.0%         | 49.4%           |
 | hash_keccak_256      | 2,221     | 9          | 246.8        | 111,087,921   | 0          | 2.4%          | 0.0%            |
 | deposit_event        | 1,792     | 1          | 1792.0       | 89,635,840    | 0          | 1.9%          | 0.0%            |
 | get_immutable_data   | 636       | 1          | 636.0        | 31,795,634    | 3,801      | 0.7%          | 0.7%            |
-| call_data_load       | 60        | 9          | 6.7          | 3,042,000     | 0          | 0.1%          | 0.0%            |
-| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 61        | 9          | 6.8          | 3,042,000     | 0          | 0.1%          | 0.0%            |
+| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,100,396     | 0          | 0.0%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000       | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 14        | 2          | 7.0          | 684,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 12        | 2          | 6.0          | 636,000       | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 546,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 5         | 5          | 1.0          | 250,774       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,231,735,860 | 11,786     | 26.1%         | 2.1%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 4         | 5          | 0.8          | 250,774       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 1,229,868,170 | 11,916     | 26.1%         | 2.1%            |
 
 
 ### MarketplaceProxy_evm - updateMatchMakerFee
 
-- **Total Gas Used:** 362,925
+- **Total Gas Used:** 362,915
 - **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
-- **Total Weight:** ref_time=2,150,435,860, proof_size=347,810
-- **Weight Consumed:** ref_time=1,242,125,700 (57.8% of total), proof_size=339,611
+- **Total Weight:** ref_time=2,149,933,941, proof_size=347,547
+- **Weight Consumed:** ref_time=1,241,623,781 (57.8% of total), proof_size=339,348
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| DELEGATECALL         | 11,286    | 1          | 11286.0      | 564,311,806 | 277,084    | 45.4%         | 81.6%           |
-| get_storage_or_zero  | 5,440     | 4          | 1360.0       | 271,909,780 | 41,156     | 21.9%         | 12.1%           |
+| DELEGATECALL         | 11,277    | 1          | 11277.0      | 563,877,067 | 276,821    | 45.4%         | 81.6%           |
+| get_storage_or_zero  | 5,437     | 4          | 1359.3       | 271,909,780 | 41,156     | 21.9%         | 12.1%           |
 | set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361 | 10,289     | 13.6%         | 3.0%            |
 | SLOAD                | 1,359     | 1          | 1359.0       | 67,977,445  | 10,289     | 5.5%          | 3.0%            |
-| hash_keccak_256      | 499       | 2          | 249.5        | 24,916,112  | 0          | 2.0%          | 0.0%            |
+| hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 2.0%          | 0.0%            |
 | deposit_event        | 445       | 1          | 445.0        | 22,221,568  | 0          | 1.8%          | 0.0%            |
 | GAS                  | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
 | call_data_load       | 13        | 2          | 6.5          | 676,000     | 0          | 0.1%          | 0.0%            |
@@ -7371,42 +7372,42 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | CALLER               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | PUSH1                | 3         | 8          | 0.4          | 187,224     | 0          | 0.0%          | 0.0%            |
 | JUMPI                | 3         | 2          | 1.5          | 156,020     | 0          | 0.0%          | 0.0%            |
 | SUB                  | 0         | 3          | 0.0          | 70,209      | 0          | 0.0%          | 0.0%            |
 | AND                  | 2         | 2          | 1.0          | 46,806      | 0          | 0.0%          | 0.0%            |
 | PUSH32               | 2         | 2          | 1.0          | 46,806      | 0          | 0.0%          | 0.0%            |
 | SHL                  | 2         | 2          | 1.0          | 46,806      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 115,165,436 | 793        | 9.3%          | 0.2%            |
+| **Unattributed**     | -         | -          | -            | 115,098,256 | 793        | 9.3%          | 0.2%            |
 
 
 ### MarketplaceProxy_pvm - updateMatchMakerFee
 
-- **Total Gas Used:** 364,493
+- **Total Gas Used:** 364,487
 - **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
-- **Total Weight:** ref_time=2,228,817,964, proof_size=362,604
-- **Weight Consumed:** ref_time=1,320,507,804 (59.2% of total), proof_size=354,405
+- **Total Weight:** ref_time=2,228,530,935, proof_size=362,471
+- **Weight Consumed:** ref_time=1,320,220,775 (59.2% of total), proof_size=354,272
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| delegate_call_evm    | 11,286    | 1          | 11286.0      | 564,311,806 | 277,084    | 42.7%         | 78.2%           |
-| get_storage_or_zero  | 6,796     | 5          | 1359.2       | 339,887,225 | 51,445     | 25.7%         | 14.5%           |
+| delegate_call_evm    | 11,276    | 1          | 11276.0      | 563,877,067 | 276,821    | 42.7%         | 78.1%           |
+| get_storage_or_zero  | 6,797     | 5          | 1359.4       | 339,887,225 | 51,445     | 25.7%         | 14.5%           |
 | set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361 | 10,289     | 12.8%         | 2.9%            |
 | get_immutable_data   | 636       | 1          | 636.0        | 31,795,634  | 3,801      | 2.4%          | 1.1%            |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 1.9%          | 0.0%            |
-| deposit_event        | 444       | 1          | 444.0        | 22,221,568  | 0          | 1.7%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
+| deposit_event        | 445       | 1          | 445.0        | 22,221,568  | 0          | 1.7%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,100,396   | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
-| return_data_size     | 14        | 2          | 7.0          | 684,000     | 0          | 0.1%          | 0.0%            |
+| return_data_size     | 13        | 2          | 6.5          | 684,000     | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 14        | 2          | 7.0          | 676,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 12        | 2          | 6.0          | 636,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 13        | 2          | 6.5          | 636,000     | 0          | 0.0%          | 0.0%            |
 | return_data_copy     | 11        | 1          | 11.0         | 546,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 44,660      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 161,114,042 | 11,786     | 12.2%         | 3.3%            |
+| **Unattributed**     | -         | -          | -            | 161,261,752 | 11,916     | 12.2%         | 3.4%            |
 
 
 ### MockMobRule_evm - addCounterEvidence
@@ -7443,24 +7444,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### MockMobRule_pvm - addCounterEvidence
 
-- **Total Gas Used:** 603,545
+- **Total Gas Used:** 603,552
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=1,641,438,221, proof_size=96,585
-- **Weight Consumed:** ref_time=731,831,557 (44.6% of total), proof_size=88,089
+- **Total Weight:** ref_time=1,641,775,307, proof_size=96,667
+- **Weight Consumed:** ref_time=732,168,643 (44.6% of total), proof_size=88,171
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 4,076     | 3          | 1358.7       | 203,832,879 | 30,803     | 27.9%         | 35.0%           |
+| get_storage_or_zero  | 4,077     | 3          | 1359.0       | 203,832,879 | 30,803     | 27.8%         | 34.9%           |
 | set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 23.1%         | 11.6%           |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352  | 0          | 4.2%          | 0.0%            |
-| hash_keccak_256      | 250       | 1          | 250.0        | 12,458,056  | 0          | 1.7%          | 0.0%            |
+| hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 1.7%          | 0.0%            |
 | call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 42,836      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 312,598,611 | 47,029     | 42.7%         | 53.4%           |
+| **Unattributed**     | -         | -          | -            | 312,935,697 | 47,111     | 42.7%         | 53.4%           |
 
 
 ### MockMobRule_evm - createDispute
@@ -7497,24 +7498,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### MockMobRule_pvm - createDispute
 
-- **Total Gas Used:** 1,216,193
+- **Total Gas Used:** 1,216,197
 - **Base Call Weight:** ref_time=910,876,976, proof_size=8,787
-- **Total Weight:** ref_time=4,093,835,631, proof_size=251,021
-- **Weight Consumed:** ref_time=3,182,958,655 (77.8% of total), proof_size=242,234
+- **Total Weight:** ref_time=4,094,038,357, proof_size=251,103
+- **Weight Consumed:** ref_time=3,183,161,381 (77.8% of total), proof_size=242,316
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 459,707   | 11         | 41791.5      | 1,865,402,539 | 113,117    | 58.6%         | 46.7%           |
-| get_storage_or_zero  | 10,869    | 8          | 1358.6       | 543,471,464   | 82,088     | 17.1%         | 33.9%           |
+| set_storage_or_clear | 459,708   | 11         | 41791.6      | 1,865,402,539 | 113,117    | 58.6%         | 46.7%           |
+| get_storage_or_zero  | 10,870    | 8          | 1358.8       | 543,471,464   | 82,088     | 17.1%         | 33.9%           |
 | deposit_event        | 950       | 1          | 950.0        | 47,501,920    | 0          | 1.5%          | 0.0%            |
 | hash_keccak_256      | 747       | 3          | 249.0        | 37,374,168    | 0          | 1.2%          | 0.0%            |
-| call_data_load       | 69        | 10         | 6.9          | 3,380,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 68        | 10         | 6.8          | 3,380,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 42,836        | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 684,219,194   | 47,029     | 21.5%         | 19.4%           |
+| **Unattributed**     | -         | -          | -            | 684,421,920   | 47,111     | 21.5%         | 19.4%           |
 
 
 ### MockMobRule_evm - deploy
@@ -7551,22 +7552,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### MockMobRule_pvm - deploy
 
-- **Total Gas Used:** 125,448,923
-- **Base Call Weight:** ref_time=2,267,695,600, proof_size=6,934
-- **Total Weight:** ref_time=2,878,344,154, proof_size=37,705
-- **Weight Consumed:** ref_time=610,648,554 (21.2% of total), proof_size=30,771
+- **Total Gas Used:** 125,632,282
+- **Base Call Weight:** ref_time=2,269,016,374, proof_size=6,934
+- **Total Weight:** ref_time=2,880,269,548, proof_size=37,705
+- **Weight Consumed:** ref_time=611,253,174 (21.2% of total), proof_size=30,771
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 112,372   | 2          | 56186.0      | 338,585,250 | 20,514     | 55.4%         | 66.7%           |
+| set_storage_or_clear | 112,371   | 2          | 56185.5      | 338,585,250 | 20,514     | 55.4%         | 66.7%           |
 | set_immutable_data   | 2,048     | 1          | 2048.0       | 102,397,331 | 0          | 16.8%         | 0.0%            |
-| get_storage_or_zero  | 1,358     | 1          | 1358.0       | 67,927,717  | 10,257     | 11.1%         | 33.3%           |
-| deposit_event        | 108       | 1          | 108.0        | 5,368,000   | 0          | 0.9%          | 0.0%            |
+| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 11.1%         | 33.3%           |
+| deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.9%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| call_data_copy       | 2         | 2          | 1.0          | 88,408      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 95,077,650  | 0          | 15.6%         | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
+| call_data_copy       | 1         | 2          | 0.5          | 88,408      | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 95,682,270  | 0          | 15.7%         | 0.0%            |
 
 
 ### MockMobRule_evm - resolveCase
@@ -7603,23 +7604,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### MockMobRule_pvm - resolveCase
 
-- **Total Gas Used:** 473,107
+- **Total Gas Used:** 473,110
 - **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,519,552,933, proof_size=106,682
-- **Weight Consumed:** ref_time=610,784,413 (40.2% of total), proof_size=98,378
+- **Total Weight:** ref_time=1,519,688,479, proof_size=106,764
+- **Weight Consumed:** ref_time=610,919,959 (40.2% of total), proof_size=98,460
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 5,436     | 4          | 1359.0       | 271,810,324 | 41,092     | 44.5%         | 41.8%           |
+| get_storage_or_zero  | 5,436     | 4          | 1359.0       | 271,810,324 | 41,092     | 44.5%         | 41.7%           |
 | set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 27.7%         | 10.4%           |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 2.0%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.9%          | 0.0%            |
-| call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 149,235,210 | 47,029     | 24.4%         | 47.8%           |
+| **Unattributed**     | -         | -          | -            | 149,370,756 | 47,111     | 24.5%         | 47.8%           |
 
 
 ### NonFungibleCredential_evm - deploy
@@ -7655,20 +7656,20 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### NonFungibleCredential_pvm - deploy
 
-- **Total Gas Used:** 162,690,891
-- **Base Call Weight:** ref_time=2,562,918,244, proof_size=6,934
-- **Total Weight:** ref_time=2,820,755,386, proof_size=27,448
-- **Weight Consumed:** ref_time=257,837,142 (9.1% of total), proof_size=20,514
+- **Total Gas Used:** 163,241,879
+- **Base Call Weight:** ref_time=2,566,816,138, proof_size=6,934
+- **Total Weight:** ref_time=2,824,115,840, proof_size=27,448
+- **Weight Consumed:** ref_time=257,299,702 (9.1% of total), proof_size=20,514
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 65.7%         | 50.0%           |
-| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 26.3%         | 50.0%           |
+| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 65.8%         | 50.0%           |
+| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 26.4%         | 50.0%           |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.2%          | 0.0%            |
 | value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 19,372,046  | 0          | 7.5%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 18,834,606  | 0          | 7.3%          | 0.0%            |
 
 
 ### non_fungible_credential_rust - deploy
@@ -7720,25 +7721,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### NonFungibleCredential_pvm - issue_nontransferable
 
-- **Total Gas Used:** 1,257,735
+- **Total Gas Used:** 1,257,759
 - **Base Call Weight:** ref_time=910,863,880, proof_size=8,784
-- **Total Weight:** ref_time=6,270,937,501, proof_size=444,296
-- **Weight Consumed:** ref_time=5,360,073,621 (85.5% of total), proof_size=435,512
+- **Total Weight:** ref_time=6,272,143,687, proof_size=444,538
+- **Weight Consumed:** ref_time=5,361,279,807 (85.5% of total), proof_size=435,754
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 480,060   | 17         | 28238.8      | 2,882,807,433 | 174,948    | 53.8%         | 40.2%           |
+| set_storage_or_clear | 480,057   | 17         | 28238.6      | 2,882,807,433 | 174,948    | 53.8%         | 40.1%           |
 | get_storage_or_zero  | 25,823    | 19         | 1359.1       | 1,291,123,903 | 195,203    | 24.1%         | 44.8%           |
-| hash_keccak_256      | 3,976     | 16         | 248.5        | 198,831,025   | 0          | 3.7%          | 0.0%            |
+| hash_keccak_256      | 3,977     | 16         | 248.6        | 198,831,025   | 0          | 3.7%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.6%          | 0.0%            |
 | call_data_load       | 48        | 7          | 6.9          | 2,366,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 4         | 5          | 0.8          | 212,470       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 951,311,904   | 65,361     | 17.7%         | 15.0%           |
+| call_data_copy       | 5         | 5          | 1.0          | 212,470       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 952,518,090   | 65,603     | 17.8%         | 15.1%           |
 
 
 ### non_fungible_credential_rust - issue_nontransferable
@@ -7795,25 +7796,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### NonFungibleCredential_pvm - issue_transferable
 
-- **Total Gas Used:** 1,416,122
+- **Total Gas Used:** 1,416,146
 - **Base Call Weight:** ref_time=910,863,880, proof_size=8,784
-- **Total Weight:** ref_time=6,270,263,424, proof_size=444,007
-- **Weight Consumed:** ref_time=5,359,399,544 (85.5% of total), proof_size=435,223
+- **Total Weight:** ref_time=6,271,469,610, proof_size=444,249
+- **Weight Consumed:** ref_time=5,360,605,730 (85.5% of total), proof_size=435,465
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 638,426   | 17         | 37554.5      | 2,881,196,497 | 174,755    | 53.8%         | 40.2%           |
-| get_storage_or_zero  | 25,822    | 19         | 1359.1       | 1,290,974,719 | 195,107    | 24.1%         | 44.8%           |
+| set_storage_or_clear | 638,426   | 17         | 37554.5      | 2,881,196,497 | 174,755    | 53.7%         | 40.1%           |
+| get_storage_or_zero  | 25,821    | 19         | 1359.0       | 1,290,974,719 | 195,107    | 24.1%         | 44.8%           |
 | hash_keccak_256      | 3,977     | 16         | 248.6        | 198,841,618   | 0          | 3.7%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.6%          | 0.0%            |
 | call_data_load       | 48        | 7          | 6.9          | 2,366,000     | 0          | 0.0%          | 0.0%            |
 | caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
-| seal_return          | 12        | 1          | 12.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 3         | 5          | 0.6          | 213,040       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 952,386,784   | 65,361     | 17.8%         | 15.0%           |
+| call_data_copy       | 5         | 5          | 1.0          | 213,040       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 953,592,970   | 65,603     | 17.8%         | 15.1%           |
 
 
 ### non_fungible_credential_rust - issue_transferable
@@ -7870,25 +7871,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### NonFungibleCredential_pvm - issue_with_expiry
 
-- **Total Gas Used:** 1,204,830
+- **Total Gas Used:** 1,204,854
 - **Base Call Weight:** ref_time=910,863,880, proof_size=8,784
-- **Total Weight:** ref_time=6,265,685,696, proof_size=444,197
-- **Weight Consumed:** ref_time=5,354,821,816 (85.5% of total), proof_size=435,413
+- **Total Weight:** ref_time=6,266,891,882, proof_size=444,439
+- **Weight Consumed:** ref_time=5,356,028,002 (85.5% of total), proof_size=435,655
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 427,163   | 17         | 25127.2      | 2,878,101,985 | 174,689    | 53.7%         | 40.1%           |
-| get_storage_or_zero  | 25,826    | 19         | 1359.3       | 1,291,372,543 | 195,363    | 24.1%         | 44.9%           |
-| hash_keccak_256      | 3,978     | 16         | 248.6        | 198,841,618   | 0          | 3.7%          | 0.0%            |
+| get_storage_or_zero  | 25,828    | 19         | 1359.4       | 1,291,372,543 | 195,363    | 24.1%         | 44.8%           |
+| hash_keccak_256      | 3,975     | 16         | 248.4        | 198,841,618   | 0          | 3.7%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.6%          | 0.0%            |
 | call_data_load       | 48        | 7          | 6.9          | 2,366,000     | 0          | 0.0%          | 0.0%            |
-| caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534       | 0          | 0.0%          | 0.0%            |
-| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 4         | 5          | 0.8          | 213,040       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 950,505,744   | 65,361     | 17.8%         | 15.0%           |
+| call_data_copy       | 3         | 5          | 0.6          | 213,040       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 951,711,930   | 65,603     | 17.8%         | 15.1%           |
 
 
 ### non_fungible_credential_rust - issue_with_expiry
@@ -7945,15 +7946,15 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### NonFungibleCredential_pvm - revoke
 
-- **Total Gas Used:** 349,910
+- **Total Gas Used:** 349,918
 - **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
-- **Total Weight:** ref_time=1,399,695,045, proof_size=104,430
-- **Weight Consumed:** ref_time=491,371,789 (35.1% of total), proof_size=96,228
+- **Total Weight:** ref_time=1,400,095,071, proof_size=104,672
+- **Weight Consumed:** ref_time=491,771,815 (35.1% of total), proof_size=96,470
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361 | 10,289     | 34.5%         | 10.7%           |
-| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,954,890 | 20,578     | 27.7%         | 21.4%           |
+| set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361 | 10,289     | 34.4%         | 10.7%           |
+| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,954,890 | 20,578     | 27.6%         | 21.3%           |
 | hash_keccak_256      | 250       | 1          | 250.0        | 12,458,056  | 0          | 2.5%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 1.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.2%          | 0.0%            |
@@ -7961,7 +7962,7 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 165,601,284 | 65,361     | 33.7%         | 67.9%           |
+| **Unattributed**     | -         | -          | -            | 166,001,310 | 65,603     | 33.8%         | 68.0%           |
 
 
 ### non_fungible_credential_rust - revoke
@@ -8017,15 +8018,15 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### NonFungibleCredential_pvm - transfer
 
-- **Total Gas Used:** 645,221
+- **Total Gas Used:** 645,229
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=7,685,222,538, proof_size=567,729
-- **Weight Consumed:** ref_time=6,776,480,210 (88.2% of total), proof_size=559,431
+- **Total Weight:** ref_time=7,685,622,564, proof_size=567,971
+- **Weight Consumed:** ref_time=6,776,880,236 (88.2% of total), proof_size=559,673
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 163,352   | 17         | 9608.9       | 2,887,576,561 | 175,367    | 42.6%         | 31.3%           |
-| get_storage_or_zero  | 42,137    | 31         | 1359.3       | 2,106,902,971 | 318,703    | 31.1%         | 57.0%           |
+| get_storage_or_zero  | 42,137    | 31         | 1359.3       | 2,106,902,971 | 318,703    | 31.1%         | 56.9%           |
 | hash_keccak_256      | 9,445     | 38         | 248.6        | 472,156,154   | 0          | 7.0%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000     | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 19        | 3          | 6.3          | 1,014,000     | 0          | 0.0%          | 0.0%            |
@@ -8033,7 +8034,7 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,301,856,326 | 65,361     | 19.2%         | 11.7%           |
+| **Unattributed**     | -         | -          | -            | 1,302,256,352 | 65,603     | 19.2%         | 11.7%           |
 
 
 ### non_fungible_credential_rust - transfer
@@ -8089,15 +8090,15 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### NonFungibleCredential_pvm - updateMetadata
 
-- **Total Gas Used:** 414,978
+- **Total Gas Used:** 414,986
 - **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
-- **Total Weight:** ref_time=1,353,093,571, proof_size=94,240
-- **Weight Consumed:** ref_time=444,338,147 (32.8% of total), proof_size=85,939
+- **Total Weight:** ref_time=1,353,493,597, proof_size=94,482
+- **Weight Consumed:** ref_time=444,738,173 (32.9% of total), proof_size=86,181
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 3,387     | 1          | 3387.0       | 169,305,361 | 10,289     | 38.1%         | 12.0%           |
-| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,977,445  | 10,289     | 15.3%         | 12.0%           |
+| set_storage_or_clear | 3,387     | 1          | 3387.0       | 169,305,361 | 10,289     | 38.1%         | 11.9%           |
+| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,977,445  | 10,289     | 15.3%         | 11.9%           |
 | deposit_event        | 275       | 1          | 275.0        | 13,794,784  | 0          | 3.1%          | 0.0%            |
 | hash_keccak_256      | 250       | 1          | 250.0        | 12,458,056  | 0          | 2.8%          | 0.0%            |
 | call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.2%          | 0.0%            |
@@ -8105,7 +8106,7 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 178,182,303 | 65,361     | 40.1%         | 76.1%           |
+| **Unattributed**     | -         | -          | -            | 178,582,329 | 65,603     | 40.2%         | 76.1%           |
 
 
 ### non_fungible_credential_rust - updateMetadata
@@ -8152,18 +8153,18 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### SimpleToken_pvm - deploy
 
-- **Total Gas Used:** 27,035,250
-- **Base Call Weight:** ref_time=1,596,707,635, proof_size=6,934
-- **Total Weight:** ref_time=1,609,702,633, proof_size=6,934
-- **Weight Consumed:** ref_time=12,994,998 (0.8% of total), proof_size=0
+- **Total Gas Used:** 26,996,814
+- **Base Call Weight:** ref_time=1,596,433,816, proof_size=6,934
+- **Total Weight:** ref_time=1,608,891,374, proof_size=6,934
+- **Weight Consumed:** ref_time=12,457,558 (0.8% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.2%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.6%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.4%          | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.4%          | 0.0%            |
+| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.7%          | 0.0%            |
+| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.6%          | 0.0%            |
 | call_data_copy    | 1         | 1          | 1.0          | 40,556     | 0          | 0.3%          | 0.0%            |
-| **Unattributed**  | -         | -          | -            | 11,750,244 | 0          | 90.4%         | 0.0%            |
+| **Unattributed**  | -         | -          | -            | 11,212,804 | 0          | 90.0%         | 0.0%            |
 
 
 ### simple_token_u256_ink - deploy
@@ -8215,21 +8216,21 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### SimpleToken_pvm - mint
 
-- **Total Gas Used:** 521,517
+- **Total Gas Used:** 521,508
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=1,500,015,762, proof_size=54,700
-- **Weight Consumed:** ref_time=591,273,434 (39.4% of total), proof_size=46,402
+- **Total Weight:** ref_time=1,499,584,581, proof_size=54,683
+- **Weight Consumed:** ref_time=590,842,253 (39.4% of total), proof_size=46,385
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 112,371   | 2          | 56185.5      | 338,585,250 | 20,514     | 57.3%         | 44.2%           |
-| get_storage_or_zero  | 2,716     | 2          | 1358.0       | 135,855,434 | 20,514     | 23.0%         | 44.2%           |
+| set_storage_or_clear | 112,372   | 2          | 56186.0      | 338,585,250 | 20,514     | 57.3%         | 44.2%           |
+| get_storage_or_zero  | 2,717     | 2          | 1358.5       | 135,855,434 | 20,514     | 23.0%         | 44.2%           |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 2.3%          | 0.0%            |
-| hash_keccak_256      | 250       | 1          | 250.0        | 12,458,056  | 0          | 2.1%          | 0.0%            |
-| call_data_load       | 19        | 3          | 6.3          | 1,014,000   | 0          | 0.2%          | 0.0%            |
+| hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 2.1%          | 0.0%            |
+| call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 88,697,712  | 5,374      | 15.0%         | 11.6%           |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 88,266,531  | 5,357      | 14.9%         | 11.5%           |
 
 
 ### simple_token_u128_no_alloc_rust - mint
@@ -8373,22 +8374,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### SimpleToken_pvm - transfer
 
-- **Total Gas Used:** 417,127
+- **Total Gas Used:** 417,113
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=1,560,532,291, proof_size=54,861
-- **Weight Consumed:** ref_time=651,789,963 (41.8% of total), proof_size=46,563
+- **Total Weight:** ref_time=1,559,832,390, proof_size=54,844
+- **Weight Consumed:** ref_time=651,090,062 (41.7% of total), proof_size=46,546
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 6,804     | 2          | 3402.0       | 340,170,714 | 20,643     | 52.2%         | 44.3%           |
-| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,905,162 | 20,546     | 20.9%         | 44.1%           |
+| get_storage_or_zero  | 2,718     | 2          | 1359.0       | 135,905,162 | 20,546     | 20.9%         | 44.1%           |
 | hash_keccak_256      | 747       | 3          | 249.0        | 37,374,168  | 0          | 5.7%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 2.1%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000   | 0          | 0.2%          | 0.0%            |
 | call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 121,456,937 | 5,374      | 18.6%         | 11.5%           |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 120,757,036 | 5,357      | 18.5%         | 11.5%           |
 
 
 ### simple_token_u128_no_alloc_rust - transfer
@@ -8538,25 +8539,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - delegate
 
-- **Total Gas Used:** 838,725
+- **Total Gas Used:** 838,788
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=2,940,424,306, proof_size=205,615
-- **Weight Consumed:** ref_time=2,030,830,738 (69.1% of total), proof_size=197,122
+- **Total Weight:** ref_time=2,943,590,913, proof_size=206,474
+- **Weight Consumed:** ref_time=2,033,997,345 (69.1% of total), proof_size=197,981
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 280,929   | 5          | 56185.8      | 846,463,125 | 51,285     | 41.7%         | 26.0%           |
-| get_storage_or_zero  | 9,511     | 7          | 1358.7       | 475,543,747 | 71,831     | 23.4%         | 36.4%           |
-| hash_keccak_256      | 1,988     | 8          | 248.5        | 99,374,906  | 0          | 4.9%          | 0.0%            |
+| set_storage_or_clear | 280,929   | 5          | 56185.8      | 846,463,125 | 51,285     | 41.6%         | 25.9%           |
+| get_storage_or_zero  | 9,511     | 7          | 1358.7       | 475,543,747 | 71,831     | 23.4%         | 36.3%           |
+| hash_keccak_256      | 1,991     | 8          | 248.9        | 99,374,906  | 0          | 4.9%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352  | 0          | 1.5%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000   | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 3         | 4          | 0.8          | 165,416     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 574,114,994 | 74,006     | 28.3%         | 37.5%           |
+| **Unattributed**     | -         | -          | -            | 577,281,601 | 74,865     | 28.4%         | 37.8%           |
 
 
 ### store_rust - delegate
@@ -8613,24 +8614,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - delete_
 
-- **Total Gas Used:** 297,015
+- **Total Gas Used:** 297,083
 - **Base Call Weight:** ref_time=909,174,496, proof_size=8,397
-- **Total Weight:** ref_time=2,814,914,411, proof_size=196,035
-- **Weight Consumed:** ref_time=1,905,739,915 (67.7% of total), proof_size=187,638
+- **Total Weight:** ref_time=2,818,349,738, proof_size=196,894
+- **Weight Consumed:** ref_time=1,909,175,242 (67.7% of total), proof_size=188,497
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 17,088    | 5          | 3417.6       | 854,390,445 | 51,930     | 44.8%         | 27.7%           |
-| get_storage_or_zero  | 8,156     | 6          | 1359.3       | 407,814,942 | 61,702     | 21.4%         | 32.9%           |
-| hash_keccak_256      | 2,731     | 11         | 248.3        | 136,544,276 | 0          | 7.2%          | 0.0%            |
+| set_storage_or_clear | 17,089    | 5          | 3417.8       | 854,390,445 | 51,930     | 44.8%         | 27.5%           |
+| get_storage_or_zero  | 8,157     | 6          | 1359.5       | 407,814,942 | 61,702     | 21.4%         | 32.7%           |
+| hash_keccak_256      | 2,732     | 11         | 248.4        | 136,544,276 | 0          | 7.2%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352  | 0          | 1.6%          | 0.0%            |
 | call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 4         | 5          | 0.8          | 205,630     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 473,516,072 | 74,006     | 24.8%         | 39.4%           |
+| **Unattributed**     | -         | -          | -            | 476,951,399 | 74,865     | 25.0%         | 39.7%           |
 
 
 ### store_rust - delete_
@@ -8686,24 +8687,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - deleteFor
 
-- **Total Gas Used:** 386,622
+- **Total Gas Used:** 386,689
 - **Base Call Weight:** ref_time=909,580,472, proof_size=8,490
-- **Total Weight:** ref_time=4,195,289,961, proof_size=247,573
-- **Weight Consumed:** ref_time=3,285,709,489 (78.3% of total), proof_size=239,083
+- **Total Weight:** ref_time=4,198,658,108, proof_size=248,432
+- **Weight Consumed:** ref_time=3,289,077,636 (78.3% of total), proof_size=239,942
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 17,088    | 5          | 3417.6       | 854,390,445   | 51,930     | 26.0%         | 21.7%           |
-| get_storage_or_zero  | 14,953    | 11         | 1359.4       | 747,702,167   | 113,147    | 22.8%         | 47.3%           |
-| hash_keccak_256      | 3,475     | 14         | 248.2        | 173,805,452   | 0          | 5.3%          | 0.0%            |
+| set_storage_or_clear | 17,089    | 5          | 3417.8       | 854,390,445   | 51,930     | 26.0%         | 21.6%           |
+| get_storage_or_zero  | 14,954    | 11         | 1359.5       | 747,702,167   | 113,147    | 22.7%         | 47.2%           |
+| hash_keccak_256      | 3,476     | 14         | 248.3        | 173,805,452   | 0          | 5.3%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352    | 0          | 0.9%          | 0.0%            |
 | call_data_load       | 28        | 4          | 7.0          | 1,352,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| call_data_copy       | 4         | 7          | 0.6          | 296,432       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,475,908,443 | 74,006     | 44.9%         | 31.0%           |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| call_data_copy       | 6         | 7          | 0.9          | 296,432       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 1,479,276,590 | 74,865     | 45.0%         | 31.2%           |
 
 
 ### store_rust - deleteFor
@@ -8750,18 +8751,18 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - deploy
 
-- **Total Gas Used:** 182,177,679
-- **Base Call Weight:** ref_time=2,702,163,259, proof_size=6,934
-- **Total Weight:** ref_time=2,715,158,257, proof_size=6,934
-- **Weight Consumed:** ref_time=12,994,998 (0.5% of total), proof_size=0
+- **Total Gas Used:** 184,119,287
+- **Base Call Weight:** ref_time=2,715,999,172, proof_size=6,934
+- **Total Weight:** ref_time=2,728,523,910, proof_size=6,934
+- **Weight Consumed:** ref_time=12,524,738 (0.5% of total), proof_size=0
 
 | Opcode            | Total Gas | Call Count | Avg Gas/Call | ref time   | proof size | % of ref time | % of proof size |
 | ----------------- | --------- | ---------- | ------------ | ---------- | ---------- | ------------- | --------------- |
-| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.2%          | 0.0%            |
-| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.6%          | 0.0%            |
-| call_data_size    | 6         | 1          | 6.0          | 318,000    | 0          | 2.4%          | 0.0%            |
-| call_data_copy    | 1         | 1          | 1.0          | 40,556     | 0          | 0.3%          | 0.0%            |
-| **Unattributed**  | -         | -          | -            | 11,750,244 | 0          | 90.4%         | 0.0%            |
+| seal_return       | 11        | 1          | 11.0         | 550,198    | 0          | 4.4%          | 0.0%            |
+| value_transferred | 7         | 1          | 7.0          | 336,000    | 0          | 2.7%          | 0.0%            |
+| call_data_size    | 7         | 1          | 7.0          | 318,000    | 0          | 2.5%          | 0.0%            |
+| call_data_copy    | 0         | 1          | 0.0          | 40,556     | 0          | 0.3%          | 0.0%            |
+| **Unattributed**  | -         | -          | -            | 11,279,984 | 0          | 90.1%         | 0.0%            |
 
 
 ### store_rust - deploy
@@ -8811,24 +8812,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - revokeDelegation
 
-- **Total Gas Used:** 320,467
+- **Total Gas Used:** 320,548
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=3,427,526,323, proof_size=257,897
-- **Weight Consumed:** ref_time=2,517,932,755 (73.5% of total), proof_size=249,404
+- **Total Weight:** ref_time=3,431,566,270, proof_size=258,756
+- **Weight Consumed:** ref_time=2,521,972,702 (73.5% of total), proof_size=250,263
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 17,089    | 5          | 3417.8       | 854,390,445 | 51,930     | 33.9%         | 20.8%           |
-| get_storage_or_zero  | 16,315    | 12         | 1359.6       | 815,729,340 | 123,468    | 32.4%         | 49.5%           |
-| hash_keccak_256      | 3,464     | 14         | 247.4        | 173,268,740 | 0          | 6.9%          | 0.0%            |
+| set_storage_or_clear | 17,088    | 5          | 3417.6       | 854,390,445 | 51,930     | 33.9%         | 20.8%           |
+| get_storage_or_zero  | 16,311    | 12         | 1359.3       | 815,729,340 | 123,468    | 32.3%         | 49.3%           |
+| hash_keccak_256      | 3,467     | 14         | 247.6        | 173,268,740 | 0          | 6.9%          | 0.0%            |
 | deposit_event        | 613       | 1          | 613.0        | 30,648,352  | 0          | 1.2%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000   | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 4         | 4          | 1.0          | 165,416     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 639,566,264 | 74,006     | 25.4%         | 29.7%           |
+| **Unattributed**     | -         | -          | -            | 643,606,211 | 74,865     | 25.5%         | 29.9%           |
 
 
 ### store_rust - revokeDelegation
@@ -8884,25 +8885,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - set
 
-- **Total Gas Used:** 786,037
+- **Total Gas Used:** 786,083
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=2,946,038,662, proof_size=216,065
-- **Weight Consumed:** ref_time=2,036,445,094 (69.1% of total), proof_size=207,572
+- **Total Weight:** ref_time=2,948,331,929, proof_size=216,924
+- **Weight Consumed:** ref_time=2,038,738,361 (69.1% of total), proof_size=208,431
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 231,548   | 6          | 38591.3      | 1,017,353,950 | 61,703     | 50.0%         | 29.7%           |
-| get_storage_or_zero  | 9,512     | 7          | 1358.9       | 475,593,475   | 71,863     | 23.4%         | 34.6%           |
-| hash_keccak_256      | 1,740     | 7          | 248.6        | 86,902,726    | 0          | 4.3%          | 0.0%            |
+| set_storage_or_clear | 231,548   | 6          | 38591.3      | 1,017,353,950 | 61,703     | 49.9%         | 29.6%           |
+| get_storage_or_zero  | 9,511     | 7          | 1358.7       | 475,593,475   | 71,863     | 23.3%         | 34.5%           |
+| hash_keccak_256      | 1,738     | 7          | 248.3        | 86,902,726    | 0          | 4.3%          | 0.0%            |
 | deposit_event        | 781       | 1          | 781.0        | 39,075,136    | 0          | 1.9%          | 0.0%            |
-| call_data_load       | 33        | 5          | 6.6          | 1,690,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 34        | 5          | 6.8          | 1,690,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
-| caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| caller               | 9         | 1          | 9.0          | 402,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 3         | 3          | 1.0          | 123,378       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 413,744,231   | 74,006     | 20.3%         | 35.7%           |
+| **Unattributed**     | -         | -          | -            | 416,037,498   | 74,865     | 20.4%         | 35.9%           |
 
 
 ### store_rust - set
@@ -8959,25 +8960,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - set_update
 
-- **Total Gas Used:** 555,368
+- **Total Gas Used:** 555,402
 - **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=1,972,607,944, proof_size=144,233
-- **Weight Consumed:** ref_time=1,063,014,376 (53.9% of total), proof_size=135,740
+- **Total Weight:** ref_time=1,974,296,591, proof_size=145,092
+- **Weight Consumed:** ref_time=1,064,703,023 (53.9% of total), proof_size=136,599
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 10,159    | 3          | 3386.3       | 507,916,083 | 30,867     | 47.8%         | 22.7%           |
-| get_storage_or_zero  | 4,080     | 3          | 1360.0       | 203,932,335 | 30,867     | 19.2%         | 22.7%           |
-| deposit_event        | 782       | 1          | 782.0        | 39,075,136  | 0          | 3.7%          | 0.0%            |
+| set_storage_or_clear | 10,158    | 3          | 3386.0       | 507,916,083 | 30,867     | 47.7%         | 22.6%           |
+| get_storage_or_zero  | 4,078     | 3          | 1359.3       | 203,932,335 | 30,867     | 19.2%         | 22.6%           |
+| deposit_event        | 781       | 1          | 781.0        | 39,075,136  | 0          | 3.7%          | 0.0%            |
 | hash_keccak_256      | 497       | 2          | 248.5        | 24,820,775  | 0          | 2.3%          | 0.0%            |
 | call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
-| caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
+| caller               | 9         | 1          | 9.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 2         | 2          | 1.0          | 82,252      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 283,873,597 | 74,006     | 26.7%         | 54.5%           |
+| **Unattributed**     | -         | -          | -            | 285,562,244 | 74,865     | 26.8%         | 54.8%           |
 
 
 ### store_rust - set_update
@@ -9034,25 +9035,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### Store_pvm - setFor
 
-- **Total Gas Used:** 877,574
+- **Total Gas Used:** 877,617
 - **Base Call Weight:** ref_time=910,012,640, proof_size=8,589
-- **Total Weight:** ref_time=4,322,875,628, proof_size=267,606
-- **Weight Consumed:** ref_time=3,412,862,988 (78.9% of total), proof_size=259,017
+- **Total Weight:** ref_time=4,325,034,535, proof_size=268,465
+- **Weight Consumed:** ref_time=3,415,021,895 (79.0% of total), proof_size=259,876
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 231,548   | 6          | 38591.3      | 1,017,353,950 | 61,703     | 29.8%         | 23.8%           |
-| get_storage_or_zero  | 16,308    | 12         | 1359.0       | 815,480,700   | 123,308    | 23.9%         | 47.6%           |
-| hash_keccak_256      | 2,483     | 10         | 248.3        | 124,107,406   | 0          | 3.6%          | 0.0%            |
-| deposit_event        | 782       | 1          | 782.0        | 39,075,136    | 0          | 1.1%          | 0.0%            |
-| call_data_load       | 41        | 6          | 6.8          | 2,028,000     | 0          | 0.1%          | 0.0%            |
+| set_storage_or_clear | 231,548   | 6          | 38591.3      | 1,017,353,950 | 61,703     | 29.8%         | 23.7%           |
+| get_storage_or_zero  | 16,310    | 12         | 1359.2       | 815,480,700   | 123,308    | 23.9%         | 47.4%           |
+| hash_keccak_256      | 2,481     | 10         | 248.1        | 124,107,406   | 0          | 3.6%          | 0.0%            |
+| deposit_event        | 781       | 1          | 781.0        | 39,075,136    | 0          | 1.1%          | 0.0%            |
+| call_data_load       | 42        | 6          | 7.0          | 2,028,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 4         | 5          | 0.8          | 212,356       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,412,643,242 | 74,006     | 41.4%         | 28.6%           |
+| **Unattributed**     | -         | -          | -            | 1,414,802,149 | 74,865     | 41.4%         | 28.8%           |
 
 
 ### store_rust - setFor
@@ -9109,23 +9110,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### TetherToken_pvm - approve
 
-- **Total Gas Used:** 468,747
+- **Total Gas Used:** 468,749
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=1,501,517,676, proof_size=93,688
-- **Weight Consumed:** ref_time=592,775,348 (39.5% of total), proof_size=85,390
+- **Total Weight:** ref_time=1,501,643,304, proof_size=93,764
+- **Weight Consumed:** ref_time=592,900,976 (39.5% of total), proof_size=85,466
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 28.6%         | 12.0%           |
-| get_storage_or_zero  | 2,718     | 2          | 1359.0       | 135,855,434 | 20,514     | 22.9%         | 24.0%           |
-| hash_keccak_256      | 996       | 4          | 249.0        | 49,832,224  | 0          | 8.4%          | 0.0%            |
+| get_storage_or_zero  | 2,716     | 2          | 1358.0       | 135,855,434 | 20,514     | 22.9%         | 24.0%           |
+| hash_keccak_256      | 997       | 4          | 249.3        | 49,832,224  | 0          | 8.4%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 2.3%          | 0.0%            |
 | caller               | 24        | 3          | 8.0          | 1,206,000   | 0          | 0.2%          | 0.0%            |
-| call_data_load       | 19        | 3          | 6.3          | 1,014,000   | 0          | 0.2%          | 0.0%            |
+| call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 220,576,083 | 54,619     | 37.2%         | 64.0%           |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 220,701,711 | 54,695     | 37.2%         | 64.0%           |
 
 
 ### TetherToken_evm - deploy
@@ -9162,22 +9163,22 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### TetherToken_pvm - deploy
 
-- **Total Gas Used:** 139,226,074
-- **Base Call Weight:** ref_time=2,390,100,370, proof_size=6,934
-- **Total Weight:** ref_time=4,625,871,951, proof_size=150,951
-- **Weight Consumed:** ref_time=2,235,771,581 (48.3% of total), proof_size=144,017
+- **Total Gas Used:** 139,397,882
+- **Base Call Weight:** ref_time=2,391,324,502, proof_size=6,934
+- **Total Weight:** ref_time=4,628,305,323, proof_size=150,951
+- **Weight Consumed:** ref_time=2,236,980,821 (48.3% of total), proof_size=144,017
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 347,369   | 9          | 38596.6      | 1,528,390,017 | 92,700     | 68.4%         | 64.4%           |
-| get_storage_or_zero  | 6,793     | 5          | 1358.6       | 339,688,313   | 51,317     | 15.2%         | 35.6%           |
+| set_storage_or_clear | 347,370   | 9          | 38596.7      | 1,528,390,017 | 92,700     | 68.3%         | 64.4%           |
+| get_storage_or_zero  | 6,794     | 5          | 1358.8       | 339,688,313   | 51,317     | 15.2%         | 35.6%           |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056    | 0          | 0.6%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 3         | 2          | 1.5          | 110,296       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 353,518,701   | 0          | 15.8%         | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 354,727,941   | 0          | 15.9%         | 0.0%            |
 
 
 ### TetherToken_evm - transfer
@@ -9214,23 +9215,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### TetherToken_pvm - transfer
 
-- **Total Gas Used:** 480,435
+- **Total Gas Used:** 480,438
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=2,085,953,202, proof_size=155,326
-- **Weight Consumed:** ref_time=1,177,210,874 (56.4% of total), proof_size=147,028
+- **Total Weight:** ref_time=2,086,078,830, proof_size=155,402
+- **Weight Consumed:** ref_time=1,177,336,502 (56.4% of total), proof_size=147,104
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 9,511     | 7          | 1358.7       | 475,593,475 | 71,863     | 40.4%         | 48.9%           |
+| get_storage_or_zero  | 9,512     | 7          | 1358.9       | 475,593,475 | 71,863     | 40.4%         | 48.9%           |
 | set_storage_or_clear | 59,572    | 2          | 29786.0      | 338,597,986 | 20,546     | 28.8%         | 14.0%           |
-| hash_keccak_256      | 1,248     | 5          | 249.6        | 62,290,280  | 0          | 5.3%          | 0.0%            |
+| hash_keccak_256      | 1,245     | 5          | 249.0        | 62,290,280  | 0          | 5.3%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.2%          | 0.0%            |
-| caller               | 33        | 4          | 8.3          | 1,608,000   | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.1%          | 0.0%            |
+| caller               | 32        | 4          | 8.0          | 1,608,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 283,108,151 | 54,619     | 24.0%         | 37.1%           |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 283,233,779 | 54,695     | 24.1%         | 37.2%           |
 
 
 ### TetherToken_evm - transferFrom
@@ -9267,23 +9268,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### TetherToken_pvm - transferFrom
 
-- **Total Gas Used:** 499,002
+- **Total Gas Used:** 499,004
 - **Base Call Weight:** ref_time=909,161,400, proof_size=8,394
-- **Total Weight:** ref_time=2,454,279,773, proof_size=176,064
-- **Weight Consumed:** ref_time=1,545,118,373 (63.0% of total), proof_size=167,670
+- **Total Weight:** ref_time=2,454,405,401, proof_size=176,140
+- **Weight Consumed:** ref_time=1,545,244,001 (63.0% of total), proof_size=167,746
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 10,874    | 8          | 1359.3       | 543,620,648 | 82,184     | 35.2%         | 49.0%           |
+| get_storage_or_zero  | 10,871    | 8          | 1358.9       | 543,620,648 | 82,184     | 35.2%         | 49.0%           |
 | set_storage_or_clear | 10,158    | 3          | 3386.0       | 507,916,083 | 30,867     | 32.9%         | 18.4%           |
-| hash_keccak_256      | 2,243     | 9          | 249.2        | 112,122,504 | 0          | 7.3%          | 0.0%            |
+| hash_keccak_256      | 2,241     | 9          | 249.0        | 112,122,504 | 0          | 7.3%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 0.9%          | 0.0%            |
-| call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
-| caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 27        | 4          | 6.8          | 1,352,000   | 0          | 0.1%          | 0.0%            |
+| caller               | 17        | 2          | 8.5          | 804,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 364,304,156 | 54,619     | 23.6%         | 32.6%           |
+| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 364,429,784 | 54,695     | 23.6%         | 32.6%           |
 
 
 ### W3S_evm - buyTicket
@@ -9320,29 +9321,29 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - buyTicket
 
-- **Total Gas Used:** 833,229
+- **Total Gas Used:** 833,244
 - **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=6,985,617,504, proof_size=526,295
-- **Weight Consumed:** ref_time=6,077,281,152 (87.0% of total), proof_size=518,090
+- **Total Weight:** ref_time=6,986,402,427, proof_size=526,526
+- **Weight Consumed:** ref_time=6,078,066,075 (87.0% of total), proof_size=518,321
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 427,352   | 17         | 25138.4      | 2,887,538,353 | 175,271    | 47.5%         | 33.8%           |
-| get_storage_or_zero  | 27,177    | 20         | 1358.8       | 1,358,952,164 | 205,396    | 22.4%         | 39.6%           |
-| call_evm             | 6,852     | 1          | 6852.0       | 342,653,356   | 28,681     | 5.6%          | 5.5%            |
-| hash_keccak_256      | 4,982     | 20         | 249.1        | 249,048,128   | 0          | 4.1%          | 0.0%            |
-| code_size            | 1,281     | 1          | 1281.0       | 64,074,000    | 4,010      | 1.1%          | 0.8%            |
+| set_storage_or_clear | 427,353   | 17         | 25138.4      | 2,887,538,353 | 175,271    | 47.5%         | 33.8%           |
+| get_storage_or_zero  | 27,181    | 20         | 1359.0       | 1,358,952,164 | 205,396    | 22.4%         | 39.6%           |
+| call_evm             | 6,855     | 1          | 6855.0       | 342,788,902   | 28,763     | 5.6%          | 5.5%            |
+| hash_keccak_256      | 4,979     | 20         | 248.9        | 249,048,128   | 0          | 4.1%          | 0.0%            |
+| code_size            | 1,282     | 1          | 1282.0       | 64,074,000    | 4,010      | 1.1%          | 0.8%            |
 | deposit_event        | 1,165     | 3          | 388.3        | 58,237,920    | 0          | 1.0%          | 0.0%            |
 | caller               | 48        | 6          | 8.0          | 2,412,000     | 0          | 0.0%          | 0.0%            |
-| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 38        | 6          | 6.3          | 2,028,000     | 0          | 0.0%          | 0.0%            |
+| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 40        | 6          | 6.7          | 2,028,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,106,732     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 13        | 2          | 6.5          | 672,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 12        | 2          | 6.0          | 636,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
 | address              | 7         | 1          | 7.0          | 365,000       | 0          | 0.0%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | return_data_size     | 7         | 1          | 7.0          | 342,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 1,106,730,499 | 104,732    | 18.2%         | 20.2%           |
+| **Unattributed**     | -         | -          | -            | 1,107,379,876 | 104,881    | 18.2%         | 20.2%           |
 
 
 ### W3S_evm - checkIn
@@ -9379,27 +9380,27 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - checkIn
 
-- **Total Gas Used:** 396,081
+- **Total Gas Used:** 396,087
 - **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
-- **Total Weight:** ref_time=3,808,243,967, proof_size=316,558
-- **Weight Consumed:** ref_time=2,899,933,807 (76.1% of total), proof_size=308,359
+- **Total Weight:** ref_time=3,808,558,630, proof_size=316,789
+- **Weight Consumed:** ref_time=2,900,248,470 (76.2% of total), proof_size=308,590
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 73,148    | 6          | 12191.3      | 1,017,392,158 | 61,799     | 35.1%         | 20.0%           |
-| get_storage_or_zero  | 14,955    | 11         | 1359.5       | 747,702,167   | 113,147    | 25.8%         | 36.7%           |
-| call_evm             | 0         | 1          | 0.0          | 342,647,020   | 28,681     | 11.8%         | 9.3%            |
+| get_storage_or_zero  | 14,950    | 11         | 1359.1       | 747,702,167   | 113,147    | 25.8%         | 36.7%           |
+| call_evm             | 0         | 1          | 0.0          | 342,782,566   | 28,763     | 11.8%         | 9.3%            |
 | hash_keccak_256      | 1,993     | 8          | 249.1        | 99,664,448    | 0          | 3.4%          | 0.0%            |
-| deposit_event        | 1,164     | 3          | 388.0        | 58,237,920    | 0          | 2.0%          | 0.0%            |
-| ref_time_left        | 43        | 1          | 43.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 35        | 5          | 7.0          | 1,690,000     | 0          | 0.1%          | 0.0%            |
-| caller               | 25        | 3          | 8.3          | 1,206,000     | 0          | 0.0%          | 0.0%            |
+| deposit_event        | 1,165     | 3          | 388.3        | 58,237,920    | 0          | 2.0%          | 0.0%            |
+| ref_time_left        | 42        | 1          | 42.0         | 2,129,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 34        | 5          | 6.8          | 1,690,000     | 0          | 0.1%          | 0.0%            |
+| caller               | 24        | 3          | 8.0          | 1,206,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 22        | 2          | 11.0         | 1,106,732     | 0          | 0.0%          | 0.0%            |
-| now                  | 14        | 2          | 7.0          | 712,000       | 0          | 0.0%          | 0.0%            |
-| value_transferred    | 13        | 2          | 6.5          | 672,000       | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 14        | 2          | 7.0          | 636,000       | 0          | 0.0%          | 0.0%            |
-| return_data_size     | 6         | 1          | 6.0          | 342,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 625,796,362   | 104,732    | 21.6%         | 34.0%           |
+| now                  | 15        | 2          | 7.5          | 712,000       | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 14        | 2          | 7.0          | 672,000       | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 13        | 2          | 6.5          | 636,000       | 0          | 0.0%          | 0.0%            |
+| return_data_size     | 7         | 1          | 7.0          | 342,000       | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 625,975,479   | 104,881    | 21.6%         | 34.0%           |
 
 
 ### W3S_evm - configurePaymentToken
@@ -9436,23 +9437,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - configurePaymentToken
 
-- **Total Gas Used:** 662,608
+- **Total Gas Used:** 662,614
 - **Base Call Weight:** ref_time=909,187,592, proof_size=8,400
-- **Total Weight:** ref_time=2,514,586,667, proof_size=215,830
-- **Weight Consumed:** ref_time=1,605,399,075 (63.8% of total), proof_size=207,430
+- **Total Weight:** ref_time=2,514,900,144, proof_size=215,979
+- **Weight Consumed:** ref_time=1,605,712,552 (63.8% of total), proof_size=207,579
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 171,943   | 4          | 42985.8      | 677,183,236 | 41,060     | 42.2%         | 19.8%           |
-| get_storage_or_zero  | 8,154     | 6          | 1359.0       | 407,715,486 | 61,638     | 25.4%         | 29.7%           |
+| set_storage_or_clear | 171,944   | 4          | 42986.0      | 677,183,236 | 41,060     | 42.2%         | 19.8%           |
+| get_storage_or_zero  | 8,153     | 6          | 1358.8       | 407,715,486 | 61,638     | 25.4%         | 29.7%           |
 | hash_keccak_256      | 1,243     | 5          | 248.6        | 62,177,288  | 0          | 3.9%          | 0.0%            |
 | deposit_event        | 445       | 1          | 445.0        | 22,221,568  | 0          | 1.4%          | 0.0%            |
-| call_data_load       | 28        | 4          | 7.0          | 1,352,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 26        | 4          | 6.5          | 1,352,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 433,143,299 | 104,732    | 27.0%         | 50.5%           |
+| **Unattributed**     | -         | -          | -            | 433,456,776 | 104,881    | 27.0%         | 50.5%           |
 
 
 ### W3S_evm - deploy
@@ -9489,23 +9490,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - deploy
 
-- **Total Gas Used:** 251,926,448
-- **Base Call Weight:** ref_time=3,197,066,941, proof_size=6,934
-- **Total Weight:** ref_time=4,915,571,639, proof_size=119,761
-- **Weight Consumed:** ref_time=1,718,504,698 (35.0% of total), proof_size=112,827
+- **Total Gas Used:** 252,263,234
+- **Base Call Weight:** ref_time=3,199,466,884, proof_size=6,934
+- **Total Weight:** ref_time=4,917,904,402, proof_size=119,761
+- **Weight Consumed:** ref_time=1,718,437,518 (34.9% of total), proof_size=112,827
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 280,929   | 5          | 56185.8      | 846,463,125 | 51,285     | 49.3%         | 45.5%           |
-| get_storage_or_zero  | 8,149     | 6          | 1358.2       | 407,566,302 | 61,542     | 23.7%         | 54.5%           |
-| hash_keccak_256      | 1,994     | 8          | 249.3        | 99,664,448  | 0          | 5.8%          | 0.0%            |
-| deposit_event        | 214       | 2          | 107.0        | 10,736,000  | 0          | 0.6%          | 0.0%            |
-| caller               | 33        | 4          | 8.3          | 1,608,000   | 0          | 0.1%          | 0.0%            |
+| set_storage_or_clear | 280,928   | 5          | 56185.6      | 846,463,125 | 51,285     | 49.3%         | 45.5%           |
+| get_storage_or_zero  | 8,154     | 6          | 1359.0       | 407,566,302 | 61,542     | 23.7%         | 54.5%           |
+| hash_keccak_256      | 1,993     | 8          | 249.1        | 99,664,448  | 0          | 5.8%          | 0.0%            |
+| deposit_event        | 215       | 2          | 107.5        | 10,736,000  | 0          | 0.6%          | 0.0%            |
+| caller               | 32        | 4          | 8.0          | 1,608,000   | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 351,222,069 | 0          | 20.4%         | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 351,154,889 | 0          | 20.4%         | 0.0%            |
 
 
 ### W3S_evm - grantVolunteerRole
@@ -9542,23 +9543,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - grantVolunteerRole
 
-- **Total Gas Used:** 410,494
+- **Total Gas Used:** 410,499
 - **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,688,885,783, proof_size=153,997
-- **Weight Consumed:** ref_time=780,549,431 (46.2% of total), proof_size=145,792
+- **Total Weight:** ref_time=1,689,132,080, proof_size=154,146
+- **Weight Consumed:** ref_time=780,795,728 (46.2% of total), proof_size=145,941
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 4,076     | 3          | 1358.7       | 203,832,879 | 30,803     | 26.1%         | 21.1%           |
-| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 21.7%         | 7.0%            |
-| hash_keccak_256      | 1,497     | 6          | 249.5        | 74,748,336  | 0          | 9.6%          | 0.0%            |
-| deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.7%          | 0.0%            |
+| get_storage_or_zero  | 4,077     | 3          | 1359.0       | 203,832,879 | 30,803     | 26.1%         | 21.1%           |
+| set_storage_or_clear | 56,185    | 1          | 56185.0      | 169,292,625 | 10,257     | 21.7%         | 7.0%            |
+| hash_keccak_256      | 1,495     | 6          | 249.2        | 74,748,336  | 0          | 9.6%          | 0.0%            |
+| deposit_event        | 108       | 1          | 108.0        | 5,368,000   | 0          | 0.7%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
-| call_data_load       | 14        | 2          | 7.0          | 676,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 13        | 2          | 6.5          | 676,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 324,623,393 | 104,732    | 41.6%         | 71.8%           |
+| **Unattributed**     | -         | -          | -            | 324,869,690 | 104,881    | 41.6%         | 71.9%           |
 
 
 ### W3S_evm - pauseSales
@@ -9595,24 +9596,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - pauseSales
 
-- **Total Gas Used:** 342,986
+- **Total Gas Used:** 342,991
 - **Base Call Weight:** ref_time=907,917,280, proof_size=8,109
-- **Total Weight:** ref_time=1,513,493,568, proof_size=143,644
-- **Weight Consumed:** ref_time=605,576,288 (40.0% of total), proof_size=135,535
+- **Total Weight:** ref_time=1,513,739,865, proof_size=143,793
+- **Weight Consumed:** ref_time=605,822,585 (40.0% of total), proof_size=135,684
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 28.0%         | 7.6%            |
-| get_storage_or_zero  | 2,718     | 2          | 1359.0       | 135,905,162 | 20,546     | 22.4%         | 15.2%           |
+| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 27.9%         | 7.6%            |
+| get_storage_or_zero  | 2,718     | 2          | 1359.0       | 135,905,162 | 20,546     | 22.4%         | 15.1%           |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 4.1%          | 0.0%            |
-| deposit_event        | 275       | 1          | 275.0        | 13,794,784  | 0          | 2.3%          | 0.0%            |
+| deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 2.3%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | caller               | 8         | 1          | 8.0          | 402,000     | 0          | 0.1%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.1%          | 0.0%            |
 | call_data_load       | 7         | 1          | 7.0          | 338,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 259,367,407 | 104,732    | 42.8%         | 77.3%           |
+| **Unattributed**     | -         | -          | -            | 259,613,704 | 104,881    | 42.9%         | 77.3%           |
 
 
 ### W3S_evm - redeemTicketStaff
@@ -9649,25 +9650,25 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - redeemTicketStaff
 
-- **Total Gas Used:** 862,218
+- **Total Gas Used:** 862,232
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=5,335,095,436, proof_size=404,976
-- **Weight Consumed:** ref_time=4,426,353,108 (83.0% of total), proof_size=396,678
+- **Total Weight:** ref_time=5,335,811,993, proof_size=405,125
+- **Weight Consumed:** ref_time=4,427,069,665 (83.0% of total), proof_size=396,827
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time      | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ------------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 413,743   | 13         | 31826.4      | 2,207,171,453 | 133,921    | 49.9%         | 33.8%           |
-| get_storage_or_zero  | 20,385    | 15         | 1359.0       | 1,019,164,395 | 154,015    | 23.0%         | 38.8%           |
-| hash_keccak_256      | 3,978     | 16         | 248.6        | 199,060,540   | 0          | 4.5%          | 0.0%            |
-| code_size            | 1,281     | 1          | 1281.0       | 64,074,000    | 4,010      | 1.4%          | 1.0%            |
+| set_storage_or_clear | 413,743   | 13         | 31826.4      | 2,207,171,453 | 133,921    | 49.9%         | 33.7%           |
+| get_storage_or_zero  | 20,381    | 15         | 1358.7       | 1,019,164,395 | 154,015    | 23.0%         | 38.8%           |
+| hash_keccak_256      | 3,980     | 16         | 248.8        | 199,060,540   | 0          | 4.5%          | 0.0%            |
+| code_size            | 1,282     | 1          | 1282.0       | 64,074,000    | 4,010      | 1.4%          | 1.0%            |
 | deposit_event        | 552       | 2          | 276.0        | 27,589,568    | 0          | 0.6%          | 0.0%            |
 | caller               | 40        | 5          | 8.0          | 2,010,000     | 0          | 0.0%          | 0.0%            |
-| call_data_load       | 21        | 3          | 7.0          | 1,014,000     | 0          | 0.0%          | 0.0%            |
+| call_data_load       | 20        | 3          | 6.7          | 1,014,000     | 0          | 0.0%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198       | 0          | 0.0%          | 0.0%            |
-| now                  | 8         | 1          | 8.0          | 356,000       | 0          | 0.0%          | 0.0%            |
+| now                  | 7         | 1          | 7.0          | 356,000       | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000       | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000       | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 904,708,954   | 104,732    | 20.4%         | 26.4%           |
+| **Unattributed**     | -         | -          | -            | 905,425,511   | 104,881    | 20.5%         | 26.4%           |
 
 
 ### W3S_evm - revokeVolunteerRole
@@ -9704,14 +9705,14 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - revokeVolunteerRole
 
-- **Total Gas Used:** 304,898
+- **Total Gas Used:** 304,903
 - **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,689,092,743, proof_size=154,190
-- **Weight Consumed:** ref_time=780,756,391 (46.2% of total), proof_size=145,985
+- **Total Weight:** ref_time=1,689,339,040, proof_size=154,339
+- **Weight Consumed:** ref_time=781,002,688 (46.2% of total), proof_size=146,134
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| get_storage_or_zero  | 4,080     | 3          | 1360.0       | 203,932,335 | 30,867     | 26.1%         | 21.1%           |
+| get_storage_or_zero  | 4,077     | 3          | 1359.0       | 203,932,335 | 30,867     | 26.1%         | 21.1%           |
 | set_storage_or_clear | 3,418     | 1          | 3418.0       | 170,878,089 | 10,386     | 21.9%         | 7.1%            |
 | hash_keccak_256      | 1,495     | 6          | 249.2        | 74,748,336  | 0          | 9.6%          | 0.0%            |
 | deposit_event        | 107       | 1          | 107.0        | 5,368,000   | 0          | 0.7%          | 0.0%            |
@@ -9720,7 +9721,7 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 323,145,433 | 104,732    | 41.4%         | 71.7%           |
+| **Unattributed**     | -         | -          | -            | 323,391,730 | 104,881    | 41.4%         | 71.8%           |
 
 
 ### W3S_evm - setMerkleRoot
@@ -9757,15 +9758,15 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - setMerkleRoot
 
-- **Total Gas Used:** 419,256
+- **Total Gas Used:** 419,261
 - **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,467,002,032, proof_size=133,614
-- **Weight Consumed:** ref_time=558,233,512 (38.1% of total), proof_size=125,310
+- **Total Weight:** ref_time=1,467,248,329, proof_size=133,763
+- **Weight Consumed:** ref_time=558,479,809 (38.1% of total), proof_size=125,459
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361 | 10,289     | 30.3%         | 8.2%            |
-| get_storage_or_zero  | 1,360     | 1          | 1360.0       | 67,977,445  | 10,289     | 12.2%         | 8.2%            |
+| get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,977,445  | 10,289     | 12.2%         | 8.2%            |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 4.5%          | 0.0%            |
 | deposit_event        | 445       | 1          | 445.0        | 22,221,568  | 0          | 4.0%          | 0.0%            |
 | call_data_load       | 20        | 3          | 6.7          | 1,014,000   | 0          | 0.2%          | 0.0%            |
@@ -9774,7 +9775,7 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 270,836,828 | 104,732    | 48.5%         | 83.6%           |
+| **Unattributed**     | -         | -          | -            | 271,083,125 | 104,881    | 48.5%         | 83.6%           |
 
 
 ### W3S_evm - unpauseSales
@@ -9811,15 +9812,15 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### W3S_pvm - unpauseSales
 
-- **Total Gas Used:** 237,439
+- **Total Gas Used:** 237,443
 - **Base Call Weight:** ref_time=907,917,280, proof_size=8,109
-- **Total Weight:** ref_time=1,516,136,460, proof_size=143,805
-- **Weight Consumed:** ref_time=608,219,180 (40.1% of total), proof_size=135,696
+- **Total Weight:** ref_time=1,516,315,577, proof_size=143,954
+- **Weight Consumed:** ref_time=608,398,297 (40.1% of total), proof_size=135,845
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 3,417     | 1          | 3417.0       | 170,878,089 | 10,386     | 28.1%         | 7.7%            |
-| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,954,890 | 20,578     | 22.4%         | 15.2%           |
+| set_storage_or_clear | 3,418     | 1          | 3418.0       | 170,878,089 | 10,386     | 28.1%         | 7.6%            |
+| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,954,890 | 20,578     | 22.3%         | 15.1%           |
 | hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 4.1%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 2.3%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
@@ -9828,7 +9829,7 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 | call_data_load       | 7         | 1          | 7.0          | 338,000     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.1%          | 0.0%            |
 | call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 260,375,107 | 104,732    | 42.8%         | 77.2%           |
+| **Unattributed**     | -         | -          | -            | 260,554,224 | 104,881    | 42.8%         | 77.2%           |
 
 
 ### WETH9_evm - deploy
@@ -9865,20 +9866,20 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### WETH9_pvm - deploy
 
-- **Total Gas Used:** 53,938,229
-- **Base Call Weight:** ref_time=1,787,124,589, proof_size=6,934
-- **Total Weight:** ref_time=2,552,650,259, proof_size=68,476
-- **Weight Consumed:** ref_time=765,525,670 (30.0% of total), proof_size=61,542
+- **Total Gas Used:** 54,026,387
+- **Base Call Weight:** ref_time=1,787,752,762, proof_size=6,934
+- **Total Weight:** ref_time=2,553,547,152, proof_size=68,476
+- **Weight Consumed:** ref_time=765,794,390 (30.0% of total), proof_size=61,542
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 168,558   | 3          | 56186.0      | 507,877,875 | 30,771     | 66.3%         | 50.0%           |
-| get_storage_or_zero  | 4,075     | 3          | 1358.3       | 203,783,151 | 30,771     | 26.6%         | 50.0%           |
+| set_storage_or_clear | 168,557   | 3          | 56185.7      | 507,877,875 | 30,771     | 66.3%         | 50.0%           |
+| get_storage_or_zero  | 4,077     | 3          | 1359.0       | 203,783,151 | 30,771     | 26.6%         | 50.0%           |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 0         | 1          | 0.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 52,619,890  | 0          | 6.9%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 52,888,610  | 0          | 6.9%          | 0.0%            |
 
 
 ### WETH9_evm - deposit
@@ -9915,23 +9916,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### WETH9_pvm - deposit
 
-- **Total Gas Used:** 350,087
+- **Total Gas Used:** 350,089
 - **Base Call Weight:** ref_time=907,995,856, proof_size=8,127
-- **Total Weight:** ref_time=1,268,551,634, proof_size=45,837
-- **Weight Consumed:** ref_time=360,555,778 (28.4% of total), proof_size=37,710
+- **Total Weight:** ref_time=1,268,616,101, proof_size=45,876
+- **Weight Consumed:** ref_time=360,620,245 (28.4% of total), proof_size=37,749
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 47.0%         | 27.2%           |
+| set_storage_or_clear | 56,186    | 1          | 56186.0      | 169,292,625 | 10,257     | 46.9%         | 27.2%           |
 | get_storage_or_zero  | 1,359     | 1          | 1359.0       | 67,927,717  | 10,257     | 18.8%         | 27.2%           |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 3.8%          | 0.0%            |
 | hash_keccak_256      | 249       | 1          | 249.0        | 12,458,056  | 0          | 3.5%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.2%          | 0.0%            |
-| value_transferred    | 12        | 2          | 6.0          | 672,000     | 0          | 0.2%          | 0.0%            |
+| value_transferred    | 14        | 2          | 7.0          | 672,000     | 0          | 0.2%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.2%          | 0.0%            |
-| call_data_load       | 6         | 1          | 6.0          | 338,000     | 0          | 0.1%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.1%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 94,400,398  | 17,196     | 26.2%         | 45.6%           |
+| call_data_load       | 7         | 1          | 7.0          | 338,000     | 0          | 0.1%          | 0.0%            |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.1%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 94,464,865  | 17,235     | 26.2%         | 45.7%           |
 
 
 ### WETH9_evm - transfer
@@ -9968,23 +9969,23 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### WETH9_pvm - transfer
 
-- **Total Gas Used:** 472,214
+- **Total Gas Used:** 472,215
 - **Base Call Weight:** ref_time=908,742,328, proof_size=8,298
-- **Total Weight:** ref_time=1,674,885,071, proof_size=76,875
-- **Weight Consumed:** ref_time=766,142,743 (45.7% of total), proof_size=68,577
+- **Total Weight:** ref_time=1,674,949,538, proof_size=76,914
+- **Weight Consumed:** ref_time=766,207,210 (45.7% of total), proof_size=68,616
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| set_storage_or_clear | 59,571    | 2          | 29785.5      | 338,597,986 | 20,546     | 44.2%         | 30.0%           |
-| get_storage_or_zero  | 4,077     | 3          | 1359.0       | 203,882,607 | 30,835     | 26.6%         | 45.0%           |
+| set_storage_or_clear | 59,572    | 2          | 29786.0      | 338,597,986 | 20,546     | 44.2%         | 29.9%           |
+| get_storage_or_zero  | 4,078     | 3          | 1359.3       | 203,882,607 | 30,835     | 26.6%         | 44.9%           |
 | hash_keccak_256      | 747       | 3          | 249.0        | 37,374,168  | 0          | 4.9%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.8%          | 0.0%            |
-| call_data_load       | 19        | 3          | 6.3          | 1,014,000   | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 21        | 3          | 7.0          | 1,014,000   | 0          | 0.1%          | 0.0%            |
 | caller               | 16        | 2          | 8.0          | 804,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 556,534     | 0          | 0.1%          | 0.0%            |
-| value_transferred    | 6         | 1          | 6.0          | 336,000     | 0          | 0.0%          | 0.0%            |
+| value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
 | call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 169,464,664 | 17,196     | 22.1%         | 25.1%           |
+| **Unattributed**     | -         | -          | -            | 169,529,131 | 17,235     | 22.1%         | 25.1%           |
 
 
 ### WETH9_evm - withdraw
@@ -10021,24 +10022,24 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### WETH9_pvm - withdraw
 
-- **Total Gas Used:** 354,386
-- **Base Call Weight:** ref_time=908,297,064, proof_size=8,196
-- **Total Weight:** ref_time=1,823,511,601, proof_size=61,558
-- **Weight Consumed:** ref_time=915,214,537 (50.2% of total), proof_size=53,362
+- **Total Gas Used:** 356,388
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,823,589,164, proof_size=61,600
+- **Weight Consumed:** ref_time=915,279,004 (50.2% of total), proof_size=53,401
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
-| call_evm             | 8,944     | 1          | 8944.0       | 447,179,209 | 5,299      | 48.9%         | 9.9%            |
+| call_evm             | 8,943     | 1          | 8943.0       | 447,179,209 | 5,299      | 48.9%         | 9.9%            |
 | set_storage_or_clear | 3,386     | 1          | 3386.0       | 169,305,361 | 10,289     | 18.5%         | 19.3%           |
-| get_storage_or_zero  | 2,719     | 2          | 1359.5       | 135,954,890 | 20,578     | 14.9%         | 38.6%           |
-| hash_keccak_256      | 499       | 2          | 249.5        | 24,916,112  | 0          | 2.7%          | 0.0%            |
+| get_storage_or_zero  | 2,720     | 2          | 1360.0       | 135,954,890 | 20,578     | 14.9%         | 38.5%           |
+| hash_keccak_256      | 498       | 2          | 249.0        | 24,916,112  | 0          | 2.7%          | 0.0%            |
 | deposit_event        | 276       | 1          | 276.0        | 13,794,784  | 0          | 1.5%          | 0.0%            |
 | caller               | 32        | 4          | 8.0          | 1,608,000   | 0          | 0.2%          | 0.0%            |
-| call_data_load       | 13        | 2          | 6.5          | 676,000     | 0          | 0.1%          | 0.0%            |
+| call_data_load       | 14        | 2          | 7.0          | 676,000     | 0          | 0.1%          | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 120,575,983 | 17,196     | 13.2%         | 32.2%           |
+| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 120,640,450 | 17,235     | 13.2%         | 32.3%           |
 
 
 ### XENCrypto_evm - deploy
@@ -10075,21 +10076,21 @@ resolc: Solidity frontend for the revive compiler version 0.6.0+commit.81ce306.l
 
 ### XENCrypto_pvm - deploy
 
-- **Total Gas Used:** 273,704,229
-- **Base Call Weight:** ref_time=3,324,569,953, proof_size=6,934
-- **Total Weight:** ref_time=4,256,642,858, proof_size=58,219
-- **Weight Consumed:** ref_time=932,072,905 (21.9% of total), proof_size=51,285
+- **Total Gas Used:** 274,099,798
+- **Base Call Weight:** ref_time=3,327,388,678, proof_size=6,934
+- **Total Weight:** ref_time=4,260,066,203, proof_size=58,219
+- **Weight Consumed:** ref_time=932,677,525 (21.9% of total), proof_size=51,285
 
 | Opcode               | Total Gas | Call Count | Avg Gas/Call | ref time    | proof size | % of ref time | % of proof size |
 | -------------------- | --------- | ---------- | ------------ | ----------- | ---------- | ------------- | --------------- |
 | set_storage_or_clear | 168,558   | 3          | 56186.0      | 507,877,875 | 30,771     | 54.5%         | 60.0%           |
-| get_storage_or_zero  | 2,716     | 2          | 1358.0       | 135,855,434 | 20,514     | 14.6%         | 40.0%           |
+| get_storage_or_zero  | 2,717     | 2          | 1358.5       | 135,855,434 | 20,514     | 14.6%         | 40.0%           |
 | set_immutable_data   | 2,048     | 1          | 2048.0       | 102,397,331 | 0          | 11.0%         | 0.0%            |
 | seal_return          | 11        | 1          | 11.0         | 550,198     | 0          | 0.1%          | 0.0%            |
 | now                  | 7         | 1          | 7.0          | 356,000     | 0          | 0.0%          | 0.0%            |
 | value_transferred    | 7         | 1          | 7.0          | 336,000     | 0          | 0.0%          | 0.0%            |
-| call_data_size       | 6         | 1          | 6.0          | 318,000     | 0          | 0.0%          | 0.0%            |
+| call_data_size       | 7         | 1          | 7.0          | 318,000     | 0          | 0.0%          | 0.0%            |
 | call_data_copy       | 1         | 1          | 1.0          | 40,556      | 0          | 0.0%          | 0.0%            |
-| **Unattributed**     | -         | -          | -            | 184,341,511 | 0          | 19.8%         | 0.0%            |
+| **Unattributed**     | -         | -          | -            | 184,946,131 | 0          | 19.8%         | 0.0%            |
 
 
