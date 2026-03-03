@@ -59,7 +59,9 @@ function rustBytecodeSizeFn(dbName: string): number | null {
     return fileSize(
         join(RUST_DIR, 'protocol-commons', base, `${base}.polkavm`),
     ) ??
-        fileSize(join(RUST_DIR, 'contracts', 'target', `${base}.release.polkavm`)) ??
+        fileSize(
+            join(RUST_DIR, 'contracts', 'target', `${base}.release.polkavm`),
+        ) ??
         fileSize(join(RUST_DIR, 'contracts', `${base}.polkavm`))
 }
 
