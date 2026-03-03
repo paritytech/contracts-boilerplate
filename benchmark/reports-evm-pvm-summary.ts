@@ -50,8 +50,8 @@ const EVM_TO_RUST: Record<string, string> = {
 }
 
 const EVM_TO_INK: Record<string, string> = {
-    Fibonacci: 'fibonacci',
-    SimpleToken: 'simple_token',
+    Fibonacci: 'fibonacci_u32',
+    SimpleToken: 'simple_token_u256',
 }
 
 function rustBytecodeSizeFn(dbName: string): number | null {
@@ -59,6 +59,9 @@ function rustBytecodeSizeFn(dbName: string): number | null {
     return fileSize(
         join(RUST_DIR, 'protocol-commons', base, `${base}.polkavm`),
     ) ??
+        fileSize(
+            join(RUST_DIR, 'contracts', 'target', `${base}.release.polkavm`),
+        ) ??
         fileSize(join(RUST_DIR, 'contracts', `${base}.polkavm`))
 }
 
@@ -587,8 +590,8 @@ function bytecodeSizeTable(): string {
             join(CODEGEN_DIR, 'pvm', `${r.contract}.polkavm`),
         )
         const rustBytecodeNames: Record<string, string> = {
-            Fibonacci: 'fibonacci_rust',
-            SimpleToken: 'simple_token_with_alloc_rust',
+            Fibonacci: 'fibonacci_u32_rust',
+            SimpleToken: 'simple_token_u32_no_alloc_rust',
         }
         const rustName = EVM_TO_RUST[r.contract] ??
             rustBytecodeNames[r.contract]

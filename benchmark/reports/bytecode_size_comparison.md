@@ -12,7 +12,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | fibonacci_u128_rust                 | PVM     | 315          | +37.6%      |
 | fibonacci_u32_macro_bump_alloc_rust | PVM     | 431          | +88.2%      |
 | fibonacci_u32_macro_no_alloc_rust   | PVM     | 477          | +108.3%     |
-| fibonacci_u32_ink                   | PVM     | 679          | +196.5%     |
+| fibonacci_u32_ink                   | PVM     | 824          | +259.8%     |
 | fibonacci_u256_rust                 | PVM     | 980          | +327.9%     |
 | Fibonacci_pvm                       | PVM     | 1,152        | +403.1%     |
 
@@ -28,7 +28,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | simple_token_u256_macro_no_alloc_rust   | PVM     | 3,765        | +578.4%     |
 | simple_token_u256_macro_bump_alloc_rust | PVM     | 4,430        | +698.2%     |
 | SimpleToken_pvm                         | PVM     | 5,357        | +865.2%     |
-| simple_token_u256_ink                   | PVM     | 8,347        | +1404.0%    |
+| simple_token_u256_ink                   | PVM     | 8,483        | +1428.5%    |
 
 
 ## TetherToken Implementations
@@ -52,7 +52,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract          | VM Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | ------------ | ----------- |
 | FiatTokenV2_2_evm | EVM     | 15,467       | -           |
-| FiatTokenV2_2_pvm | PVM     | 411,352      | +2559.5%    |
+| FiatTokenV2_2_pvm | PVM     | 103,535      | +569.4%     |
 
 
 ## FiatTokenProxy Implementations
@@ -68,7 +68,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract      | VM Type | Size (bytes) | vs Smallest |
 | ------------- | ------- | ------------ | ----------- |
 | XENCrypto_evm | EVM     | 10,489       | -           |
-| XENCrypto_pvm | PVM     | 306,120      | +2818.5%    |
+| XENCrypto_pvm | PVM     | 112,823      | +975.6%     |
 
 
 ## CoinTool_App Implementations
@@ -84,7 +84,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract   | VM Type | Size (bytes) | vs Smallest |
 | ---------- | ------- | ------------ | ----------- |
 | Store_evm  | EVM     | 7,835        | -           |
-| store_rust | PVM     | 31,620       | +303.6%     |
+| store_rust | PVM     | 31,499       | +302.0%     |
 | Store_pvm  | PVM     | 74,865       | +855.5%     |
 
 
@@ -93,7 +93,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract | VM Type | Size (bytes) | vs Smallest |
 | -------- | ------- | ------------ | ----------- |
 | Log_evm  | EVM     | 6,297        | -           |
-| log_rust | PVM     | 16,590       | +163.5%     |
+| log_rust | PVM     | 16,520       | +162.3%     |
 | Log_pvm  | PVM     | 54,122       | +759.5%     |
 
 
@@ -102,7 +102,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract                     | VM Type | Size (bytes) | vs Smallest |
 | ---------------------------- | ------- | ------------ | ----------- |
 | NonFungibleCredential_evm    | EVM     | 6,684        | -           |
-| non_fungible_credential_rust | PVM     | 19,114       | +186.0%     |
+| non_fungible_credential_rust | PVM     | 19,049       | +185.0%     |
 | NonFungibleCredential_pvm    | PVM     | 65,603       | +881.5%     |
 
 
@@ -111,7 +111,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract                 | VM Type | Size (bytes) | vs Smallest |
 | ------------------------ | ------- | ------------ | ----------- |
 | FungibleCredential_evm   | EVM     | 7,235        | -           |
-| fungible_credential_rust | PVM     | 17,693       | +144.5%     |
+| fungible_credential_rust | PVM     | 17,636       | +143.8%     |
 | FungibleCredential_pvm   | PVM     | 65,740       | +808.6%     |
 
 
@@ -120,7 +120,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract   | VM Type | Size (bytes) | vs Smallest |
 | ---------- | ------- | ------------ | ----------- |
 | DotNS_evm  | EVM     | 8,168        | -           |
-| dotns_rust | PVM     | 23,033       | +182.0%     |
+| dotns_rust | PVM     | 22,951       | +181.0%     |
 | DotNS_pvm  | PVM     | 75,233       | +821.1%     |
 
 
@@ -129,7 +129,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract          | VM Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | ------------ | ----------- |
 | KeyRegistry_evm   | EVM     | 4,298        | -           |
-| key_registry_rust | PVM     | 18,718       | +335.5%     |
+| key_registry_rust | PVM     | 18,644       | +333.8%     |
 | KeyRegistry_pvm   | PVM     | 38,873       | +804.4%     |
 
 
@@ -138,7 +138,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract    | VM Type | Size (bytes) | vs Smallest |
 | ----------- | ------- | ------------ | ----------- |
 | Escrow_evm  | EVM     | 4,226        | -           |
-| escrow_rust | PVM     | 12,920       | +205.7%     |
+| escrow_rust | PVM     | 12,871       | +204.6%     |
 | Escrow_pvm  | PVM     | 33,820       | +700.3%     |
 
 
