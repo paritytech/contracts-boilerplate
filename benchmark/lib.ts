@@ -51,7 +51,7 @@ export interface ContractInfo {
     build(): Promise<void>
 }
 
-export function ink(name: string, crateName: string): ContractInfo {
+export function ink(name: string): ContractInfo {
     const dir = name.replace(/_ink$/, '')
     return {
         supportEvm() {
@@ -61,7 +61,7 @@ export function ink(name: string, crateName: string): ContractInfo {
             return name
         },
         getBytecode() {
-            return readBytecode(`./ink/${dir}/target/ink/${crateName}.polkavm`)
+            return readBytecode(`./ink/${dir}/target/ink/${dir}.polkavm`)
         },
         async build() {
             const cwd = join(import.meta.dirname!, '..', 'ink', dir)

@@ -10,7 +10,7 @@ export const testContracts: Artifacts = [
     {
         id: 'Fibonacci',
         srcs: [
-            ink('fibonacci_u32_ink', 'fibonacci'),
+            ink('fibonacci_u32_ink'),
             rust('fibonacci_u32'),
             rust('fibonacci_u128'),
             rust('fibonacci_u256'),
@@ -42,11 +42,13 @@ export const testContracts: Artifacts = [
     {
         id: 'SimpleToken',
         srcs: [
-            ink('simple_token_u256_ink', 'simple_token'),
+            ink('simple_token_u256_ink'),
             rust('simple_token_u32_no_alloc'),
+            // TODO: this one generates a contract with uint32 abi selectors (instead of uint256)
+            // Keeping it here for now as we should still include it later to compare bytecode size
+            // rust('simple_token_u32_macro_no_alloc'),
             rust('simple_token_u128_no_alloc'),
             rust('simple_token_u256_no_alloc'),
-            // rust('simple_token_u32_macro_no_alloc'),  Different mint and transfer abi
             rust('simple_token_u256_macro_no_alloc'),
             rust('simple_token_u256_macro_bump_alloc'),
             ...solidity('simple_token.sol', 'SimpleToken'),
