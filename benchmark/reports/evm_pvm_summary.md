@@ -78,8 +78,8 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 
 | Contract                 | EVM bytes | PVM/Solidity bytes | Ratio | PVM/Rust bytes | Ratio  | ink! bytes | Ratio   |
 | ------------------------ | --------- | ------------------ | ----- | -------------- | ------ | ---------- | ------- |
-| Fibonacci                | 229       | 1,152              | 5.0x  | 209            | 0.9x   | 1,102      | 4.8x    |
-| SimpleToken              | 555       | 5,357              | 9.7x  | 24,704         | 44.5x  | 7,251      | 13.1x   |
+| Fibonacci                | 229       | 1,152              | 5.0x  | 234            | 1.0x   | 1,102      | 4.8x    |
+| SimpleToken              | 555       | 5,357              | 9.7x  | 2,211          | 4.0x   | 7,251      | 13.1x   |
 | FiatTokenProxy           | 1,643     | 9,865              | 6.0x  | —              | —      | —          | —       |
 | WETH9                    | 2,012     | 17,235             | 8.6x  | —              | —      | —          | —       |
 | MarketplaceProxy         | 2,732     | 11,916             | 4.4x  | —              | —      | —          | —       |
