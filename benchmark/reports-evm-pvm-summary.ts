@@ -39,6 +39,12 @@ function fileSize(path: string): number | null {
 
 // ─── Constants ───
 
+// Test contracts are excluded from aggregate tables to avoid skewing real-world
+// workload analysis. They are still included in the variant-specific tables
+// (SimpleToken variants, Fibonacci variants, bytecode sizes).
+const TEST_CONTRACT_IDS = ['Fibonacci', 'Fibonacci_u256', 'SimpleToken']
+const TEST_EXCLUDE_SQL = TEST_CONTRACT_IDS.map((id) => `'${id}'`).join(',')
+
 const EVM_TO_RUST: Record<string, string> = {
     DotNS: 'dotns_rust',
     Escrow: 'escrow_rust',
@@ -51,6 +57,8 @@ const EVM_TO_RUST: Record<string, string> = {
 
 const EVM_TO_INK: Record<string, string> = {
     Fibonacci: 'fibonacci',
+    Fibonacci_u256: 'fibonacci_u256',
+    Fibonacci_u256_iter: 'fibonacci_u256_iter',
     SimpleToken: 'simple_token',
 }
 
@@ -59,6 +67,9 @@ function rustBytecodeSizeFn(dbName: string): number | null {
     return fileSize(
         join(RUST_DIR, 'protocol-commons', base, `${base}.polkavm`),
     ) ??
+        fileSize(
+            join(RUST_DIR, 'contracts', 'target', `${base}.release.polkavm`),
+        ) ??
         fileSize(join(RUST_DIR, 'contracts', `${base}.polkavm`))
 }
 
@@ -91,6 +102,7 @@ function baseVsMeteredTable(): string {
 			AND weight_consumed_ref_time IS NOT NULL
 			AND base_call_weight_ref_time IS NOT NULL
 			AND (contract_name LIKE '%_evm' OR contract_name LIKE '%_pvm')
+			AND contract_id NOT IN (${TEST_EXCLUDE_SQL})
 		GROUP BY tx_type
 		ORDER BY tx_type
 	`).all() as {
@@ -142,6 +154,7 @@ function topOpsTable(deploy: boolean): string {
 			AND weight_consumed_ref_time IS NOT NULL
 			AND base_call_weight_ref_time IS NOT NULL
 			AND (contract_name LIKE '%_evm' OR contract_name LIKE '%_pvm')
+			AND contract_id NOT IN (${TEST_EXCLUDE_SQL})
 	`).get() as { metered_rt: number; metered_pov: number }
 
     const cats = db.prepare(`
@@ -156,6 +169,7 @@ function topOpsTable(deploy: boolean): string {
 			AND t.weight_consumed_ref_time IS NOT NULL
 			AND t.base_call_weight_ref_time IS NOT NULL
 			AND (t.contract_name LIKE '%_evm' OR t.contract_name LIKE '%_pvm')
+			AND t.contract_id NOT IN (${TEST_EXCLUDE_SQL})
 		GROUP BY category
 		ORDER BY total_rt DESC
 	`).all() as {
@@ -230,6 +244,7 @@ function execTotalsTable(): string {
 			AND e.weight_consumed_ref_time IS NOT NULL
 			AND p.weight_consumed_ref_time IS NOT NULL
 			AND e.contract_name NOT LIKE '%CoinTool%'
+			AND e.contract_id NOT IN (${TEST_EXCLUDE_SQL})
 	`).get() as {
         n: number
         evm_rt: number
@@ -239,7 +254,7 @@ function execTotalsTable(): string {
     }
 
     let md =
-        `**${allRow.n} EVM↔PVM/Solidity pairs (excluding CoinTool_App):**\n`
+        `**${allRow.n} EVM↔PVM/Solidity pairs (excluding CoinTool_App and test contracts):**\n`
     md += table([
         {
             'Metric': 'Metered ref_time',
@@ -323,6 +338,7 @@ function execTotalsTable(): string {
 			AND e.contract_name <> 'CoinTool_App_evm'
 			AND e.transaction_name <> 'deploy'
 			AND e.weight_consumed_ref_time IS NOT NULL
+			AND e.contract_id NOT IN (${TEST_EXCLUDE_SQL})
 	`).all() as { rt_pct: number; pov_pct: number }[]
 
     const rustPairPcts = db.prepare(`
@@ -435,6 +451,7 @@ function deployTotalsTable(): string {
 			AND transaction_name = 'deploy'
 			AND weight_consumed_ref_time IS NOT NULL
 			AND base_call_weight_ref_time IS NOT NULL
+			AND contract_id NOT IN (${TEST_EXCLUDE_SQL})
 	`).all() as DeployRow[]
 
     const pvmMap = new Map<string, DeployRow>()
@@ -450,6 +467,7 @@ function deployTotalsTable(): string {
 			AND contract_name LIKE '%_pvm'
 			AND transaction_name = 'deploy'
 			AND weight_consumed_ref_time IS NOT NULL
+			AND contract_id NOT IN (${TEST_EXCLUDE_SQL})
 	`).all() as DeployRow[]
     ) {
         pvmMap.set(r.contract, r)
@@ -588,6 +606,8 @@ function bytecodeSizeTable(): string {
         )
         const rustBytecodeNames: Record<string, string> = {
             Fibonacci: 'fibonacci_rust',
+            Fibonacci_u256: 'fibonacci_u256_rust',
+            Fibonacci_u256_iter: 'fibonacci_u256_iter_rust',
             SimpleToken: 'simple_token_with_alloc_rust',
         }
         const rustName = EVM_TO_RUST[r.contract] ??
@@ -706,6 +726,7 @@ function avgSyscallCost(
 		WHERE t.chain_name = 'eth-rpc'
 			AND t.transaction_name <> 'deploy'
 			AND t.contract_name LIKE ?
+			AND t.contract_id NOT IN (${TEST_EXCLUDE_SQL})
 			AND s.op IN (${placeholders})
 	`).get(vmFilter, ...ops) as { avg: number; calls: number } | null
     return row && row.calls > 0 ? row : null
@@ -954,6 +975,7 @@ function costGapDecompositionTable(): string {
 				AND e.weight_consumed_ref_time IS NOT NULL
 				AND p.weight_consumed_ref_time IS NOT NULL
 				AND e.contract_name NOT LIKE '%CoinTool%'
+				AND e.contract_id NOT IN (${TEST_EXCLUDE_SQL})
 		),
 		per_pair AS (
 			SELECT m.*,

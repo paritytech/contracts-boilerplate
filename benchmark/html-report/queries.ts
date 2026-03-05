@@ -100,7 +100,7 @@ function datasetSortOrder(a: string, b: string): number {
 
 // Dataset categorization for contracts
 export const DATASET_CATEGORIES: Record<string, string[]> = {
-    'test-contracts': ['Fibonacci', 'SimpleToken'],
+    'test-contracts': ['Fibonacci', 'Fibonacci_u256', 'SimpleToken'],
     'ethereum-contracts': [
         'TetherToken',
         'WETH9',
@@ -1096,10 +1096,17 @@ export interface FibonacciImplementation {
 const FIBONACCI_VARIANTS = [
     { pattern: 'Fibonacci_evm', label: 'EVM (Solidity)' },
     { pattern: 'Fibonacci_pvm', label: 'PVM (Solidity)' },
-    { pattern: 'fibonacci_ink', label: 'PVM (Ink)' },
-    { pattern: 'fibonacci_rust', label: 'PVM (Rust)' },
+    { pattern: 'fibonacci_u32_ink', label: 'PVM (ink! u32)' },
+    { pattern: 'fibonacci_u32_rust', label: 'PVM (Rust u32)' },
+    {
+        pattern: 'fibonacci_u32_macro_no_alloc_rust',
+        label: 'PVM (Rust u32 macro no_alloc)',
+    },
+    {
+        pattern: 'fibonacci_u32_macro_bump_alloc_rust',
+        label: 'PVM (Rust u32 macro bump_alloc)',
+    },
     { pattern: 'fibonacci_u128_rust', label: 'PVM (Rust u128)' },
-    { pattern: 'fibonacci_u256_rust', label: 'PVM (Rust u256)' },
 ]
 
 export function getFibonacciComparison(): FibonacciImplementation[] {
@@ -1659,6 +1666,8 @@ const EVM_TO_RUST: Record<string, string> = {
 
 const EVM_TO_INK: Record<string, string> = {
     Fibonacci: 'fibonacci',
+    Fibonacci_u256: 'fibonacci_u256',
+    Fibonacci_u256_iter: 'fibonacci_u256_iter',
     SimpleToken: 'simple_token',
 }
 
@@ -1679,6 +1688,9 @@ function rustBytecodeSizeFn(dbName: string): number | null {
     return fileSize(
         join(RUST_DIR, 'protocol-commons', base, `${base}.polkavm`),
     ) ??
+        fileSize(
+            join(RUST_DIR, 'contracts', 'target', `${base}.release.polkavm`),
+        ) ??
         fileSize(join(RUST_DIR, 'contracts', `${base}.polkavm`))
 }
 
@@ -2759,6 +2771,8 @@ export function getBytecodeSizeComparison(): BytecodeSizeCompRow[] {
         )
         const rustBytecodeNames: Record<string, string> = {
             Fibonacci: 'fibonacci_rust',
+            Fibonacci_u256: 'fibonacci_u256_rust',
+            Fibonacci_u256_iter: 'fibonacci_u256_iter_rust',
             SimpleToken: 'simple_token_with_alloc_rust',
         }
         const rustName = EVM_TO_RUST[r.contract] ??

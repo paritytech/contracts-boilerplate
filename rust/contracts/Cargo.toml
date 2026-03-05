@@ -42,6 +42,10 @@ name = "fibonacci_u256"
 path = "src/fibonacci_u256.rs"
 
 [[bin]]
+name = "fibonacci_u256_iter"
+path = "src/fibonacci_u256_iter.rs"
+
+[[bin]]
 name = "fibonacci_u32_macro_no_alloc"
 path = "src/fibonacci_u32_macro_no_alloc.rs"
 
