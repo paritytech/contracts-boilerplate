@@ -46,6 +46,8 @@ export const testContracts: Artifacts = [
             ink('fibonacci_u256_iter_ink'),
             rust('fibonacci_u256'),
             rust('fibonacci_u256_iter'),
+            rust('fibonacci_u256_primitive_types'),
+            rust('fibonacci_u256_iter_primitive_types'),
             ...solidity('fibonacci.sol', 'Fibonacci_u256'),
             ...solidity('fibonacci.sol', 'Fibonacci_u256_iter'),
         ],

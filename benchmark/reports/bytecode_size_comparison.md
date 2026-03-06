@@ -1,6 +1,6 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-03-05
+Generated on: 2026-03-06
 resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 ## Fibonacci Implementations
@@ -19,16 +19,18 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 
 ## Fibonacci_u256 Implementations
 
-| Contract                 | VM Type | Size (bytes) | vs Smallest |
-| ------------------------ | ------- | ------------ | ----------- |
-| Fibonacci_u256_iter_evm  | EVM     | 181          | -           |
-| Fibonacci_u256_evm       | EVM     | 185          | +2.2%       |
-| fibonacci_u256_iter_rust | PVM     | 890          | +391.7%     |
-| fibonacci_u256_rust      | PVM     | 980          | +441.4%     |
-| Fibonacci_u256_iter_pvm  | PVM     | 1,224        | +576.2%     |
-| Fibonacci_u256_pvm       | PVM     | 1,322        | +630.4%     |
-| fibonacci_u256_ink       | PVM     | 1,838        | +915.5%     |
-| fibonacci_u256_iter_ink  | PVM     | 1,845        | +919.3%     |
+| Contract                                 | VM Type | Size (bytes) | vs Smallest |
+| ---------------------------------------- | ------- | ------------ | ----------- |
+| Fibonacci_u256_iter_evm                  | EVM     | 181          | -           |
+| Fibonacci_u256_evm                       | EVM     | 185          | +2.2%       |
+| fibonacci_u256_iter_primitive_types_rust | PVM     | 851          | +370.2%     |
+| fibonacci_u256_iter_rust                 | PVM     | 890          | +391.7%     |
+| fibonacci_u256_primitive_types_rust      | PVM     | 900          | +397.2%     |
+| fibonacci_u256_rust                      | PVM     | 980          | +441.4%     |
+| Fibonacci_u256_iter_pvm                  | PVM     | 1,224        | +576.2%     |
+| Fibonacci_u256_pvm                       | PVM     | 1,322        | +630.4%     |
+| fibonacci_u256_ink                       | PVM     | 1,838        | +915.5%     |
+| fibonacci_u256_iter_ink                  | PVM     | 1,845        | +919.3%     |
 
 
 ## SimpleToken Implementations

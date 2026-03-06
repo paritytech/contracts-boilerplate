@@ -10,13 +10,13 @@
 
 **Bytecode size is the other major cost driver.** resolc produces 5-11x larger bytecodes than EVM, which compounds across deploy base weight (+51%), proof_size per call (+28%), and instruction count. Deploy cost is a storage-of-code problem, not an execution problem — metered constructor cost is only +12%.
 
-**Rust on PVM can match or beat EVM** on ref_time (22/46 transactions cheaper) and consistently wins on proof_size (-54% median), but this comparison is partly driven by non-equivalent implementations (different data structures, SCALE blob encoding reducing storage call count by ~50%). At native integer widths, Rust is 3.5x faster than Solidity on PVM; at u256, Rust is 3-5x slower.
+**Rust on PVM can match or beat EVM** on ref_time (22/46 transactions cheaper) and consistently wins on proof_size (-54% median), but this comparison is partly driven by non-equivalent implementations (different data structures, SCALE blob encoding reducing storage call count by ~50%). At native integer widths, Rust is 3.5x faster than Solidity on PVM; at u256, Rust is 1.3-5x slower depending on the U256 library (`primitive_types` vs `ruint`).
 
 **Key improvements, by impact:**
 
 1. **Interpreter/JIT performance.** 93% of the PVM/Sol ref_time gap is unattributed interpreter overhead. JIT compilation would reduce fuel-to-ref_time conversion rates. The theoretical lower bound (zero interpreter overhead) would reduce the gap from +36% to ~+3% — an asymptote, not a reachable target.
 2. **Bytecode size reduction.** 5-11x larger PVM bytecodes compound across deploy cost, proof_size, and instruction count. Integer narrowing (native RISC-V where values provably fit in 64 bits) is one potential optimization.
-3. **PVM-optimized Rust libraries.** Software U256 costs +2611% vs EVM. A performant U256 implementation and `Lazy<T>` per-field storage would make Rust contracts practical without hand-rolling byte manipulation.
+3. **PVM-optimized Rust libraries.** Software U256 costs +1431% (`primitive_types`) to +2611% (`ruint`) vs EVM. Library choice matters: `primitive_types` is ~2x faster than `ruint` for U256 arithmetic. `Lazy<T>` per-field storage would make Rust contracts practical without hand-rolling byte manipulation.
 4. **Hot/cold storage pricing.** Storage accounts for 59% of ref_time. pallet-revive charges worst-case (cold) weight for every access, even repeated reads. Warm pricing (as EVM does: 100 vs 2,100 gas, 21x difference) would reduce costs for storage-heavy contracts.
 
 ---
@@ -41,7 +41,7 @@ For executions, metered weight dominates — cost is determined by what the cont
 | Storage write        | 39.2%         | 29.4%           | 2,117   |
 | Storage read         | 19.6%         | 36.6%           | 2,633   |
 | Cross-contract calls | 13.2%         | 24.7%           | 456     |
-| Other attributed     | 13.1%         | 1.8%            | 166,292 |
+| Other attributed     | 13.1%         | 1.8%            | 166,325 |
 | Unattributed         | 14.8%         | 7.5%            | —       |
 
 Storage reads + writes consume 59% of ref_time and 66% of proof_size. Each write costs ~169M ref_time, each read ~68M. Cross-calls are individually expensive (456 calls, 13% ref_time, 25% proof_size) due to callee bytecode loading. The unattributed 14.8% is PolkaVM interpreter fuel consumption between syscalls and code loading for cross-calls.
@@ -101,7 +101,7 @@ The +51% deploy base weight gap tracks bytecode size. Metered deploy cost (const
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Fibonacci_u256_iter | 181 | 1,224 | 6.8x | 890 | 4.9x | 1,845 | 10.2x |
 | Fibonacci_u256 | 185 | 1,322 | 7.1x | 980 | 5.3x | 1,838 | 9.9x |
-| Fibonacci_u32 | 229 | 1,152 | 5.0x | 209 | 0.9x | 1,102 | 4.8x |
+| Fibonacci_u32 | 229 | 1,152 | 5.0x | 209 | 0.9x | 824 | 3.6x |
 | SimpleToken | 555 | 5,357 | 9.7x | 24,704 | 44.5x | 7,251 | 13.1x |
 | Escrow | 4,226 | 33,820 | 8.0x | 12,871 | 3.0x | — | — |
 | KeyRegistry | 4,298 | 38,873 | 9.0x | 18,644 | 4.3x | — | — |
@@ -141,10 +141,11 @@ resolc produces 5-11x larger bytecodes than EVM. Hand-written Rust ranges 2.4-4.
 | Fibonacci_u32_pvm (resolc u256) | 420.2M | +217.7% |
 | fibonacci_u32_ink | 452.9M | +242.5% |
 | Fibonacci_u256_pvm | 721.6M | +445.7% |
+| fibonacci_u256_rust (primitive_types) | 2,025.2M | +1431.4% |
 | fibonacci_u256_ink | 2,270.3M | +1616.7% |
-| fibonacci_u256_rust | 3,584.9M | +2610.8% |
+| fibonacci_u256_rust (ruint) | 3,584.9M | +2610.8% |
 
-At native integer widths, Rust on PVM is competitive with EVM (u32: -8.2%, u32 macro: -5.0%). The advantage erodes with wider integers (u128: +113.2%) and reverses dramatically with U256 (+2611%). resolc compiling Solidity to PVM adds +218% vs EVM. ink! U256 recursive (+1617%) is better than hand-written Rust U256 (+2611%) but still far worse than resolc. For SimpleToken, resolc (+17.0%) and no-alloc Rust u32 (+20.8%) are close; switching from u32 to u256 in Rust adds ~11 percentage points (+20.8% → +32.0%), and ink! (+79.7%) substantially increases cost.
+At native integer widths, Rust on PVM is competitive with EVM (u32: -8.2%, u32 macro: -5.0%). The advantage erodes with wider integers (u128: +113.2%) and reverses dramatically with U256: `primitive_types` at +1431%, `ruint` at +2611%. Library choice matters — `primitive_types` is ~1.8x faster than `ruint` for U256. resolc compiling Solidity to PVM adds +218% vs EVM. For SimpleToken, resolc (+17.0%) and no-alloc Rust u32 (+20.8%) are close; switching from u32 to u256 in Rust adds ~11 percentage points (+20.8% → +32.0%), and ink! (+79.7%) substantially increases cost.
 
 ---
 
@@ -171,8 +172,8 @@ At native integer widths, Rust on PVM is competitive with EVM (u32: -8.2%, u32 m
 | Keccak256 | 5,466M (440) | 5,516M (444) | 4,870M (394) |
 | Events | 1,022M (46) | 1,022M (46) | 1,022M (46) |
 | Cross-calls | 845M (2) | 846M (2) | 846M (2) |
-| Unattributed | 466M | 57,862M | 46,928M |
-| **Total metered** | **98,053M** | **159,026M** | **88,335M** |
+| Unattributed | 466M | 57,861M | 46,929M |
+| **Total metered** | **98,054M** | **159,025M** | **88,335M** |
 
 Two effects are visible. **Call count:** Rust uses ~half the storage operations as EVM/Solidity (162 writes vs 327, 105 reads vs 479) by serializing entire structs into single storage blobs via SCALE encoding, whereas Solidity maps each field to a separate 32-byte slot. **Unattributed overhead:** EVM's is 466M (~0.5%). PVM/Sol's is 57.9B (36.4%), Rust's is 46.9B (53.1%). This is RISC-V instruction execution between syscalls, charged via PolkaVM's fuel meter.
 
@@ -217,28 +218,25 @@ The `Fibonacci_u256` variants isolate pure arithmetic cost on PVM, removing stor
 
 **Recursive (metered ref_time):**
 
-| Input | EVM | Solidity PVM | Rust PVM | PVM/EVM | Rust/Solidity |
-| --- | --- | --- | --- | --- | --- |
-| fib_5 | 10.2M | 68.6M | 315.0M | 6.7x | 4.6x |
-| fib_10 | 109.9M | 721.6M | 3,584.9M | 6.6x | 5.0x |
-| fib_15 | 1,215.6M | 7,960.9M | 39,837.2M | 6.5x | 5.0x |
+| Input | EVM | Solidity PVM | Rust ruint | Rust primitive_types | PVM/EVM | pt/ruint |
+| --- | --- | --- | --- | --- | --- | --- |
+| fib_5 | 10.2M | 68.6M | 315.0M | 185.7M | 6.7x | 0.6x |
+| fib_10 | 109.9M | 721.6M | 3,584.9M | 2,025.2M | 6.6x | 0.6x |
+| fib_15 | 1,215.6M | 7,960.9M | 39,837.2M | 22,428.3M | 6.5x | 0.6x |
 
 **Iterative (metered ref_time):**
 
-| Input | EVM | Solidity PVM | Rust PVM | PVM/EVM | Rust/Solidity |
-| --- | --- | --- | --- | --- | --- |
-| fib_5 | 3.7M | 28.0M | 80.1M | 7.5x | 2.9x |
-| fib_10 | 6.1M | 48.8M | 157.4M | 8.0x | 3.2x |
-| fib_15 | 8.5M | 69.6M | 234.6M | 8.1x | 3.4x |
+| Input | EVM | Solidity PVM | Rust ruint | Rust primitive_types | PVM/EVM | pt/ruint |
+| --- | --- | --- | --- | --- | --- | --- |
+| fib_5 | 3.7M | 28.0M | 80.1M | 39.5M | 7.5x | 0.5x |
+| fib_10 | 6.1M | 48.8M | 157.4M | 65.7M | 8.0x | 0.4x |
+| fib_15 | 8.5M | 69.6M | 234.6M | 91.9M | 8.1x | 0.4x |
 
 Solidity PVM is **6.5-8x slower than EVM** on both recursive and iterative variants.
 
-Rust is **3-5x slower than Solidity on PVM** for u256 workloads.
-Both compile to RV64 (64-bit registers), so 256-bit values require 4 registers/limbs regardless of source language.
-Rust's `primitive_types::U256` is `[u64; 4]` with library-level arithmetic; resolc compiles Solidity's native `uint256` through LLVM.
-The exact cause of the 3-5x gap is not yet determined — comparing generated RISC-V instruction counts for both paths would be needed to identify it.
-The recursive gap (5x Rust/Sol) is worse than iterative (3x).
-The iterative ratio worsens with input size (2.9x → 3.4x) as arithmetic cost dominates over fixed overhead.
+Two Rust U256 libraries are compared: `ruint` (the existing implementation) and `primitive_types` (parity-tech's `uint` crate). `primitive_types::U256` is **~1.8x faster** than `ruint::U256` on recursive workloads and **~2.4x faster** on iterative — a significant library-level difference. Both are `[u64; 4]` with library-level arithmetic; the gap suggests `primitive_types` generates more efficient RISC-V code.
+
+Even with the faster `primitive_types`, Rust U256 remains slower than resolc's Solidity on PVM: `primitive_types` recursive is 2.8x slower than Solidity PVM (vs ruint's 5.0x), and `primitive_types` iterative is 1.3x slower (vs ruint's 3.2x at fib_10). resolc compiles Solidity's native `uint256` through LLVM, which produces more optimized RISC-V for 256-bit arithmetic than either Rust library.
 
 For contrast, the uint32 `Fibonacci` shows Rust PVM at 121.4M vs Solidity PVM at 420.2M — Rust is **3.5x faster** at native integer widths. Integer width is the decisive factor: Rust wins at native sizes, Solidity wins at u256.
 
@@ -250,6 +248,6 @@ For contrast, the uint32 `Fibonacci` shows Rust PVM at 121.4M vs Solidity PVM at
 
 **2. Bytecode size reduction (high impact, compounds with #1).** resolc produces 5-11x larger bytecodes. Any reduction compounds across deploy base weight (+51%), proof_size per call (+28%), and instruction count. Potential optimizations include integer narrowing (emitting native RISC-V where values provably fit in 64 bits).
 
-**3. PVM-optimized libraries (Rust ecosystem).** Software-emulated U256 costs +2611% vs EVM on Fibonacci (recursive fib_10). A performant U256 implementation and `Lazy<T>` per-field storage (as ink! provides) would make efficient Rust contracts practical without hand-rolling byte manipulation. `Lazy<T>` is particularly impactful: SCALE blobs force full struct round-trips for single-field updates and applying it to hot fields would match Solidity's per-slot access while keeping cold fields in a single blob.
+**3. PVM-optimized libraries (Rust ecosystem).** Software-emulated U256 costs +1431% (`primitive_types`) to +2611% (`ruint`) vs EVM on Fibonacci (recursive fib_10). Library choice alone yields a ~1.8x improvement — `primitive_types` generates more efficient RISC-V. `Lazy<T>` per-field storage (as ink! provides) would also help: SCALE blobs force full struct round-trips for single-field updates and applying it to hot fields would match Solidity's per-slot access while keeping cold fields in a single blob.
 
 **4. Hot/cold storage pricing.** pallet-revive host functions currently assume cold storage and are benchmarked as such, every access is charged the worst-case (first-access) weight regardless of whether the slot was already read in the same block. Storage reads + writes account for 59% of ref_time across all benchmarked transactions (2,633 reads, 2,117 writes). In Ethereum, warm SLOAD costs 100 gas vs cold at 2,100 gas (21x difference). Substrate's storage overlay already caches reads in memory, so repeated access is physically cheaper, but this isn't reflected in the charged weights.

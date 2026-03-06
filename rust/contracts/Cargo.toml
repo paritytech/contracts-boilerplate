@@ -46,6 +46,14 @@ name = "fibonacci_u256_iter"
 path = "src/fibonacci_u256_iter.rs"
 
 [[bin]]
+name = "fibonacci_u256_primitive_types"
+path = "src/fibonacci_u256_primitive_types.rs"
+
+[[bin]]
+name = "fibonacci_u256_iter_primitive_types"
+path = "src/fibonacci_u256_iter_primitive_types.rs"
+
+[[bin]]
 name = "fibonacci_u32_macro_no_alloc"
 path = "src/fibonacci_u32_macro_no_alloc.rs"
 
@@ -68,6 +76,7 @@ pvm-contract-macros = { git = "ssh://git@github.com/paritytech/cargo-pvm-contrac
 pvm-contract-types = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
 pvm-bump-allocator = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
 ruint = { version = "1.17", default-features = false }
+primitive-types = { version = "0.13", default-features = false }
 
 [build-dependencies]
 cargo-pvm-contract-builder = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
