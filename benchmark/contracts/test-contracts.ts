@@ -40,6 +40,61 @@ export const testContracts: Artifacts = [
         ],
     },
     {
+        id: 'Fibonacci_u256',
+        srcs: [
+            ink('fibonacci_u256_ink'),
+            ink('fibonacci_u256_iter_ink'),
+            rust('fibonacci_u256'),
+            rust('fibonacci_u256_iter'),
+            rust('fibonacci_u256_primitive_types'),
+            rust('fibonacci_u256_iter_primitive_types'),
+            ...solidity('fibonacci.sol', 'Fibonacci_u256'),
+            ...solidity('fibonacci.sol', 'Fibonacci_u256_iter'),
+        ],
+        deploy: (id, name, bytecode) => {
+            return deployContract({
+                name: { id, name },
+                bytecode,
+                args: [],
+            })
+        },
+        calls: [
+            {
+                name: 'fib_5',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.Fibonacci_u256,
+                        functionName: 'fibonacci',
+                        args: [5n],
+                    })
+                },
+            },
+            {
+                name: 'fib_10',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.Fibonacci_u256,
+                        functionName: 'fibonacci',
+                        args: [10n],
+                    })
+                },
+            },
+            {
+                name: 'fib_15',
+                exec: async (address) => {
+                    return await env.wallet.writeContract({
+                        address,
+                        abi: abis.Fibonacci_u256,
+                        functionName: 'fibonacci',
+                        args: [15n],
+                    })
+                },
+            },
+        ],
+    },
+    {
         id: 'SimpleToken',
         srcs: [
             ink('simple_token_u256_ink'),
