@@ -27,9 +27,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
+name = "byteorder"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
+
+[[package]]
 name = "cargo-pvm-contract-builder"
 version = "0.3.0"
-source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 dependencies = [
  "anyhow",
  "log",
@@ -63,6 +69,7 @@ dependencies = [
  "pallet-revive-uapi",
  "picoalloc",
  "polkavm-derive 0.31.0",
+ "primitive-types",
  "pvm-bump-allocator",
  "pvm-contract-macros",
  "pvm-contract-types",
@@ -109,6 +116,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2acce4a10f12dc2fb14a218589d4f1f62ef011b2d0cc4b3cb1bba8e94da14649"
 
 [[package]]
+name = "fixed-hash"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "835c052cb0c08c1acf6ffd71c022172e18723949c8282f2b9f27efbc51e64534"
+dependencies = [
+ "static_assertions",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -149,6 +165,12 @@ name = "hashbrown"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
+
+[[package]]
+name = "hex"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "hex-literal"
@@ -359,6 +381,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "primitive-types"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d15600a7d856470b7d278b3fe0e311fe28c2526348549f8ef2ff7db3299c87f5"
+dependencies = [
+ "fixed-hash",
+ "uint",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -370,12 +402,12 @@ dependencies = [
 [[package]]
 name = "pvm-bump-allocator"
 version = "0.3.0"
-source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 
 [[package]]
 name = "pvm-contract-macros"
 version = "0.3.0"
-source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 dependencies = [
  "proc-macro2",
  "pvm-contract-types",
@@ -387,7 +419,7 @@ dependencies = [
 [[package]]
 name = "pvm-contract-types"
 version = "0.3.0"
-source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 dependencies = [
  "ruint",
 ]
@@ -520,6 +552,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ce2be8dc25455e1f91df71bfa12ad37d7af1092ae736f3a6cd0e37bc7810596"
 
 [[package]]
+name = "static_assertions"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
+
+[[package]]
 name = "syn"
 version = "2.0.117"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -582,6 +620,18 @@ name = "toml_write"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d99f8c9a7727884afe522e9bd5edbfc91a3312b36a77b5fb8926e4c31a41801"
+
+[[package]]
+name = "uint"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "909988d098b2f738727b161a106cfc7cab00c539c2687a8836f8e565976fb53e"
+dependencies = [
+ "byteorder",
+ "crunchy",
+ "hex",
+ "static_assertions",
+]
 
 [[package]]
 name = "unicode-ident"
