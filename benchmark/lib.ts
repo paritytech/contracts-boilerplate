@@ -204,7 +204,6 @@ export function stylus(name: string): ContractInfo {
                 cwd: dir,
                 stdout: 'inherit',
                 stderr: 'inherit',
-                env: { ...Deno.env.toObject(), RUSTUP_TOOLCHAIN: 'nightly' },
             })
             const result = await cmd.output()
             if (!result.success) {

@@ -32,7 +32,7 @@ fi
 for contract in bench_erc1155 bench_erc20 bench_erc721 bench_storage computation fibonacci_u32 flipper incrementer simple_token_u256; do
 	echo "Building Stylus contract: $contract..."
 	cd "stylus/$contract"
-	RUSTUP_TOOLCHAIN=nightly cargo stylus build --target pvm
+	cargo stylus build --target pvm
 	cd ../..
 done
 
