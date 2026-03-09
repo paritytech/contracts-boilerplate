@@ -56,7 +56,8 @@ export function ink(name: string): ContractInfo {
     const inkDir = join(import.meta.dirname!, '..', 'ink', dir)
     // cargo-contract names the artifact after the Cargo.toml package name (dashes -> underscores)
     const cargoToml = Deno.readTextFileSync(join(inkDir, 'Cargo.toml'))
-    const pkgName = cargoToml.match(/^name\s*=\s*"(.+)"/m)?.[1]?.replace(/-/g, '_') ?? dir
+    const pkgName =
+        cargoToml.match(/^name\s*=\s*"(.+)"/m)?.[1]?.replace(/-/g, '_') ?? dir
     return {
         supportEvm() {
             return false
@@ -175,7 +176,9 @@ export function stylus(name: string): ContractInfo {
     // Derive lib name from Cargo.toml package name (dashes become underscores)
     const cargoToml = Deno.readTextFileSync(join(dir, 'Cargo.toml'))
     const pkgName = cargoToml.match(/^name\s*=\s*"(.+)"/m)?.[1]
-    if (!pkgName) throw new Error(`Cannot read package name from ${dir}/Cargo.toml`)
+    if (!pkgName) {
+        throw new Error(`Cannot read package name from ${dir}/Cargo.toml`)
+    }
     const libName = pkgName.replace(/-/g, '_')
     return {
         supportEvm() {

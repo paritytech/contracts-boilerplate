@@ -54,18 +54,18 @@ Primary key: `(hash, chain_name)`.
 
 ### Key Files
 
-| File                         | Purpose                                                                                                                |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `contracts.ts`               | CLI entry point. Imports all contract definitions, orchestrates build/deploy/execute/report.                           |
+| File                         | Purpose                                                                                                                           |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `contracts.ts`               | CLI entry point. Imports all contract definitions, orchestrates build/deploy/execute/report.                                      |
 | `lib.ts`                     | Core: DB schema, `solidity()`/`ink()`/`rust()`/`pcRust()`/`stylus()` contract builders, `deploy()`, `execute()`, `updateStats()`. |
-| `reports.ts`                 | Generates markdown: opcode analysis, category analysis, contract comparison, bytecode sizes.                           |
-| `reports-evm-pvm-summary.ts` | Standalone script for EVM vs PVM summary report with median comparisons.                                               |
-| `html-report.ts`             | Generates interactive HTML report with Chart.js charts.                                                                |
-| `html-report/queries.ts`     | All SQL queries used by the HTML report.                                                                               |
-| `html-report/templates.ts`   | HTML structure and section templates.                                                                                  |
-| `html-report/charts.ts`      | Chart.js wrapper functions (bar, stacked, radar, scatter).                                                             |
-| `opcode-categories.ts`       | Maps EVM opcodes and PolkaVM syscalls to functional categories.                                                        |
-| `contracts/*.ts`             | Contract definitions grouped by project (test, ethereum, protocol-commons, hackm3, w3s, mark3t).                       |
+| `reports.ts`                 | Generates markdown: opcode analysis, category analysis, contract comparison, bytecode sizes.                                      |
+| `reports-evm-pvm-summary.ts` | Standalone script for EVM vs PVM summary report with median comparisons.                                                          |
+| `html-report.ts`             | Generates interactive HTML report with Chart.js charts.                                                                           |
+| `html-report/queries.ts`     | All SQL queries used by the HTML report.                                                                                          |
+| `html-report/templates.ts`   | HTML structure and section templates.                                                                                             |
+| `html-report/charts.ts`      | Chart.js wrapper functions (bar, stacked, radar, scatter).                                                                        |
+| `opcode-categories.ts`       | Maps EVM opcodes and PolkaVM syscalls to functional categories.                                                                   |
+| `contracts/*.ts`             | Contract definitions grouped by project (test, ethereum, protocol-commons, hackm3, w3s, mark3t).                                  |
 
 ### Contract Definition Structure
 
