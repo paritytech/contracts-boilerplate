@@ -19,7 +19,7 @@ mod storage {
             }
         }
 
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn read(&self, account: Address, count: u32) {
             for _ in 0..count {
                 let _ = self.balances.get(account);

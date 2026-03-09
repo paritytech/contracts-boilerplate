@@ -22,7 +22,7 @@ pub mod flipper {
         }
 
         /// Returns the current value of the Flipper's boolean.
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn get(&self) -> bool {
             self.value
         }

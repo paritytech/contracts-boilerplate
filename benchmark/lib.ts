@@ -53,6 +53,11 @@ export interface ContractInfo {
 
 export function ink(name: string): ContractInfo {
     const dir = name.replace(/_ink$/, '')
+    const inkDir = join(import.meta.dirname!, '..', 'ink', dir)
+    // cargo-contract names the artifact after the ink module, not the crate name.
+    // Extract it from lib.rs (e.g., `mod storage` -> `storage.polkavm`)
+    const libRs = Deno.readTextFileSync(join(inkDir, 'lib.rs'))
+    const modName = libRs.match(/mod\s+(\w+)\s*\{/)?.[1] ?? dir
     return {
         supportEvm() {
             return false
@@ -61,13 +66,12 @@ export function ink(name: string): ContractInfo {
             return name
         },
         getBytecode() {
-            return readBytecode(`./ink/${dir}/target/ink/${dir}.polkavm`)
+            return readBytecode(`./ink/${dir}/target/ink/${modName}.polkavm`)
         },
         async build() {
-            const cwd = join(import.meta.dirname!, '..', 'ink', dir)
             const cmd = new Deno.Command('cargo', {
                 args: ['contract', 'build', '--release'],
-                cwd,
+                cwd: inkDir,
                 stdout: 'inherit',
                 stderr: 'inherit',
             })
@@ -162,6 +166,47 @@ export function rust(name: string): ContractInfo {
             const result = await cmd.output()
             if (!result.success) {
                 throw new Error(`Failed to build rust contract: ${name}`)
+            }
+        },
+    }
+}
+
+export function stylus(name: string): ContractInfo {
+    const dir = join(import.meta.dirname!, '..', 'stylus', name)
+    // Derive lib name from Cargo.toml package name (dashes become underscores)
+    const cargoToml = Deno.readTextFileSync(join(dir, 'Cargo.toml'))
+    const pkgName = cargoToml.match(/^name\s*=\s*"(.+)"/m)?.[1]
+    if (!pkgName) throw new Error(`Cannot read package name from ${dir}/Cargo.toml`)
+    const libName = pkgName.replace(/-/g, '_')
+    return {
+        supportEvm() {
+            return false
+        },
+        getName() {
+            return `${name}_stylus`
+        },
+        getBytecode() {
+            return readBytecode(
+                join(
+                    dir,
+                    'target',
+                    'riscv64emac-unknown-none-polkavm',
+                    'release',
+                    `${libName}.polkavm`,
+                ),
+            )
+        },
+        async build() {
+            const cmd = new Deno.Command('cargo', {
+                args: ['stylus', 'build', '--target', 'pvm'],
+                cwd: dir,
+                stdout: 'inherit',
+                stderr: 'inherit',
+                env: { ...Deno.env.toObject(), RUSTUP_TOOLCHAIN: 'nightly' },
+            })
+            const result = await cmd.output()
+            if (!result.success) {
+                throw new Error(`Failed to build stylus contract: ${name}`)
             }
         },
     }

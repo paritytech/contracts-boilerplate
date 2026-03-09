@@ -12,16 +12,29 @@ if ! command -v pop &>/dev/null; then
 	exit 1
 fi
 
-# Build ink token contract
-echo "Building ink token contract..."
-cd ink/simple_token_u256
-pop build --release
-cd ../..
+# Build all ink contracts
+for contract in bench_erc1155 bench_erc20 bench_erc721 bench_storage computation fibonacci_u32 flipper incrementer simple_token_u256; do
+	echo "Building ink contract: $contract..."
+	cd "ink/$contract"
+	pop build --release
+	cd ../..
+done
 
-echo "Building ink fibonacci contract..."
-cd ink/fibonacci_u32
-pop build --release
-cd ../..
+# Check if cargo-stylus is installed
+if ! cargo stylus --version &>/dev/null; then
+	echo "Error: cargo-stylus is not installed."
+	echo "Please install it by running:"
+	echo "  cargo install --git https://github.com/smiasojed/stylus-sdk-rs --branch revive-integration cargo-stylus"
+	exit 1
+fi
+
+# Build all Stylus contracts
+for contract in bench_erc1155 bench_erc20 bench_erc721 bench_storage computation fibonacci_u32 flipper incrementer simple_token_u256; do
+	echo "Building Stylus contract: $contract..."
+	cd "stylus/$contract"
+	RUSTUP_TOOLCHAIN=nightly cargo stylus build --target pvm
+	cd ../..
+done
 
 # Check if cargo-pvm-contract is installed
 if ! cargo pvm-contract --version &>/dev/null; then

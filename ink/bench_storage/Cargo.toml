@@ -1,5 +1,5 @@
 [package]
-name = "erc721"
+name = "bench_storage"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2024"

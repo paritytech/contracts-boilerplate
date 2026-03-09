@@ -84,7 +84,7 @@ mod erc1155 {
             self.token_id_nonce
         }
 
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn balance_of(&self, owner: Address, token_id: TokenId) -> U256 {
             self.balances.get((owner, token_id)).unwrap_or(0.into())
         }
@@ -149,7 +149,7 @@ mod erc1155 {
             Ok(())
         }
 
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn is_approved_for_all(&self, owner: Address, operator: Address) -> bool {
             self.approvals.contains((&owner, &operator))
         }

@@ -72,19 +72,19 @@ mod erc20 {
         }
 
         /// Returns the total token supply.
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn total_supply(&self) -> U256 {
             self.total_supply
         }
 
         /// Returns the account balance for the specified `owner`.
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn balance_of(&self, owner: Address) -> U256 {
             self.balances.get(owner).unwrap_or_default()
         }
 
         /// Returns the amount which `spender` is still allowed to withdraw from `owner`.
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn allowance(&self, owner: Address, spender: Address) -> U256 {
             self.allowances.get((owner, spender)).unwrap_or_default()
         }

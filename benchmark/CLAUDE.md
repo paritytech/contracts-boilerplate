@@ -31,6 +31,7 @@ deno run --env-file --allow-all benchmark/reports-evm-pvm-summary.ts
    - Geth: `geth-dev` (set `RPC_URL=http://localhost:8545` in `.env`)
 2. Build contract metadata first: `deno task build`
 3. Compilers: `solc`, `resolc` (PolkaVM Solidity), `cargo-contract` (ink!), `cargo-pvm` (Rust PolkaVM)
+4. Stylus: `cargo install --git https://github.com/smiasojed/stylus-sdk-rs --branch revive-integration cargo-stylus`
 
 ## Architecture
 
@@ -56,7 +57,7 @@ Primary key: `(hash, chain_name)`.
 | File                         | Purpose                                                                                                                |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `contracts.ts`               | CLI entry point. Imports all contract definitions, orchestrates build/deploy/execute/report.                           |
-| `lib.ts`                     | Core: DB schema, `solidity()`/`ink()`/`rust()`/`pcRust()` contract builders, `deploy()`, `execute()`, `updateStats()`. |
+| `lib.ts`                     | Core: DB schema, `solidity()`/`ink()`/`rust()`/`pcRust()`/`stylus()` contract builders, `deploy()`, `execute()`, `updateStats()`. |
 | `reports.ts`                 | Generates markdown: opcode analysis, category analysis, contract comparison, bytecode sizes.                           |
 | `reports-evm-pvm-summary.ts` | Standalone script for EVM vs PVM summary report with median comparisons.                                               |
 | `html-report.ts`             | Generates interactive HTML report with Chart.js charts.                                                                |

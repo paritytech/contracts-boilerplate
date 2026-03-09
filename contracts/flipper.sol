@@ -13,7 +13,7 @@ contract flipper {
     /// A message that can be called on instantiated contracts.
     /// This one flips the value of the stored `bool` from `true`
     /// to `false` and vice versa.
-    function flip() public {
+    function flip() public payable {
         value = !value;
     }
 

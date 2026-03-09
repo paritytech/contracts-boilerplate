@@ -3,20 +3,20 @@
 pragma solidity ^0.8.0;
 
 contract incrementer {
-    uint32 private value;
+    int32 private value;
 
     /// Constructor that initializes the `int32` value to the given `init_value`.
-    constructor(uint32 initvalue) {
+    constructor(int32 initvalue) {
         value = initvalue;
     }
 
     /// This increments the value by `by`.
-    function inc(uint32 by) public {
+    function inc(int32 by) public payable {
         value += by;
     }
 
-    /// Simply returns the current value of our `uint32`.
-    function get() public view returns (uint32) {
+    /// Simply returns the current value of our `int32`.
+    function get() public view returns (int32) {
         return value;
     }
 }

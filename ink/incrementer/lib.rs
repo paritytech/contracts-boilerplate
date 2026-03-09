@@ -19,7 +19,7 @@ mod incrementer {
             self.value = self.value.checked_add(by).unwrap();
         }
 
-        #[ink(message, payable)]
+        #[ink(message)]
         pub fn get(&self) -> i32 {
             self.value
         }
