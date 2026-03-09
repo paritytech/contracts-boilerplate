@@ -54,10 +54,9 @@ export interface ContractInfo {
 export function ink(name: string): ContractInfo {
     const dir = name.replace(/_ink$/, '')
     const inkDir = join(import.meta.dirname!, '..', 'ink', dir)
-    // cargo-contract names the artifact after the ink module, not the crate name.
-    // Extract it from lib.rs (e.g., `mod storage` -> `storage.polkavm`)
-    const libRs = Deno.readTextFileSync(join(inkDir, 'lib.rs'))
-    const modName = libRs.match(/mod\s+(\w+)\s*\{/)?.[1] ?? dir
+    // cargo-contract names the artifact after the Cargo.toml package name (dashes -> underscores)
+    const cargoToml = Deno.readTextFileSync(join(inkDir, 'Cargo.toml'))
+    const pkgName = cargoToml.match(/^name\s*=\s*"(.+)"/m)?.[1]?.replace(/-/g, '_') ?? dir
     return {
         supportEvm() {
             return false
@@ -66,7 +65,7 @@ export function ink(name: string): ContractInfo {
             return name
         },
         getBytecode() {
-            return readBytecode(`./ink/${dir}/target/ink/${modName}.polkavm`)
+            return readBytecode(`./ink/${dir}/target/ink/${pkgName}.polkavm`)
         },
         async build() {
             const cmd = new Deno.Command('cargo', {
