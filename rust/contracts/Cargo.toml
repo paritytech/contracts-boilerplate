@@ -60,10 +60,10 @@ overflow-checks = false
 polkavm-derive = "0.31.0"
 pallet-revive-uapi = { version = "0.10", default-features = false }
 picoalloc = "5.2.0"
-pvm-contract-macros = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
-pvm-contract-types = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
-pvm-bump-allocator = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
+pvm-contract-macros = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
+pvm-contract-types = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
+pvm-bump-allocator = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
 ruint = { version = "1.17", default-features = false }
 
 [build-dependencies]
-cargo-pvm-contract-builder = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
+cargo-pvm-contract-builder = { git = "ssh://git@github.com/paritytech/cargo-pvm-contract.git", branch = "main" }

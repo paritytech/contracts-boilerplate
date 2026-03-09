@@ -1,6 +1,6 @@
 # Revive Contract Comparison
 
-Generated on: 2026-03-03
+Generated on: 2026-03-06
 resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 Comparison of gas usage across different contract implementations.
@@ -780,8 +780,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 3,459,093,514  | -       | 2,547,797,466    | -                 | 73.7%     | 83,512  |
-| DotNS_evm      | 4,697,397,389  | +35.8%  | 3,786,101,341    | +48.6%            | 80.6%     | 294,476 |
+| dotns_rust     | 3,459,106,610  | -       | 2,547,797,466    | -                 | 73.7%     | 83,515  |
+| DotNS_evm      | 4,697,410,485  | +35.8%  | 3,786,101,341    | +48.6%            | 80.6%     | 294,479 |
 | DotNS_pvm      | 14,014,185,294 | +305.1% | 13,102,889,246   | +414.3%           | 93.5%     | 382,051 |
 
 
@@ -798,26 +798,26 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,764,227,980 | -       | 1,854,634,412    | -                 | 67.1%     | 72,472  |
-| DotNS_evm      | 4,191,058,212 | +51.6%  | 3,281,464,644    | +76.9%            | 78.3%     | 263,187 |
-| DotNS_pvm      | 8,364,369,661 | +202.6% | 7,454,776,093    | +302.0%           | 89.1%     | 350,827 |
+| dotns_rust     | 2,764,778,516 | -       | 1,855,171,852    | -                 | 67.1%     | 72,475  |
+| DotNS_evm      | 4,191,984,025 | +51.6%  | 3,282,377,361    | +76.9%            | 78.3%     | 263,190 |
+| DotNS_pvm      | 8,365,511,721 | +202.6% | 7,455,918,153    | +301.9%           | 89.1%     | 350,827 |
 
 
 ### DotNS - register_with_duration
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,762,359,329 | -       | 1,852,765,761    | -                 | 67.1%     | 72,512  |
-| DotNS_evm      | 4,184,265,916 | +51.5%  | 3,274,672,348    | +76.7%            | 78.3%     | 263,219 |
-| DotNS_pvm      | 8,210,484,977 | +197.2% | 7,300,891,409    | +294.1%           | 88.9%     | 350,729 |
+| dotns_rust     | 2,762,909,865 | -       | 1,853,303,201    | -                 | 67.1%     | 72,515  |
+| DotNS_evm      | 4,184,887,490 | +51.5%  | 3,275,280,826    | +76.7%            | 78.3%     | 263,222 |
+| DotNS_pvm      | 8,211,627,037 | +197.2% | 7,302,033,469    | +294.0%           | 88.9%     | 350,729 |
 
 
 ### DotNS - release
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,057,253,674 | -       | 1,148,079,178    | -                 | 55.8%     | 52,568  |
-| DotNS_evm      | 4,291,232,723 | +108.6% | 3,382,058,227    | +194.6%           | 78.8%     | 284,021 |
+| dotns_rust     | 2,057,266,770 | -       | 1,148,079,178    | -                 | 55.8%     | 52,571  |
+| DotNS_evm      | 4,291,245,819 | +108.6% | 3,382,058,227    | +194.6%           | 78.8%     | 284,024 |
 | DotNS_pvm      | 7,283,554,837 | +254.0% | 6,374,380,341    | +455.2%           | 87.5%     | 352,211 |
 
 
@@ -825,8 +825,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| DotNS_evm      | 1,510,120,987 | -       | 600,527,419      | -                 | 39.8%     | 57,791  |
-| dotns_rust     | 2,142,317,440 | +41.9%  | 1,232,723,872    | +105.3%           | 57.5%     | 52,664  |
+| DotNS_evm      | 1,510,134,083 | -       | 600,527,419      | -                 | 39.8%     | 57,794  |
+| dotns_rust     | 2,142,330,536 | +41.9%  | 1,232,723,872    | +105.3%           | 57.5%     | 52,667  |
 | DotNS_pvm      | 3,956,674,131 | +162.0% | 3,047,080,563    | +407.4%           | 77.0%     | 124,882 |
 
 
@@ -834,8 +834,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| DotNS_evm      | 1,582,237,726 | -       | 672,644,158      | -                 | 42.5%     | 68,080  |
-| dotns_rust     | 2,222,510,125 | +40.5%  | 1,312,916,557    | +95.2%            | 59.1%     | 52,664  |
+| DotNS_evm      | 1,582,250,822 | -       | 672,644,158      | -                 | 42.5%     | 68,083  |
+| dotns_rust     | 2,222,523,221 | +40.5%  | 1,312,916,557    | +95.2%            | 59.1%     | 52,667  |
 | DotNS_pvm      | 4,001,097,488 | +152.9% | 3,091,503,920    | +359.6%           | 77.3%     | 145,460 |
 
 
@@ -843,8 +843,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| DotNS_evm      | 1,505,142,074 | -       | 595,548,506      | -                 | 39.6%     | 57,759  |
-| dotns_rust     | 2,161,926,944 | +43.6%  | 1,252,333,376    | +110.3%           | 57.9%     | 52,664  |
+| DotNS_evm      | 1,505,155,170 | -       | 595,548,506      | -                 | 39.6%     | 57,762  |
+| dotns_rust     | 2,161,940,040 | +43.6%  | 1,252,333,376    | +110.3%           | 57.9%     | 52,667  |
 | DotNS_pvm      | 3,835,578,096 | +154.8% | 2,925,984,528    | +391.3%           | 76.3%     | 124,850 |
 
 
@@ -852,17 +852,17 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 3,652,110,084  | -       | 2,741,246,204    | -                 | 75.1%     | 84,119  |
-| DotNS_evm      | 4,381,597,972  | +20.0%  | 3,470,734,092    | +26.6%            | 79.2%     | 294,633 |
-| DotNS_pvm      | 10,761,858,352 | +194.7% | 9,850,994,472    | +259.4%           | 91.5%     | 372,208 |
+| dotns_rust     | 3,652,123,180  | -       | 2,741,246,204    | -                 | 75.1%     | 84,122  |
+| DotNS_evm      | 4,381,611,068  | +20.0%  | 3,470,734,092    | +26.6%            | 79.2%     | 294,636 |
+| DotNS_pvm      | 10,761,871,448 | +194.7% | 9,850,994,472    | +259.4%           | 91.5%     | 372,211 |
 
 
 ### DotNS - transfer
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,925,618,398 | -       | 2,016,024,830    | -                 | 68.9%     | 73,178  |
-| DotNS_evm      | 4,059,951,699 | +38.8%  | 3,150,358,131    | +56.3%            | 77.6%     | 284,021 |
+| dotns_rust     | 2,925,631,494 | -       | 2,016,024,830    | -                 | 68.9%     | 73,181  |
+| DotNS_evm      | 4,059,964,795 | +38.8%  | 3,150,358,131    | +56.3%            | 77.6%     | 284,024 |
 | DotNS_pvm      | 6,901,829,474 | +135.9% | 5,992,235,906    | +197.2%           | 86.8%     | 361,661 |
 
 
@@ -934,15 +934,15 @@ Comparison of gas usage across different contract implementations.
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FiatTokenProxy_evm | 1,472,023,835 | -       | 563,268,411      | -                 | 38.3%     | 70,861  |
-| FiatTokenProxy_pvm | 1,784,982,448 | +21.3%  | 876,240,120      | +55.6%            | 49.1%     | 167,509 |
+| FiatTokenProxy_pvm | 1,784,995,544 | +21.3%  | 876,240,120      | +55.6%            | 49.1%     | 167,512 |
 
 
 ### FiatTokenProxy - changeAdmin
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| FiatTokenProxy_evm | 1,244,082,557 | -       | 335,772,397      | -                 | 27.0%     | 40,407 |
-| FiatTokenProxy_pvm | 1,316,142,451 | +5.8%   | 407,832,291      | +21.5%            | 31.0%     | 48,931 |
+| FiatTokenProxy_evm | 1,244,095,653 | -       | 335,772,397      | -                 | 27.0%     | 40,410 |
+| FiatTokenProxy_pvm | 1,316,155,547 | +5.8%   | 407,832,291      | +21.5%            | 31.0%     | 48,934 |
 
 
 ### FiatTokenProxy - configureMinter
@@ -950,7 +950,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FiatTokenProxy_evm | 1,779,627,252 | -       | 870,871,828      | -                 | 48.9%     | 101,696 |
-| FiatTokenProxy_pvm | 2,097,044,698 | +17.8%  | 1,188,302,370    | +36.4%            | 56.7%     | 198,312 |
+| FiatTokenProxy_pvm | 2,097,057,794 | +17.8%  | 1,188,302,370    | +36.4%            | 56.7%     | 198,315 |
 
 
 ### FiatTokenProxy - deploy
@@ -965,8 +965,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| FiatTokenProxy_evm | 3,431,970,619 | -       | 2,518,173,235    | -                 | 73.4%     | 246,705 |
-| FiatTokenProxy_pvm | 4,011,264,792 | +16.9%  | 3,097,467,408    | +23.0%            | 77.2%     | 343,068 |
+| FiatTokenProxy_evm | 3,431,983,715 | -       | 2,518,173,235    | -                 | 73.4%     | 246,708 |
+| FiatTokenProxy_pvm | 4,011,277,888 | +16.9%  | 3,097,467,408    | +23.0%            | 77.2%     | 343,071 |
 
 
 ### FiatTokenProxy - mint
@@ -974,7 +974,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FiatTokenProxy_evm | 2,384,649,315 | -       | 1,475,893,891    | -                 | 61.9%     | 163,430 |
-| FiatTokenProxy_pvm | 2,900,736,797 | +21.6%  | 1,991,994,469    | +35.0%            | 68.7%     | 260,015 |
+| FiatTokenProxy_pvm | 2,900,749,893 | +21.6%  | 1,991,994,469    | +35.0%            | 68.7%     | 260,018 |
 
 
 ### FiatTokenProxy - transfer
@@ -982,7 +982,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | FiatTokenProxy_evm | 2,217,557,741 | -       | 1,308,802,317    | -                 | 59.0%     | 153,173 |
-| FiatTokenProxy_pvm | 2,695,456,748 | +21.6%  | 1,786,714,420    | +36.5%            | 66.3%     | 249,725 |
+| FiatTokenProxy_pvm | 2,695,469,844 | +21.6%  | 1,786,714,420    | +36.5%            | 66.3%     | 249,728 |
 
 
 ### FiatTokenProxy - transferFrom
@@ -1027,6 +1027,70 @@ Comparison of gas usage across different contract implementations.
 | Fibonacci_pvm                       | 1,328,474,957 | +29.0%  | 420,164,797      | +246.1%           | 31.6%     | 9,351  |
 | fibonacci_u32_ink                   | 1,361,223,403 | +32.2%  | 452,913,243      | +273.1%           | 33.3%     | 29,537 |
 | fibonacci_u256_rust                 | 4,493,207,844 | +336.4% | 3,584,897,684    | +2852.8%          | 79.8%     | 9,179  |
+
+
+### Fibonacci_u256 - deploy
+
+| Implementation                           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| Fibonacci_u256_iter_evm                  | 1,514,289,738 | -       | 1,225,754        | +1724.6%          | 0.1%      | 6,934  |
+| Fibonacci_u256_evm                       | 1,514,354,974 | +0.0%   | 1,226,562        | +1725.8%          | 0.1%      | 6,934  |
+| fibonacci_u256_iter_primitive_types_rust | 1,523,922,854 | +0.6%   | 67,180           | -                 | 0.0%      | 6,934  |
+| fibonacci_u256_iter_rust                 | 1,524,551,027 | +0.7%   | 67,180           | -                 | 0.0%      | 6,934  |
+| fibonacci_u256_primitive_types_rust      | 1,524,712,097 | +0.7%   | 67,180           | -                 | 0.0%      | 6,934  |
+| fibonacci_u256_rust                      | 1,526,000,657 | +0.8%   | 67,180           | -                 | 0.0%      | 6,934  |
+| Fibonacci_u256_iter_pvm                  | 1,541,582,163 | +1.8%   | 11,718,578       | +17343.6%         | 0.8%      | 6,934  |
+| Fibonacci_u256_pvm                       | 1,543,160,649 | +1.9%   | 11,718,578       | +17343.6%         | 0.8%      | 6,934  |
+| fibonacci_u256_ink                       | 1,715,400,757 | +13.3%  | 175,647,474      | +261358.0%        | 10.2%     | 17,191 |
+| fibonacci_u256_iter_ink                  | 1,715,513,506 | +13.3%  | 175,647,474      | +261358.0%        | 10.2%     | 17,191 |
+
+
+### Fibonacci_u256 - fib_10
+
+| Implementation                           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| Fibonacci_u256_iter_evm                  | 914,440,753   | -       | 6,130,593        | -                 | 0.7%      | 8,356  |
+| Fibonacci_u256_iter_pvm                  | 957,088,573   | +4.7%   | 48,778,413       | +695.7%           | 5.1%      | 9,423  |
+| fibonacci_u256_iter_primitive_types_rust | 973,971,847   | +6.5%   | 65,661,687       | +971.0%           | 6.7%      | 9,050  |
+| Fibonacci_u256_evm                       | 1,018,231,393 | +11.4%  | 109,921,233      | +1693.0%          | 10.8%     | 8,360  |
+| fibonacci_u256_iter_rust                 | 1,065,669,834 | +16.5%  | 157,359,674      | +2466.8%          | 14.8%     | 9,089  |
+| fibonacci_u256_iter_ink                  | 1,261,066,236 | +37.9%  | 352,756,076      | +5654.0%          | 28.0%     | 30,558 |
+| Fibonacci_u256_pvm                       | 1,629,923,907 | +78.2%  | 721,613,747      | +11670.7%         | 44.3%     | 9,521  |
+| fibonacci_u256_primitive_types_rust      | 2,933,491,904 | +220.8% | 2,025,181,744    | +32934.0%         | 69.0%     | 9,099  |
+| fibonacci_u256_ink                       | 3,178,573,405 | +247.6% | 2,270,263,245    | +36931.7%         | 71.4%     | 30,551 |
+| fibonacci_u256_rust                      | 4,493,207,844 | +391.4% | 3,584,897,684    | +58375.5%         | 79.8%     | 9,179  |
+
+
+### Fibonacci_u256 - fib_15
+
+| Implementation                           | ref_time       | vs Best  | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------------------------- | -------------- | -------- | ---------------- | ----------------- | --------- | ------ |
+| Fibonacci_u256_iter_evm                  | 916,859,063    | -        | 8,548,903        | -                 | 0.9%      | 8,356  |
+| Fibonacci_u256_iter_pvm                  | 977,914,373    | +6.7%    | 69,604,213       | +714.2%           | 7.1%      | 9,423  |
+| fibonacci_u256_iter_primitive_types_rust | 1,000,172,047  | +9.1%    | 91,861,887       | +974.5%           | 9.2%      | 9,050  |
+| fibonacci_u256_iter_rust                 | 1,142,926,834  | +24.7%   | 234,616,674      | +2644.4%          | 20.5%     | 9,089  |
+| fibonacci_u256_iter_ink                  | 1,307,756,336  | +42.6%   | 399,446,176      | +4572.5%          | 30.5%     | 30,558 |
+| Fibonacci_u256_evm                       | 2,123,898,327  | +131.6%  | 1,215,588,167    | +14119.2%         | 57.2%     | 8,360  |
+| Fibonacci_u256_pvm                       | 8,869,240,707  | +867.4%  | 7,960,930,547    | +93022.2%         | 89.8%     | 9,521  |
+| fibonacci_u256_primitive_types_rust      | 23,336,595,344 | +2445.3% | 22,428,285,184   | +262252.8%        | 96.1%     | 9,099  |
+| fibonacci_u256_ink                       | 23,521,349,205 | +2465.4% | 22,613,039,045   | +264413.9%        | 96.1%     | 30,551 |
+| fibonacci_u256_rust                      | 40,745,484,064 | +4344.0% | 39,837,173,904   | +465891.6%        | 97.8%     | 9,179  |
+
+
+### Fibonacci_u256 - fib_5
+
+| Implementation                           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| Fibonacci_u256_iter_evm                  | 912,022,443   | -       | 3,712,283        | -                 | 0.4%      | 8,356  |
+| Fibonacci_u256_evm                       | 918,511,210   | +0.7%   | 10,201,050       | +174.8%           | 1.1%      | 8,360  |
+| Fibonacci_u256_iter_pvm                  | 936,262,773   | +2.7%   | 27,952,613       | +653.0%           | 3.0%      | 9,423  |
+| fibonacci_u256_iter_primitive_types_rust | 947,771,647   | +3.9%   | 39,461,487       | +963.0%           | 4.2%      | 9,050  |
+| Fibonacci_u256_pvm                       | 976,934,307   | +7.1%   | 68,624,147       | +1748.6%          | 7.0%      | 9,521  |
+| fibonacci_u256_iter_rust                 | 988,412,834   | +8.4%   | 80,102,674       | +2057.8%          | 8.1%      | 9,089  |
+| fibonacci_u256_primitive_types_rust      | 1,094,036,324 | +20.0%  | 185,726,164      | +4903.0%          | 17.0%     | 9,099  |
+| fibonacci_u256_iter_ink                  | 1,214,376,136 | +33.2%  | 306,065,976      | +8144.7%          | 25.2%     | 30,558 |
+| fibonacci_u256_rust                      | 1,223,355,704 | +34.1%  | 315,045,544      | +8386.6%          | 25.8%     | 9,179  |
+| fibonacci_u256_ink                       | 1,344,559,405 | +47.4%  | 436,249,245      | +11651.5%         | 32.4%     | 30,551 |
 
 
 ### FungibleCredential - burn
@@ -1124,8 +1188,8 @@ Comparison of gas usage across different contract implementations.
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | key_registry_rust | 2,694,420,004 | -       | 1,783,543,028    | -                 | 66.2%     | 88,973  |
-| KeyRegistry_evm   | 3,194,669,236 | +18.6%  | 2,283,805,356    | +28.0%            | 71.5%     | 187,681 |
-| KeyRegistry_pvm   | 3,717,489,099 | +38.0%  | 2,806,625,219    | +57.4%            | 75.5%     | 222,090 |
+| KeyRegistry_evm   | 3,194,682,332 | +18.6%  | 2,283,805,356    | +28.0%            | 71.5%     | 187,684 |
+| KeyRegistry_pvm   | 3,717,502,195 | +38.0%  | 2,806,625,219    | +57.4%            | 75.5%     | 222,093 |
 
 
 ### KeyRegistry - updateSignedPrekey
@@ -1134,7 +1198,7 @@ Comparison of gas usage across different contract implementations.
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | KeyRegistry_evm   | 2,119,967,016 | -       | 1,209,941,280    | -                 | 57.1%     | 105,465 |
 | key_registry_rust | 2,221,762,926 | +4.8%   | 1,311,724,094    | +8.4%             | 59.0%     | 68,623  |
-| KeyRegistry_pvm   | 2,599,373,710 | +22.6%  | 1,689,347,974    | +39.6%            | 65.0%     | 160,644 |
+| KeyRegistry_pvm   | 2,599,386,806 | +22.6%  | 1,689,347,974    | +39.6%            | 65.0%     | 160,647 |
 
 
 ### KeyRegistry - uploadOneTimePrekeys
@@ -1142,7 +1206,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | KeyRegistry_evm   | 2,853,673,363 | -       | 1,943,634,531    | -                 | 68.1%     | 197,941 |
-| KeyRegistry_pvm   | 3,226,106,641 | +13.1%  | 2,316,080,905    | +19.2%            | 71.8%     | 232,347 |
+| KeyRegistry_pvm   | 3,226,119,737 | +13.1%  | 2,316,080,905    | +19.2%            | 71.8%     | 232,350 |
 | key_registry_rust | 3,626,442,688 | +27.1%  | 2,716,403,856    | +39.8%            | 74.9%     | 150,415 |
 
 
@@ -1170,7 +1234,7 @@ Comparison of gas usage across different contract implementations.
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | log_rust       | 2,167,651,859 | -       | 1,258,896,435    | -                 | 58.1%     | 55,682  |
 | Log_evm        | 2,473,213,971 | +14.1%  | 1,564,458,547    | +24.3%            | 63.3%     | 148,183 |
-| Log_pvm        | 2,824,103,498 | +30.3%  | 1,915,361,170    | +52.1%            | 67.8%     | 195,953 |
+| Log_pvm        | 2,824,116,594 | +30.3%  | 1,915,361,170    | +52.1%            | 67.8%     | 195,956 |
 
 
 ### Log - create_nonpermissioned
@@ -1434,13 +1498,13 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation                          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | --------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| SimpleToken_evm                         | 1,413,560,806 | -       | 504,818,478      | -                 | 35.7%     | 49,919 |
-| SimpleToken_pvm                         | 1,499,584,581 | +6.1%   | 590,842,253      | +17.0%            | 39.4%     | 54,683 |
-| simple_token_u32_no_alloc_rust          | 1,518,777,735 | +7.4%   | 610,035,407      | +20.8%            | 40.2%     | 51,537 |
-| simple_token_u128_no_alloc_rust         | 1,519,857,580 | +7.5%   | 611,115,252      | +21.1%            | 40.2%     | 52,266 |
-| simple_token_u256_no_alloc_rust         | 1,575,118,805 | +11.4%  | 666,376,477      | +32.0%            | 42.3%     | 52,323 |
-| simple_token_u256_macro_no_alloc_rust   | 1,576,724,209 | +11.5%  | 667,981,881      | +32.3%            | 42.4%     | 53,091 |
-| simple_token_u256_macro_bump_alloc_rust | 1,577,621,914 | +11.6%  | 668,879,586      | +32.5%            | 42.4%     | 53,756 |
+| SimpleToken_evm                         | 1,413,573,902 | -       | 504,818,478      | -                 | 35.7%     | 49,922 |
+| SimpleToken_pvm                         | 1,499,597,677 | +6.1%   | 590,842,253      | +17.0%            | 39.4%     | 54,686 |
+| simple_token_u32_no_alloc_rust          | 1,518,790,831 | +7.4%   | 610,035,407      | +20.8%            | 40.2%     | 51,540 |
+| simple_token_u128_no_alloc_rust         | 1,519,870,676 | +7.5%   | 611,115,252      | +21.1%            | 40.2%     | 52,269 |
+| simple_token_u256_no_alloc_rust         | 1,575,131,901 | +11.4%  | 666,376,477      | +32.0%            | 42.3%     | 52,326 |
+| simple_token_u256_macro_no_alloc_rust   | 1,576,737,305 | +11.5%  | 667,981,881      | +32.3%            | 42.4%     | 53,094 |
+| simple_token_u256_macro_bump_alloc_rust | 1,577,635,010 | +11.6%  | 668,879,586      | +32.5%            | 42.4%     | 53,759 |
 | simple_token_u256_ink                   | 1,815,738,755 | +28.5%  | 906,996,427      | +79.7%            | 50.0%     | 57,873 |
 
 
@@ -1448,14 +1512,14 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation                          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | --------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| SimpleToken_evm                         | 1,439,582,017 | -       | 530,839,689      | -                 | 36.9%     | 49,951 |
-| SimpleToken_pvm                         | 1,559,832,390 | +8.4%   | 651,090,062      | +22.7%            | 41.7%     | 54,844 |
-| simple_token_u128_no_alloc_rust         | 1,582,907,007 | +10.0%  | 674,164,679      | +27.0%            | 42.6%     | 52,298 |
-| simple_token_u32_no_alloc_rust          | 1,587,782,758 | +10.3%  | 679,040,430      | +27.9%            | 42.8%     | 51,545 |
-| simple_token_u256_no_alloc_rust         | 1,648,007,744 | +14.5%  | 739,265,416      | +39.3%            | 44.9%     | 52,387 |
-| simple_token_u256_macro_no_alloc_rust   | 1,649,008,528 | +14.5%  | 740,266,200      | +39.5%            | 44.9%     | 53,155 |
-| simple_token_u256_macro_bump_alloc_rust | 1,649,906,233 | +14.6%  | 741,163,905      | +39.6%            | 44.9%     | 53,820 |
-| simple_token_u256_ink                   | 2,170,866,304 | +50.8%  | 1,262,123,976    | +137.8%           | 58.1%     | 78,451 |
+| SimpleToken_evm                         | 1,439,595,113 | -       | 530,839,689      | -                 | 36.9%     | 49,954 |
+| SimpleToken_pvm                         | 1,559,845,486 | +8.4%   | 651,090,062      | +22.7%            | 41.7%     | 54,847 |
+| simple_token_u128_no_alloc_rust         | 1,582,920,103 | +10.0%  | 674,164,679      | +27.0%            | 42.6%     | 52,301 |
+| simple_token_u32_no_alloc_rust          | 1,587,795,854 | +10.3%  | 679,040,430      | +27.9%            | 42.8%     | 51,548 |
+| simple_token_u256_no_alloc_rust         | 1,648,020,840 | +14.5%  | 739,265,416      | +39.3%            | 44.9%     | 52,390 |
+| simple_token_u256_macro_no_alloc_rust   | 1,649,021,624 | +14.5%  | 740,266,200      | +39.5%            | 44.9%     | 53,158 |
+| simple_token_u256_macro_bump_alloc_rust | 1,649,919,329 | +14.6%  | 741,163,905      | +39.6%            | 44.9%     | 53,823 |
+| simple_token_u256_ink                   | 2,170,879,400 | +50.8%  | 1,262,123,976    | +137.8%           | 58.1%     | 78,454 |
 
 
 ### Store - delegate
@@ -1534,8 +1598,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| TetherToken_evm | 1,290,578,816 | -       | 381,836,488      | -                 | 29.6%     | 43,745 |
-| TetherToken_pvm | 1,501,643,304 | +16.4%  | 592,900,976      | +55.3%            | 39.5%     | 93,764 |
+| TetherToken_evm | 1,290,591,912 | -       | 381,836,488      | -                 | 29.6%     | 43,748 |
+| TetherToken_pvm | 1,501,656,400 | +16.4%  | 592,900,976      | +55.3%            | 39.5%     | 93,767 |
 
 
 ### TetherToken - deploy
@@ -1550,8 +1614,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| TetherToken_evm | 1,818,357,392 | -       | 909,615,064      | -                 | 50.0%     | 105,479 |
-| TetherToken_pvm | 2,086,078,830 | +14.7%  | 1,177,336,502    | +29.4%            | 56.4%     | 155,402 |
+| TetherToken_evm | 1,818,370,488 | -       | 909,615,064      | -                 | 50.0%     | 105,482 |
+| TetherToken_pvm | 2,086,091,926 | +14.7%  | 1,177,336,502    | +29.4%            | 56.4%     | 155,405 |
 
 
 ### TetherToken - transferFrom
@@ -1654,24 +1718,24 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| WETH9_evm      | 1,178,444,188 | -       | 270,448,332      | -                 | 22.9%     | 30,354 |
-| WETH9_pvm      | 1,268,616,101 | +7.7%   | 360,620,245      | +33.3%            | 28.4%     | 45,876 |
+| WETH9_evm      | 1,178,457,284 | -       | 270,448,332      | -                 | 22.9%     | 30,357 |
+| WETH9_pvm      | 1,268,629,197 | +7.7%   | 360,620,245      | +33.3%            | 28.4%     | 45,879 |
 
 
 ### WETH9 - transfer
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| WETH9_evm      | 1,511,137,293 | -       | 602,394,965      | -                 | 39.9%     | 61,392 |
-| WETH9_pvm      | 1,674,949,538 | +10.8%  | 766,207,210      | +27.2%            | 45.7%     | 76,914 |
+| WETH9_evm      | 1,511,150,389 | -       | 602,394,965      | -                 | 39.9%     | 61,395 |
+| WETH9_pvm      | 1,674,962,634 | +10.8%  | 766,207,210      | +27.2%            | 45.7%     | 76,917 |
 
 
 ### WETH9 - withdraw
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| WETH9_evm      | 1,706,227,195 | -       | 797,917,035      | -                 | 46.8%     | 46,046 |
-| WETH9_pvm      | 1,823,589,164 | +6.9%   | 915,279,004      | +14.7%            | 50.2%     | 61,600 |
+| WETH9_evm      | 1,706,240,291 | -       | 797,917,035      | -                 | 46.8%     | 46,049 |
+| WETH9_pvm      | 1,823,602,260 | +6.9%   | 915,279,004      | +14.7%            | 50.2%     | 61,603 |
 
 
 ### XENCrypto - deploy

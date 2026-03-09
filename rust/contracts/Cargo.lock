@@ -29,7 +29,7 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 [[package]]
 name = "cargo-pvm-contract-builder"
 version = "0.3.0"
-source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 dependencies = [
  "anyhow",
  "log",
@@ -370,12 +370,12 @@ dependencies = [
 [[package]]
 name = "pvm-bump-allocator"
 version = "0.3.0"
-source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 
 [[package]]
 name = "pvm-contract-macros"
 version = "0.3.0"
-source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 dependencies = [
  "proc-macro2",
  "pvm-contract-types",
@@ -387,7 +387,7 @@ dependencies = [
 [[package]]
 name = "pvm-contract-types"
 version = "0.3.0"
-source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
+source = "git+ssh://git@github.com/paritytech/cargo-pvm-contract.git?branch=main#7d358cd912a4f32de276230d0265e25ddc96f5cc"
 dependencies = [
  "ruint",
 ]
@@ -678,18 +678,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.41"
+version = "0.8.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96e13bc581734df6250836c59a5f44f3c57db9f9acb9dc8e3eaabdaf6170254d"
+checksum = "f2578b716f8a7a858b7f02d5bd870c14bf4ddbbcf3a4c05414ba6503640505e3"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.41"
+version = "0.8.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3545ea9e86d12ab9bba9fcd99b54c1556fd3199007def5a03c375623d05fac1c"
+checksum = "7e6cc098ea4d3bd6246687de65af3f920c430e236bee1e3bf2e441463f08a02f"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -1,14 +1,14 @@
 # EVM vs PVM Cost Summary
 
-Generated on: 2026-03-03
+Generated on: 2026-03-06
 resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 ## Base weight vs metered weight
 
-| Type      | Avg base ref_time   | Avg metered ref_time  | Avg base proof_size | Avg metered proof_size |
-| --------- | ------------------- | --------------------- | ------------------- | ---------------------- |
-| deploy    | 2,081,529,099 (75%) | 695,307,175 (25%)     | 6,934 (10.3%)       | 60,108 (89.7%)         |
-| execution | 909,605,410 (15.7%) | 4,877,228,760 (84.3%) | 8,496 (2.1%)        | 394,639 (97.9%)        |
+| Type      | Avg base ref_time     | Avg metered ref_time  | Avg base proof_size | Avg metered proof_size |
+| --------- | --------------------- | --------------------- | ------------------- | ---------------------- |
+| deploy    | 2,143,473,487 (73.5%) | 774,007,638 (26.5%)   | 6,934 (9.4%)        | 66,977 (90.6%)         |
+| execution | 909,640,987 (15.3%)   | 5,022,487,978 (84.7%) | 8,504 (2%)          | 406,674 (98%)          |
 
 
 ## Top operations by metered cost
@@ -16,11 +16,11 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 **Execution transactions:**
 | Category             | Total ref_time  | % of ref_time | Total proof_size | % of proof_size | Calls   |
 | -------------------- | --------------- | ------------- | ---------------- | --------------- | ------- |
-| Storage write        | 360,124,203,597 | 39.3%         | 21,845,159       | 29.4%           | 2,125   |
-| Storage read         | 179,498,495,989 | 19.6%         | 27,153,985       | 36.6%           | 2,641   |
-| Cross-contract calls | 120,904,004,486 | 13.2%         | 18,251,030       | 24.6%           | 456     |
-| Other attributed     | 120,059,655,762 | 13.1%         | 1,347,753        | 1.8%            | 171,303 |
-| Unattributed         | 136,332,647,111 | 14.9%         | 5,594,280        | 7.5%            | —       |
+| Storage write        | 358,768,276,621 | 39.2%         | 21,762,942       | 29.4%           | 2,117   |
+| Storage read         | 178,954,825,613 | 19.6%         | 27,071,769       | 36.6%           | 2,633   |
+| Cross-contract calls | 120,904,004,486 | 13.2%         | 18,251,030       | 24.7%           | 456     |
+| Other attributed     | 119,760,355,656 | 13.1%         | 1,347,753        | 1.8%            | 166,325 |
+| Unattributed         | 135,705,349,623 | 14.8%         | 5,581,151        | 7.5%            | —       |
 
 
 **Deploy transactions:**
@@ -29,41 +29,41 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Storage write        | 16,097,058,375 | 59.4%         | 975,704          | 41.6%           | 95    |
 | Storage read         | 5,096,567,895  | 18.8%         | 770,555          | 32.9%           | 75    |
 | Cross-contract calls | 1,127,754,134  | 4.2%          | 553,642          | 23.6%           | 2     |
-| Other attributed     | 2,789,455,047  | 10.3%         | 44,298           | 1.9%            | 2,524 |
-| Unattributed         | 2,006,144,368  | 7.4%          | 0                | 0.0%            | —     |
+| Other attributed     | 2,784,429,191  | 10.3%         | 44,298           | 1.9%            | 2,488 |
+| Unattributed         | 1,984,457,740  | 7.3%          | 0                | 0.0%            | —     |
 
 
 ## Execution cost totals
 
-**93 EVM↔PVM/Solidity pairs (excluding CoinTool_App):**
+**90 EVM↔PVM/Solidity pairs (excluding CoinTool_App and test contracts):**
 | Metric             | EVM             | PVM/Solidity    | Diff   |
 | ------------------ | --------------- | --------------- | ------ |
-| Metered ref_time   | 214,013,203,471 | 291,980,403,727 | +36.4% |
-| Metered proof_size | 20,790,474      | 26,501,661      | +27.5% |
+| Metered ref_time   | 212,846,821,517 | 290,320,590,735 | +36.4% |
+| Metered proof_size | 20,706,995      | 26,407,578      | +27.5% |
 
 
 **46 pairs where PVM/Rust exists (7 polkadot-contracts):**
 | Metric             | EVM            | PVM/Sol         | vs EVM | PVM/Rust       | vs EVM  |
 | ------------------ | -------------- | --------------- | ------ | -------------- | ------- |
-| Metered ref_time   | 98,052,195,631 | 159,022,753,124 | +62.2% | 88,334,116,204 | -9.9%   |
+| Metered ref_time   | 98,053,716,826 | 159,025,037,244 | +62.2% | 88,335,191,084 | -9.9%   |
 | Metered proof_size | 8,601,497      | 11,596,017      | +34.8% | 3,692,345      | -57.1%  |
 
 
 **Per-transaction medians:**
 | Comparison                   | Median ref_time | Txs cheaper | Median proof_size | Txs cheaper  |
 | ---------------------------- | --------------- | ----------- | ----------------- | ------------ |
-| PVM/Sol vs EVM (93 txs)      | +32.5%          | 0/93        | +34.8%            | 0/93         |
+| PVM/Sol vs EVM (90 txs)      | +32.6%          | 0/90        | +35.2%            | 0/90         |
 | PVM/Rust vs EVM (46 txs)     | +7.6%           | 22/46       | -54.4%            | 44/46        |
 | PVM/Rust vs PVM/Sol (46 txs) | -34.3%          | 35/46       | -66.7%            | 46/46        |
 
 
 ## Deployment cost totals
 
-**All 19 EVM↔PVM/Solidity deploy pairs:**
+**All 17 EVM↔PVM/Solidity deploy pairs:**
 | Metric           | EVM            | PVM/Sol        | vs EVM |
 | ---------------- | -------------- | -------------- | ------ |
-| Base ref_time    | 30,547,029,349 | 44,739,194,566 | +46.5% |
-| Metered ref_time | 12,616,779,089 | 14,205,813,143 | +12.6% |
+| Base ref_time    | 27,514,104,227 | 41,614,056,869 | +51.2% |
+| Metered ref_time | 12,614,242,741 | 14,181,637,007 | +12.4% |
 
 
 **7 deploy pairs where PVM/Rust exists:**
@@ -78,8 +78,10 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 
 | Contract                 | EVM bytes | PVM/Solidity bytes | Ratio | PVM/Rust bytes | Ratio  | ink! bytes | Ratio   |
 | ------------------------ | --------- | ------------------ | ----- | -------------- | ------ | ---------- | ------- |
-| Fibonacci                | 229       | 1,152              | 5.0x  | 234            | 1.0x   | 1,102      | 4.8x    |
-| SimpleToken              | 555       | 5,357              | 9.7x  | 2,211          | 4.0x   | 7,251      | 13.1x   |
+| Fibonacci_u256_iter      | 181       | 1,224              | 6.8x  | 890            | 4.9x   | 1,845      | 10.2x   |
+| Fibonacci_u256           | 185       | 1,322              | 7.1x  | 980            | 5.3x   | 1,838      | 9.9x    |
+| Fibonacci                | 229       | 1,152              | 5.0x  | 209            | 0.9x   | —          | —       |
+| SimpleToken              | 555       | 5,357              | 9.7x  | 24,704         | 44.5x  | 7,251      | 13.1x   |
 | FiatTokenProxy           | 1,643     | 9,865              | 6.0x  | —              | —      | —          | —       |
 | WETH9                    | 2,012     | 17,235             | 8.6x  | —              | —      | —          | —       |
 | MarketplaceProxy         | 2,732     | 11,916             | 4.4x  | —              | —      | —          | —       |
@@ -115,26 +117,36 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 
 ## Fibonacci integer-width variants
 
-| Contract                            | Metered ref_time | vs EVM   |
-| ----------------------------------- | ---------------- | -------- |
-| fibonacci_u32_rust                  | 121,405,694      | -8.2%    |
-| fibonacci_u32_macro_bump_alloc_rust | 125,595,899      | -5.0%    |
-| Fibonacci_evm                       | 132,244,982      | —        |
-| fibonacci_u32_macro_no_alloc_rust   | 132,524,297      | +0.2%    |
-| fibonacci_u128_rust                 | 281,966,795      | +113.2%  |
-| Fibonacci_pvm                       | 420,164,797      | +217.7%  |
-| fibonacci_u32_ink                   | 452,913,243      | +242.5%  |
-| fibonacci_u256_rust                 | 3,584,897,684    | +2610.8% |
+| Contract                                 | Metered ref_time | vs EVM   |
+| ---------------------------------------- | ---------------- | -------- |
+| Fibonacci_u256_iter_evm                  | 6,130,593        | -95.4%   |
+| Fibonacci_u256_iter_pvm                  | 48,778,413       | -63.1%   |
+| fibonacci_u256_iter_primitive_types_rust | 65,661,687       | -50.3%   |
+| Fibonacci_u256_evm                       | 109,921,233      | -16.9%   |
+| fibonacci_u32_rust                       | 121,405,694      | -8.2%    |
+| fibonacci_u32_macro_bump_alloc_rust      | 125,595,899      | -5.0%    |
+| Fibonacci_evm                            | 132,244,982      | —        |
+| fibonacci_u32_macro_no_alloc_rust        | 132,524,297      | +0.2%    |
+| fibonacci_u256_iter_rust                 | 157,359,674      | +19.0%   |
+| fibonacci_u128_rust                      | 281,966,795      | +113.2%  |
+| fibonacci_u256_iter_ink                  | 352,756,076      | +166.7%  |
+| Fibonacci_pvm                            | 420,164,797      | +217.7%  |
+| fibonacci_u32_ink                        | 452,913,243      | +242.5%  |
+| Fibonacci_u256_pvm                       | 721,613,747      | +445.7%  |
+| fibonacci_u256_primitive_types_rust      | 2,025,181,744    | +1431.4% |
+| fibonacci_u256_ink                       | 2,270,263,245    | +1616.7% |
+| fibonacci_u256_rust                      | 3,584,897,684    | +2610.8% |
+| fibonacci_u256_rust                      | 3,584,897,684    | +2610.8% |
 
 
 ## Syscall per-call cost across VMs
 
 | Operation           | EVM avg ref_time | PVM/Solidity avg | PVM/Rust avg | EVM vs Sol | EVM vs Rust |
 | ------------------- | ---------------- | ---------------- | ------------ | ---------- | ----------- |
-| Storage write       | 169,295,512      | 169,545,168      | 169,309,436  | +0.1%      | +0.0%       |
-| Storage read        | 67,977,445       | 67,958,685       | 68,001,464   | -0.0%      | +0.0%       |
-| Keccak256           | 12,431,336       | 12,430,906       | 12,367,266   | -0.0%      | -0.5%       |
-| Event               | 21,416,067       | 22,891,246       | 20,716,785   | +6.9%      | -3.3%       |
+| Storage write       | 169,295,524      | 169,544,631      | 169,311,641  | +0.1%      | +0.0%       |
+| Storage read        | 67,977,445       | 67,958,741       | 68,013,794   | -0.0%      | +0.1%       |
+| Keccak256           | 12,431,202       | 12,430,780       | 12,360,353   | -0.0%      | -0.6%       |
+| Event               | 21,529,817       | 23,013,346       | 22,221,568   | +6.9%      | +3.2%       |
 | Cross-contract call | 235,890,233      | 292,143,105      | 422,847,699  | +23.8%     | +79.3%      |
 
 
@@ -149,27 +161,27 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Cross-contract calls | 845M / 11K (2)         | 422M / 5K  | 846M / 11K (2)         | 423M / 5K   | 846M / 11K (2)         | 423M / 5K  |
 | Immutable data       | —                      | —          | —                      | —           | —                      | —          |
 | Other syscalls       | —                      | —          | —                      | —           | 99M / 0K (166)         | 1M / 0K    |
-| EVM opcodes          | 2,332M / 0K (81,713)   | 0M / 0K    | —                      | —           | —                      | —          |
-| Unattributed         | 466M / 304K            |            | 57,859M / 2,792K       |             | 46,928M / 932K         |            |
-| **Total metered**    | **98,052M / 8,601K**   |            | **159,023M / 11,596K** |             | **88,334M / 3,692K**   |            |
+| EVM opcodes          | 2,334M / 0K (81,768)   | 0M / 0K    | —                      | —           | —                      | —          |
+| Unattributed         | 466M / 304K            |            | 57,861M / 2,792K       |             | 46,929M / 932K         |            |
+| **Total metered**    | **98,054M / 8,601K**   |            | **159,025M / 11,596K** |             | **88,335M / 3,692K**   |            |
 
 
 ## PVM cost gap decomposition
 
-**Excluding CoinTool_App (93 pairs):**
+**Excluding CoinTool_App (90 pairs):**
 
 | Metric             | EVM total       | PVM total       | PVM - EVM       | Diff   |
 | ------------------ | --------------- | --------------- | --------------- | ------ |
-| Metered ref_time   | 214,013,203,471 | 291,980,403,727 | +77,967,200,256 | +36.4% |
-| Metered proof_size | 20,790,474      | 26,501,661      | +5,711,187      | +27.5% |
+| Metered ref_time   | 212,846,821,517 | 290,320,590,735 | +77,473,769,218 | +36.4% |
+| Metered proof_size | 20,706,995      | 26,407,578      | +5,700,583      | +27.5% |
 
 
 | Source                                | ref_time (ps)   | % of gap | proof_size (bytes) | % of gap  |
 | ------------------------------------- | --------------- | -------- | ------------------ | --------- |
-| Unattributed (interpreter + bytecode) | +72,532,508,256 | 93.0%    | +4,489,194         | 78.6%     |
+| Unattributed (interpreter + bytecode) | +71,909,085,652 | 92.8%    | +4,478,591         | 78.6%     |
 | Cross-contract calls                  | +997,861,578    | 1.3%     | +594,532           | 10.4%     |
 | Immutable data (PVM-only)             | +413,343,242    | 0.5%     | +49,413            | 0.9%      |
-| Other attributed ops (net)            | +4,023,487,180  | 5.2%     | +578,048           | 10.1%     |
-| **Net PVM surplus**                   | +77,967,200,256 | 100%     | +5,711,187         | 100%      |
+| Other attributed ops (net)            | +4,153,478,746  | 5.4%     | +578,047           | 10.1%     |
+| **Net PVM surplus**                   | +77,473,769,218 | 100%     | +5,700,583         | 100%      |
 
 
