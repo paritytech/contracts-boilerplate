@@ -101,7 +101,7 @@ export const testContracts: Artifacts = [
         ],
     },
     {
-        id: 'Flipper',
+        id: 'flipper',
         srcs: [
             ink('flipper_ink'),
             stylus('flipper'),
@@ -131,7 +131,7 @@ export const testContracts: Artifacts = [
         ],
     },
     {
-        id: 'Incrementer',
+        id: 'incrementer',
         srcs: [
             ink('incrementer_ink'),
             stylus('incrementer'),
