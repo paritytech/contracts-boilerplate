@@ -63,13 +63,13 @@ mod erc721 {
         }
 
         /// Returns the balance of the owner.
-        #[ink(message)]
+        #[ink(message, name = "balanceOf")]
         pub fn balance_of(&self, owner: Address) -> u32 {
             self.owned_tokens_count.get(owner).unwrap_or(0)
         }
 
         /// Returns the owner of the token.
-        #[ink(message)]
+        #[ink(message, name = "ownerOf")]
         pub fn owner_of(&self, id: TokenId) -> Option<Address> {
             self.token_owner.get(id)
         }
@@ -111,7 +111,7 @@ mod erc721 {
         }
 
         /// Transfer approved or owned token.
-        #[ink(message, payable)]
+        #[ink(message, payable, name = "transferFrom")]
         pub fn transfer_from(
             &mut self,
             from: Address,

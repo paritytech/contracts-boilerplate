@@ -12,24 +12,32 @@ curl -fsSL https://deno.land/install.sh | sh
 
 # ink! contracts
 rustup component add rust-src
-cargo install --force --locked --version 6.0.0-beta.1 cargo-contract
+cargo install --force --locked --version 6.0.0-beta.2 cargo-contract
 
 # Rust PolkaVM contracts
 cargo install --git https://github.com/paritytech/revive.git cargo-pvm --locked --force
-```
 
-**Note**: If ink! compilation fails with `panic_immediate_abort` errors, use toolchain 1.91.1.
+# polkatool for linking protocol-commons contracts (must be 0.27.x — newer versions produce incompatible blobs)
+cargo install polkatool --version 0.27.0 --force
+
+# Stylus contracts
+cargo install --git https://github.com/smiasojed/stylus-sdk-rs --branch revive-integration cargo-stylus
+```
 
 ## Running Benchmarks
 
-Before running, start a development node:
+Before running, start a development node using [node-env](https://github.com/paritytech/node-env):
 
 ```sh
-# For Revive testing
-revive_dev_stack
+# Install node-env (add bin/ to PATH)
+git clone https://github.com/paritytech/node-env
+echo 'export PATH="$HOME/github/node-env/bin:$PATH"' >> ~/.zshrc
+
+# For Revive testing (starts revive-dev-node + eth-rpc in tmux)
+node-env revive-dev-stack
 
 # For Geth testing (set RPC_URL=http://localhost:8545 in .env)
-geth-dev
+node-env geth-dev-stack
 ```
 
 And build the necessary metadata:

@@ -84,12 +84,12 @@ mod erc1155 {
             self.token_id_nonce
         }
 
-        #[ink(message)]
+        #[ink(message, name = "balanceOf")]
         pub fn balance_of(&self, owner: Address, token_id: TokenId) -> U256 {
             self.balances.get((owner, token_id)).unwrap_or(0.into())
         }
 
-        #[ink(message, payable)]
+        #[ink(message, payable, name = "safeTransferFrom")]
         pub fn safe_transfer_from(
             &mut self,
             from: Address,
@@ -126,7 +126,7 @@ mod erc1155 {
             Ok(())
         }
 
-        #[ink(message, payable)]
+        #[ink(message, payable, name = "setApprovalForAll")]
         pub fn set_approval_for_all(
             &mut self,
             operator: Address,
@@ -149,7 +149,7 @@ mod erc1155 {
             Ok(())
         }
 
-        #[ink(message)]
+        #[ink(message, name = "isApprovedForAll")]
         pub fn is_approved_for_all(&self, owner: Address, operator: Address) -> bool {
             self.approvals.contains((&owner, &operator))
         }

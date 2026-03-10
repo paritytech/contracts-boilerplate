@@ -12,12 +12,12 @@ mod computation {
             Self {}
         }
 
-        #[ink(message)]
+        #[ink(message, name = "triangleNumber")]
         pub fn triangle_number(&self, n: i32) -> i64 {
             (1..=n as i64).fold(0, |sum, x| sum.wrapping_add(x))
         }
 
-        #[ink(message)]
+        #[ink(message, name = "oddProduct")]
         pub fn odd_product(&self, n: i32) -> i64 {
             (1..=n as i64).fold(1, |prod, x| prod.wrapping_mul(2 * x - 1))
         }

@@ -72,13 +72,13 @@ mod erc20 {
         }
 
         /// Returns the total token supply.
-        #[ink(message)]
+        #[ink(message, name = "totalSupply")]
         pub fn total_supply(&self) -> U256 {
             self.total_supply
         }
 
         /// Returns the account balance for the specified `owner`.
-        #[ink(message)]
+        #[ink(message, name = "balanceOf")]
         pub fn balance_of(&self, owner: Address) -> U256 {
             self.balances.get(owner).unwrap_or_default()
         }
@@ -110,7 +110,7 @@ mod erc20 {
         }
 
         /// Transfers `value` tokens on the behalf of `from` to the account `to`.
-        #[ink(message, payable)]
+        #[ink(message, payable, name = "transferFrom")]
         pub fn transfer_from(
             &mut self,
             from: Address,

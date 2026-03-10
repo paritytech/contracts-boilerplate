@@ -33,7 +33,7 @@ mod storage {
             }
         }
 
-        #[ink(message, payable)]
+        #[ink(message, payable, name = "readWrite")]
         pub fn read_write(&mut self, account: Address, count: u32) {
             for _ in 0..count {
                 let x = self.balances.get(account).unwrap_or(0);
