@@ -1,6 +1,6 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-03-06
+Generated on: 2026-03-09
 resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 ## Fibonacci Implementations
@@ -12,9 +12,10 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | fibonacci_u128_rust                 | PVM     | 315          | +37.6%      |
 | fibonacci_u32_macro_bump_alloc_rust | PVM     | 431          | +88.2%      |
 | fibonacci_u32_macro_no_alloc_rust   | PVM     | 477          | +108.3%     |
-| fibonacci_u32_ink                   | PVM     | 824          | +259.8%     |
 | fibonacci_u256_rust                 | PVM     | 980          | +327.9%     |
 | Fibonacci_pvm                       | PVM     | 1,152        | +403.1%     |
+| fibonacci_u32_ink                   | PVM     | 1,363        | +495.2%     |
+| fibonacci_u32_stylus                | PVM     | 1,520        | +563.8%     |
 
 
 ## Fibonacci_u256 Implementations
@@ -29,8 +30,8 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | fibonacci_u256_rust                      | PVM     | 980          | +441.4%     |
 | Fibonacci_u256_iter_pvm                  | PVM     | 1,224        | +576.2%     |
 | Fibonacci_u256_pvm                       | PVM     | 1,322        | +630.4%     |
-| fibonacci_u256_ink                       | PVM     | 1,838        | +915.5%     |
-| fibonacci_u256_iter_ink                  | PVM     | 1,845        | +919.3%     |
+| fibonacci_u256_iter_ink                  | PVM     | 2,029        | +1021.0%    |
+| fibonacci_u256_ink                       | PVM     | 2,102        | +1061.3%    |
 
 
 ## SimpleToken Implementations
@@ -44,7 +45,78 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | simple_token_u256_macro_no_alloc_rust   | PVM     | 3,765        | +578.4%     |
 | simple_token_u256_macro_bump_alloc_rust | PVM     | 4,430        | +698.2%     |
 | SimpleToken_pvm                         | PVM     | 5,357        | +865.2%     |
-| simple_token_u256_ink                   | PVM     | 8,483        | +1428.5%    |
+| simple_token_u256_ink                   | PVM     | 11,312       | +1938.2%    |
+| simple_token_u256_stylus                | PVM     | 12,028       | +2067.2%    |
+
+
+## flipper Implementations
+
+| Contract       | VM Type | Size (bytes) | vs Smallest |
+| -------------- | ------- | ------------ | ----------- |
+| flipper_evm    | EVM     | 284          | -           |
+| flipper_ink    | PVM     | 2,244        | +690.1%     |
+| flipper_pvm    | PVM     | 2,328        | +719.7%     |
+| flipper_stylus | PVM     | 3,611        | +1171.5%    |
+
+
+## incrementer Implementations
+
+| Contract           | VM Type | Size (bytes) | vs Smallest |
+| ------------------ | ------- | ------------ | ----------- |
+| incrementer_evm    | EVM     | 350          | -           |
+| incrementer_ink    | PVM     | 2,647        | +656.3%     |
+| incrementer_pvm    | PVM     | 2,791        | +697.4%     |
+| incrementer_stylus | PVM     | 5,186        | +1381.7%    |
+
+
+## BenchStorage Implementations
+
+| Contract             | VM Type | Size (bytes) | vs Smallest |
+| -------------------- | ------- | ------------ | ----------- |
+| BenchStorage_evm     | EVM     | 521          | -           |
+| BenchStorage_pvm     | PVM     | 3,060        | +487.3%     |
+| bench_storage_ink    | PVM     | 4,246        | +715.0%     |
+| bench_storage_stylus | PVM     | 10,392       | +1894.6%    |
+
+
+## Computation Implementations
+
+| Contract           | VM Type | Size (bytes) | vs Smallest |
+| ------------------ | ------- | ------------ | ----------- |
+| Computation_evm    | EVM     | 331          | -           |
+| computation_ink    | PVM     | 2,436        | +636.0%     |
+| computation_stylus | PVM     | 2,487        | +651.4%     |
+| Computation_pvm    | PVM     | 2,594        | +683.7%     |
+
+
+## BenchERC20 Implementations
+
+| Contract           | VM Type | Size (bytes) | vs Smallest |
+| ------------------ | ------- | ------------ | ----------- |
+| BenchERC20_evm     | EVM     | 1,093        | -           |
+| BenchERC20_pvm     | PVM     | 9,826        | +799.0%     |
+| bench_erc20_stylus | PVM     | 20,565       | +1781.5%    |
+| bench_erc20_ink    | PVM     | 21,209       | +1840.4%    |
+
+
+## BenchERC721 Implementations
+
+| Contract            | VM Type | Size (bytes) | vs Smallest |
+| ------------------- | ------- | ------------ | ----------- |
+| BenchERC721_evm     | EVM     | 1,121        | -           |
+| BenchERC721_pvm     | PVM     | 8,318        | +642.0%     |
+| bench_erc721_stylus | PVM     | 12,700       | +1032.9%    |
+| bench_erc721_ink    | PVM     | 15,103       | +1247.3%    |
+
+
+## BenchERC1155 Implementations
+
+| Contract             | VM Type | Size (bytes) | vs Smallest |
+| -------------------- | ------- | ------------ | ----------- |
+| BenchERC1155_evm     | EVM     | 1,173        | -           |
+| BenchERC1155_pvm     | PVM     | 11,068       | +843.6%     |
+| bench_erc1155_stylus | PVM     | 21,232       | +1710.1%    |
+| bench_erc1155_ink    | PVM     | 22,818       | +1845.3%    |
 
 
 ## TetherToken Implementations
@@ -100,7 +172,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract   | VM Type | Size (bytes) | vs Smallest |
 | ---------- | ------- | ------------ | ----------- |
 | Store_evm  | EVM     | 7,835        | -           |
-| store_rust | PVM     | 31,499       | +302.0%     |
+| store_rust | PVM     | 31,746       | +305.2%     |
 | Store_pvm  | PVM     | 74,865       | +855.5%     |
 
 
@@ -109,7 +181,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract | VM Type | Size (bytes) | vs Smallest |
 | -------- | ------- | ------------ | ----------- |
 | Log_evm  | EVM     | 6,297        | -           |
-| log_rust | PVM     | 16,520       | +162.3%     |
+| log_rust | PVM     | 16,694       | +165.1%     |
 | Log_pvm  | PVM     | 54,122       | +759.5%     |
 
 
@@ -118,7 +190,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract                     | VM Type | Size (bytes) | vs Smallest |
 | ---------------------------- | ------- | ------------ | ----------- |
 | NonFungibleCredential_evm    | EVM     | 6,684        | -           |
-| non_fungible_credential_rust | PVM     | 19,049       | +185.0%     |
+| non_fungible_credential_rust | PVM     | 19,189       | +187.1%     |
 | NonFungibleCredential_pvm    | PVM     | 65,603       | +881.5%     |
 
 
@@ -127,7 +199,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract                 | VM Type | Size (bytes) | vs Smallest |
 | ------------------------ | ------- | ------------ | ----------- |
 | FungibleCredential_evm   | EVM     | 7,235        | -           |
-| fungible_credential_rust | PVM     | 17,636       | +143.8%     |
+| fungible_credential_rust | PVM     | 17,809       | +146.2%     |
 | FungibleCredential_pvm   | PVM     | 65,740       | +808.6%     |
 
 
@@ -136,7 +208,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract   | VM Type | Size (bytes) | vs Smallest |
 | ---------- | ------- | ------------ | ----------- |
 | DotNS_evm  | EVM     | 8,168        | -           |
-| dotns_rust | PVM     | 22,951       | +181.0%     |
+| dotns_rust | PVM     | 23,132       | +183.2%     |
 | DotNS_pvm  | PVM     | 75,233       | +821.1%     |
 
 
@@ -145,7 +217,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract          | VM Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | ------------ | ----------- |
 | KeyRegistry_evm   | EVM     | 4,298        | -           |
-| key_registry_rust | PVM     | 18,644       | +333.8%     |
+| key_registry_rust | PVM     | 18,841       | +338.4%     |
 | KeyRegistry_pvm   | PVM     | 38,873       | +804.4%     |
 
 
@@ -154,7 +226,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract    | VM Type | Size (bytes) | vs Smallest |
 | ----------- | ------- | ------------ | ----------- |
 | Escrow_evm  | EVM     | 4,226        | -           |
-| escrow_rust | PVM     | 12,871       | +204.6%     |
+| escrow_rust | PVM     | 13,004       | +207.7%     |
 | Escrow_pvm  | PVM     | 33,820       | +700.3%     |
 
 
