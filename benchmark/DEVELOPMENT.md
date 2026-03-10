@@ -10,6 +10,9 @@ Install required toolchains:
 # Deno runtime
 curl -fsSL https://deno.land/install.sh | sh
 
+# Rust nightly toolchain (required for Rust PolkaVM, Stylus, and rust contracts)
+rustup toolchain install nightly-2026-02-01
+
 # ink! contracts
 rustup component add rust-src
 cargo install --force --locked --version 6.0.0-beta.2 cargo-contract

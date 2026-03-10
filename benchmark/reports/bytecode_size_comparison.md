@@ -199,7 +199,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract                 | VM Type | Size (bytes) | vs Smallest |
 | ------------------------ | ------- | ------------ | ----------- |
 | FungibleCredential_evm   | EVM     | 7,235        | -           |
-| fungible_credential_rust | PVM     | 17,730       | +145.1%     |
+| fungible_credential_rust | PVM     | 17,753       | +145.4%     |
 | FungibleCredential_pvm   | PVM     | 65,740       | +808.6%     |
 
 
@@ -226,7 +226,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract    | VM Type | Size (bytes) | vs Smallest |
 | ----------- | ------- | ------------ | ----------- |
 | Escrow_evm  | EVM     | 4,226        | -           |
-| escrow_rust | PVM     | 12,944       | +206.3%     |
+| escrow_rust | PVM     | 12,955       | +206.6%     |
 | Escrow_pvm  | PVM     | 33,820       | +700.3%     |
 
 
