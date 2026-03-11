@@ -46,13 +46,13 @@ mod simple_token {
         }
 
         /// Returns the total token supply.
-        #[ink(message)]
+        #[ink(message, name = "totalSupply")]
         pub fn total_supply(&self) -> U256 {
             self.total_supply
         }
 
         /// Returns the account balance for the specified `account`.
-        #[ink(message)]
+        #[ink(message, name = "balanceOf")]
         pub fn balance_of(&self, account: Address) -> U256 {
             self.balance_of_impl(&account)
         }
@@ -63,27 +63,12 @@ mod simple_token {
         }
 
         /// Transfers `value` amount of tokens from the caller's account to account `to`.
-        ///
-        /// On success a `Transfer` event is emitted.
-        ///
-        /// # Errors
-        ///
-        /// Returns `InsufficientBalance` error if there are not enough tokens on
-        /// the caller's account balance.
         #[ink(message, payable)]
         pub fn transfer(&mut self, to: Address, amount: U256) -> Result<()> {
             let from = self.env().caller();
             self.transfer_from_to(&from, &to, amount)
         }
 
-        /// Transfers `value` amount of tokens from the caller's account to account `to`.
-        ///
-        /// On success a `Transfer` event is emitted.
-        ///
-        /// # Errors
-        ///
-        /// Returns `InsufficientBalance` error if there are not enough tokens on
-        /// the caller's account balance.
         fn transfer_from_to(&mut self, from: &Address, to: &Address, value: U256) -> Result<()> {
             let from_balance = self.balance_of_impl(from);
             if from_balance < value {
@@ -104,10 +89,6 @@ mod simple_token {
         }
 
         /// Mints `value` amount of new tokens to account `to`.
-        ///
-        /// This function is permissionless and can be called by anyone.
-        ///
-        /// On success a `Transfer` event is emitted with `from` set to the zero address.
         #[ink(message, payable)]
         pub fn mint(&mut self, to: Address, value: U256) {
             let to_balance = self.balance_of_impl(&to);

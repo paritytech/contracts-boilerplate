@@ -1,0 +1,15 @@
+[package]
+name = "stylus-bench-erc1155"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+alloy-primitives = { version = "1.0.1", default-features = false }
+alloy-sol-types = { version = "1.0.1", default-features = false }
+stylus-sdk = { git = "https://github.com/smiasojed/stylus-sdk-rs", branch = "revive-integration" }
+
+[features]
+export-abi = ["stylus-sdk/export-abi"]
+
+[lib]
+crate-type = ["lib", "cdylib"]
