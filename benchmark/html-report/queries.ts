@@ -336,17 +336,20 @@ export function getExecutiveSummary(): ExecutiveSummary {
         ...new Set(
             suffixRows
                 .map((r) => r.contract_name.split('_').pop()!)
-                .filter((s) => s.length > 0),
+                .filter((s) => s.length > 0 && /^[a-z]+$/.test(s)),
         ),
     ]
 
     // Build CASE WHEN clauses dynamically
     const caseClauses = knownSuffixes.map((suffix) => {
-        const label = getImplTypeLabel(
-            suffix === 'evm' ? 'solidity' : suffix,
-            suffix === 'evm' ? 'EVM' : 'PVM',
-        )
-        return `WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_${suffix}' THEN 'eth-rpc (${label})'`
+        const implType = suffix === 'evm' || suffix === 'pvm'
+            ? 'solidity'
+            : suffix
+        const vmType = suffix === 'evm' ? 'EVM' : 'PVM'
+        const label = getImplTypeLabel(implType, vmType)
+        const safeSuffix = suffix.replace(/'/g, "''")
+        const safeLabel = label.replace(/'/g, "''")
+        return `WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_${safeSuffix}' THEN 'eth-rpc (${safeLabel})'`
     }).join('\n                ')
 
     const chains = db.prepare(`
@@ -744,7 +747,7 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_evm'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as RawWeightRow[]
+    `).all() as unknown as RawWeightRow[]
 
     // Get PVM weight data (contracts ending with _pvm)
     const pvmData = db.prepare(`
@@ -759,7 +762,7 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_pvm'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as RawWeightRow[]
+    `).all() as unknown as RawWeightRow[]
 
     // Get alt PVM weight data (Rust, Ink, etc.)
     const altPvmWeightData = db.prepare(`
@@ -776,7 +779,7 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             AND contract_name NOT LIKE '%_evm'
             AND contract_name NOT LIKE '%_pvm'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as (RawWeightRow & { contract_name: string })[]
+    `).all() as unknown as (RawWeightRow & { contract_name: string })[]
 
     // Group alt weight implementations by contract_id -> contract_name -> transactions
     const altWeightMap = new Map<
@@ -1073,85 +1076,6 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
     return {
         datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
     }
-}
-
-// Fibonacci implementations comparison
-export interface FibonacciImplementation {
-    variant: string
-    label: string
-    transaction_name: string
-    ref_time: number | null
-    metered_ref_time: number | null
-    metered_pct: number | null
-    proof_size: number | null
-}
-
-/** Build a human-readable label from a fibonacci contract_name */
-function fibLabel(name: string): string {
-    if (name === 'Fibonacci_evm') return 'EVM (Solidity)'
-    if (name === 'Fibonacci_pvm') return 'PVM (Solidity)'
-    // For alt impls like "fibonacci_u32_rust", extract suffix and description
-    const suffix = name.split('_').pop() ?? ''
-    const implLabel = getImplTypeLabel(suffix, 'PVM') // e.g. "PVM/Rust"
-    // Extract the middle portion as description (e.g. "u32", "u128", "u32_macro_no_alloc")
-    const desc = name
-        .replace(/^fibonacci_/, '')
-        .replace(new RegExp(`_${suffix}$`), '')
-    return desc ? `${implLabel} (${desc})` : implLabel
-}
-
-export function getFibonacciComparison(): FibonacciImplementation[] {
-    // Autodiscover all fibonacci-related contracts from the database
-    const variants = db.prepare(`
-        SELECT DISTINCT contract_name
-        FROM transactions
-        WHERE chain_name = 'eth-rpc'
-            AND weight_consumed_ref_time IS NOT NULL
-            AND (contract_name LIKE 'Fibonacci_%' OR contract_name LIKE 'fibonacci_%')
-        ORDER BY contract_name
-    `).all() as { contract_name: string }[]
-
-    const results: FibonacciImplementation[] = []
-
-    for (const { contract_name } of variants) {
-        const label = fibLabel(contract_name)
-        const data = db.prepare(`
-            SELECT
-                transaction_name,
-                (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
-                (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
-                weight_consumed_ref_time as weight_consumed
-            FROM transactions
-            WHERE chain_name = 'eth-rpc'
-                AND contract_name = ?
-                AND weight_consumed_ref_time IS NOT NULL
-            ORDER BY transaction_name
-        `).all(contract_name) as Array<
-            {
-                transaction_name: string
-                ref_time: number
-                proof_size: number
-                weight_consumed: number
-            }
-        >
-
-        for (const row of data) {
-            const metered_pct = row.ref_time > 0
-                ? (row.weight_consumed / row.ref_time) * 100
-                : 0
-            results.push({
-                variant: contract_name,
-                label,
-                transaction_name: row.transaction_name,
-                ref_time: row.ref_time,
-                metered_ref_time: row.weight_consumed,
-                metered_pct,
-                proof_size: row.proof_size,
-            })
-        }
-    }
-
-    return results
 }
 
 export function getCategoryBreakdown(): CategoryBreakdown[] {
@@ -1607,16 +1531,10 @@ export interface BytecodeSizeHierarchy {
 /** Infer impl type from contract name suffix (fallback for legacy markdown without Impl Type column). */
 function inferImplType(contractName: string, vmType: string): string {
     if (vmType === 'EVM') return 'solidity'
-    const suffixes = ['_pvm', '_rust', '_ink', '_stylus']
-    for (const suffix of suffixes) {
-        if (contractName.endsWith(suffix)) {
-            return suffix === '_pvm' ? 'solidity' : suffix.slice(1)
-        }
-    }
     const lastUnderscore = contractName.lastIndexOf('_')
-    return lastUnderscore !== -1
-        ? contractName.slice(lastUnderscore + 1)
-        : 'unknown'
+    if (lastUnderscore === -1) return 'unknown'
+    const suffix = contractName.slice(lastUnderscore + 1)
+    return suffix === 'pvm' ? 'solidity' : suffix
 }
 
 export function getBytecodeComparison(): BytecodeSizeData {
@@ -2138,7 +2056,7 @@ export function getDeployTotals(): {
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
             AND base_call_weight_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
 
     const pvmMap = new Map<string, DeployRow>()
     for (
@@ -2153,7 +2071,7 @@ export function getDeployTotals(): {
             AND contract_name LIKE '%_pvm'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
     ) {
         pvmMap.set(r.contract, r)
     }
@@ -2212,7 +2130,7 @@ export function getDeployThreeWay(): {
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
             AND base_call_weight_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
 
     const pvmMap = new Map<string, DeployRow>()
     for (
@@ -2227,7 +2145,7 @@ export function getDeployThreeWay(): {
             AND contract_name LIKE '%_pvm'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
     ) {
         pvmMap.set(r.contract, r)
     }
@@ -2255,7 +2173,7 @@ export function getDeployThreeWay(): {
             AND contract_name LIKE '%_rust'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
     ) {
         const evmBase = allRustToEvm[r.contract]
         if (evmBase && !rustMap.has(evmBase)) rustMap.set(evmBase, r)

@@ -140,7 +140,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract          | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | --------- | ------------ | ----------- |
 | FiatTokenV2_2_evm | EVM     | solidity  | 15,467       | -           |
-| FiatTokenV2_2_pvm | PVM     | solidity  | 411,352      | +2559.5%    |
+| FiatTokenV2_2_pvm | PVM     | solidity  | 103,535      | +569.4%     |
 
 
 ## FiatTokenProxy Implementations
@@ -156,7 +156,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | Contract      | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ------------- | ------- | --------- | ------------ | ----------- |
 | XENCrypto_evm | EVM     | solidity  | 10,489       | -           |
-| XENCrypto_pvm | PVM     | solidity  | 306,120      | +2818.5%    |
+| XENCrypto_pvm | PVM     | solidity  | 112,823      | +975.6%     |
 
 
 ## CoinTool_App Implementations

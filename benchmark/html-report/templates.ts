@@ -876,11 +876,17 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             chart.data.labels = data.labels;
             chart.data.datasets[0].data = data.evmData;
             chart.data.datasets[1].data = data.pvmData;
-            // Update alt impl datasets (indices 2+)
+            // Ensure alt impl datasets exist (starting at index 2)
             for (var i = 0; i < gasAltImplLabels.length; i++) {
-                if (chart.data.datasets[2 + i]) {
-                    chart.data.datasets[2 + i].data = data.altData[gasAltImplLabels[i]];
+                if (!chart.data.datasets[2 + i]) {
+                    var _lbl = gasAltImplLabels[i];
+                    var _clr = getChartImplColor(_lbl);
+                    chart.data.datasets.push({
+                        label: _lbl, data: [],
+                        backgroundColor: _clr.bg, borderColor: _clr.border, borderWidth: 1,
+                    });
                 }
+                chart.data.datasets[2 + i].data = data.altData[gasAltImplLabels[i]];
             }
             chart.options.plugins.title.text = data.title;
             chart.options.plugins.title.display = true;
@@ -2615,108 +2621,6 @@ export function drilldownCategoryChartScript(
             }
         };
     `
-}
-
-// Fibonacci implementations comparison table
-export interface FibonacciTableData {
-    variant: string
-    label: string
-    transaction_name: string
-    ref_time: number | null
-    metered_ref_time: number | null
-    proof_size: number | null
-}
-
-function calcVsBest(value: number | null, best: number | null): string {
-    if (value === null || best === null || best === 0) return 'N/A'
-    if (value === best) return 'best'
-    const diff = ((value - best) / best) * 100
-    const sign = diff > 0 ? '+' : ''
-    const className = diff > 0 ? 'positive' : 'negative'
-    return `<span class="${className}">${sign}${diff.toFixed(1)}%</span>`
-}
-
-export function fibonacciComparisonTable(data: FibonacciTableData[]): string {
-    // Group by transaction
-    const transactions = [...new Set(data.map((d) => d.transaction_name))]
-        .filter((t) => t !== 'deploy')
-    const variants = [...new Set(data.map((d) => d.label))]
-
-    const tables: string[] = []
-
-    for (const tx of transactions) {
-        const txData = data.filter((d) => d.transaction_name === tx)
-
-        // Find best values (lowest)
-        const bestRefTime = Math.min(
-            ...txData.filter((d) => d.ref_time !== null).map((d) =>
-                d.ref_time!
-            ),
-        )
-        const bestMetered = Math.min(
-            ...txData.filter((d) => d.metered_ref_time !== null).map((d) =>
-                d.metered_ref_time!
-            ),
-        )
-        const bestProof = Math.min(
-            ...txData.filter((d) => d.proof_size !== null).map((d) =>
-                d.proof_size!
-            ),
-        )
-
-        const rows = variants.map((variant) => {
-            const entry = txData.find((d) => d.label === variant)
-            if (!entry) return ''
-
-            return `
-                <tr>
-                    <td>${variant}</td>
-                    <td class="number">${
-                entry.ref_time?.toLocaleString() ?? 'N/A'
-            }</td>
-                    <td class="number">${
-                calcVsBest(entry.ref_time, bestRefTime)
-            }</td>
-                    <td class="number">${
-                entry.metered_ref_time?.toLocaleString() ?? 'N/A'
-            }</td>
-                    <td class="number">${
-                calcVsBest(entry.metered_ref_time, bestMetered)
-            }</td>
-                    <td class="number">${
-                entry.proof_size?.toLocaleString() ?? 'N/A'
-            }</td>
-                    <td class="number">${
-                calcVsBest(entry.proof_size, bestProof)
-            }</td>
-                </tr>
-            `
-        }).filter((r) => r !== '')
-
-        tables.push(`
-            <div style="margin-bottom: 1.5rem;">
-                <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">${tx}</h4>
-                <table class="fibonacci-table">
-                    <thead>
-                        <tr>
-                            <th>Implementation</th>
-                            <th class="number">ref_time</th>
-                            <th class="number">vs best</th>
-                            <th class="number">metered</th>
-                            <th class="number">vs best</th>
-                            <th class="number">proof_size</th>
-                            <th class="number">vs best</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rows.join('')}
-                    </tbody>
-                </table>
-            </div>
-        `)
-    }
-
-    return tables.join('')
 }
 
 // Bytecode Size Hierarchy Types and Functions

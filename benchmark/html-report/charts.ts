@@ -404,7 +404,8 @@ function implTypeColorFromRgb(r: number, g: number, b: number) {
     return {
         bg: `rgba(${r}, ${g}, ${b}, 0.8)`,
         border: `rgba(${r}, ${g}, ${b}, 1)`,
-        hex: '#' + [r, g, b].map((c) => c.toString(16).padStart(2, '0')).join(''),
+        hex: '#' +
+            [r, g, b].map((c) => c.toString(16).padStart(2, '0')).join(''),
     }
 }
 

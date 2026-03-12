@@ -246,10 +246,10 @@ export const testContracts: Artifacts = [
             {
                 name: 'read_100',
                 exec: (address) => {
-                    // @ts-ignore - run `deno task build` to generate ABI
                     return env.wallet.writeContract({
                         address,
                         abi: abis.BenchStorage,
+                        // @ts-expect-error: 'read' is view but we send it as a tx to benchmark gas
                         functionName: 'read',
                         args: [env.wallet.account.address, 100],
                     })
@@ -403,7 +403,7 @@ export const testContracts: Artifacts = [
                         address,
                         abi: abis.BenchERC1155,
                         functionName: 'create',
-                        args: [1000],
+                        args: [1000n],
                     })
                 },
             },

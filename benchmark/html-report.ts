@@ -21,7 +21,6 @@ import {
     getExecTotals,
     getExecTotalsPairCount,
     getExecutiveSummary,
-    getFibonacciComparison,
     getGasAnalysisHierarchy,
     getPerTxMedians,
     getSyscallCosts,
@@ -44,7 +43,6 @@ import {
     expandableGasTable,
     expandableTableScript,
     expandableWeightTable,
-    fibonacciComparisonTable,
     gasAnalysisFilterControls,
     htmlDocument,
     metricGrid,
@@ -316,7 +314,6 @@ function generateGasAnalysis(): { html: string; scripts: string } {
 
 function generateWeightAnalysis(): { html: string; scripts: string } {
     const hierarchy = getWeightAnalysisHierarchy()
-    const fibonacciData = getFibonacciComparison()
     const scripts: string[] = []
 
     if (hierarchy.datasets.length === 0) {
@@ -412,15 +409,6 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
     // Add drilldown chart script
     scripts.push(drilldownWeightChartScript(hierarchy))
 
-    // Fibonacci implementations comparison table
-    let fibonacciSection = ''
-    if (fibonacciData.length > 0) {
-        fibonacciSection = card(
-            'Fibonacci Implementations Comparison',
-            fibonacciComparisonTable(fibonacciData),
-        )
-    }
-
     const html = sectionCard(
         'weight',
         'Weight Analysis (Revive only)',
@@ -438,7 +426,6 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
                 expandableWeightTable(hierarchy),
             )
         }
-        ${fibonacciSection}
     `,
     )
 

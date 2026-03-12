@@ -45,9 +45,9 @@ import { datasetCategories } from './datasets.ts'
 // workload analysis. They are still included in the variant-specific tables
 // (SimpleToken variants, Fibonacci variants, bytecode sizes).
 const TEST_CONTRACT_IDS = datasetCategories['test-contracts'] ?? []
-const TEST_EXCLUDE_SQL = TEST_CONTRACT_IDS.map((id) =>
-    `'${id.replace(/'/g, "''")}'`
-).join(',')
+const TEST_EXCLUDE_SQL = TEST_CONTRACT_IDS.length > 0
+    ? TEST_CONTRACT_IDS.map((id) => `'${id.replace(/'/g, "''")}'`).join(',')
+    : "''"
 
 const EVM_TO_RUST: Record<string, string> = {
     DotNS: 'dotns_rust',
@@ -456,7 +456,7 @@ function deployTotalsTable(): string {
 			AND weight_consumed_ref_time IS NOT NULL
 			AND base_call_weight_ref_time IS NOT NULL
 			AND contract_id NOT IN (${TEST_EXCLUDE_SQL})
-	`).all() as DeployRow[]
+	`).all() as unknown as DeployRow[]
 
     const pvmMap = new Map<string, DeployRow>()
     for (
@@ -472,7 +472,7 @@ function deployTotalsTable(): string {
 			AND transaction_name = 'deploy'
 			AND weight_consumed_ref_time IS NOT NULL
 			AND contract_id NOT IN (${TEST_EXCLUDE_SQL})
-	`).all() as DeployRow[]
+	`).all() as unknown as DeployRow[]
     ) {
         pvmMap.set(r.contract, r)
     }
@@ -500,7 +500,7 @@ function deployTotalsTable(): string {
 			AND contract_name LIKE '%_rust'
 			AND transaction_name = 'deploy'
 			AND weight_consumed_ref_time IS NOT NULL
-	`).all() as DeployRow[]
+	`).all() as unknown as DeployRow[]
     ) {
         const evmBase = allRustToEvm[r.contract]
         if (evmBase && !rustMap.has(evmBase)) rustMap.set(evmBase, r)
