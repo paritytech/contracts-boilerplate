@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     contract_id TEXT NOT NULL,
     contract_name TEXT NOT NULL,
     transaction_name TEXT NOT NULL,
+    block_number INTEGER,
     gas_used INTEGER NOT NULL,
     status INTEGER NOT NULL,
     post_dispatch_ref_time INTEGER,
@@ -44,7 +45,11 @@ CREATE INDEX IF NOT EXISTS idx_transaction_steps_hash_chain
 `,
 )
 
+// deno-lint-ignore ban-types
+export type ImplType = 'solidity' | 'ink' | 'rust' | 'stylus' | (string & {})
+
 export interface ContractInfo {
+    readonly implType: ImplType
     supportEvm(): boolean
     getName(): string
     getBytecode(): Hex
@@ -59,6 +64,7 @@ export function ink(name: string): ContractInfo {
     const pkgName =
         cargoToml.match(/^name\s*=\s*"(.+)"/m)?.[1]?.replace(/-/g, '_') ?? dir
     return {
+        implType: 'ink',
         supportEvm() {
             return false
         },
@@ -102,6 +108,7 @@ export function solidity(
         const compiler = isEvm ? 'solc' : 'resolc'
 
         const contract = {
+            implType: 'solidity' as ImplType,
             supportEvm() {
                 return isEvm
             },
@@ -144,6 +151,7 @@ export function solidity(
 
 export function rust(name: string): ContractInfo {
     return {
+        implType: 'rust',
         supportEvm() {
             return false
         },
@@ -181,6 +189,7 @@ export function stylus(name: string): ContractInfo {
     }
     const libName = pkgName.replace(/-/g, '_')
     return {
+        implType: 'stylus',
         supportEvm() {
             return false
         },
@@ -216,6 +225,7 @@ export function stylus(name: string): ContractInfo {
 export function pcRust(name: string): ContractInfo {
     const pcRoot = join(import.meta.dirname!, '..', 'rust', 'protocol-commons')
     return {
+        implType: 'rust',
         supportEvm() {
             return false
         },
@@ -483,6 +493,7 @@ INSERT OR REPLACE INTO transactions (
     contract_id,
     contract_name,
     transaction_name,
+    block_number,
     gas_used,
     status,
     post_dispatch_ref_time,
@@ -491,7 +502,7 @@ INSERT OR REPLACE INTO transactions (
     weight_consumed_proof_size,
     base_call_weight_ref_time,
     base_call_weight_proof_size
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `,
         ).run(
             hashBytes,
@@ -499,6 +510,7 @@ INSERT OR REPLACE INTO transactions (
             contractId,
             contract,
             action,
+            receipt.blockNumber ? Number(receipt.blockNumber) : null,
             Number(receipt.gasUsed),
             statusValue,
             weight ? Number(weight.ref_time) : null,

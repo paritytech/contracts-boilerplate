@@ -1,40 +1,2442 @@
 # Opcode Category Analysis
 
-Generated on: 2026-03-10
+Generated on: 2026-03-12
 resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 Opcodes grouped by functional category.
+
+## Chain: Geth
+
+### BenchERC1155_evm - create
+
+- **Total Gas Used:** 68,472
+
+| Category     | Opcodes Used                                                                                  | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                 | 44,300    | 4          | 93.7%        | 64.7%       |
+| Events       | LOG4                                                                                          | 2,387     | 1          | 5.0%         | 3.5%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 256       | 88         | 0.5%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                     | 84        | 2          | 0.2%         | 0.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                         | 72        | 11         | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                        | 51        | 17         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                 | 48        | 10         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                      | 30        | 10         | 0.1%         | 0.0%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                       | 24        | 8          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                    | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                        | 6         | 3          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                        | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchERC1155_evm - deploy
+
+- **Total Gas Used:** 301,170
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 225       | 1          | 81.5%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 9.8%         | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 4.3%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 3.6%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 0.7%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchERC20_evm - deploy
+
+- **Total Gas Used:** 303,090
+
+| Category     | Opcodes Used                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SSTORE                                                                                       | 44,200    | 2          | 95.2%        | 14.6%       |
+| Events       | LOG3                                                                                         | 1,756     | 1          | 3.8%         | 0.6%        |
+| Code         | CODECOPY, CODESIZE                                                                           | 196       | 3          | 0.4%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, PUSH0, PUSH1, PUSH2, PUSH32, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 140       | 48         | 0.3%         | 0.0%        |
+| Crypto       | KECCAK256                                                                                    | 42        | 1          | 0.1%         | 0.0%        |
+| Memory       | MLOAD, MSTORE                                                                                | 33        | 7          | 0.1%         | 0.0%        |
+| Control Flow | JUMPI                                                                                        | 30        | 3          | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                     | 18        | 6          | 0.0%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                                                                            | 12        | 4          | 0.0%         | 0.0%        |
+| Comparison   | GT, LT, SLT                                                                                  | 9         | 3          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                       | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchERC20_evm - transfer
+
+- **Total Gas Used:** 51,185
+
+| Category     | Opcodes Used                                                                                       | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                      | 27,100    | 4          | 91.7%        | 52.9%       |
+| Events       | LOG3                                                                                               | 1,756     | 1          | 5.9%         | 3.4%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 270       | 92         | 0.9%         | 0.5%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                              | 166       | 25         | 0.6%         | 0.3%        |
+| Crypto       | KECCAK256                                                                                          | 126       | 3          | 0.4%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                      | 42        | 9          | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                            | 33        | 11         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                 | 24        | 8          | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                           | 21        | 7          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                         | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchERC721_evm - deploy
+
+- **Total Gas Used:** 290,145
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 218       | 1          | 81.0%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 10.0%        | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 4.5%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 3.7%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 0.7%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchERC721_evm - mint
+
+- **Total Gas Used:** 68,153
+
+| Category     | Opcodes Used                                                                  | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                 | 44,400    | 6          | 94.6%        | 65.1%       |
+| Events       | LOG4                                                                          | 1,875     | 1          | 4.0%         | 2.8%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2 | 261       | 89         | 0.6%         | 0.4%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                         | 148       | 21         | 0.3%         | 0.2%        |
+| Crypto       | KECCAK256                                                                     | 126       | 3          | 0.3%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                        | 48        | 16         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                       | 30        | 10         | 0.1%         | 0.0%        |
+| Memory       | MSTORE                                                                        | 30        | 7          | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                      | 15        | 5          | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                    | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                        | 6         | 3          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                          | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchStorage_evm - deploy
+
+- **Total Gas Used:** 160,319
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 102       | 1          | 66.7%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 17.6%        | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 7.8%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 6.5%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 1.3%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchStorage_evm - read_100
+
+- **Total Gas Used:** 34,275
+
+| Category     | Opcodes Used                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH4, SWAP1, SWAP2 | 5,325     | 1,842      | 41.9%        | 15.5%       |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                            | 4,891     | 914        | 38.5%        | 14.3%       |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                          | 918       | 306        | 7.2%         | 2.7%        |
+| Bitwise      | AND, NOT, SHL, SHR                                               | 627       | 209        | 4.9%         | 1.8%        |
+| Memory       | MSTORE                                                           | 612       | 201        | 4.8%         | 1.8%        |
+| Arithmetic   | ADD, SUB                                                         | 315       | 105        | 2.5%         | 0.9%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                       | 13        | 5          | 0.1%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                             | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchStorage_evm - readWrite_100
+
+- **Total Gas Used:** 85,276
+
+| Category     | Opcodes Used                                                            | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                           | 34,800    | 300        | 54.6%        | 40.8%       |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH4, SWAP1, SWAP2, SWAP4 | 11,825    | 4,042      | 18.6%        | 13.9%       |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 5,891     | 1,014      | 9.2%         | 6.9%        |
+| Crypto       | KECCAK256                                                               | 4,200     | 100        | 6.6%         | 4.9%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                  | 3,327     | 1,109      | 5.2%         | 3.9%        |
+| Arithmetic   | ADD, SUB                                                                | 1,815     | 605        | 2.8%         | 2.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                 | 1,221     | 407        | 1.9%         | 1.4%        |
+| Memory       | MSTORE                                                                  | 612       | 201        | 1.0%         | 0.7%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                              | 13        | 5          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                    | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### BenchStorage_evm - write_100
+
+- **Total Gas Used:** 84,201
+
+| Category     | Opcodes Used                                                            | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                           | 41,900    | 200        | 66.9%        | 49.8%       |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH3, PUSH4, SWAP1, SWAP2 | 7,637     | 2,646      | 12.2%        | 9.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 4,901     | 915        | 7.8%         | 5.8%        |
+| Crypto       | KECCAK256                                                               | 4,200     | 100        | 6.7%         | 5.0%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                  | 1,827     | 609        | 2.9%         | 2.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                 | 924       | 308        | 1.5%         | 1.1%        |
+| Arithmetic   | ADD, SUB                                                                | 615       | 205        | 1.0%         | 0.7%        |
+| Memory       | MSTORE                                                                  | 612       | 201        | 1.0%         | 0.7%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                              | 13        | 5          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                    | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### CoinTool_App_evm - deploy
+
+- **Total Gas Used:** 756,015
+
+| Category   | Opcodes Used                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ---------- | -------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage    | SLOAD, SSTORE                                | 22,100    | 2          | 96.6%        | 2.9%        |
+| Code       | CODECOPY                                     | 618       | 1          | 2.7%         | 0.1%        |
+| Stack      | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, SWAP1 | 92        | 31         | 0.4%         | 0.0%        |
+| Memory     | MLOAD, MSTORE                                | 39        | 8          | 0.2%         | 0.0%        |
+| Arithmetic | ADD, SUB                                     | 18        | 6          | 0.1%         | 0.0%        |
+| Bitwise    | AND, NOT, OR, SHL                            | 12        | 4          | 0.1%         | 0.0%        |
+| Context    | ADDRESS, ORIGIN                              | 4         | 2          | 0.0%         | 0.0%        |
+| Return     | RETURN                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### CoinTool_App_evm - t
+
+- **Total Gas Used:** 11,604,727
+
+| Category     | Opcodes Used                                                                                                                                                                               | Total Gas    | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                              | 6,713,900    | 753        | -2.4%        | 57.9%       |
+| Stack        | DUP1, DUP10, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH12, PUSH2, PUSH20, PUSH3, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 99,526       | 33,594     | -0.0%        | 0.9%        |
+| Events       | LOG2                                                                                                                                                                                       | 81,850       | 50         | -0.0%        | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                      | 65,829       | 9,751      | -0.0%        | 0.6%        |
+| Calls        | CALL, DELEGATECALL                                                                                                                                                                         | 25,000       | 200        | -0.0%        | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                    | 14,769       | 4,923      | -0.0%        | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                              | 13,283       | 2,813      | -0.0%        | 0.1%        |
+| Arithmetic   | ADD, DIV, MUL, SUB                                                                                                                                                                         | 13,099       | 4,233      | -0.0%        | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                     | 7,686        | 2,562      | -0.0%        | 0.1%        |
+| Code         | CODECOPY, CODESIZE                                                                                                                                                                         | 6,626        | 200        | -0.0%        | 0.1%        |
+| Crypto       | KECCAK256                                                                                                                                                                                  | 6,468        | 154        | -0.0%        | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                   | 5,827        | 1,213      | -0.0%        | 0.1%        |
+| Context      | ADDRESS, CALLER, ORIGIN, TIMESTAMP                                                                                                                                                         | 908          | 454        | -0.0%        | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                                                                                                             | 500          | 250        | -0.0%        | 0.0%        |
+| Return Data  | RETURNDATASIZE                                                                                                                                                                             | 400          | 200        | -0.0%        | 0.0%        |
+| Return       | RETURN, STOP                                                                                                                                                                               | 0            | 251        | 0.0%         | 0.0%        |
+| Creation     | CREATE2                                                                                                                                                                                    | -291,740,223 | 50         | 102.5%       | -2514.0%    |
+
+
+### Computation_evm - deploy
+
+- **Total Gas Used:** 119,399
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 66        | 1          | 56.4%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 23.1%        | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 10.3%        | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 8.5%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 1.7%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Computation_evm - odd_product_10
+
+- **Total Gas Used:** 23,162
+
+| Category     | Opcodes Used                                                           | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 811       | 274        | 41.4%        | 3.5%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                  | 553       | 100        | 28.2%        | 2.4%        |
+| Math         | SIGNEXTEND                                                             | 265       | 53         | 13.5%        | 1.1%        |
+| Arithmetic   | ADD, MUL, SUB                                                          | 116       | 32         | 5.9%         | 0.5%        |
+| Comparison   | EQ, ISZERO, LT, SGT, SLT                                               | 111       | 37         | 5.7%         | 0.5%        |
+| Bitwise      | NOT, SHL, SHR                                                          | 66        | 22         | 3.4%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                          | 24        | 3          | 1.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                             | 10        | 4          | 0.5%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                              | 2         | 1          | 0.1%         | 0.0%        |
+| Return       | RETURN                                                                 | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Computation_evm - triangle_10
+
+- **Total Gas Used:** 22,756
+
+| Category     | Opcodes Used                                        | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 670       | 224        | 43.2%        | 2.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                               | 534       | 90         | 34.4%        | 2.3%        |
+| Math         | SIGNEXTEND                                          | 165       | 33         | 10.6%        | 0.7%        |
+| Comparison   | EQ, ISZERO, LT, SGT, SLT                            | 75        | 25         | 4.8%         | 0.3%        |
+| Arithmetic   | ADD, SUB                                            | 66        | 22         | 4.3%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                       | 24        | 3          | 1.5%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                          | 10        | 4          | 0.6%         | 0.0%        |
+| Bitwise      | NOT, SHR                                            | 6         | 2          | 0.4%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                           | 2         | 1          | 0.1%         | 0.0%        |
+| Return       | RETURN                                              | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - configurePublicAccess
+
+- **Total Gas Used:** 53,551
+
+| Category     | Opcodes Used                                                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                        | 28,400    | 5          | 90.2%        | 53.0%       |
+| Events       | LOG2                                                                                                                 | 1,381     | 1          | 4.4%         | 2.6%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 703       | 238        | 2.2%         | 1.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                | 477       | 61         | 1.5%         | 0.9%        |
+| Crypto       | KECCAK256                                                                                                            | 168       | 4          | 0.5%         | 0.3%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                              | 120       | 40         | 0.4%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                               | 87        | 29         | 0.3%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                        | 78        | 17         | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                             | 57        | 19         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                           | 16        | 6          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                                               | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                            | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                 | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - createDocument
+
+- **Total Gas Used:** 253,901
+
+| Category     | Opcodes Used                                                                                                                                                                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                                                                | 223,800   | 27         | 97.1%        | 88.1%       |
+| Events       | LOG2                                                                                                                                                                                                                                                         | 2,661     | 1          | 1.2%         | 1.0%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP14, DUP16, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP10, SWAP11, SWAP14, SWAP15, SWAP16, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 1,903     | 647        | 0.8%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                                                                        | 847       | 126        | 0.4%         | 0.3%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                                                                    | 366       | 9          | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                                                                       | 318       | 106        | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                                                                | 226       | 54         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                                                                     | 216       | 72         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                                                                      | 186       | 62         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                                                                     | 56        | 16         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                                                                            | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                                                                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - createDocument2
+
+- **Total Gas Used:** 236,801
+
+| Category     | Opcodes Used                                                                                                                                                                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                                                                | 206,700   | 27         | 96.8%        | 87.3%       |
+| Events       | LOG2                                                                                                                                                                                                                                                         | 2,661     | 1          | 1.2%         | 1.1%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP14, DUP16, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP10, SWAP11, SWAP14, SWAP15, SWAP16, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 1,903     | 647        | 0.9%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                                                                        | 847       | 126        | 0.4%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                                                                    | 366       | 9          | 0.2%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                                                                       | 318       | 106        | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                                                                | 226       | 54         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                                                                     | 216       | 72         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                                                                      | 186       | 62         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                                                                     | 56        | 16         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                                                                            | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                                                                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - deploy
+
+- **Total Gas Used:** 2,093,513
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 1,950     | 1          | 97.5%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 1.3%         | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 0.6%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 0.5%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 0.1%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - grantAccessWithShare
+
+- **Total Gas Used:** 200,142
+
+| Category     | Opcodes Used                                                                                                                                                                                            | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                           | 170,900   | 26         | 96.5%        | 85.4%       |
+| Events       | LOG3                                                                                                                                                                                                    | 2,268     | 1          | 1.3%         | 1.1%        |
+| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP11, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 1,641     | 564        | 0.9%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                   | 817       | 137        | 0.5%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                                                                                                                               | 564       | 14         | 0.3%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                  | 297       | 99         | 0.2%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                           | 180       | 45         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                | 177       | 59         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                 | 162       | 54         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                              | 36        | 13         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                       | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                               | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                                                    | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - registerKeys
+
+- **Total Gas Used:** 92,093
+
+| Category     | Opcodes Used                                                                                                                                           | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                          | 66,300    | 4          | 94.9%        | 72.0%       |
+| Events       | LOG2                                                                                                                                                   | 2,149     | 1          | 3.1%         | 2.3%        |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP8 | 657       | 220        | 0.9%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                  | 378       | 44         | 0.5%         | 0.4%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                | 102       | 34         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                          | 90        | 18         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                 | 72        | 24         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                               | 63        | 21         | 0.1%         | 0.1%        |
+| Crypto       | KECCAK256                                                                                                                                              | 42        | 1          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                             | 16        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                      | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                              | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                   | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - revokeAccess
+
+- **Total Gas Used:** 60,496
+
+| Category     | Opcodes Used                                                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                        | 47,700    | 39         | 89.1%        | 78.8%       |
+| Events       | LOG3                                                                                                                 | 1,756     | 1          | 3.3%         | 2.9%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 1,604     | 556        | 3.0%         | 2.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                | 926       | 147        | 1.7%         | 1.5%        |
+| Crypto       | KECCAK256                                                                                                            | 816       | 21         | 1.5%         | 1.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                               | 240       | 80         | 0.4%         | 0.4%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                              | 210       | 70         | 0.4%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                                                                        | 147       | 40         | 0.3%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                             | 126       | 42         | 0.2%         | 0.2%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                           | 16        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                               | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                            | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                 | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - transferOwnership
+
+- **Total Gas Used:** 129,468
+
+| Category     | Opcodes Used                                                                                                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                   | 107,200   | 32         | 95.5%        | 82.8%       |
+| Events       | LOG4                                                                                                                                            | 1,875     | 1          | 1.7%         | 1.4%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP7 | 1,267     | 439        | 1.1%         | 1.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                           | 663       | 101        | 0.6%         | 0.5%        |
+| Crypto       | KECCAK256                                                                                                                                       | 552       | 14         | 0.5%         | 0.4%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                          | 237       | 79         | 0.2%         | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                         | 150       | 50         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                   | 123       | 33         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                        | 105       | 35         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                      | 16        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                               | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DocumentAccessManagement_evm - updateDocument
+
+- **Total Gas Used:** 44,119
+
+| Category     | Opcodes Used                                                                                                                                                        | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                       | 18,500    | 8          | 88.5%        | 41.9%       |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 1,035     | 354        | 5.0%         | 2.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                               | 655       | 91         | 3.1%         | 1.5%        |
+| Crypto       | KECCAK256                                                                                                                                                           | 210       | 5          | 1.0%         | 0.5%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                             | 162       | 54         | 0.8%         | 0.4%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                              | 126       | 42         | 0.6%         | 0.3%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                            | 87        | 29         | 0.4%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                       | 75        | 17         | 0.4%         | 0.2%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                          | 39        | 14         | 0.2%         | 0.1%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                   | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                           | 2         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - createSubdomain
+
+- **Total Gas Used:** 314,157
+
+| Category     | Opcodes Used                                                                                                                                                                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                                         | 234,800   | 27         | 80.6%        | 74.7%       |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP14, DUP16, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP12, SWAP13, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 21,504    | 7,234      | 7.4%         | 6.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                                                 | 17,641    | 3,200      | 6.1%         | 5.6%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                                                                          | 3,825     | 1,275      | 1.3%         | 1.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                                              | 3,747     | 1,249      | 1.3%         | 1.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                                               | 3,498     | 1,166      | 1.2%         | 1.1%        |
+| Events       | LOG4                                                                                                                                                                                                                                  | 2,643     | 1          | 0.9%         | 0.8%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                                                                                                                | 2,501     | 788        | 0.9%         | 0.8%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                                             | 888       | 22         | 0.3%         | 0.3%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                                              | 164       | 34         | 0.1%         | 0.1%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                                                     | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                                                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - deploy
+
+- **Total Gas Used:** 1,813,886
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 1,667     | 1          | 97.0%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 1.6%         | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 0.7%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 0.6%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 0.1%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - register
+
+- **Total Gas Used:** 273,107
+
+| Category     | Opcodes Used                                                                                                                                                                              | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 225,700   | 24         | 89.8%        | 82.6%       |
+| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 9,343     | 3,154      | 3.7%         | 3.4%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 7,413     | 1,327      | 2.9%         | 2.7%        |
+| Events       | LOG3                                                                                                                                                                                      | 2,268     | 1          | 0.9%         | 0.8%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 1,659     | 553        | 0.7%         | 0.6%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 1,587     | 529        | 0.6%         | 0.6%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 1,470     | 490        | 0.6%         | 0.5%        |
+| Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                                             | 1,125     | 336        | 0.4%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                                                                                                                 | 690       | 17         | 0.3%         | 0.3%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                  | 72        | 15         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                         | 10        | 5          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                 | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                    | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - register_with_duration
+
+- **Total Gas Used:** 275,104
+
+| Category     | Opcodes Used                                                                                                                                                                              | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 228,500   | 24         | 90.2%        | 83.1%       |
+| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 9,037     | 3,051      | 3.6%         | 3.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 7,094     | 1,269      | 2.8%         | 2.6%        |
+| Events       | LOG3                                                                                                                                                                                      | 2,268     | 1          | 0.9%         | 0.8%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 1,605     | 535        | 0.6%         | 0.6%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 1,515     | 505        | 0.6%         | 0.6%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 1,419     | 473        | 0.6%         | 0.5%        |
+| Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                                             | 1,086     | 323        | 0.4%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                                                                                                                 | 690       | 17         | 0.3%         | 0.3%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                  | 72        | 15         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                         | 12        | 6          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                 | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                    | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - release
+
+- **Total Gas Used:** 78,940
+
+| Category     | Opcodes Used                                                                                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                         | 57,700    | 26         | 75.0%        | 73.1%       |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 6,832     | 2,306      | 8.9%         | 8.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                 | 5,517     | 998        | 7.2%         | 7.0%        |
+| Events       | LOG2                                                                                                                                                  | 1,893     | 1          | 2.5%         | 2.4%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                          | 1,218     | 406        | 1.6%         | 1.5%        |
+| Arithmetic   | ADD, SUB                                                                                                                                              | 1,158     | 386        | 1.5%         | 1.5%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                               | 1,047     | 349        | 1.4%         | 1.3%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                                | 798       | 249        | 1.0%         | 1.0%        |
+| Crypto       | KECCAK256                                                                                                                                             | 738       | 18         | 1.0%         | 0.9%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                              | 57        | 13         | 0.1%         | 0.1%        |
+| Context      | CALLER                                                                                                                                                | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                  | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - renew
+
+- **Total Gas Used:** 45,725
+
+| Category     | Opcodes Used                                                                                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                         | 7,200     | 4          | 30.2%        | 15.7%       |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 5,818     | 1,955      | 24.4%        | 12.7%       |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                 | 4,738     | 862        | 19.9%        | 10.4%       |
+| Events       | LOG2                                                                                                                                                  | 2,149     | 1          | 9.0%         | 4.7%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                          | 1,086     | 362        | 4.6%         | 2.4%        |
+| Arithmetic   | ADD, SUB                                                                                                                                              | 1,038     | 346        | 4.4%         | 2.3%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                               | 903       | 301        | 3.8%         | 2.0%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                                | 669       | 205        | 2.8%         | 1.5%        |
+| Crypto       | KECCAK256                                                                                                                                             | 198       | 5          | 0.8%         | 0.4%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                              | 58        | 13         | 0.2%         | 0.1%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Context      | TIMESTAMP                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                  | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - setAddress
+
+- **Total Gas Used:** 49,710
+
+| Category     | Opcodes Used                                                                                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                         | 11,300    | 5          | 40.8%        | 22.7%       |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 5,616     | 1,887      | 20.3%        | 11.3%       |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                 | 4,550     | 822        | 16.4%        | 9.2%        |
+| Events       | LOG2                                                                                                                                                  | 2,405     | 1          | 8.7%         | 4.8%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                          | 1,029     | 343        | 3.7%         | 2.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                              | 996       | 332        | 3.6%         | 2.0%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                               | 864       | 288        | 3.1%         | 1.7%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                                | 646       | 196        | 2.3%         | 1.3%        |
+| Crypto       | KECCAK256                                                                                                                                             | 198       | 5          | 0.7%         | 0.4%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                              | 58        | 13         | 0.2%         | 0.1%        |
+| Context      | CALLER                                                                                                                                                | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                  | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - setMetadata
+
+- **Total Gas Used:** 66,607
+
+| Category     | Opcodes Used                                                                                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                         | 28,400    | 4          | 63.9%        | 42.6%       |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 5,544     | 1,863      | 12.5%        | 8.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                 | 4,572     | 822        | 10.3%        | 6.9%        |
+| Events       | LOG2                                                                                                                                                  | 2,149     | 1          | 4.8%         | 3.2%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                          | 996       | 332        | 2.2%         | 1.5%        |
+| Arithmetic   | ADD, SUB                                                                                                                                              | 978       | 326        | 2.2%         | 1.5%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                               | 879       | 293        | 2.0%         | 1.3%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                                | 639       | 195        | 1.4%         | 1.0%        |
+| Crypto       | KECCAK256                                                                                                                                             | 198       | 5          | 0.4%         | 0.3%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                              | 60        | 14         | 0.1%         | 0.1%        |
+| Context      | CALLER                                                                                                                                                | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                  | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - setSubdomainOwner
+
+- **Total Gas Used:** 153,052
+
+| Category     | Opcodes Used                                                                                                                                                               | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                              | 105,300   | 27         | 72.6%        | 68.8%       |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 14,720    | 4,963      | 10.2%        | 9.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                      | 11,772    | 2,153      | 8.1%         | 7.7%        |
+| Events       | LOG4                                                                                                                                                                       | 2,643     | 1          | 1.8%         | 1.7%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                               | 2,595     | 865        | 1.8%         | 1.7%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                   | 2,571     | 857        | 1.8%         | 1.7%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                    | 2,193     | 731        | 1.5%         | 1.4%        |
+| Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                              | 1,742     | 547        | 1.2%         | 1.1%        |
+| Crypto       | KECCAK256                                                                                                                                                                  | 1,302     | 32         | 0.9%         | 0.9%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                   | 122       | 26         | 0.1%         | 0.1%        |
+| Context      | CALLER                                                                                                                                                                     | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                  | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### DotNS_evm - transfer
+
+- **Total Gas Used:** 124,441
+
+| Category     | Opcodes Used                                                                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                | 98,400    | 26         | 84.2%        | 79.1%       |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 6,144     | 2,079      | 5.3%         | 4.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                        | 4,754     | 855        | 4.1%         | 3.8%        |
+| Events       | LOG4                                                                                                                                                         | 2,643     | 1          | 2.3%         | 2.1%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                 | 1,104     | 368        | 0.9%         | 0.9%        |
+| Crypto       | KECCAK256                                                                                                                                                    | 1,026     | 25         | 0.9%         | 0.8%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                     | 1,014     | 338        | 0.9%         | 0.8%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                      | 903       | 301        | 0.8%         | 0.7%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                                       | 747       | 232        | 0.6%         | 0.6%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                     | 58        | 13         | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Escrow_evm - create_simple
+
+- **Total Gas Used:** 213,536
+
+| Category     | Opcodes Used                                                                                                                                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                        | 187,000   | 29         | 97.5%        | 87.6%       |
+| Events       | LOG4                                                                                                                                                                                                 | 2,387     | 1          | 1.2%         | 1.1%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, PUSH0, PUSH1, PUSH12, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 1,131     | 381        | 0.6%         | 0.5%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                               | 330       | 110        | 0.2%         | 0.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                | 278       | 45         | 0.1%         | 0.1%        |
+| Crypto       | KECCAK256                                                                                                                                                                                            | 198       | 5          | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                             | 156       | 52         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                        | 153       | 35         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                              | 54        | 18         | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                           | 19        | 7          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                    | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                            | 6         | 3          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Escrow_evm - create_with_arbiter
+
+- **Total Gas Used:** 165,048
+
+| Category     | Opcodes Used                                                                                                                                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                        | 138,500   | 29         | 96.7%        | 83.9%       |
+| Events       | LOG4                                                                                                                                                                                                 | 2,387     | 1          | 1.7%         | 1.4%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, PUSH0, PUSH1, PUSH12, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 1,131     | 381        | 0.8%         | 0.7%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                               | 330       | 110        | 0.2%         | 0.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                | 278       | 45         | 0.2%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                                                                                                                            | 198       | 5          | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                             | 156       | 52         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                        | 153       | 35         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                              | 54        | 18         | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                           | 19        | 7          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                    | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                            | 6         | 3          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Escrow_evm - create_with_expiry
+
+- **Total Gas Used:** 145,184
+
+| Category     | Opcodes Used                                                                                                                                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                        | 118,600   | 29         | 96.2%        | 81.7%       |
+| Events       | LOG4                                                                                                                                                                                                 | 2,387     | 1          | 1.9%         | 1.6%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, PUSH0, PUSH1, PUSH12, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 1,131     | 381        | 0.9%         | 0.8%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                               | 330       | 110        | 0.3%         | 0.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                | 278       | 45         | 0.2%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                                                                                                                            | 198       | 5          | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                             | 156       | 52         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                        | 153       | 35         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                              | 54        | 18         | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                           | 19        | 7          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                    | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                            | 6         | 3          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Escrow_evm - create_with_releaseTime
+
+- **Total Gas Used:** 145,184
+
+| Category     | Opcodes Used                                                                                                                                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                        | 118,600   | 29         | 96.2%        | 81.7%       |
+| Events       | LOG4                                                                                                                                                                                                 | 2,387     | 1          | 1.9%         | 1.6%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, PUSH0, PUSH1, PUSH12, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 1,131     | 381        | 0.9%         | 0.8%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                               | 330       | 110        | 0.3%         | 0.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                | 278       | 45         | 0.2%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                                                                                                                            | 198       | 5          | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                             | 156       | 52         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                        | 153       | 35         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                              | 54        | 18         | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                           | 19        | 7          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                    | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                            | 6         | 3          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Escrow_evm - deploy
+
+- **Total Gas Used:** 1,001,052
+
+| Category     | Opcodes Used                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                | 44,200    | 3          | 98.0%        | 4.4%        |
+| Code         | CODECOPY                                     | 827       | 1          | 1.8%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, SWAP1 | 56        | 19         | 0.1%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                            | 12        | 4          | 0.0%         | 0.0%        |
+| Memory       | MSTORE                                       | 12        | 1          | 0.0%         | 0.0%        |
+| Control Flow | JUMPI                                        | 10        | 1          | 0.0%         | 0.0%        |
+| Arithmetic   | SUB                                          | 3         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Escrow_evm - refund
+
+- **Total Gas Used:** 66,729
+
+| Category     | Opcodes Used                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                         | 38,900    | 14         | 73.9%        | 58.3%       |
+| Calls        | CALL                                                                                  | 11,113    | 1          | 21.1%        | 16.7%       |
+| Events       | LOG3                                                                                  | 1,500     | 1          | 2.8%         | 2.2%        |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP4 | 496       | 171        | 0.9%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                 | 337       | 51         | 0.6%         | 0.5%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                | 93        | 31         | 0.2%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                   | 72        | 24         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                              | 45        | 15         | 0.1%         | 0.1%        |
+| Crypto       | KECCAK256                                                                             | 42        | 1          | 0.1%         | 0.1%        |
+| Memory       | MSTORE                                                                                | 18        | 3          | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                            | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                     | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                        | 4         | 2          | 0.0%         | 0.0%        |
+| Return Data  | RETURNDATASIZE                                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                  | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Escrow_evm - release
+
+- **Total Gas Used:** 70,987
+
+| Category     | Opcodes Used                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                         | 40,900    | 14         | 71.8%        | 57.6%       |
+| Calls        | CALL                                                                                  | 13,671    | 1          | 24.0%        | 19.3%       |
+| Events       | LOG3                                                                                  | 1,500     | 1          | 2.6%         | 2.1%        |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP4 | 375       | 129        | 0.7%         | 0.5%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                 | 246       | 39         | 0.4%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                | 87        | 29         | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                              | 51        | 17         | 0.1%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                   | 42        | 14         | 0.1%         | 0.1%        |
+| Crypto       | KECCAK256                                                                             | 42        | 1          | 0.1%         | 0.1%        |
+| Memory       | MSTORE                                                                                | 18        | 3          | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                            | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                     | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                        | 4         | 2          | 0.0%         | 0.0%        |
+| Return Data  | RETURNDATASIZE                                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                  | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - approve
+
+- **Total Gas Used:** 55,331
+
+| Category     | Opcodes Used                                                                                  | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                 | 28,400    | 4          | 84.1%        | 51.3%       |
+| Calls        | DELEGATECALL                                                                                  | 2,600     | 1          | 7.7%         | 4.7%        |
+| Events       | LOG3                                                                                          | 1,756     | 1          | 5.2%         | 3.2%        |
+| Stack        | DUP1, DUP2, DUP3, DUP5, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4, SWAP5, SWAP6 | 386       | 133        | 1.1%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                         | 275       | 43         | 0.8%         | 0.5%        |
+| Crypto       | KECCAK256                                                                                     | 84        | 2          | 0.2%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                 | 63        | 13         | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                            | 51        | 17         | 0.2%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                           | 51        | 17         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                      | 36        | 11         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                      | 33        | 11         | 0.1%         | 0.1%        |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                | 10        | 3          | 0.0%         | 0.0%        |
+| Code         | CODECOPY                                                                                      | 6         | 1          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                        | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                | 4         | 2          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                        | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - changeAdmin
+
+- **Total Gas Used:** 28,326
+
+| Category     | Opcodes Used                                                              | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                             | 5,100     | 3          | 74.0%        | 18.0%       |
+| Events       | LOG1                                                                      | 1,262     | 1          | 18.3%        | 4.5%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4 | 227       | 80         | 3.3%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                     | 138       | 20         | 2.0%         | 0.5%        |
+| Memory       | MLOAD, MSTORE                                                             | 57        | 13         | 0.8%         | 0.2%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                        | 30        | 10         | 0.4%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                  | 24        | 8          | 0.3%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                       | 24        | 8          | 0.3%         | 0.1%        |
+| Code         | CODECOPY                                                                  | 18        | 3          | 0.3%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                | 10        | 4          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                 | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                      | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - configureMinter
+
+- **Total Gas Used:** 79,482
+
+| Category     | Opcodes Used                                                                                       | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                      | 52,600    | 7          | 90.9%        | 66.2%       |
+| Calls        | DELEGATECALL                                                                                       | 2,600     | 1          | 4.5%         | 3.3%        |
+| Events       | LOG2                                                                                               | 1,381     | 1          | 2.4%         | 1.7%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 506       | 172        | 0.9%         | 0.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                              | 418       | 54         | 0.7%         | 0.5%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                                | 105       | 35         | 0.2%         | 0.1%        |
+| Crypto       | KECCAK256                                                                                          | 84        | 2          | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                      | 63        | 13         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                             | 48        | 16         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                           | 36        | 11         | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                           | 21        | 7          | 0.0%         | 0.0%        |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                     | 10        | 3          | 0.0%         | 0.0%        |
+| Code         | CODECOPY                                                                                           | 6         | 1          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                             | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                     | 4         | 2          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                             | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - deploy
+
+- **Total Gas Used:** 394,702
+
+| Category     | Opcodes Used                                                                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SSTORE                                                                         | 44,200    | 2          | 93.4%        | 11.2%       |
+| Code         | CODECOPY, CODESIZE, EXTCODESIZE                                                | 2,873     | 4          | 6.1%         | 0.7%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, PUSH1, PUSH2, PUSH32, SWAP1, SWAP2, SWAP3, SWAP5 | 129       | 43         | 0.3%         | 0.0%        |
+| Control Flow | JUMPI                                                                          | 50        | 5          | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                       | 24        | 8          | 0.1%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                                                              | 18        | 6          | 0.0%         | 0.0%        |
+| Memory       | MLOAD, MSTORE                                                                  | 18        | 3          | 0.0%         | 0.0%        |
+| Comparison   | GT, ISZERO, LT, SLT                                                            | 12        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                         | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                      | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - initialize
+
+- **Total Gas Used:** 212,439
+
+| Category     | Opcodes Used                                                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                | 181,300   | 21         | 96.3%        | 85.3%       |
+| Calls        | DELEGATECALL                                                                                                                                 | 2,600     | 1          | 1.4%         | 1.2%        |
+| Stack        | DUP1, DUP16, DUP2, DUP3, DUP4, DUP5, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP15, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP9 | 1,924     | 655        | 1.0%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                        | 1,436     | 247        | 0.8%         | 0.7%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                       | 342       | 114        | 0.2%         | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                      | 228       | 76         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                     | 216       | 72         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                     | 168       | 26         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                | 102       | 23         | 0.1%         | 0.0%        |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                                                               | 7         | 3          | 0.0%         | 0.0%        |
+| Code         | CODECOPY                                                                                                                                     | 6         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                                                               | 4         | 2          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN, STOP                                                                                                                                 | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - mint
+
+- **Total Gas Used:** 83,152
+
+| Category     | Opcodes Used                                                                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                    | 57,900    | 13         | 87.3%        | 69.6%       |
+| Events       | LOG3                                                                                                             | 3,512     | 2          | 5.3%         | 4.2%        |
+| Calls        | DELEGATECALL                                                                                                     | 2,600     | 1          | 3.9%         | 3.1%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP6, DUP8, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP6, SWAP7 | 893       | 304        | 1.3%         | 1.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                            | 668       | 101        | 1.0%         | 0.8%        |
+| Crypto       | KECCAK256                                                                                                        | 336       | 8          | 0.5%         | 0.4%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                          | 147       | 49         | 0.2%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                    | 105       | 27         | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                               | 78        | 26         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                         | 51        | 17         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                         | 36        | 11         | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                                           | 10        | 5          | 0.0%         | 0.0%        |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                                   | 10        | 3          | 0.0%         | 0.0%        |
+| Code         | CODECOPY                                                                                                         | 6         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                                   | 4         | 2          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                           | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - transfer
+
+- **Total Gas Used:** 62,765
+
+| Category     | Opcodes Used                                                                                              | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                             | 33,900    | 12         | 82.3%        | 54.0%       |
+| Calls        | DELEGATECALL                                                                                              | 2,600     | 1          | 6.3%         | 4.1%        |
+| Events       | LOG3                                                                                                      | 1,756     | 1          | 4.3%         | 2.8%        |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP7, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP8 | 1,131     | 383        | 2.7%         | 1.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                     | 859       | 119        | 2.1%         | 1.4%        |
+| Crypto       | KECCAK256                                                                                                 | 378       | 9          | 0.9%         | 0.6%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                   | 207       | 69         | 0.5%         | 0.3%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                        | 123       | 41         | 0.3%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                             | 105       | 27         | 0.3%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                  | 72        | 24         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                  | 36        | 11         | 0.1%         | 0.1%        |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                            | 10        | 3          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                    | 6         | 3          | 0.0%         | 0.0%        |
+| Code         | CODECOPY                                                                                                  | 6         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                            | 4         | 2          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                    | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### FiatTokenProxy_evm - transferFrom
+
+- **Total Gas Used:** 51,389
+
+| Category     | Opcodes Used                                                                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                    | 22,000    | 16         | 74.7%        | 42.8%       |
+| Calls        | DELEGATECALL                                                                                                     | 2,600     | 1          | 8.8%         | 5.1%        |
+| Events       | LOG3                                                                                                             | 1,756     | 1          | 6.0%         | 3.4%        |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP7, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP8 | 1,144     | 390        | 3.9%         | 2.2%        |
+| Crypto       | KECCAK256                                                                                                        | 672       | 16         | 2.3%         | 1.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                            | 662       | 111        | 2.2%         | 1.3%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                               | 168       | 56         | 0.6%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                                                                    | 147       | 41         | 0.5%         | 0.3%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                          | 126       | 42         | 0.4%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                         | 99        | 33         | 0.3%         | 0.2%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                         | 45        | 12         | 0.2%         | 0.1%        |
+| Context      | CALLER                                                                                                           | 10        | 5          | 0.0%         | 0.0%        |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                                   | 10        | 3          | 0.0%         | 0.0%        |
+| Code         | CODECOPY                                                                                                         | 6         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                                   | 4         | 2          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                           | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### FiatTokenV2_2_evm - deploy
+
+- **Total Gas Used:** 3,412,399
+
+| Category     | Opcodes Used                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                | 26,500    | 5          | 88.4%        | 0.8%        |
+| Code         | CODECOPY                                     | 3,359     | 1          | 11.2%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, SWAP1 | 62        | 21         | 0.2%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                            | 21        | 7          | 0.1%         | 0.0%        |
+| Memory       | MSTORE                                       | 12        | 1          | 0.0%         | 0.0%        |
+| Control Flow | JUMPI                                        | 10        | 1          | 0.0%         | 0.0%        |
+| Arithmetic   | SUB                                          | 3         | 1          | 0.0%         | 0.0%        |
+| Context      | CALLER                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_evm - deploy
+
+- **Total Gas Used:** 97,731
+
+| Category     | Opcodes Used                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                       | 48        | 1          | 48.5%        | 0.0%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, SWAP1 | 27        | 9          | 27.3%        | 0.0%        |
+| Memory       | MSTORE                         | 12        | 1          | 12.1%        | 0.0%        |
+| Control Flow | JUMPI                          | 10        | 1          | 10.1%        | 0.0%        |
+| Ether/Gas    | CALLVALUE                      | 2         | 1          | 2.0%         | 0.0%        |
+| Return       | RETURN                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_evm - fib_10
+
+- **Total Gas Used:** 38,116
+
+| Category     | Opcodes Used                                             | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 7,128     | 2,458      | 42.1%        | 18.7%       |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                    | 6,669     | 1,266      | 39.4%        | 17.5%       |
+| Bitwise      | AND, NOT, SHR                                            | 1,863     | 621        | 11.0%        | 4.9%        |
+| Arithmetic   | ADD, SUB                                                 | 1,227     | 409        | 7.3%         | 3.2%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                      | 15        | 5          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                               | 10        | 4          | 0.1%         | 0.0%        |
+| Return       | STOP                                                     | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_evm - deploy
+
+- **Total Gas Used:** 88,229
+
+| Category     | Opcodes Used                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                       | 42        | 1          | 45.2%        | 0.0%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, SWAP1 | 27        | 9          | 29.0%        | 0.0%        |
+| Memory       | MSTORE                         | 12        | 1          | 12.9%        | 0.0%        |
+| Control Flow | JUMPI                          | 10        | 1          | 10.8%        | 0.0%        |
+| Ether/Gas    | CALLVALUE                      | 2         | 1          | 2.2%         | 0.0%        |
+| Return       | RETURN                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_iter_evm - deploy
+
+- **Total Gas Used:** 87,359
+
+| Category     | Opcodes Used                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                       | 36        | 1          | 41.4%        | 0.0%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, SWAP1 | 27        | 9          | 31.0%        | 0.0%        |
+| Memory       | MSTORE                         | 12        | 1          | 13.8%        | 0.0%        |
+| Control Flow | JUMPI                          | 10        | 1          | 11.5%        | 0.0%        |
+| Ether/Gas    | CALLVALUE                      | 2         | 1          | 2.3%         | 0.0%        |
+| Return       | RETURN                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_evm - fib_10
+
+- **Total Gas Used:** 35,263
+
+| Category     | Opcodes Used                                      | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Control Flow | JUMP, JUMPDEST, JUMPI                             | 6,659     | 1,265      | 47.4%        | 18.9%       |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 5,617     | 1,943      | 40.0%        | 15.9%       |
+| Arithmetic   | ADD, SUB                                          | 1,224     | 408        | 8.7%         | 3.5%        |
+| Bitwise      | NOT, SHR                                          | 534       | 178        | 3.8%         | 1.5%        |
+| Comparison   | EQ, ISZERO, LT, SLT                               | 15        | 5          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 10        | 4          | 0.1%         | 0.0%        |
+| Return       | STOP                                              | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_iter_evm - fib_10
+
+- **Total Gas Used:** 21,959
+
+| Category     | Opcodes Used                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 373       | 126        | 49.4%        | 1.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 261       | 49         | 34.6%        | 1.2%        |
+| Arithmetic   | ADD                                                             | 57        | 19         | 7.5%         | 0.3%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                             | 48        | 16         | 6.4%         | 0.2%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 10        | 4          | 1.3%         | 0.0%        |
+| Bitwise      | NOT, SHR                                                        | 6         | 2          | 0.8%         | 0.0%        |
+| Return       | STOP                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_evm - fib_15
+
+- **Total Gas Used:** 176,997
+
+| Category     | Opcodes Used                                      | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Control Flow | JUMP, JUMPDEST, JUMPI                             | 73,828    | 14,049     | 47.4%        | 41.7%       |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 62,353    | 21,568     | 40.0%        | 35.2%       |
+| Arithmetic   | ADD, SUB                                          | 13,665    | 4,555      | 8.8%         | 7.7%        |
+| Bitwise      | NOT, SHR                                          | 5,922     | 1,974      | 3.8%         | 3.3%        |
+| Comparison   | EQ, ISZERO, LT, SLT                               | 15        | 5          | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 10        | 4          | 0.0%         | 0.0%        |
+| Return       | STOP                                              | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_iter_evm - fib_15
+
+- **Total Gas Used:** 22,269
+
+| Category     | Opcodes Used                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 538       | 181        | 50.5%        | 2.4%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 361       | 69         | 33.9%        | 1.6%        |
+| Arithmetic   | ADD                                                             | 87        | 29         | 8.2%         | 0.4%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                             | 63        | 21         | 5.9%         | 0.3%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 10        | 4          | 0.9%         | 0.0%        |
+| Bitwise      | NOT, SHR                                                        | 6         | 2          | 0.6%         | 0.0%        |
+| Return       | STOP                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_evm - fib_5
+
+- **Total Gas Used:** 22,480
+
+| Category     | Opcodes Used                                      | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Control Flow | JUMP, JUMPDEST, JUMPI                             | 601       | 112        | 47.1%        | 2.7%        |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 500       | 173        | 39.2%        | 2.2%        |
+| Arithmetic   | ADD, SUB                                          | 102       | 34         | 8.0%         | 0.5%        |
+| Bitwise      | NOT, SHR                                          | 48        | 16         | 3.8%         | 0.2%        |
+| Comparison   | EQ, ISZERO, LT, SLT                               | 15        | 5          | 1.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 10        | 4          | 0.8%         | 0.0%        |
+| Return       | STOP                                              | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Fibonacci_u256_iter_evm - fib_5
+
+- **Total Gas Used:** 21,649
+
+| Category     | Opcodes Used                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 208       | 71         | 46.7%        | 1.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 161       | 29         | 36.2%        | 0.7%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                             | 33        | 11         | 7.4%         | 0.2%        |
+| Arithmetic   | ADD                                                             | 27        | 9          | 6.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 10        | 4          | 2.2%         | 0.0%        |
+| Bitwise      | NOT, SHR                                                        | 6         | 2          | 1.3%         | 0.0%        |
+| Return       | STOP                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### flipper_evm - deploy
+
+- **Total Gas Used:** 92,953
+
+| Category     | Opcodes Used                                                                  | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                 | 2,200     | 2          | 88.1%        | 2.4%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, PUSH0, PUSH1, PUSH2, SWAP1, SWAP2, SWAP3, SWAP5 | 124       | 42         | 5.0%         | 0.1%        |
+| Code         | CODECOPY, CODESIZE                                                            | 53        | 3          | 2.1%         | 0.1%        |
+| Control Flow | JUMPI                                                                         | 40        | 4          | 1.6%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                                                             | 24        | 8          | 1.0%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                      | 21        | 7          | 0.8%         | 0.0%        |
+| Memory       | MLOAD, MSTORE                                                                 | 18        | 3          | 0.7%         | 0.0%        |
+| Comparison   | GT, ISZERO, LT, SLT                                                           | 15        | 5          | 0.6%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                     | 2         | 1          | 0.1%         | 0.0%        |
+| Return       | RETURN                                                                        | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### flipper_evm - flip
+
+- **Total Gas Used:** 43,339
+
+| Category     | Opcodes Used                                      | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                     | 22,100    | 2          | 99.2%        | 51.0%       |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 72        | 26         | 0.3%         | 0.2%        |
+| Control Flow | JUMPDEST, JUMPI                                   | 42        | 6          | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHR                                 | 21        | 7          | 0.1%         | 0.0%        |
+| Comparison   | EQ, ISZERO, LT, SLT                               | 18        | 6          | 0.1%         | 0.0%        |
+| Memory       | MSTORE                                            | 12        | 1          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 7         | 3          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD                                               | 3         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - burn
+
+- **Total Gas Used:** 36,706
+
+| Category     | Opcodes Used                                                                                                  | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                 | 12,400    | 8          | 80.7%        | 33.8%       |
+| Events       | LOG3                                                                                                          | 1,756     | 1          | 11.4%        | 4.8%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP8, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 461       | 157        | 3.0%         | 1.3%        |
+| Crypto       | KECCAK256                                                                                                     | 294       | 7          | 1.9%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                         | 176       | 26         | 1.1%         | 0.5%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                        | 102       | 34         | 0.7%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                                                                 | 66        | 17         | 0.4%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                      | 54        | 18         | 0.4%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                       | 30        | 10         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                    | 13        | 5          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                                        | 8         | 4          | 0.1%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                     | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                          | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - createClass_nontransferable
+
+- **Total Gas Used:** 142,667
+
+| Category     | Opcodes Used                                                                                                                                                                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                   | 115,700   | 12         | 96.2%        | 81.1%       |
+| Events       | LOG3                                                                                                                                                                                                            | 2,268     | 1          | 1.9%         | 1.6%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP10, SWAP11, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 1,087     | 367        | 0.9%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                           | 396       | 56         | 0.3%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                          | 225       | 75         | 0.2%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                        | 201       | 67         | 0.2%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                   | 147       | 33         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                         | 108       | 36         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                        | 65        | 19         | 0.1%         | 0.0%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                       | 42        | 1          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                               | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                                          | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - createClass_transferable
+
+- **Total Gas Used:** 122,767
+
+| Category     | Opcodes Used                                                                                                                                                                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                   | 95,800    | 12         | 95.5%        | 78.0%       |
+| Events       | LOG3                                                                                                                                                                                                            | 2,268     | 1          | 2.3%         | 1.8%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, PUSH9, SWAP1, SWAP10, SWAP11, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 1,087     | 367        | 1.1%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                           | 396       | 56         | 0.4%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                          | 225       | 75         | 0.2%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                        | 201       | 67         | 0.2%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                   | 147       | 33         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                         | 108       | 36         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                        | 65        | 19         | 0.1%         | 0.1%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                       | 42        | 1          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                               | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                                          | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - deploy
+
+- **Total Gas Used:** 1,630,242
+
+| Category     | Opcodes Used                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                | 22,100    | 2          | 93.5%        | 1.4%        |
+| Code         | CODECOPY                                     | 1,458     | 1          | 6.2%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, SWAP1 | 47        | 16         | 0.2%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                            | 12        | 4          | 0.1%         | 0.0%        |
+| Memory       | MSTORE                                       | 12        | 1          | 0.1%         | 0.0%        |
+| Control Flow | JUMPI                                        | 10        | 1          | 0.0%         | 0.0%        |
+| Arithmetic   | SUB                                          | 3         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - issue
+
+- **Total Gas Used:** 205,604
+
+| Category     | Opcodes Used                                                                                                                               | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                              | 179,500   | 23         | 97.6%        | 87.3%       |
+| Events       | LOG3                                                                                                                                       | 1,756     | 1          | 1.0%         | 0.9%        |
+| Stack        | DUP1, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP11, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 1,027     | 352        | 0.6%         | 0.5%        |
+| Crypto       | KECCAK256                                                                                                                                  | 618       | 15         | 0.3%         | 0.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                      | 428       | 66         | 0.2%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                     | 246       | 82         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                   | 108       | 36         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                              | 108       | 31         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                    | 81        | 27         | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                 | 16        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                                     | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                  | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - issue_more
+
+- **Total Gas Used:** 41,644
+
+| Category     | Opcodes Used                                                                                                                        | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                       | 16,500    | 9          | 82.8%        | 39.6%       |
+| Events       | LOG3                                                                                                                                | 1,756     | 1          | 8.8%         | 4.2%        |
+| Stack        | DUP1, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP11, SWAP2, SWAP3, SWAP4, SWAP6 | 657       | 225        | 3.3%         | 1.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                               | 342       | 51         | 1.7%         | 0.8%        |
+| Crypto       | KECCAK256                                                                                                                           | 294       | 7          | 1.5%         | 0.7%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                              | 156       | 52         | 0.8%         | 0.4%        |
+| Arithmetic   | ADD, SUB                                                                                                                            | 84        | 28         | 0.4%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                                       | 66        | 17         | 0.3%         | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                             | 57        | 19         | 0.3%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                          | 16        | 6          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                                                              | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                           | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - revoke
+
+- **Total Gas Used:** 37,346
+
+| Category     | Opcodes Used                                                                                                                      | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                     | 12,400    | 8          | 79.3%        | 33.2%       |
+| Events       | LOG3                                                                                                                              | 1,756     | 1          | 11.2%        | 4.7%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 578       | 197        | 3.7%         | 1.5%        |
+| Crypto       | KECCAK256                                                                                                                         | 294       | 7          | 1.9%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                             | 262       | 39         | 1.7%         | 0.7%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                            | 141       | 47         | 0.9%         | 0.4%        |
+| Arithmetic   | ADD, SUB                                                                                                                          | 78        | 26         | 0.5%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                                     | 66        | 17         | 0.4%         | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                           | 39        | 13         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                        | 16        | 6          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                                                            | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                         | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                              | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### FungibleCredential_evm - transfer
+
+- **Total Gas Used:** 174,324
+
+| Category     | Opcodes Used                                                                                                           | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                          | 147,500   | 25         | 96.7%        | 84.6%       |
+| Events       | LOG4                                                                                                                   | 2,131     | 1          | 1.4%         | 1.2%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 1,121     | 385        | 0.7%         | 0.6%        |
+| Crypto       | KECCAK256                                                                                                              | 828       | 20         | 0.5%         | 0.5%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                  | 427       | 65         | 0.3%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                 | 246       | 82         | 0.2%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                          | 144       | 43         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                               | 105       | 35         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                | 84        | 28         | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                             | 16        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                 | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                              | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                   | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### incrementer_evm - deploy
+
+- **Total Gas Used:** 105,806
+
+| Category     | Opcodes Used                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                        | 2,200     | 2          | 87.9%        | 2.1%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, PUSH0, PUSH1, PUSH2, PUSH4, SWAP1, SWAP2, SWAP3, SWAP5 | 124       | 42         | 5.0%         | 0.1%        |
+| Code         | CODECOPY, CODESIZE                                                                   | 59        | 3          | 2.4%         | 0.1%        |
+| Control Flow | JUMPI                                                                                | 40        | 4          | 1.6%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                                                                    | 24        | 8          | 1.0%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                             | 21        | 7          | 0.8%         | 0.0%        |
+| Memory       | MLOAD, MSTORE                                                                        | 18        | 3          | 0.7%         | 0.0%        |
+| Comparison   | GT, LT, SLT                                                                          | 9         | 3          | 0.4%         | 0.0%        |
+| Math         | SIGNEXTEND                                                                           | 5         | 1          | 0.2%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                            | 2         | 1          | 0.1%         | 0.0%        |
+| Return       | RETURN                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### incrementer_evm - inc
+
+- **Total Gas Used:** 43,561
+
+| Category     | Opcodes Used                                             | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                            | 22,100    | 2          | 98.9%        | 50.7%       |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 109       | 38         | 0.5%         | 0.3%        |
+| Control Flow | JUMPDEST, JUMPI                                          | 62        | 8          | 0.3%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHR                                        | 24        | 8          | 0.1%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SGT, SLT                                 | 21        | 7          | 0.1%         | 0.0%        |
+| Memory       | MSTORE                                                   | 12        | 1          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                               | 10        | 4          | 0.0%         | 0.0%        |
+| Math         | SIGNEXTEND                                               | 10        | 2          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                 | 9         | 3          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                   | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### KeyRegistry_evm - deploy
+
+- **Total Gas Used:** 976,448
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 847       | 1          | 94.3%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 3.0%         | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 1.3%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 1.1%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 0.2%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### KeyRegistry_evm - fetchPrekeyBundle
+
+- **Total Gas Used:** 70,228
+
+| Category     | Opcodes Used                                                                                                                                                                       | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                      | 61,500    | 17         | 92.7%        | 87.6%       |
+| Events       | LOG3                                                                                                                                                                               | 1,500     | 1          | 2.3%         | 2.1%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP13, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP11, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 1,488     | 514        | 2.2%         | 2.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                              | 593       | 102        | 0.9%         | 0.8%        |
+| Crypto       | KECCAK256                                                                                                                                                                          | 408       | 10         | 0.6%         | 0.6%        |
+| Memory       | MCOPY, MLOAD, MSTORE                                                                                                                                                               | 369       | 76         | 0.6%         | 0.5%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                           | 240       | 80         | 0.4%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                             | 132       | 44         | 0.2%         | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                            | 108       | 36         | 0.2%         | 0.2%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                         | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                          | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                             | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### KeyRegistry_evm - registerIdentity
+
+- **Total Gas Used:** 226,938
+
+| Category     | Opcodes Used                                                                                                                                                                                              | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                             | 199,200   | 17         | 98.1%        | 87.8%       |
+| Events       | LOG2                                                                                                                                                                                                      | 1,381     | 1          | 0.7%         | 0.6%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP10, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP8, SWAP9 | 1,082     | 369        | 0.5%         | 0.5%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                     | 515       | 73         | 0.3%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                 | 246       | 6          | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                             | 156       | 39         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                    | 147       | 49         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                  | 138       | 46         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                   | 126       | 42         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                  | 41        | 11         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                         | 12        | 6          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                 | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                                                      | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### KeyRegistry_evm - updateSignedPrekey
+
+- **Total Gas Used:** 50,528
+
+| Category     | Opcodes Used                                                                                                                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                   | 24,400    | 9          | 88.2%        | 48.3%       |
+| Events       | LOG2                                                                                                                                                            | 1,637     | 1          | 5.9%         | 3.2%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP10, SWAP2, SWAP3, SWAP4, SWAP6, SWAP7, SWAP9 | 701       | 240        | 2.5%         | 1.4%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                           | 411       | 62         | 1.5%         | 0.8%        |
+| Crypto       | KECCAK256                                                                                                                                                       | 156       | 4          | 0.6%         | 0.3%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                         | 99        | 33         | 0.4%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                        | 90        | 30         | 0.3%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                          | 84        | 28         | 0.3%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                   | 48        | 10         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                      | 24        | 9          | 0.1%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                               | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### KeyRegistry_evm - uploadOneTimePrekeys
+
+- **Total Gas Used:** 119,885
+
+| Category     | Opcodes Used                                                                                                                | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                               | 93,400    | 18         | 96.3%        | 77.9%       |
+| Events       | LOG2                                                                                                                        | 1,381     | 1          | 1.4%         | 1.2%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 905       | 312        | 0.9%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                       | 655       | 106        | 0.7%         | 0.5%        |
+| Crypto       | KECCAK256                                                                                                                   | 234       | 6          | 0.2%         | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                     | 153       | 51         | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                      | 111       | 37         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                    | 84        | 28         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                               | 51        | 12         | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                  | 33        | 12         | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                      | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                   | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                        | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - addWriter
+
+- **Total Gas Used:** 93,068
+
+| Category     | Opcodes Used                                                                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                   | 68,600    | 9          | 95.9%        | 73.7%       |
+| Events       | LOG3                                                                                                            | 1,500     | 1          | 2.1%         | 1.6%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 537       | 183        | 0.8%         | 0.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                           | 296       | 40         | 0.4%         | 0.3%        |
+| Crypto       | KECCAK256                                                                                                       | 288       | 7          | 0.4%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                          | 96        | 32         | 0.1%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                                             | 66        | 22         | 0.1%         | 0.1%        |
+| Memory       | MSTORE                                                                                                          | 51        | 14         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                        | 45        | 15         | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                      | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                          | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - append
+
+- **Total Gas Used:** 121,167
+
+| Category     | Opcodes Used                                                                                                                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                         | 95,800    | 13         | 96.3%        | 79.1%       |
+| Events       | LOG4                                                                                                                                                                                  | 2,131     | 1          | 2.1%         | 1.8%        |
+| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, PUSH0, PUSH1, PUSH12, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP10, SWAP2, SWAP3, SWAP5, SWAP6, SWAP7, SWAP8 | 668       | 225        | 0.7%         | 0.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                 | 327       | 42         | 0.3%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                | 138       | 46         | 0.1%         | 0.1%        |
+| Crypto       | KECCAK256                                                                                                                                                                             | 126       | 3          | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                         | 99        | 23         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                               | 78        | 26         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                              | 63        | 21         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                            | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                     | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - append_2
+
+- **Total Gas Used:** 121,167
+
+| Category     | Opcodes Used                                                                                                                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                         | 95,800    | 13         | 96.3%        | 79.1%       |
+| Events       | LOG4                                                                                                                                                                                  | 2,131     | 1          | 2.1%         | 1.8%        |
+| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, PUSH0, PUSH1, PUSH12, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP10, SWAP2, SWAP3, SWAP5, SWAP6, SWAP7, SWAP8 | 668       | 225        | 0.7%         | 0.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                 | 327       | 42         | 0.3%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                | 138       | 46         | 0.1%         | 0.1%        |
+| Crypto       | KECCAK256                                                                                                                                                                             | 126       | 3          | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                         | 99        | 23         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                               | 78        | 26         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                              | 63        | 21         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                            | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                     | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - create_nonpermissioned
+
+- **Total Gas Used:** 118,096
+
+| Category     | Opcodes Used                                                                                                                                                                                  | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                 | 93,500    | 11         | 96.5%        | 79.2%       |
+| Events       | LOG3                                                                                                                                                                                          | 1,756     | 1          | 1.8%         | 1.5%        |
+| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, PUSH0, PUSH1, PUSH17, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP10, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 765       | 257        | 0.8%         | 0.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                         | 343       | 46         | 0.4%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                        | 147       | 49         | 0.2%         | 0.1%        |
+| Crypto       | KECCAK256                                                                                                                                                                                     | 120       | 3          | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                       | 96        | 32         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                 | 96        | 22         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                      | 63        | 21         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                    | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                             | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                     | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                        | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - create_permissioned
+
+- **Total Gas Used:** 83,908
+
+| Category     | Opcodes Used                                                                                                                                                                                  | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                 | 59,300    | 11         | 94.6%        | 70.7%       |
+| Events       | LOG3                                                                                                                                                                                          | 1,756     | 1          | 2.8%         | 2.1%        |
+| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, PUSH0, PUSH1, PUSH17, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP10, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 765       | 257        | 1.2%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                         | 343       | 46         | 0.5%         | 0.4%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                        | 147       | 49         | 0.2%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                                                                                                                     | 120       | 3          | 0.2%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                       | 96        | 32         | 0.2%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                 | 96        | 22         | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                      | 63        | 21         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                    | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                             | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                     | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                        | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - deploy
+
+- **Total Gas Used:** 1,427,724
+
+| Category     | Opcodes Used                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                | 22,100    | 2          | 94.3%        | 1.5%        |
+| Code         | CODECOPY                                     | 1,260     | 1          | 5.4%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, SWAP1 | 47        | 16         | 0.2%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                            | 12        | 4          | 0.1%         | 0.0%        |
+| Memory       | MSTORE                                       | 12        | 1          | 0.1%         | 0.0%        |
+| Control Flow | JUMPI                                        | 10        | 1          | 0.0%         | 0.0%        |
+| Arithmetic   | SUB                                          | 3         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - removeWriter
+
+- **Total Gas Used:** 34,350
+
+| Category     | Opcodes Used                                                                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                   | 18,100    | 17         | 84.7%        | 52.7%       |
+| Events       | LOG3                                                                                                            | 1,500     | 1          | 7.0%         | 4.4%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 688       | 237        | 3.2%         | 2.0%        |
+| Crypto       | KECCAK256                                                                                                       | 396       | 10         | 1.9%         | 1.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                           | 343       | 54         | 1.6%         | 1.0%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                          | 129       | 43         | 0.6%         | 0.4%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                         | 69        | 23         | 0.3%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                        | 63        | 21         | 0.3%         | 0.2%        |
+| Memory       | MSTORE                                                                                                          | 60        | 17         | 0.3%         | 0.2%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                      | 13        | 5          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                                          | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Log_evm - transfer
+
+- **Total Gas Used:** 85,898
+
+| Category     | Opcodes Used                                                                                                                        | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                       | 60,300    | 21         | 93.7%        | 70.2%       |
+| Events       | LOG4                                                                                                                                | 1,875     | 1          | 2.9%         | 2.2%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 916       | 312        | 1.4%         | 1.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                               | 477       | 72         | 0.7%         | 0.6%        |
+| Crypto       | KECCAK256                                                                                                                           | 306       | 8          | 0.5%         | 0.4%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                              | 210       | 70         | 0.3%         | 0.2%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                             | 105       | 35         | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                            | 75        | 25         | 0.1%         | 0.1%        |
+| Memory       | MSTORE                                                                                                                              | 45        | 12         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                          | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                              | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                           | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### NonFungibleCredential_evm - deploy
+
+- **Total Gas Used:** 1,511,673
+
+| Category     | Opcodes Used                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                | 22,100    | 2          | 93.9%        | 1.5%        |
+| Code         | CODECOPY                                     | 1,341     | 1          | 5.7%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, SWAP1 | 47        | 16         | 0.2%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL                            | 12        | 4          | 0.1%         | 0.0%        |
+| Memory       | MSTORE                                       | 12        | 1          | 0.1%         | 0.0%        |
+| Control Flow | JUMPI                                        | 10        | 1          | 0.0%         | 0.0%        |
+| Arithmetic   | SUB                                          | 3         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### NonFungibleCredential_evm - issue_nontransferable
+
+- **Total Gas Used:** 234,542
+
+| Category     | Opcodes Used                                                                                                                                                                                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                                    | 204,700   | 32         | 96.7%        | 87.3%       |
+| Events       | LOG4                                                                                                                                                                                                                             | 2,643     | 1          | 1.2%         | 1.1%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH10, PUSH12, PUSH18, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP9 | 1,980     | 671        | 0.9%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                                            | 637       | 101        | 0.3%         | 0.3%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                                        | 612       | 15         | 0.3%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                                           | 414       | 138        | 0.2%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                                         | 279       | 93         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                                    | 234       | 61         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                                          | 156       | 52         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                                         | 65        | 16         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                                                | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                                                           | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### NonFungibleCredential_evm - issue_transferable
+
+- **Total Gas Used:** 283,066
+
+| Category     | Opcodes Used                                                                                                                                                                                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                                    | 253,200   | 32         | 97.3%        | 89.4%       |
+| Events       | LOG4                                                                                                                                                                                                                             | 2,643     | 1          | 1.0%         | 0.9%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH10, PUSH12, PUSH18, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP9 | 1,980     | 671        | 0.8%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                                            | 637       | 101        | 0.2%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                                        | 612       | 15         | 0.2%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                                           | 414       | 138        | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                                         | 279       | 93         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                                    | 234       | 61         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                                          | 156       | 52         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                                         | 65        | 16         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                                                | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                                                           | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### NonFungibleCredential_evm - issue_with_expiry
+
+- **Total Gas Used:** 220,314
+
+| Category     | Opcodes Used                                                                                                                                                                                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                                                    | 190,400   | 32         | 96.4%        | 86.4%       |
+| Events       | LOG4                                                                                                                                                                                                                             | 2,643     | 1          | 1.3%         | 1.2%        |
+| Stack        | DUP1, DUP10, DUP11, DUP12, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH10, PUSH12, PUSH18, PUSH2, PUSH32, PUSH4, PUSH8, SWAP1, SWAP11, SWAP12, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP9 | 1,980     | 671        | 1.0%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                                                            | 637       | 101        | 0.3%         | 0.3%        |
+| Crypto       | KECCAK256                                                                                                                                                                                                                        | 612       | 15         | 0.3%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                                                           | 414       | 138        | 0.2%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                                                         | 279       | 93         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                                                    | 234       | 61         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                                                          | 156       | 52         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                                                         | 65        | 16         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                                                | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                                                                                           | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### NonFungibleCredential_evm - revoke
+
+- **Total Gas Used:** 30,343
+
+| Category     | Opcodes Used                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                    | 7,100     | 3          | 77.7%        | 23.4%       |
+| Events       | LOG3                                                             | 1,500     | 1          | 16.4%        | 4.9%        |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1 | 214       | 73         | 2.3%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                            | 150       | 19         | 1.6%         | 0.5%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                           | 42        | 14         | 0.5%         | 0.1%        |
+| Crypto       | KECCAK256                                                        | 42        | 1          | 0.5%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                              | 33        | 11         | 0.4%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                         | 24        | 8          | 0.3%         | 0.1%        |
+| Memory       | MSTORE                                                           | 18        | 3          | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                       | 10        | 4          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                           | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                             | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### NonFungibleCredential_evm - transfer
+
+- **Total Gas Used:** 159,598
+
+| Category     | Opcodes Used                                                                                                                                                        | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                       | 140,400   | 48         | 95.1%        | 88.0%       |
+| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 2,066     | 714        | 1.4%         | 1.3%        |
+| Events       | LOG4                                                                                                                                                                | 1,875     | 1          | 1.3%         | 1.2%        |
+| Crypto       | KECCAK256                                                                                                                                                           | 1,548     | 38         | 1.0%         | 1.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                               | 727       | 123        | 0.5%         | 0.5%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                              | 351       | 117        | 0.2%         | 0.2%        |
+| Memory       | MCOPY, MLOAD, MSTORE                                                                                                                                                | 303       | 86         | 0.2%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                            | 207       | 69         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                             | 132       | 44         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                          | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                                                              | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                           | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### NonFungibleCredential_evm - updateMetadata
+
+- **Total Gas Used:** 30,684
+
+| Category     | Opcodes Used                                                                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                         | 7,100     | 2          | 79.2%        | 23.1%       |
+| Events       | LOG2                                                                                  | 1,381     | 1          | 15.4%        | 4.5%        |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 197       | 67         | 2.2%         | 0.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                 | 120       | 16         | 1.3%         | 0.4%        |
+| Crypto       | KECCAK256                                                                             | 42        | 1          | 0.5%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                    | 33        | 11         | 0.4%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                         | 30        | 5          | 0.3%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                              | 24        | 8          | 0.3%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                   | 24        | 8          | 0.3%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                            | 13        | 5          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                             | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                  | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### SimpleToken_evm - deploy
+
+- **Total Gas Used:** 167,671
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 108       | 1          | 67.9%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 17.0%        | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 7.5%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 6.3%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 1.3%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### SimpleToken_evm - mint
+
+- **Total Gas Used:** 68,081
+
+| Category     | Opcodes Used                                                                                      | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                     | 44,200    | 4          | 95.2%        | 64.9%       |
+| Events       | LOG3                                                                                              | 1,756     | 1          | 3.8%         | 2.6%        |
+| Stack        | DUP1, DUP2, DUP3, DUP5, DUP6, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 201       | 68         | 0.4%         | 0.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                             | 126       | 21         | 0.3%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                         | 42        | 1          | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                     | 30        | 5          | 0.1%         | 0.0%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                           | 21        | 7          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                          | 18        | 6          | 0.0%         | 0.0%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                | 18        | 6          | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                        | 13        | 5          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                              | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### SimpleToken_evm - transfer
+
+- **Total Gas Used:** 46,258
+
+| Category     | Opcodes Used                                                            | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                           | 27,100    | 4          | 92.2%        | 58.6%       |
+| Events       | LOG3                                                                    | 1,756     | 1          | 6.0%         | 3.8%        |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3 | 199       | 69         | 0.7%         | 0.4%        |
+| Crypto       | KECCAK256                                                               | 126       | 3          | 0.4%         | 0.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 100       | 14         | 0.3%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                           | 42        | 9          | 0.1%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                     | 24        | 8          | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                | 18        | 6          | 0.1%         | 0.0%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                      | 18        | 6          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                              | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                  | 6         | 3          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                    | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - delegate
+
+- **Total Gas Used:** 137,452
+
+| Category     | Opcodes Used                                                                                                                                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                  | 110,700   | 12         | 95.8%        | 80.5%       |
+| Events       | LOG3                                                                                                                                           | 2,268     | 1          | 2.0%         | 1.7%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 1,114     | 380        | 1.0%         | 0.8%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                          | 517       | 85         | 0.4%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                                                                      | 330       | 8          | 0.3%         | 0.2%        |
+| Arithmetic   | ADD, MUL, SUB                                                                                                                                  | 158       | 52         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                         | 156       | 52         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                  | 129       | 34         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                        | 90        | 30         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                       | 54        | 11         | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                              | 10        | 5          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                      | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                           | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - delete_
+
+- **Total Gas Used:** 38,316
+
+| Category     | Opcodes Used                                                                                                                                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                  | 22,400    | 11         | 85.0%        | 58.5%       |
+| Events       | LOG2                                                                                                                                           | 1,893     | 1          | 7.2%         | 4.9%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 805       | 278        | 3.1%         | 2.1%        |
+| Crypto       | KECCAK256                                                                                                                                      | 456       | 11         | 1.7%         | 1.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                          | 414       | 60         | 1.6%         | 1.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                       | 105       | 35         | 0.4%         | 0.3%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                        | 93        | 31         | 0.4%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                  | 93        | 26         | 0.4%         | 0.2%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                       | 54        | 11         | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                                                             | 45        | 15         | 0.2%         | 0.1%        |
+| Context      | CALLER                                                                                                                                         | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                      | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                           | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - deleteFor
+
+- **Total Gas Used:** 47,889
+
+| Category     | Opcodes Used                                                                                                                                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                  | 28,900    | 16         | 76.3%        | 60.3%       |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 2,855     | 977        | 7.5%         | 6.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                          | 1,921     | 324        | 5.1%         | 4.0%        |
+| Events       | LOG2                                                                                                                                           | 1,893     | 1          | 5.0%         | 4.0%        |
+| Crypto       | KECCAK256                                                                                                                                      | 570       | 14         | 1.5%         | 1.2%        |
+| Arithmetic   | ADD, MUL, SUB                                                                                                                                  | 508       | 168        | 1.3%         | 1.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                        | 411       | 137        | 1.1%         | 0.9%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                   | 372       | 124        | 1.0%         | 0.8%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                         | 360       | 109        | 1.0%         | 0.8%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                       | 71        | 15         | 0.2%         | 0.1%        |
+| Context      | CALLER                                                                                                                                         | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                      | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                           | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - deploy
+
+- **Total Gas Used:** 1,742,046
+
+| Category     | Opcodes Used                          | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Code         | CODECOPY                              | 1,597     | 1          | 96.9%        | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH1, PUSH2, SWAP1 | 27        | 9          | 1.6%         | 0.0%        |
+| Memory       | MSTORE                                | 12        | 1          | 0.7%         | 0.0%        |
+| Control Flow | JUMPI                                 | 10        | 1          | 0.6%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                             | 2         | 1          | 0.1%         | 0.0%        |
+| Return       | RETURN                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - revokeDelegation
+
+- **Total Gas Used:** 42,645
+
+| Category     | Opcodes Used                                                                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                | 25,800    | 17         | 82.2%        | 60.5%       |
+| Events       | LOG3                                                                                                                                                         | 2,268     | 1          | 7.2%         | 5.3%        |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 1,354     | 467        | 4.3%         | 3.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                        | 746       | 125        | 2.4%         | 1.7%        |
+| Crypto       | KECCAK256                                                                                                                                                    | 546       | 14         | 1.7%         | 1.3%        |
+| Arithmetic   | ADD, MUL, SUB                                                                                                                                                | 199       | 63         | 0.6%         | 0.5%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                      | 150       | 50         | 0.5%         | 0.4%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                       | 129       | 43         | 0.4%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                | 126       | 34         | 0.4%         | 0.3%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                     | 54        | 11         | 0.2%         | 0.1%        |
+| Context      | CALLER                                                                                                                                                       | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - set
+
+- **Total Gas Used:** 117,087
+
+| Category     | Opcodes Used                                                                                                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                | 91,100    | 13         | 95.9%        | 77.8%       |
+| Events       | LOG2                                                                                                                                                                                         | 2,149     | 1          | 2.3%         | 1.8%        |
+| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP11, SWAP12, SWAP13, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 766       | 264        | 0.8%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                        | 350       | 58         | 0.4%         | 0.3%        |
+| Crypto       | KECCAK256                                                                                                                                                                                    | 288       | 7          | 0.3%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                       | 99        | 33         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                     | 93        | 31         | 0.1%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                | 75        | 19         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                      | 69        | 23         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                     | 48        | 11         | 0.1%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                            | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - set_update
+
+- **Total Gas Used:** 32,968
+
+| Category     | Opcodes Used                                                                                                                               | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                              | 10,200    | 5          | 93.3%        | 30.9%       |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 310       | 105        | 2.8%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                      | 140       | 20         | 1.3%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                                                                  | 84        | 2          | 0.8%         | 0.3%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                     | 51        | 17         | 0.5%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                   | 45        | 15         | 0.4%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                    | 36        | 12         | 0.3%         | 0.1%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                   | 30        | 8          | 0.3%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                                                                              | 27        | 5          | 0.2%         | 0.1%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                          | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                  | 2         | 1          | 0.0%         | 0.0%        |
+
+
+### Store_evm - setFor
+
+- **Total Gas Used:** 129,666
+
+| Category     | Opcodes Used                                                                                                                                                                                       | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                      | 97,600    | 18         | 91.1%        | 75.3%       |
+| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP11, SWAP12, SWAP13, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 3,062     | 1,045      | 2.9%         | 2.4%        |
+| Events       | LOG2                                                                                                                                                                                               | 2,149     | 1          | 2.0%         | 1.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                              | 2,137     | 350        | 2.0%         | 1.6%        |
+| Arithmetic   | ADD, MUL, SUB                                                                                                                                                                                      | 496       | 164        | 0.5%         | 0.4%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                            | 471       | 157        | 0.4%         | 0.4%        |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                                       | 426       | 142        | 0.4%         | 0.3%        |
+| Crypto       | KECCAK256                                                                                                                                                                                          | 402       | 10         | 0.4%         | 0.3%        |
+| Memory       | MLOAD, MSTORE, MSTORE8                                                                                                                                                                             | 342       | 102        | 0.3%         | 0.3%        |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                           | 67        | 16         | 0.1%         | 0.1%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                                                  | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                          | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### TetherToken_evm - approve
+
+- **Total Gas Used:** 48,276
+
+| Category     | Opcodes Used                                                                   | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                  | 24,200    | 3          | 90.6%        | 50.1%       |
+| Events       | LOG3                                                                           | 1,756     | 1          | 6.6%         | 3.6%        |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3 | 245       | 85         | 0.9%         | 0.5%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                          | 169       | 26         | 0.6%         | 0.4%        |
+| Crypto       | KECCAK256                                                                      | 168       | 4          | 0.6%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                                  | 48        | 11         | 0.2%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                            | 39        | 13         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                             | 36        | 12         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                       | 18        | 6          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                     | 17        | 7          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                         | 6         | 3          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                      | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                           | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### TetherToken_evm - deploy
+
+- **Total Gas Used:** 1,208,745
+
+| Category     | Opcodes Used                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                | 139,300   | 14         | 98.0%        | 11.5%       |
+| Code         | CODECOPY, CODESIZE                                                                                           | 976       | 3          | 0.7%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 885       | 301        | 0.6%         | 0.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                        | 384       | 61         | 0.3%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                       | 162       | 54         | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                                     | 135       | 45         | 0.1%         | 0.0%        |
+| Memory       | MCOPY, MLOAD, MSTORE                                                                                         | 108       | 26         | 0.1%         | 0.0%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                      | 93        | 31         | 0.1%         | 0.0%        |
+| Crypto       | KECCAK256                                                                                                    | 42        | 1          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### TetherToken_evm - transfer
+
+- **Total Gas Used:** 62,454
+
+| Category     | Opcodes Used                                                                               | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                              | 37,600    | 9          | 92.0%        | 60.2%       |
+| Events       | LOG3                                                                                       | 1,756     | 1          | 4.3%         | 2.8%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3 | 547       | 187        | 1.3%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                      | 501       | 70         | 1.2%         | 0.8%        |
+| Crypto       | KECCAK256                                                                                  | 210       | 5          | 0.5%         | 0.3%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                    | 120       | 40         | 0.3%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                              | 54        | 13         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, DIV, MUL, SUB                                                                         | 36        | 10         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                         | 33        | 11         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                 | 15        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                     | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                  | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### TetherToken_evm - transferFrom
+
+- **Total Gas Used:** 50,890
+
+| Category     | Opcodes Used                                                                                                               | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                              | 25,500    | 11         | 88.1%        | 50.1%       |
+| Events       | LOG3                                                                                                                       | 1,756     | 1          | 6.1%         | 3.5%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 595       | 205        | 2.1%         | 1.2%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                      | 427       | 69         | 1.5%         | 0.8%        |
+| Crypto       | KECCAK256                                                                                                                  | 378       | 9          | 1.3%         | 0.7%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                    | 87        | 29         | 0.3%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                              | 78        | 21         | 0.3%         | 0.2%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                                         | 54        | 18         | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, DIV, MUL, SUB                                                                                                         | 51        | 15         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                 | 18        | 7          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                                                                     | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                  | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - buyTicket
+
+- **Total Gas Used:** 220,332
+
+| Category     | Opcodes Used                                                                                                                                                    | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                   | 187,800   | 37         | 93.1%        | 85.2%       |
+| Events       | LOG3, LOG4                                                                                                                                                      | 6,155     | 3          | 3.1%         | 2.8%        |
+| Calls        | CALL                                                                                                                                                            | 2,600     | 1          | 1.3%         | 1.2%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, POP, PUSH0, PUSH1, PUSH11, PUSH12, PUSH2, PUSH3, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 2,022     | 697        | 1.0%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                           | 1,188     | 177        | 0.6%         | 0.5%        |
+| Crypto       | KECCAK256                                                                                                                                                       | 834       | 20         | 0.4%         | 0.4%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                   | 294       | 76         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                         | 273       | 91         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                          | 228       | 76         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                        | 156       | 52         | 0.1%         | 0.1%        |
+| Code         | EXTCODESIZE                                                                                                                                                     | 100       | 1          | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                      | 26        | 10         | 0.0%         | 0.0%        |
+| Context      | ADDRESS, CALLER, TIMESTAMP                                                                                                                                      | 16        | 8          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                                                                                  | 6         | 3          | 0.0%         | 0.0%        |
+| Return Data  | RETURNDATASIZE                                                                                                                                                  | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN, STOP                                                                                                                                                    | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - checkIn
+
+- **Total Gas Used:** 71,612
+
+| Category     | Opcodes Used                                                                                                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                    | 46,000    | 17         | 79.3%        | 64.2%       |
+| Events       | LOG3, LOG4                                                                                                                                       | 6,155     | 3          | 10.6%        | 8.6%        |
+| Calls        | CALL                                                                                                                                             | 2,600     | 1          | 4.5%         | 3.6%        |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH3, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6 | 1,355     | 462        | 2.3%         | 1.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                            | 990       | 126        | 1.7%         | 1.4%        |
+| Crypto       | KECCAK256                                                                                                                                        | 294       | 7          | 0.5%         | 0.4%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                          | 243       | 81         | 0.4%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                    | 144       | 35         | 0.2%         | 0.2%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                           | 114       | 38         | 0.2%         | 0.2%        |
+| Arithmetic   | ADD, SUB                                                                                                                                         | 78        | 26         | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                       | 23        | 9          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                | 10        | 5          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE, GAS                                                                                                                                   | 6         | 3          | 0.0%         | 0.0%        |
+| Code         | CODECOPY                                                                                                                                         | 6         | 1          | 0.0%         | 0.0%        |
+| Return Data  | RETURNDATASIZE                                                                                                                                   | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                           | 0         | 2          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - configurePaymentToken
+
+- **Total Gas Used:** 98,869
+
+| Category     | Opcodes Used                                                                                                                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                | 73,600    | 10         | 95.2%        | 74.4%       |
+| Events       | LOG2                                                                                                                                                         | 1,637     | 1          | 2.1%         | 1.7%        |
+| Stack        | DUP1, DUP11, DUP12, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH2, PUSH3, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 872       | 294        | 1.1%         | 0.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                        | 680       | 85         | 0.9%         | 0.7%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                      | 201       | 67         | 0.3%         | 0.2%        |
+| Crypto       | KECCAK256                                                                                                                                                    | 162       | 4          | 0.2%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                | 75        | 17         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                       | 66        | 22         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                     | 36        | 12         | 0.0%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                   | 16        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                                                                                       | 2         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                                                                                       | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - deploy
+
+- **Total Gas Used:** 2,636,207
+
+| Category     | Opcodes Used                                                                                        | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | --------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                       | 110,700   | 11         | 93.5%        | 4.2%        |
+| Events       | LOG4                                                                                                | 3,750     | 2          | 3.2%         | 0.1%        |
+| Code         | CODECOPY                                                                                            | 2,418     | 7          | 2.0%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, SWAP1, SWAP2, SWAP3, SWAP4 | 737       | 261        | 0.6%         | 0.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                               | 250       | 41         | 0.2%         | 0.0%        |
+| Crypto       | KECCAK256                                                                                           | 168       | 4          | 0.1%         | 0.0%        |
+| Memory       | MLOAD, MSTORE                                                                                       | 144       | 40         | 0.1%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                              | 132       | 44         | 0.1%         | 0.0%        |
+| Comparison   | EQ, GT, ISZERO, LT                                                                                  | 54        | 18         | 0.0%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                            | 42        | 14         | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                              | 8         | 4          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                           | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                              | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - grantVolunteerRole
+
+- **Total Gas Used:** 48,223
+
+| Category     | Opcodes Used                                                              | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                             | 24,300    | 4          | 89.9%        | 50.4%       |
+| Events       | LOG4                                                                      | 1,875     | 1          | 6.9%         | 3.9%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, PUSH3, PUSH32, PUSH4, SWAP1, SWAP2 | 328       | 115        | 1.2%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                     | 206       | 29         | 0.8%         | 0.4%        |
+| Crypto       | KECCAK256                                                                 | 126       | 3          | 0.5%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                             | 57        | 16         | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                    | 39        | 13         | 0.1%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                       | 39        | 13         | 0.1%         | 0.1%        |
+| Code         | CODECOPY                                                                  | 18        | 3          | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                  | 15        | 5          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                | 10        | 4          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                    | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                 | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                      | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - pauseSales
+
+- **Total Gas Used:** 47,282
+
+| Category     | Opcodes Used                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                | 24,200    | 3          | 92.3%        | 51.2%       |
+| Events       | LOG1                                                         | 1,006     | 1          | 3.8%         | 2.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                        | 400       | 44         | 1.5%         | 0.8%        |
+| Stack        | DUP1, DUP2, PUSH0, PUSH1, PUSH2, PUSH3, PUSH32, PUSH4, SWAP1 | 392       | 132        | 1.5%         | 0.8%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                          | 114       | 38         | 0.4%         | 0.2%        |
+| Crypto       | KECCAK256                                                    | 42        | 1          | 0.2%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                | 30        | 5          | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHR                                            | 18        | 6          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                   | 7         | 3          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                            | 4         | 2          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD                                                          | 3         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                    | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - redeemTicketStaff
+
+- **Total Gas Used:** 203,140
+
+| Category     | Opcodes Used                                                                                                                                                     | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                                                                                                    | 174,100   | 28         | 95.8%        | 85.7%       |
+| Events       | LOG3, LOG4                                                                                                                                                       | 3,887     | 2          | 2.1%         | 1.9%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP8, POP, PUSH0, PUSH1, PUSH11, PUSH12, PUSH2, PUSH3, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 1,506     | 521        | 0.8%         | 0.7%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                            | 812       | 127        | 0.4%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                                                                                        | 660       | 16         | 0.4%         | 0.3%        |
+| Memory       | MLOAD, MSTORE                                                                                                                                                    | 216       | 57         | 0.1%         | 0.1%        |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                          | 201       | 67         | 0.1%         | 0.1%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                           | 186       | 62         | 0.1%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                                                                                                         | 111       | 37         | 0.1%         | 0.1%        |
+| Code         | EXTCODESIZE                                                                                                                                                      | 100       | 1          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                       | 15        | 6          | 0.0%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                                                                                                | 12        | 6          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                                                                                        | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                                                                                             | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - revokeVolunteerRole
+
+- **Total Gas Used:** 26,848
+
+| Category     | Opcodes Used                                                              | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                             | 7,200     | 4          | 68.9%        | 26.8%       |
+| Events       | LOG4                                                                      | 1,875     | 1          | 18.0%        | 7.0%        |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, PUSH3, PUSH32, PUSH4, SWAP1, SWAP2 | 541       | 186        | 5.2%         | 2.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                     | 446       | 53         | 4.3%         | 1.7%        |
+| Crypto       | KECCAK256                                                                 | 126       | 3          | 1.2%         | 0.5%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                       | 114       | 38         | 1.1%         | 0.4%        |
+| Memory       | MLOAD, MSTORE                                                             | 57        | 16         | 0.5%         | 0.2%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                        | 36        | 12         | 0.3%         | 0.1%        |
+| Code         | CODECOPY                                                                  | 18        | 3          | 0.2%         | 0.1%        |
+| Arithmetic   | ADD, SUB                                                                  | 15        | 5          | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                | 10        | 4          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                                    | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                 | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                      | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - setMerkleRoot
+
+- **Total Gas Used:** 31,384
+
+| Category     | Opcodes Used                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                        | 7,100     | 2          | 73.4%        | 22.6%       |
+| Events       | LOG2                                                                                 | 1,637     | 1          | 16.9%        | 5.2%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, POP, PUSH0, PUSH1, PUSH2, PUSH3, PUSH32, PUSH4, SWAP1, SWAP2 | 360       | 122        | 3.7%         | 1.1%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                | 360       | 42         | 3.7%         | 1.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                  | 93        | 31         | 1.0%         | 0.3%        |
+| Crypto       | KECCAK256                                                                            | 42        | 1          | 0.4%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                        | 36        | 6          | 0.4%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                           | 13        | 5          | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                             | 12        | 4          | 0.1%         | 0.0%        |
+| Bitwise      | AND, NOT, SHR                                                                        | 9         | 3          | 0.1%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                                    | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                            | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                                 | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### W3S_evm - unpauseSales
+
+- **Total Gas Used:** 25,580
+
+| Category     | Opcodes Used                                                      | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ----------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                     | 7,100     | 3          | 76.2%        | 27.8%       |
+| Events       | LOG1                                                              | 1,006     | 1          | 10.8%        | 3.9%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                             | 490       | 53         | 5.3%         | 1.9%        |
+| Stack        | DUP1, DUP2, POP, PUSH0, PUSH1, PUSH2, PUSH3, PUSH32, PUSH4, SWAP1 | 476       | 160        | 5.1%         | 1.9%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                               | 141       | 47         | 1.5%         | 0.6%        |
+| Crypto       | KECCAK256                                                         | 42        | 1          | 0.5%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                     | 30        | 5          | 0.3%         | 0.1%        |
+| Bitwise      | AND, NOT, SHR                                                     | 15        | 5          | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                        | 7         | 3          | 0.1%         | 0.0%        |
+| Context      | CALLER, TIMESTAMP                                                 | 4         | 2          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD                                                               | 3         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                         | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                            | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### WETH9_evm - deploy
+
+- **Total Gas Used:** 487,741
+
+| Category     | Opcodes Used                                                                         | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                        | 66,300    | 6          | 98.9%        | 13.6%       |
+| Code         | CODECOPY                                                                             | 330       | 1          | 0.5%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3 | 183       | 62         | 0.3%         | 0.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                | 128       | 23         | 0.2%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                               | 30        | 10         | 0.0%         | 0.0%        |
+| Comparison   | EQ, GT, ISZERO, LT                                                                   | 24        | 8          | 0.0%         | 0.0%        |
+| Memory       | MLOAD, MSTORE                                                                        | 15        | 2          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD                                                                                  | 3         | 1          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                            | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                               | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### WETH9_evm - deposit
+
+- **Total Gas Used:** 44,978
+
+| Category     | Opcodes Used                                                 | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------ | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                | 22,100    | 2          | 92.4%        | 49.1%       |
+| Events       | LOG2                                                         | 1,381     | 1          | 5.8%         | 3.1%        |
+| Stack        | DUP1, DUP2, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3 | 155       | 53         | 0.6%         | 0.3%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                        | 140       | 18         | 0.6%         | 0.3%        |
+| Crypto       | KECCAK256                                                    | 42        | 1          | 0.2%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                          | 39        | 13         | 0.2%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                | 30        | 5          | 0.1%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                   | 7         | 3          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD                                                          | 6         | 2          | 0.0%         | 0.0%        |
+| Bitwise      | NOT, SHR                                                     | 6         | 2          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                       | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                    | 4         | 2          | 0.0%         | 0.0%        |
+| Return       | STOP                                                         | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### WETH9_evm - transfer
+
+- **Total Gas Used:** 51,313
+
+| Category     | Opcodes Used                                                                                | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                               | 27,200    | 5          | 91.5%        | 53.0%       |
+| Events       | LOG3                                                                                        | 1,756     | 1          | 5.9%         | 3.4%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4 | 296       | 101        | 1.0%         | 0.6%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                       | 200       | 28         | 0.7%         | 0.4%        |
+| Crypto       | KECCAK256                                                                                   | 126       | 3          | 0.4%         | 0.2%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                         | 51        | 17         | 0.2%         | 0.1%        |
+| Memory       | MLOAD, MSTORE                                                                               | 48        | 11         | 0.2%         | 0.1%        |
+| Bitwise      | AND, NOT, SHL, SHR                                                                          | 24        | 8          | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                    | 21        | 7          | 0.1%         | 0.0%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                  | 13        | 5          | 0.0%         | 0.0%        |
+| Context      | CALLER                                                                                      | 4         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                   | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                      | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### WETH9_evm - withdraw
+
+- **Total Gas Used:** 34,953
+
+| Category     | Opcodes Used                                                        | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Calls        | CALL                                                                | 9,100     | 1          | 56.7%        | 26.0%       |
+| Storage      | SLOAD, SSTORE                                                       | 5,100     | 3          | 31.8%        | 14.6%       |
+| Events       | LOG2                                                                | 1,381     | 1          | 8.6%         | 4.0%        |
+| Stack        | DUP1, DUP2, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3, SWAP4 | 170       | 59         | 1.1%         | 0.5%        |
+| Control Flow | JUMPDEST, JUMPI                                                     | 113       | 14         | 0.7%         | 0.3%        |
+| Crypto       | KECCAK256                                                           | 84        | 2          | 0.5%         | 0.2%        |
+| Memory       | MLOAD, MSTORE                                                       | 36        | 7          | 0.2%         | 0.1%        |
+| Comparison   | EQ, ISZERO, LT, SLT                                                 | 33        | 11         | 0.2%         | 0.1%        |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                          | 10        | 4          | 0.1%         | 0.0%        |
+| Context      | CALLER                                                              | 8         | 4          | 0.0%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                            | 6         | 2          | 0.0%         | 0.0%        |
+| Bitwise      | NOT, SHR                                                            | 6         | 2          | 0.0%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                           | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | STOP                                                                | 0         | 1          | 0.0%         | 0.0%        |
+
+
+### XENCrypto_evm - deploy
+
+- **Total Gas Used:** 2,221,205
+
+| Category     | Opcodes Used                                                                                | Total Gas | Call Count | % of opcodes | % of tx Gas |
+| ------------ | ------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ | ----------- |
+| Storage      | SLOAD, SSTORE                                                                               | 66,300    | 5          | 95.8%        | 3.0%        |
+| Code         | CODECOPY                                                                                    | 2,011     | 1          | 2.9%         | 0.1%        |
+| Stack        | DUP1, DUP2, DUP3, DUP4, POP, PUSH0, PUSH1, PUSH10, PUSH2, PUSH3, SWAP1, SWAP2, SWAP3, SWAP4 | 463       | 159        | 0.7%         | 0.0%        |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                       | 194       | 31         | 0.3%         | 0.0%        |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                      | 84        | 28         | 0.1%         | 0.0%        |
+| Memory       | MLOAD, MSTORE                                                                               | 84        | 19         | 0.1%         | 0.0%        |
+| Comparison   | EQ, GT, ISZERO, LT                                                                          | 54        | 18         | 0.1%         | 0.0%        |
+| Arithmetic   | ADD, SUB                                                                                    | 39        | 13         | 0.1%         | 0.0%        |
+| Ether/Gas    | CALLVALUE                                                                                   | 2         | 1          | 0.0%         | 0.0%        |
+| Context      | TIMESTAMP                                                                                   | 2         | 1          | 0.0%         | 0.0%        |
+| Return       | RETURN                                                                                      | 0         | 1          | 0.0%         | 0.0%        |
+
 
 ## Chain: eth-rpc
 
 ### BenchERC1155_evm - create
 
-- **Total Gas Used:** 458,250
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,436,669,543, proof_size=50,444
+- **Total Gas Used:** 456,249
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,436,656,447, proof_size=50,441
 - **Weight Consumed:** ref_time=528,333,191 (36.8% of total), proof_size=42,239
 
 | Category     | Opcodes Used                                                                                  | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                 | 115,091   | 4          | 474,540,140 | 41,092     | 89.8%         | 97.3%           |
+| Storage      | SLOAD, SSTORE                                                                                 | 115,092   | 4          | 474,540,140 | 41,092     | 89.8%         | 97.3%           |
 | Crypto       | KECCAK256                                                                                     | 498       | 2          | 24,916,112  | 0          | 4.7%          | 0.0%            |
 | Events       | LOG4                                                                                          | 444       | 1          | 22,221,568  | 0          | 4.2%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 46        | 88         | 1,997,056   | 0          | 0.4%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5 | 37        | 88         | 1,997,056   | 0          | 0.4%          | 0.0%            |
 | Context      | CALLER                                                                                        | 24        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                         | 10        | 11         | 561,672     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                        | 7         | 17         | 397,851     | 0          | 0.1%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                         | 11        | 11         | 561,672     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                        | 11        | 17         | 397,851     | 0          | 0.1%          | 0.0%            |
 | Arithmetic   | ADD, SUB                                                                                      | 3         | 10         | 234,030     | 0          | 0.0%          | 0.0%            |
 | Memory       | MLOAD, MSTORE                                                                                 | 5         | 10         | 234,030     | 0          | 0.0%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                       | 3         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                    | 1         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                       | 4         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                    | 2         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                        | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchERC1155_pvm - create
 
-- **Total Gas Used:** 461,099
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,579,145,395, proof_size=60,333
+- **Total Gas Used:** 459,099
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,579,132,299, proof_size=60,330
 - **Weight Consumed:** ref_time=670,809,043 (42.5% of total), proof_size=52,128
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -42,48 +2444,48 @@ Opcodes grouped by functional category.
 | Storage  | get_storage_or_zero, set_storage_or_clear | 115,090   | 4          | 474,490,412 | 41,060     | 70.7%         | 78.8%           |
 | Crypto   | hash_keccak_256                           | 498       | 2          | 24,916,112  | 0          | 3.7%          | 0.0%            |
 | Events   | deposit_event                             | 444       | 1          | 22,221,568  | 0          | 3.3%          | 0.0%            |
-| Context  | caller                                    | 25        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
-| Calldata | call_data_load, call_data_size            | 19        | 3          | 994,000     | 0          | 0.1%          | 0.0%            |
+| Context  | caller                                    | 24        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
+| Calldata | call_data_load, call_data_size            | 21        | 3          | 994,000     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 556,534     | 0          | 0.1%          | 0.0%            |
 
 
 ### bench_erc1155_ink - create
 
-- **Total Gas Used:** 423,368
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,092,587,444, proof_size=61,866
-- **Weight Consumed:** ref_time=1,184,251,092 (56.6% of total), proof_size=53,661
+- **Total Gas Used:** 418,477
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,948,013,922, proof_size=57,521
+- **Weight Consumed:** ref_time=1,039,690,666 (53.4% of total), proof_size=49,319
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 65,731    | 3          | 406,538,087 | 30,803     | 34.3%         | 57.4%           |
-| Crypto   | hash_keccak_256          | 747       | 3          | 37,374,168  | 0          | 3.2%          | 0.0%            |
-| Events   | deposit_event            | 445       | 1          | 22,221,568  | 0          | 1.9%          | 0.0%            |
+| Storage  | get_storage, set_storage | 65,731    | 3          | 406,538,087 | 30,803     | 39.1%         | 62.5%           |
+| Crypto   | hash_keccak_256          | 748       | 3          | 37,374,168  | 0          | 3.6%          | 0.0%            |
+| Events   | deposit_event            | 444       | 1          | 22,221,568  | 0          | 2.1%          | 0.0%            |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.2%          | 0.0%            |
-| Return   | seal_return              | 11        | 1          | 556,534     | 0          | 0.0%          | 0.0%            |
+| Return   | seal_return              | 12        | 1          | 556,534     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### bench_erc1155_stylus - create
 
-- **Total Gas Used:** 466,154
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,831,894,357, proof_size=70,465
+- **Total Gas Used:** 464,154
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,831,881,261, proof_size=70,462
 - **Weight Consumed:** ref_time=923,558,005 (50.4% of total), proof_size=62,260
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage  | get_storage_or_zero, set_storage_or_clear | 115,088   | 4          | 474,440,684 | 41,028     | 51.4%         | 65.9%           |
-| Crypto   | hash_keccak_256                           | 499       | 2          | 24,916,112  | 0          | 2.7%          | 0.0%            |
-| Events   | deposit_event                             | 445       | 1          | 22,221,568  | 0          | 2.4%          | 0.0%            |
+| Crypto   | hash_keccak_256                           | 498       | 2          | 24,916,112  | 0          | 2.7%          | 0.0%            |
+| Events   | deposit_event                             | 444       | 1          | 22,221,568  | 0          | 2.4%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size            | 13        | 3          | 680,660     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 556,534     | 0          | 0.1%          | 0.0%            |
-| Context  | caller                                    | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
+| Context  | caller                                    | 9         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchERC1155_evm - deploy
 
-- **Total Gas Used:** 9,292,246
+- **Total Gas Used:** 17,532,646
 - **Base Call Weight:** ref_time=1,529,042,128, proof_size=6,934
 - **Total Weight:** ref_time=1,530,467,862, proof_size=6,934
 - **Weight Consumed:** ref_time=1,425,734 (0.1% of total), proof_size=0
@@ -100,7 +2502,7 @@ Opcodes grouped by functional category.
 
 ### BenchERC1155_pvm - deploy
 
-- **Total Gas Used:** 29,682,915
+- **Total Gas Used:** 39,905,515
 - **Base Call Weight:** ref_time=1,688,420,893, proof_size=6,934
 - **Total Weight:** ref_time=1,700,945,631, proof_size=6,934
 - **Weight Consumed:** ref_time=12,524,738 (0.7% of total), proof_size=0
@@ -114,21 +2516,21 @@ Opcodes grouped by functional category.
 
 ### bench_erc1155_ink - deploy
 
-- **Total Gas Used:** 54,032,951
-- **Base Call Weight:** ref_time=1,878,322,423, proof_size=6,934
-- **Total Weight:** ref_time=2,072,719,229, proof_size=17,191
-- **Weight Consumed:** ref_time=194,396,806 (9.4% of total), proof_size=10,257
+- **Total Gas Used:** 56,799,213
+- **Base Call Weight:** ref_time=1,808,385,829, proof_size=6,934
+- **Total Weight:** ref_time=2,001,842,115, proof_size=17,191
+- **Weight Consumed:** ref_time=193,456,286 (9.7% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 50,586    | 1          | 169,286,513 | 10,257     | 87.1%         | 100.0%          |
-| Calldata | call_data_copy | 39        | 1          | 1,908,332   | 0          | 1.0%          | 0.0%            |
+| Storage  | set_storage    | 50,585    | 1          | 169,286,513 | 10,257     | 87.5%         | 100.0%          |
+| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.0%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### bench_erc1155_stylus - deploy
 
-- **Total Gas Used:** 50,632,116
+- **Total Gas Used:** 62,887,516
 - **Base Call Weight:** ref_time=1,852,132,441, proof_size=6,934
 - **Total Weight:** ref_time=1,868,983,682, proof_size=6,934
 - **Weight Consumed:** ref_time=16,851,241 (0.9% of total), proof_size=0
@@ -141,7 +2543,7 @@ Opcodes grouped by functional category.
 
 ### BenchERC20_evm - deploy
 
-- **Total Gas Used:** 9,296,223
+- **Total Gas Used:** 17,493,423
 - **Base Call Weight:** ref_time=1,528,268,992, proof_size=6,934
 - **Total Weight:** ref_time=1,897,343,440, proof_size=27,448
 - **Weight Consumed:** ref_time=369,074,448 (19.5% of total), proof_size=20,514
@@ -165,7 +2567,7 @@ Opcodes grouped by functional category.
 
 ### BenchERC20_pvm - deploy
 
-- **Total Gas Used:** 27,302,375
+- **Total Gas Used:** 37,276,575
 - **Base Call Weight:** ref_time=1,668,441,439, proof_size=6,934
 - **Total Weight:** ref_time=2,119,951,698, proof_size=27,448
 - **Weight Consumed:** ref_time=451,510,259 (21.3% of total), proof_size=20,514
@@ -183,24 +2585,24 @@ Opcodes grouped by functional category.
 
 ### bench_erc20_ink - deploy
 
-- **Total Gas Used:** 50,745,542
-- **Base Call Weight:** ref_time=1,851,594,136, proof_size=6,934
-- **Total Weight:** ref_time=2,705,290,120, proof_size=27,448
-- **Weight Consumed:** ref_time=853,695,984 (31.6% of total), proof_size=20,514
+- **Total Gas Used:** 47,340,355
+- **Base Call Weight:** ref_time=1,740,117,589, proof_size=6,934
+- **Total Weight:** ref_time=2,498,955,413, proof_size=27,448
+- **Weight Consumed:** ref_time=758,837,824 (30.4% of total), proof_size=20,514
 
 | Category | Opcodes Used    | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | --------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage     | 111,572   | 2          | 338,585,250 | 20,514     | 39.7%         | 100.0%          |
-| Crypto   | hash_keccak_256 | 498       | 2          | 24,916,112  | 0          | 2.9%          | 0.0%            |
-| Events   | deposit_event   | 276       | 1          | 13,794,784  | 0          | 1.6%          | 0.0%            |
-| Calldata | call_data_copy  | 38        | 1          | 1,908,332   | 0          | 0.2%          | 0.0%            |
+| Storage  | set_storage     | 111,571   | 2          | 338,585,250 | 20,514     | 44.6%         | 100.0%          |
+| Crypto   | hash_keccak_256 | 498       | 2          | 24,916,112  | 0          | 3.3%          | 0.0%            |
+| Events   | deposit_event   | 275       | 1          | 13,794,784  | 0          | 1.8%          | 0.0%            |
+| Calldata | call_data_copy  | 38        | 1          | 1,908,332   | 0          | 0.3%          | 0.0%            |
 | Return   | seal_return     | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
-| Context  | caller          | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
+| Context  | caller          | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### bench_erc20_stylus - deploy
 
-- **Total Gas Used:** 49,498,973
+- **Total Gas Used:** 61,620,973
 - **Base Call Weight:** ref_time=1,841,414,512, proof_size=6,934
 - **Total Weight:** ref_time=2,792,818,995, proof_size=58,219
 - **Weight Consumed:** ref_time=951,404,483 (34.1% of total), proof_size=51,285
@@ -217,38 +2619,38 @@ Opcodes grouped by functional category.
 
 ### BenchERC20_evm - transfer
 
-- **Total Gas Used:** 471,529
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,440,642,256, proof_size=50,359
+- **Total Gas Used:** 469,529
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,440,629,160, proof_size=50,356
 - **Weight Consumed:** ref_time=531,873,736 (36.9% of total), proof_size=42,055
 
 | Category     | Opcodes Used                                                                                       | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | -------------------------------------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage      | SLOAD, SSTORE                                                                                      | 62,290    | 4          | 474,552,876 | 41,124     | 89.2%         | 97.8%           |
-| Crypto       | KECCAK256                                                                                          | 749       | 3          | 37,374,168  | 0          | 7.0%          | 0.0%            |
-| Events       | LOG3                                                                                               | 276       | 1          | 13,794,784  | 0          | 2.6%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 40        | 92         | 2,106,270   | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                              | 26        | 25         | 1,294,966   | 0          | 0.2%          | 0.0%            |
+| Crypto       | KECCAK256                                                                                          | 748       | 3          | 37,374,168  | 0          | 7.0%          | 0.0%            |
+| Events       | LOG3                                                                                               | 275       | 1          | 13,794,784  | 0          | 2.6%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 48        | 92         | 2,106,270   | 0          | 0.4%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                              | 25        | 25         | 1,294,966   | 0          | 0.2%          | 0.0%            |
 | Context      | CALLER                                                                                             | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                            | 7         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                      | 5         | 9          | 210,627     | 0          | 0.0%          | 0.0%            |
-| Bitwise      | AND, NOT, SHL, SHR                                                                                 | 6         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                           | 1         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                            | 5         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                      | 3         | 9          | 210,627     | 0          | 0.0%          | 0.0%            |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                 | 1         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                           | 5         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
 | Calldata     | CALLDATALOAD, CALLDATASIZE                                                                         | 1         | 5          | 101,413     | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                                               | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchERC20_pvm - transfer
 
-- **Total Gas Used:** 474,137
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,571,019,209, proof_size=59,222
+- **Total Gas Used:** 472,136
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,571,006,113, proof_size=59,219
 - **Weight Consumed:** ref_time=662,250,689 (42.2% of total), proof_size=50,918
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 62,291    | 4          | 474,503,148 | 41,092     | 71.7%         | 80.7%           |
-| Crypto   | hash_keccak_256                           | 747       | 3          | 37,374,168  | 0          | 5.6%          | 0.0%            |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 62,290    | 4          | 474,503,148 | 41,092     | 71.7%         | 80.7%           |
+| Crypto   | hash_keccak_256                           | 748       | 3          | 37,374,168  | 0          | 5.6%          | 0.0%            |
 | Events   | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 2.1%          | 0.0%            |
 | Calldata | call_data_load, call_data_size            | 27        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
@@ -257,16 +2659,16 @@ Opcodes grouped by functional category.
 
 ### bench_erc20_ink - transfer
 
-- **Total Gas Used:** 494,835
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,525,950,492, proof_size=91,171
-- **Weight Consumed:** ref_time=1,617,181,972 (64.0% of total), proof_size=82,867
+- **Total Gas Used:** 489,247
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,346,546,983, proof_size=84,247
+- **Weight Consumed:** ref_time=1,437,791,559 (61.3% of total), proof_size=75,946
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 68,636    | 6          | 711,785,954 | 61,670     | 44.0%         | 74.4%           |
-| Crypto   | hash_keccak_256          | 499       | 2          | 24,916,112  | 0          | 1.5%          | 0.0%            |
-| Events   | deposit_event            | 276       | 1          | 13,794,784  | 0          | 0.9%          | 0.0%            |
+| Storage  | get_storage, set_storage | 68,635    | 6          | 711,785,954 | 61,670     | 49.5%         | 81.2%           |
+| Crypto   | hash_keccak_256          | 498       | 2          | 24,916,112  | 0          | 1.7%          | 0.0%            |
+| Events   | deposit_event            | 276       | 1          | 13,794,784  | 0          | 1.0%          | 0.0%            |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
@@ -274,14 +2676,14 @@ Opcodes grouped by functional category.
 
 ### bench_erc20_stylus - transfer
 
-- **Total Gas Used:** 481,795
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,953,947,940, proof_size=69,961
+- **Total Gas Used:** 479,795
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,953,934,844, proof_size=69,958
 - **Weight Consumed:** ref_time=1,045,179,420 (53.5% of total), proof_size=61,657
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 62,290    | 4          | 474,503,148 | 41,092     | 45.4%         | 66.6%           |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 62,291    | 4          | 474,503,148 | 41,092     | 45.4%         | 66.6%           |
 | Crypto   | hash_keccak_256                           | 996       | 4          | 49,832,224  | 0          | 4.8%          | 0.0%            |
 | Events   | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 1.3%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size            | 14        | 3          | 684,308     | 0          | 0.1%          | 0.0%            |
@@ -291,7 +2693,7 @@ Opcodes grouped by functional category.
 
 ### BenchERC721_evm - deploy
 
-- **Total Gas Used:** 9,185,109
+- **Total Gas Used:** 17,415,109
 - **Base Call Weight:** ref_time=1,528,204,564, proof_size=6,934
 - **Total Weight:** ref_time=1,529,619,794, proof_size=6,934
 - **Weight Consumed:** ref_time=1,415,230 (0.1% of total), proof_size=0
@@ -308,7 +2710,7 @@ Opcodes grouped by functional category.
 
 ### BenchERC721_pvm - deploy
 
-- **Total Gas Used:** 24,017,029
+- **Total Gas Used:** 33,689,629
 - **Base Call Weight:** ref_time=1,644,126,643, proof_size=6,934
 - **Total Weight:** ref_time=1,656,651,381, proof_size=6,934
 - **Weight Consumed:** ref_time=12,524,738 (0.8% of total), proof_size=0
@@ -322,21 +2724,21 @@ Opcodes grouped by functional category.
 
 ### bench_erc721_ink - deploy
 
-- **Total Gas Used:** 38,056,024
-- **Base Call Weight:** ref_time=1,753,509,280, proof_size=6,934
-- **Total Weight:** ref_time=1,933,389,094, proof_size=17,191
-- **Weight Consumed:** ref_time=179,879,814 (9.3% of total), proof_size=10,257
+- **Total Gas Used:** 44,450,894
+- **Base Call Weight:** ref_time=1,720,473,823, proof_size=6,934
+- **Total Weight:** ref_time=1,899,883,377, proof_size=17,191
+- **Weight Consumed:** ref_time=179,409,554 (9.4% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 47,385    | 1          | 169,280,401 | 10,257     | 94.1%         | 100.0%          |
+| Storage  | set_storage    | 47,385    | 1          | 169,280,401 | 10,257     | 94.4%         | 100.0%          |
 | Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### bench_erc721_stylus - deploy
 
-- **Total Gas Used:** 33,045,460
+- **Total Gas Used:** 43,594,460
 - **Base Call Weight:** ref_time=1,714,707,517, proof_size=6,934
 - **Total Weight:** ref_time=1,732,163,378, proof_size=6,934
 - **Weight Consumed:** ref_time=17,455,861 (1.0% of total), proof_size=0
@@ -349,57 +2751,57 @@ Opcodes grouped by functional category.
 
 ### BenchERC721_evm - mint
 
-- **Total Gas Used:** 460,889
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,568,617,213, proof_size=70,970
+- **Total Gas Used:** 458,888
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,568,604,117, proof_size=70,967
 - **Weight Consumed:** ref_time=660,280,861 (42.1% of total), proof_size=62,765
 
 | Category     | Opcodes Used                                                                  | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                 | 117,808   | 6          | 610,495,030 | 61,670     | 92.5%         | 98.3%           |
-| Crypto       | KECCAK256                                                                     | 749       | 3          | 37,374,168  | 0          | 5.7%          | 0.0%            |
-| Events       | LOG4                                                                          | 108       | 1          | 5,368,000   | 0          | 0.8%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2 | 38        | 89         | 2,036,061   | 0          | 0.3%          | 0.0%            |
-| Context      | CALLER                                                                        | 25        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                         | 22        | 21         | 1,154,548   | 0          | 0.2%          | 0.0%            |
+| Storage      | SLOAD, SSTORE                                                                 | 117,812   | 6          | 610,495,030 | 61,670     | 92.5%         | 98.3%           |
+| Crypto       | KECCAK256                                                                     | 748       | 3          | 37,374,168  | 0          | 5.7%          | 0.0%            |
+| Events       | LOG4                                                                          | 107       | 1          | 5,368,000   | 0          | 0.8%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2 | 42        | 89         | 2,036,061   | 0          | 0.3%          | 0.0%            |
+| Context      | CALLER                                                                        | 24        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                         | 21        | 21         | 1,154,548   | 0          | 0.2%          | 0.0%            |
 | Bitwise      | AND, NOT, OR, SHL, SHR                                                        | 8         | 16         | 374,448     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                       | 6         | 10         | 234,030     | 0          | 0.0%          | 0.0%            |
-| Memory       | MSTORE                                                                        | 4         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                       | 3         | 10         | 234,030     | 0          | 0.0%          | 0.0%            |
+| Memory       | MSTORE                                                                        | 2         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
 | Arithmetic   | ADD, SUB                                                                      | 3         | 5          | 117,015     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                    | 1         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                    | 2         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                          | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchERC721_pvm - mint
 
-- **Total Gas Used:** 463,104
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,679,392,887, proof_size=78,065
+- **Total Gas Used:** 461,104
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,679,379,791, proof_size=78,062
 - **Weight Consumed:** ref_time=771,056,535 (45.9% of total), proof_size=69,860
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage  | get_storage_or_zero, set_storage_or_clear | 117,805   | 6          | 610,296,118 | 61,542     | 79.2%         | 88.1%           |
 | Crypto   | hash_keccak_256                           | 748       | 3          | 37,374,168  | 0          | 4.8%          | 0.0%            |
-| Events   | deposit_event                             | 108       | 1          | 5,368,000   | 0          | 0.7%          | 0.0%            |
+| Events   | deposit_event                             | 107       | 1          | 5,368,000   | 0          | 0.7%          | 0.0%            |
 | Context  | caller                                    | 32        | 4          | 1,608,000   | 0          | 0.2%          | 0.0%            |
-| Calldata | call_data_load, call_data_size            | 19        | 3          | 994,000     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_load, call_data_size            | 21        | 3          | 994,000     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### bench_erc721_ink - mint
 
-- **Total Gas Used:** 464,901
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,169,230,400, proof_size=86,666
-- **Weight Consumed:** ref_time=1,260,894,048 (58.1% of total), proof_size=78,461
+- **Total Gas Used:** 461,982
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=2,123,302,061, proof_size=84,612
+- **Weight Consumed:** ref_time=1,214,978,805 (57.2% of total), proof_size=76,410
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 110,474   | 5          | 643,705,805 | 51,285     | 51.1%         | 65.4%           |
-| Crypto   | hash_keccak_256          | 499       | 2          | 24,916,112  | 0          | 2.0%          | 0.0%            |
-| Other    | delegate_call            | 298       | 1          | 14,918,754  | 2,057      | 1.2%          | 2.6%            |
-| Events   | deposit_event            | 108       | 1          | 5,368,000   | 0          | 0.4%          | 0.0%            |
+| Storage  | get_storage, set_storage | 110,474   | 5          | 643,705,805 | 51,285     | 53.0%         | 67.1%           |
+| Crypto   | hash_keccak_256          | 498       | 2          | 24,916,112  | 0          | 2.1%          | 0.0%            |
+| Other    | delegate_call            | 298       | 1          | 14,918,754  | 2,057      | 1.2%          | 2.7%            |
+| Events   | deposit_event            | 107       | 1          | 5,368,000   | 0          | 0.4%          | 0.0%            |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.2%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
@@ -407,24 +2809,24 @@ Opcodes grouped by functional category.
 
 ### bench_erc721_stylus - mint
 
-- **Total Gas Used:** 470,100
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,029,212,247, proof_size=82,447
+- **Total Gas Used:** 468,100
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=2,029,199,151, proof_size=82,444
 - **Weight Consumed:** ref_time=1,120,875,895 (55.2% of total), proof_size=74,242
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 117,806   | 6          | 610,296,118 | 61,542     | 54.4%         | 82.9%           |
-| Crypto   | hash_keccak_256                           | 996       | 4          | 49,832,224  | 0          | 4.4%          | 0.0%            |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 117,804   | 6          | 610,296,118 | 61,542     | 54.4%         | 82.9%           |
+| Crypto   | hash_keccak_256                           | 998       | 4          | 49,832,224  | 0          | 4.4%          | 0.0%            |
 | Events   | deposit_event                             | 107       | 1          | 5,368,000   | 0          | 0.5%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size            | 13        | 3          | 680,660     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size            | 14        | 3          | 680,660     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                                    | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchStorage_evm - deploy
 
-- **Total Gas Used:** 7,948,913
+- **Total Gas Used:** 16,056,913
 - **Base Call Weight:** ref_time=1,518,540,364, proof_size=6,934
 - **Total Weight:** ref_time=1,519,834,394, proof_size=6,934
 - **Weight Consumed:** ref_time=1,294,030 (0.1% of total), proof_size=0
@@ -441,7 +2843,7 @@ Opcodes grouped by functional category.
 
 ### BenchStorage_pvm - deploy
 
-- **Total Gas Used:** 13,181,847
+- **Total Gas Used:** 21,804,847
 - **Base Call Weight:** ref_time=1,559,436,037, proof_size=6,934
 - **Total Weight:** ref_time=1,571,557,695, proof_size=6,934
 - **Weight Consumed:** ref_time=12,121,658 (0.8% of total), proof_size=0
@@ -455,21 +2857,21 @@ Opcodes grouped by functional category.
 
 ### bench_storage_ink - deploy
 
-- **Total Gas Used:** 15,680,986
-- **Base Call Weight:** ref_time=1,578,603,367, proof_size=6,934
-- **Total Weight:** ref_time=1,758,483,181, proof_size=17,191
-- **Weight Consumed:** ref_time=179,879,814 (10.2% of total), proof_size=10,257
+- **Total Gas Used:** 23,169,960
+- **Base Call Weight:** ref_time=1,568,826,418, proof_size=6,934
+- **Total Weight:** ref_time=1,748,168,792, proof_size=17,191
+- **Weight Consumed:** ref_time=179,342,374 (10.3% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 47,385    | 1          | 169,280,401 | 10,257     | 94.1%         | 100.0%          |
-| Calldata | call_data_copy | 39        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
+| Storage  | set_storage    | 47,386    | 1          | 169,280,401 | 10,257     | 94.4%         | 100.0%          |
+| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### bench_storage_stylus - deploy
 
-- **Total Gas Used:** 28,290,072
+- **Total Gas Used:** 38,377,472
 - **Base Call Weight:** ref_time=1,677,532,561, proof_size=6,934
 - **Total Weight:** ref_time=1,686,792,462, proof_size=6,934
 - **Weight Consumed:** ref_time=9,259,901 (0.5% of total), proof_size=0
@@ -482,64 +2884,64 @@ Opcodes grouped by functional category.
 
 ### BenchStorage_evm - read_100
 
-- **Total Gas Used:** 410,094
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,008,874,142, proof_size=8,799
+- **Total Gas Used:** 408,093
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,008,861,046, proof_size=8,796
 - **Weight Consumed:** ref_time=100,105,622 (9.9% of total), proof_size=495
 
 | Category     | Opcodes Used                                                     | Total Gas | Call Count | ref time   | proof size | % of ref time | % of proof size |
 | ------------ | ---------------------------------------------------------------- | --------- | ---------- | ---------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH4, SWAP1, SWAP2 | 825       | 1,842      | 41,540,325 | 0          | 41.5%         | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                            | 765       | 914        | 38,154,691 | 0          | 38.1%         | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                          | 142       | 306        | 7,161,318  | 0          | 7.2%          | 0.0%            |
-| Bitwise      | AND, NOT, SHL, SHR                                               | 99        | 209        | 4,891,227  | 0          | 4.9%          | 0.0%            |
-| Memory       | MSTORE                                                           | 96        | 201        | 4,704,003  | 0          | 4.7%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH4, SWAP1, SWAP2 | 831       | 1,842      | 41,540,325 | 0          | 41.5%         | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                            | 764       | 914        | 38,154,691 | 0          | 38.1%         | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                          | 143       | 306        | 7,161,318  | 0          | 7.2%          | 0.0%            |
+| Bitwise      | AND, NOT, SHL, SHR                                               | 95        | 209        | 4,891,227  | 0          | 4.9%          | 0.0%            |
+| Memory       | MSTORE                                                           | 93        | 201        | 4,704,003  | 0          | 4.7%          | 0.0%            |
 | Arithmetic   | ADD, SUB                                                         | 51        | 105        | 2,457,315  | 0          | 2.5%          | 0.0%            |
 | Ether/Gas    | CALLVALUE                                                        | 7         | 1          | 336,000    | 0          | 0.3%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                       | 2         | 5          | 101,413    | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                       | 3         | 5          | 101,413    | 0          | 0.1%          | 0.0%            |
 | Return       | STOP                                                             | 0         | 1          | 0          | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchStorage_pvm - read_100
 
-- **Total Gas Used:** 440,756
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,541,964,523, proof_size=11,364
+- **Total Gas Used:** 438,755
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,541,951,427, proof_size=11,361
 - **Weight Consumed:** ref_time=1,633,196,003 (64.2% of total), proof_size=3,060
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
 | Calldata  | call_data_load, call_data_size | 27        | 4          | 1,332,000 | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                    | 11        | 1          | 550,198   | 0          | 0.0%          | 0.0%            |
-| Ether/Gas | value_transferred              | 6         | 1          | 336,000   | 0          | 0.0%          | 0.0%            |
+| Ether/Gas | value_transferred              | 7         | 1          | 336,000   | 0          | 0.0%          | 0.0%            |
 
 
 ### bench_storage_ink - read_100
 
-- **Total Gas Used:** 621,848
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=11,596,567,180, proof_size=1,050,111
-- **Weight Consumed:** ref_time=10,687,798,660 (92.2% of total), proof_size=1,041,807
+- **Total Gas Used:** 611,576
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=11,182,998,333, proof_size=1,049,501
+- **Weight Consumed:** ref_time=10,274,242,909 (91.9% of total), proof_size=1,041,200
 
 | Category  | Opcodes Used      | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ----------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage       | 137,261   | 101        | 6,863,185,817 | 1,037,557  | 64.2%         | 99.6%           |
+| Storage   | get_storage       | 137,267   | 101        | 6,863,185,817 | 1,037,557  | 66.8%         | 99.7%           |
 | Calldata  | call_data_copy    | 38        | 1          | 1,908,332     | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return       | 11        | 1          | 550,198       | 0          | 0.0%          | 0.0%            |
-| Ether/Gas | value_transferred | 7         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
+| Ether/Gas | value_transferred | 6         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### bench_storage_stylus - read_100
 
-- **Total Gas Used:** 711,366
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=16,072,466,906, proof_size=1,047,596
+- **Total Gas Used:** 709,365
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=16,072,453,810, proof_size=1,047,593
 - **Weight Consumed:** ref_time=15,163,698,386 (94.3% of total), proof_size=1,039,292
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero            | 135,958   | 100        | 6,797,744,500 | 1,028,900  | 44.8%         | 99.0%           |
-| Crypto    | hash_keccak_256                | 24,913    | 100        | 1,245,805,600 | 0          | 8.2%          | 0.0%            |
+| Storage   | get_storage_or_zero            | 135,955   | 100        | 6,797,744,500 | 1,028,900  | 44.8%         | 99.0%           |
+| Crypto    | hash_keccak_256                | 24,916    | 100        | 1,245,805,600 | 0          | 8.2%          | 0.0%            |
 | Calldata  | call_data_copy, call_data_size | 14        | 3          | 684,308       | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return                    | 11        | 1          | 550,198       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred              | 7         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
@@ -547,35 +2949,35 @@ Opcodes grouped by functional category.
 
 ### BenchStorage_evm - readWrite_100
 
-- **Total Gas Used:** 1,047,396
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=32,874,004,245, proof_size=3,095,499
+- **Total Gas Used:** 1,045,396
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=32,873,991,149, proof_size=3,095,496
 - **Weight Consumed:** ref_time=31,965,235,725 (97.2% of total), proof_size=3,087,195
 
 | Category     | Opcodes Used                                                            | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------- | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                           | 610,524   | 300        | 30,526,025,100 | 3,086,700  | 95.5%         | 100.0%          |
-| Crypto       | KECCAK256                                                               | 24,918    | 100        | 1,245,805,600  | 0          | 3.9%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH4, SWAP1, SWAP2, SWAP4 | 1,834     | 4,042      | 92,246,825     | 0          | 0.3%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 922       | 1,014      | 45,955,691     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                  | 517       | 1,109      | 25,953,927     | 0          | 0.1%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                | 289       | 605        | 14,158,815     | 0          | 0.0%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                 | 189       | 407        | 9,525,021      | 0          | 0.0%          | 0.0%            |
-| Memory       | MSTORE                                                                  | 93        | 201        | 4,704,003      | 0          | 0.0%          | 0.0%            |
+| Storage      | SLOAD, SSTORE                                                           | 610,523   | 300        | 30,526,025,100 | 3,086,700  | 95.5%         | 100.0%          |
+| Crypto       | KECCAK256                                                               | 24,917    | 100        | 1,245,805,600  | 0          | 3.9%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH4, SWAP1, SWAP2, SWAP4 | 1,842     | 4,042      | 92,246,825     | 0          | 0.3%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 921       | 1,014      | 45,955,691     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                  | 520       | 1,109      | 25,953,927     | 0          | 0.1%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                | 285       | 605        | 14,158,815     | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                 | 187       | 407        | 9,525,021      | 0          | 0.0%          | 0.0%            |
+| Memory       | MSTORE                                                                  | 91        | 201        | 4,704,003      | 0          | 0.0%          | 0.0%            |
 | Calldata     | CALLDATALOAD, CALLDATASIZE                                              | 3         | 5          | 101,413        | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                    | 0         | 1          | 0              | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchStorage_pvm - readWrite_100
 
-- **Total Gas Used:** 1,102,876
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=35,647,987,302, proof_size=3,098,064
+- **Total Gas Used:** 1,100,876
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=35,647,974,206, proof_size=3,098,061
 - **Weight Consumed:** ref_time=34,739,218,782 (97.5% of total), proof_size=3,089,760
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 610,519   | 300        | 30,526,025,100 | 3,086,700  | 87.9%         | 99.9%           |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 610,520   | 300        | 30,526,025,100 | 3,086,700  | 87.9%         | 99.9%           |
 | Crypto   | hash_keccak_256                           | 24,916    | 100        | 1,245,805,600  | 0          | 3.6%          | 0.0%            |
 | Calldata | call_data_load, call_data_size            | 27        | 4          | 1,332,000      | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198        | 0          | 0.0%          | 0.0%            |
@@ -583,28 +2985,28 @@ Opcodes grouped by functional category.
 
 ### bench_storage_ink - readWrite_100
 
-- **Total Gas Used:** 1,035,304
+- **Total Gas Used:** 1,013,527
 - **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
-- **Total Weight:** ref_time=32,369,376,185, proof_size=2,087,665
-- **Weight Consumed:** ref_time=31,460,620,761 (97.2% of total), proof_size=2,079,364
+- **Total Weight:** ref_time=31,280,527,074, proof_size=2,087,058
+- **Weight Consumed:** ref_time=30,371,771,650 (97.1% of total), proof_size=2,078,757
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 479,237   | 202        | 23,961,754,318 | 2,075,114  | 76.2%         | 99.8%           |
+| Storage  | get_storage, set_storage | 479,234   | 202        | 23,961,754,318 | 2,075,114  | 78.9%         | 99.8%           |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332      | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198        | 0          | 0.0%          | 0.0%            |
 
 
 ### bench_storage_stylus - readWrite_100
 
-- **Total Gas Used:** 1,427,779
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=51,893,119,325, proof_size=3,105,396
+- **Total Gas Used:** 1,425,778
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=51,893,106,229, proof_size=3,105,393
 - **Weight Consumed:** ref_time=50,984,350,805 (98.2% of total), proof_size=3,097,092
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 610,521   | 300        | 30,526,025,100 | 3,086,700  | 59.9%         | 99.7%           |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 610,519   | 300        | 30,526,025,100 | 3,086,700  | 59.9%         | 99.7%           |
 | Crypto   | hash_keccak_256                           | 49,832    | 200        | 2,491,611,200  | 0          | 4.9%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size            | 14        | 3          | 684,308        | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198        | 0          | 0.0%          | 0.0%            |
@@ -612,35 +3014,35 @@ Opcodes grouped by functional category.
 
 ### BenchStorage_evm - write_100
 
-- **Total Gas Used:** 962,966
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=26,012,473,834, proof_size=2,066,567
+- **Total Gas Used:** 960,965
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=26,012,460,738, proof_size=2,066,564
 - **Weight Consumed:** ref_time=25,103,705,314 (96.5% of total), proof_size=2,058,263
 
 | Category     | Opcodes Used                                                            | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------- | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                           | 527,366   | 200        | 23,728,267,864 | 2,057,768  | 94.5%         | 100.0%          |
-| Crypto       | KECCAK256                                                               | 24,916    | 100        | 1,245,805,600  | 0          | 5.0%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH3, PUSH4, SWAP1, SWAP2 | 1,193     | 2,646      | 59,576,237     | 0          | 0.2%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 764       | 915        | 38,232,701     | 0          | 0.2%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                  | 288       | 609        | 14,252,427     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                 | 143       | 308        | 7,208,124      | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                | 94        | 205        | 4,797,615      | 0          | 0.0%          | 0.0%            |
-| Memory       | MSTORE                                                                  | 92        | 201        | 4,704,003      | 0          | 0.0%          | 0.0%            |
+| Storage      | SLOAD, SSTORE                                                           | 527,364   | 200        | 23,728,267,864 | 2,057,768  | 94.5%         | 100.0%          |
+| Crypto       | KECCAK256                                                               | 24,917    | 100        | 1,245,805,600  | 0          | 5.0%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, PUSH0, PUSH1, PUSH2, PUSH3, PUSH4, SWAP1, SWAP2 | 1,190     | 2,646      | 59,576,237     | 0          | 0.2%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 768       | 915        | 38,232,701     | 0          | 0.2%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                  | 283       | 609        | 14,252,427     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                 | 141       | 308        | 7,208,124      | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                | 98        | 205        | 4,797,615      | 0          | 0.0%          | 0.0%            |
+| Memory       | MSTORE                                                                  | 94        | 201        | 4,704,003      | 0          | 0.0%          | 0.0%            |
 | Calldata     | CALLDATALOAD, CALLDATASIZE                                              | 3         | 5          | 101,413        | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                    | 0         | 1          | 0              | 0          | 0.0%          | 0.0%            |
 
 
 ### BenchStorage_pvm - write_100
 
-- **Total Gas Used:** 1,011,434
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=28,435,903,318, proof_size=2,069,100
+- **Total Gas Used:** 1,009,434
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=28,435,890,222, proof_size=2,069,097
 - **Weight Consumed:** ref_time=27,527,134,798 (96.8% of total), proof_size=2,060,796
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 527,363   | 200        | 23,728,218,136 | 2,057,736  | 86.2%         | 99.9%           |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 527,364   | 200        | 23,728,218,136 | 2,057,736  | 86.2%         | 99.9%           |
 | Crypto   | hash_keccak_256                           | 24,914    | 100        | 1,245,805,600  | 0          | 4.5%          | 0.0%            |
 | Calldata | call_data_load, call_data_size            | 27        | 4          | 1,332,000      | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198        | 0          | 0.0%          | 0.0%            |
@@ -648,36 +3050,36 @@ Opcodes grouped by functional category.
 
 ### bench_storage_ink - write_100
 
-- **Total Gas Used:** 877,321
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=21,810,252,993, proof_size=1,060,352
-- **Weight Consumed:** ref_time=20,901,484,473 (95.8% of total), proof_size=1,052,048
+- **Total Gas Used:** 860,935
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=21,090,947,966, proof_size=1,059,742
+- **Weight Consumed:** ref_time=20,182,192,542 (95.7% of total), proof_size=1,051,441
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 394,529   | 102        | 17,166,489,850 | 1,047,798  | 82.1%         | 99.6%           |
+| Storage  | get_storage, set_storage | 394,531   | 102        | 17,166,489,850 | 1,047,798  | 85.1%         | 99.7%           |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332      | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198        | 0          | 0.0%          | 0.0%            |
 
 
 ### bench_storage_stylus - write_100
 
-- **Total Gas Used:** 1,169,837
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=36,356,024,921, proof_size=2,076,432
+- **Total Gas Used:** 1,167,836
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=36,356,011,825, proof_size=2,076,429
 - **Weight Consumed:** ref_time=35,447,256,401 (97.5% of total), proof_size=2,068,128
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 527,366   | 200        | 23,728,218,136 | 2,057,736  | 66.9%         | 99.5%           |
-| Crypto   | hash_keccak_256                           | 24,916    | 100        | 1,245,805,600  | 0          | 3.5%          | 0.0%            |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 527,364   | 200        | 23,728,218,136 | 2,057,736  | 66.9%         | 99.5%           |
+| Crypto   | hash_keccak_256                           | 24,917    | 100        | 1,245,805,600  | 0          | 3.5%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size            | 14        | 3          | 684,308        | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198        | 0          | 0.0%          | 0.0%            |
 
 
 ### CoinTool_App_evm - deploy
 
-- **Total Gas Used:** 22,237,227
+- **Total Gas Used:** 22,233,227
 - **Base Call Weight:** ref_time=1,562,222,548, proof_size=6,934
 - **Total Weight:** ref_time=1,802,555,076, proof_size=27,480
 - **Weight Consumed:** ref_time=240,332,528 (13.3% of total), proof_size=20,546
@@ -696,7 +3098,7 @@ Opcodes grouped by functional category.
 
 ### CoinTool_App_pvm - deploy
 
-- **Total Gas Used:** 71,436,607
+- **Total Gas Used:** 85,316,807
 - **Base Call Weight:** ref_time=1,982,985,709, proof_size=6,934
 - **Total Weight:** ref_time=2,361,524,524, proof_size=27,448
 - **Weight Consumed:** ref_time=378,538,815 (16.0% of total), proof_size=20,514
@@ -712,57 +3114,57 @@ Opcodes grouped by functional category.
 
 ### CoinTool_App_evm - t
 
-- **Total Gas Used:** 361,161,055
-- **Base Call Weight:** ref_time=912,998,528, proof_size=9,273
-- **Total Weight:** ref_time=189,356,933,269, proof_size=9,770,932
+- **Total Gas Used:** 361,159,055
+- **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
+- **Total Weight:** ref_time=189,356,920,173, proof_size=9,770,929
 - **Weight Consumed:** ref_time=188,443,934,741 (99.5% of total), proof_size=9,761,659
 
 | Category     | Opcodes Used                                                                                                                                                                               | Total Gas  | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ---------- | -------------- | ---------- | ------------- | --------------- |
 | Storage      | SLOAD, SSTORE                                                                                                                                                                              | 17,781,910 | 753        | 91,815,664,129 | 7,737,953  | 48.7%         | 79.3%           |
-| Creation     | CREATE2                                                                                                                                                                                    | 967,269    | 50         | 48,365,136,950 | 341,200    | 25.7%         | 3.5%            |
-| Calls        | CALL, DELEGATECALL                                                                                                                                                                         | 855,499    | 200        | 42,779,677,600 | 1,679,350  | 22.7%         | 17.2%           |
-| Crypto       | KECCAK256                                                                                                                                                                                  | 38,329     | 154        | 1,916,379,652  | 0          | 1.0%          | 0.0%            |
-| Events       | LOG2                                                                                                                                                                                       | 22,223     | 50         | 1,111,078,400  | 0          | 0.6%          | 0.0%            |
-| Stack        | DUP1, DUP10, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH12, PUSH2, PUSH20, PUSH3, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 15,540     | 33,594     | 776,402,326    | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                      | 10,277     | 9,751      | 513,532,029    | 0          | 0.3%          | 0.0%            |
-| Ether/Gas    | CALLVALUE, GAS                                                                                                                                                                             | 8,855      | 250        | 442,600,000    | 0          | 0.2%          | 0.0%            |
-| Context      | ADDRESS, CALLER, ORIGIN, TIMESTAMP                                                                                                                                                         | 3,515      | 454        | 176,031,000    | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                    | 2,297      | 4,923      | 115,212,969    | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                   | 2,114      | 1,213      | 106,087,058    | 0          | 0.1%          | 0.0%            |
-| Arithmetic   | ADD, DIV, MUL, SUB                                                                                                                                                                         | 2,045      | 4,233      | 102,185,299    | 0          | 0.1%          | 0.0%            |
-| Code         | CODECOPY, CODESIZE                                                                                                                                                                         | 1,805      | 200        | 90,194,500     | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                                                                                                              | 1,312      | 2,813      | 65,832,639     | 0          | 0.0%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                     | 1,198      | 2,562      | 59,958,486     | 0          | 0.0%          | 0.0%            |
-| Return Data  | RETURNDATASIZE                                                                                                                                                                             | 68         | 200        | 3,120,400      | 0          | 0.0%          | 0.0%            |
+| Creation     | CREATE2                                                                                                                                                                                    | 967,270    | 50         | 48,365,136,950 | 341,200    | 25.7%         | 3.5%            |
+| Calls        | CALL, DELEGATECALL                                                                                                                                                                         | 855,503    | 200        | 42,779,677,600 | 1,679,350  | 22.7%         | 17.2%           |
+| Crypto       | KECCAK256                                                                                                                                                                                  | 38,327     | 154        | 1,916,379,652  | 0          | 1.0%          | 0.0%            |
+| Events       | LOG2                                                                                                                                                                                       | 22,224     | 50         | 1,111,078,400  | 0          | 0.6%          | 0.0%            |
+| Stack        | DUP1, DUP10, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH12, PUSH2, PUSH20, PUSH3, PUSH32, PUSH4, PUSH8, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7 | 15,522     | 33,594     | 776,402,326    | 0          | 0.4%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                      | 10,278     | 9,751      | 513,532,029    | 0          | 0.3%          | 0.0%            |
+| Ether/Gas    | CALLVALUE, GAS                                                                                                                                                                             | 8,854      | 250        | 442,600,000    | 0          | 0.2%          | 0.0%            |
+| Context      | ADDRESS, CALLER, ORIGIN, TIMESTAMP                                                                                                                                                         | 3,512      | 454        | 176,031,000    | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                    | 2,302      | 4,923      | 115,212,969    | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                   | 2,120      | 1,213      | 106,087,058    | 0          | 0.1%          | 0.0%            |
+| Arithmetic   | ADD, DIV, MUL, SUB                                                                                                                                                                         | 2,049      | 4,233      | 102,185,299    | 0          | 0.1%          | 0.0%            |
+| Code         | CODECOPY, CODESIZE                                                                                                                                                                         | 1,804      | 200        | 90,194,500     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                              | 1,317      | 2,813      | 65,832,639     | 0          | 0.0%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                     | 1,199      | 2,562      | 59,958,486     | 0          | 0.0%          | 0.0%            |
+| Return Data  | RETURNDATASIZE                                                                                                                                                                             | 67         | 200        | 3,120,400      | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN, STOP                                                                                                                                                                               | 0          | 251        | 0              | 0          | 0.0%          | 0.0%            |
 
 
 ### CoinTool_App_pvm - t
 
-- **Total Gas Used:** 561,215,406
-- **Base Call Weight:** ref_time=912,998,528, proof_size=9,273
-- **Total Weight:** ref_time=223,394,463,534, proof_size=17,147,686
+- **Total Gas Used:** 561,213,405
+- **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
+- **Total Weight:** ref_time=223,394,450,438, proof_size=17,147,683
 - **Weight Consumed:** ref_time=222,481,465,006 (99.6% of total), proof_size=17,138,413
 
 | Category    | Opcodes Used                                   | Total Gas  | Call Count | ref time       | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | ---------- | ---------- | -------------- | ---------- | ------------- | --------------- |
-| Storage     | get_storage_or_zero, set_storage_or_clear      | 17,781,822 | 753        | 91,810,542,145 | 7,734,657  | 41.3%         | 45.1%           |
-| Calls       | call_evm, delegate_call_evm                    | 1,081,844  | 200        | 54,095,067,400 | 8,433,300  | 24.3%         | 49.2%           |
+| Storage     | get_storage_or_zero, set_storage_or_clear      | 17,781,817 | 753        | 91,810,542,145 | 7,734,657  | 41.3%         | 45.1%           |
+| Calls       | call_evm, delegate_call_evm                    | 1,081,841  | 200        | 54,095,067,400 | 8,433,300  | 24.3%         | 49.2%           |
 | Creation    | instantiate                                    | 514,450    | 50         | 25,724,113,550 | 370,950    | 11.6%         | 2.2%            |
-| Immutables  | get_immutable_data, set_immutable_data         | 197,782    | 200        | 9,889,211,650  | 570,150    | 4.4%          | 3.3%            |
-| Crypto      | hash_keccak_256                                | 38,332     | 154        | 1,916,379,652  | 0          | 0.9%          | 0.0%            |
-| Events      | deposit_event                                  | 22,220     | 50         | 1,111,078,400  | 0          | 0.5%          | 0.0%            |
-| Ether/Gas   | ref_time_left, value_transferred               | 8,850      | 250        | 442,600,000    | 0          | 0.2%          | 0.0%            |
-| Calldata    | call_data_copy, call_data_load, call_data_size | 5,239      | 1,010      | 262,453,692    | 0          | 0.1%          | 0.0%            |
-| Context     | address, caller, now, origin                   | 3,524      | 454        | 176,031,000    | 0          | 0.1%          | 0.0%            |
+| Immutables  | get_immutable_data, set_immutable_data         | 197,786    | 200        | 9,889,211,650  | 570,150    | 4.4%          | 3.3%            |
+| Crypto      | hash_keccak_256                                | 38,329     | 154        | 1,916,379,652  | 0          | 0.9%          | 0.0%            |
+| Events      | deposit_event                                  | 22,221     | 50         | 1,111,078,400  | 0          | 0.5%          | 0.0%            |
+| Ether/Gas   | ref_time_left, value_transferred               | 8,852      | 250        | 442,600,000    | 0          | 0.2%          | 0.0%            |
+| Calldata    | call_data_copy, call_data_load, call_data_size | 5,245      | 1,010      | 262,453,692    | 0          | 0.1%          | 0.0%            |
+| Context     | address, caller, now, origin                   | 3,525      | 454        | 176,031,000    | 0          | 0.1%          | 0.0%            |
 | Return      | seal_return                                    | 2,768      | 251        | 138,416,498    | 0          | 0.1%          | 0.0%            |
-| Return Data | return_data_size                               | 1,369      | 200        | 68,400,000     | 0          | 0.0%          | 0.0%            |
+| Return Data | return_data_size                               | 1,370      | 200        | 68,400,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### Computation_evm - deploy
 
-- **Total Gas Used:** 7,557,451
+- **Total Gas Used:** 15,627,451
 - **Base Call Weight:** ref_time=1,515,480,034, proof_size=6,934
 - **Total Weight:** ref_time=1,516,735,684, proof_size=6,934
 - **Weight Consumed:** ref_time=1,255,650 (0.1% of total), proof_size=0
@@ -779,7 +3181,7 @@ Opcodes grouped by functional category.
 
 ### Computation_pvm - deploy
 
-- **Total Gas Used:** 12,221,744
+- **Total Gas Used:** 20,751,544
 - **Base Call Weight:** ref_time=1,551,930,175, proof_size=6,934
 - **Total Weight:** ref_time=1,564,387,733, proof_size=6,934
 - **Weight Consumed:** ref_time=12,457,558 (0.8% of total), proof_size=0
@@ -793,21 +3195,21 @@ Opcodes grouped by functional category.
 
 ### computation_ink - deploy
 
-- **Total Gas Used:** 11,960,023
-- **Base Call Weight:** ref_time=1,549,514,125, proof_size=6,934
-- **Total Weight:** ref_time=1,728,319,059, proof_size=17,191
-- **Weight Consumed:** ref_time=178,804,934 (10.3% of total), proof_size=10,257
+- **Total Gas Used:** 18,411,902
+- **Base Call Weight:** ref_time=1,534,921,183, proof_size=6,934
+- **Total Weight:** ref_time=1,710,299,937, proof_size=17,191
+- **Weight Consumed:** ref_time=175,378,754 (10.3% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 47,386    | 1          | 169,280,401 | 10,257     | 94.7%         | 100.0%          |
-| Calldata | call_data_copy | 39        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
+| Storage  | set_storage    | 47,386    | 1          | 169,280,401 | 10,257     | 96.5%         | 100.0%          |
+| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### computation_stylus - deploy
 
-- **Total Gas Used:** 12,001,236
+- **Total Gas Used:** 20,509,636
 - **Base Call Weight:** ref_time=1,550,206,726, proof_size=6,934
 - **Total Weight:** ref_time=1,560,004,067, proof_size=6,934
 - **Weight Consumed:** ref_time=9,797,341 (0.6% of total), proof_size=0
@@ -820,130 +3222,130 @@ Opcodes grouped by functional category.
 
 ### Computation_evm - odd_product_10
 
-- **Total Gas Used:** 342,402
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=924,281,963, proof_size=8,510
+- **Total Gas Used:** 340,402
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=924,268,867, proof_size=8,507
 - **Weight Consumed:** ref_time=15,945,611 (1.7% of total), proof_size=305
 
 | Category     | Opcodes Used                                                           | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | ------------ | ---------------------------------------------------------------------- | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 125       | 274        | 6,326,611 | 0          | 39.7%         | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                  | 87        | 100        | 4,313,953 | 0          | 27.1%         | 0.0%            |
-| Math         | SIGNEXTEND                                                             | 41        | 53         | 2,067,265 | 0          | 13.0%         | 0.0%            |
-| Arithmetic   | ADD, MUL, SUB                                                          | 19        | 32         | 904,916   | 0          | 5.7%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SGT, SLT                                               | 18        | 37         | 865,911   | 0          | 5.4%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 132       | 274        | 6,326,611 | 0          | 39.7%         | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                  | 84        | 100        | 4,313,953 | 0          | 27.1%         | 0.0%            |
+| Math         | SIGNEXTEND                                                             | 44        | 53         | 2,067,265 | 0          | 13.0%         | 0.0%            |
+| Arithmetic   | ADD, MUL, SUB                                                          | 16        | 32         | 904,916   | 0          | 5.7%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SGT, SLT                                               | 16        | 37         | 865,911   | 0          | 5.4%          | 0.0%            |
 | Bitwise      | NOT, SHL, SHR                                                          | 10        | 22         | 514,866   | 0          | 3.2%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                              | 7         | 1          | 336,000   | 0          | 2.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                             | 1         | 4          | 78,010    | 0          | 0.5%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                              | 6         | 1          | 336,000   | 0          | 2.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                             | 0         | 4          | 78,010    | 0          | 0.5%          | 0.0%            |
 | Memory       | MLOAD, MSTORE                                                          | 2         | 3          | 70,209    | 0          | 0.4%          | 0.0%            |
 | Return       | RETURN                                                                 | 0         | 1          | 0         | 0          | 0.0%          | 0.0%            |
 
 
 ### Computation_pvm - odd_product_10
 
-- **Total Gas Used:** 343,910
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=999,675,452, proof_size=10,799
+- **Total Gas Used:** 341,909
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=999,662,356, proof_size=10,796
 - **Weight Consumed:** ref_time=91,339,100 (9.1% of total), proof_size=2,594
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
 | Calldata  | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 1.1%          | 0.0%            |
-| Return    | seal_return                    | 11        | 1          | 556,534  | 0          | 0.6%          | 0.0%            |
+| Return    | seal_return                    | 12        | 1          | 556,534  | 0          | 0.6%          | 0.0%            |
 | Ether/Gas | value_transferred              | 7         | 1          | 336,000  | 0          | 0.4%          | 0.0%            |
 
 
 ### computation_ink - odd_product_10
 
-- **Total Gas Used:** 344,664
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,037,385,110, proof_size=20,906
-- **Weight Consumed:** ref_time=129,048,758 (12.4% of total), proof_size=12,701
+- **Total Gas Used:** 342,159
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,012,159,856, proof_size=19,997
+- **Weight Consumed:** ref_time=103,836,600 (10.3% of total), proof_size=11,795
 
 | Category  | Opcodes Used      | Total Gas | Call Count | ref time   | proof size | % of ref time | % of proof size |
 | --------- | ----------------- | --------- | ---------- | ---------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage       | 1,358     | 1          | 67,927,717 | 10,257     | 52.6%         | 80.8%           |
-| Calldata  | call_data_copy    | 39        | 1          | 1,908,332  | 0          | 1.5%          | 0.0%            |
-| Return    | seal_return       | 11        | 1          | 556,534    | 0          | 0.4%          | 0.0%            |
+| Storage   | get_storage       | 1,358     | 1          | 67,927,717 | 10,257     | 65.4%         | 87.0%           |
+| Calldata  | call_data_copy    | 38        | 1          | 1,908,332  | 0          | 1.8%          | 0.0%            |
+| Return    | seal_return       | 11        | 1          | 556,534    | 0          | 0.5%          | 0.0%            |
 | Ether/Gas | value_transferred | 7         | 1          | 336,000    | 0          | 0.3%          | 0.0%            |
 
 
 ### computation_stylus - odd_product_10
 
-- **Total Gas Used:** 343,310
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=969,693,221, proof_size=10,692
+- **Total Gas Used:** 341,310
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=969,680,125, proof_size=10,689
 - **Weight Consumed:** ref_time=61,356,869 (6.3% of total), proof_size=2,487
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata  | call_data_copy, call_data_size | 14        | 3          | 680,660  | 0          | 1.1%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_size | 13        | 3          | 680,660  | 0          | 1.1%          | 0.0%            |
 | Return    | seal_return                    | 11        | 1          | 556,534  | 0          | 0.9%          | 0.0%            |
-| Ether/Gas | value_transferred              | 6         | 1          | 336,000  | 0          | 0.5%          | 0.0%            |
+| Ether/Gas | value_transferred              | 7         | 1          | 336,000  | 0          | 0.5%          | 0.0%            |
 
 
 ### Computation_evm - triangle_10
 
-- **Total Gas Used:** 342,339
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=921,114,757, proof_size=8,510
+- **Total Gas Used:** 340,338
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=921,101,661, proof_size=8,507
 - **Weight Consumed:** ref_time=12,778,405 (1.4% of total), proof_size=305
 
 | Category     | Opcodes Used                                        | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------- | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 106       | 224        | 5,226,670 | 0          | 40.9%         | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 108       | 224        | 5,226,670 | 0          | 40.9%         | 0.0%            |
 | Control Flow | JUMP, JUMPDEST, JUMPI                               | 82        | 90         | 4,165,734 | 0          | 32.6%         | 0.0%            |
-| Math         | SIGNEXTEND                                          | 28        | 33         | 1,287,165 | 0          | 10.1%         | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SGT, SLT                            | 10        | 25         | 585,075   | 0          | 4.6%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                            | 9         | 22         | 514,866   | 0          | 4.0%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                           | 7         | 1          | 336,000   | 0          | 2.6%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                          | 2         | 4          | 78,010    | 0          | 0.6%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                       | 3         | 3          | 70,209    | 0          | 0.5%          | 0.0%            |
+| Math         | SIGNEXTEND                                          | 24        | 33         | 1,287,165 | 0          | 10.1%         | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SGT, SLT                            | 13        | 25         | 585,075   | 0          | 4.6%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                            | 11        | 22         | 514,866   | 0          | 4.0%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                           | 6         | 1          | 336,000   | 0          | 2.6%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                          | 0         | 4          | 78,010    | 0          | 0.6%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                       | 2         | 3          | 70,209    | 0          | 0.5%          | 0.0%            |
 | Bitwise      | NOT, SHR                                            | 0         | 2          | 46,806    | 0          | 0.4%          | 0.0%            |
 | Return       | RETURN                                              | 0         | 1          | 0         | 0          | 0.0%          | 0.0%            |
 
 
 ### Computation_pvm - triangle_10
 
-- **Total Gas Used:** 343,735
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=990,942,052, proof_size=10,799
+- **Total Gas Used:** 341,735
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=990,928,956, proof_size=10,796
 - **Weight Consumed:** ref_time=82,605,700 (8.3% of total), proof_size=2,594
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata  | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 1.2%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size | 19        | 3          | 994,000  | 0          | 1.2%          | 0.0%            |
 | Return    | seal_return                    | 11        | 1          | 556,534  | 0          | 0.7%          | 0.0%            |
-| Ether/Gas | value_transferred              | 7         | 1          | 336,000  | 0          | 0.4%          | 0.0%            |
+| Ether/Gas | value_transferred              | 6         | 1          | 336,000  | 0          | 0.4%          | 0.0%            |
 
 
 ### computation_ink - triangle_10
 
-- **Total Gas Used:** 344,620
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,035,168,170, proof_size=20,906
-- **Weight Consumed:** ref_time=126,831,818 (12.3% of total), proof_size=12,701
+- **Total Gas Used:** 342,110
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,009,674,196, proof_size=19,997
+- **Weight Consumed:** ref_time=101,350,940 (10.0% of total), proof_size=11,795
 
 | Category  | Opcodes Used      | Total Gas | Call Count | ref time   | proof size | % of ref time | % of proof size |
 | --------- | ----------------- | --------- | ---------- | ---------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage       | 1,359     | 1          | 67,927,717 | 10,257     | 53.6%         | 80.8%           |
-| Calldata  | call_data_copy    | 39        | 1          | 1,908,332  | 0          | 1.5%          | 0.0%            |
-| Return    | seal_return       | 11        | 1          | 556,534    | 0          | 0.4%          | 0.0%            |
+| Storage   | get_storage       | 1,359     | 1          | 67,927,717 | 10,257     | 67.0%         | 87.0%           |
+| Calldata  | call_data_copy    | 38        | 1          | 1,908,332  | 0          | 1.9%          | 0.0%            |
+| Return    | seal_return       | 11        | 1          | 556,534    | 0          | 0.5%          | 0.0%            |
 | Ether/Gas | value_transferred | 7         | 1          | 336,000    | 0          | 0.3%          | 0.0%            |
 
 
 ### computation_stylus - triangle_10
 
-- **Total Gas Used:** 343,270
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=967,677,821, proof_size=10,692
+- **Total Gas Used:** 341,270
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=967,664,725, proof_size=10,689
 - **Weight Consumed:** ref_time=59,341,469 (6.1% of total), proof_size=2,487
 
 | Category  | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | --------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata  | call_data_copy, call_data_size | 14        | 3          | 680,660  | 0          | 1.1%          | 0.0%            |
-| Return    | seal_return                    | 11        | 1          | 556,534  | 0          | 0.9%          | 0.0%            |
-| Ether/Gas | value_transferred              | 7         | 1          | 336,000  | 0          | 0.6%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_size | 13        | 3          | 680,660  | 0          | 1.1%          | 0.0%            |
+| Return    | seal_return                    | 12        | 1          | 556,534  | 0          | 0.9%          | 0.0%            |
+| Ether/Gas | value_transferred              | 6         | 1          | 336,000  | 0          | 0.6%          | 0.0%            |
 
 
 ### DocumentAccessManagement_evm - configurePublicAccess
@@ -1074,7 +3476,7 @@ Opcodes grouped by functional category.
 
 ### DocumentAccessManagement_evm - deploy
 
-- **Total Gas Used:** 26,368,169
+- **Total Gas Used:** 36,263,969
 - **Base Call Weight:** ref_time=1,662,520,837, proof_size=6,934
 - **Total Weight:** ref_time=1,665,620,545, proof_size=6,934
 - **Weight Consumed:** ref_time=3,099,708 (0.2% of total), proof_size=0
@@ -1091,7 +3493,7 @@ Opcodes grouped by functional category.
 
 ### DocumentAccessManagement_pvm - deploy
 
-- **Total Gas Used:** 192,375,891
+- **Total Gas Used:** 218,390,291
 - **Base Call Weight:** ref_time=2,960,213,506, proof_size=6,934
 - **Total Weight:** ref_time=2,972,738,244, proof_size=6,934
 - **Weight Consumed:** ref_time=12,524,738 (0.4% of total), proof_size=0
@@ -1374,7 +3776,7 @@ Opcodes grouped by functional category.
 
 ### DotNS_evm - deploy
 
-- **Total Gas Used:** 23,706,227
+- **Total Gas Used:** 33,343,627
 - **Base Call Weight:** ref_time=1,641,710,593, proof_size=6,934
 - **Total Weight:** ref_time=1,644,549,317, proof_size=6,934
 - **Weight Consumed:** ref_time=2,838,724 (0.2% of total), proof_size=0
@@ -1391,7 +3793,7 @@ Opcodes grouped by functional category.
 
 ### DotNS_pvm - deploy
 
-- **Total Gas Used:** 161,895,485
+- **Total Gas Used:** 184,951,085
 - **Base Call Weight:** ref_time=2,721,926,548, proof_size=6,934
 - **Total Weight:** ref_time=2,734,451,286, proof_size=6,934
 - **Weight Consumed:** ref_time=12,524,738 (0.5% of total), proof_size=0
@@ -1405,7 +3807,7 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - deploy
 
-- **Total Gas Used:** 54,375,416
+- **Total Gas Used:** 66,994,216
 - **Base Call Weight:** ref_time=1,881,398,860, proof_size=6,934
 - **Total Weight:** ref_time=1,883,005,579, proof_size=6,934
 - **Weight Consumed:** ref_time=1,606,719 (0.1% of total), proof_size=0
@@ -1417,22 +3819,22 @@ Opcodes grouped by functional category.
 
 ### DotNS_evm - register
 
-- **Total Gas Used:** 1,129,744
+- **Total Gas Used:** 1,129,750
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=4,191,375,547, proof_size=263,190
-- **Weight Consumed:** ref_time=3,281,768,883 (78.3% of total), proof_size=254,694
+- **Total Weight:** ref_time=4,191,679,786, proof_size=263,190
+- **Weight Consumed:** ref_time=3,282,073,122 (78.3% of total), proof_size=254,694
 
 | Category     | Opcodes Used                                                                                                                                                                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 584,948   | 24         | 2,847,216,392 | 246,552    | 86.8%         | 96.8%           |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                             | 584,944   | 24         | 2,847,216,392 | 246,552    | 86.8%         | 96.8%           |
 | Crypto       | KECCAK256                                                                                                                                                                                 | 4,220     | 17         | 211,066,628   | 0          | 6.4%          | 0.0%            |
-| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 1,449     | 3,147      | 72,728,723    | 0          | 2.2%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 1,150     | 1,326      | 57,750,803    | 0          | 1.8%          | 0.0%            |
+| Stack        | DUP1, DUP10, DUP11, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, DUP9, POP, PUSH0, PUSH1, PUSH16, PUSH2, PUSH3, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 1,457     | 3,154      | 72,884,743    | 0          | 2.2%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                     | 1,157     | 1,327      | 57,828,813    | 0          | 1.8%          | 0.0%            |
 | Events       | LOG3                                                                                                                                                                                      | 613       | 1          | 30,648,352    | 0          | 0.9%          | 0.0%            |
-| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 246       | 552        | 12,918,456    | 0          | 0.4%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 253       | 527        | 12,333,381    | 0          | 0.4%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 235       | 490        | 11,467,470    | 0          | 0.3%          | 0.0%            |
-| Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                                             | 169       | 336        | 7,910,214     | 0          | 0.2%          | 0.0%            |
+| Bitwise      | AND, BYTE, NOT, OR, SHL, SHR                                                                                                                                                              | 260       | 553        | 12,941,859    | 0          | 0.4%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                   | 247       | 529        | 12,380,187    | 0          | 0.4%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                  | 232       | 490        | 11,467,470    | 0          | 0.3%          | 0.0%            |
+| Memory       | MCOPY, MLOAD, MSTORE, MSTORE8                                                                                                                                                             | 159       | 336        | 7,910,214     | 0          | 0.2%          | 0.0%            |
 | Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                                                                  | 57        | 15         | 2,938,636     | 0          | 0.1%          | 0.0%            |
 | Context      | CALLER, TIMESTAMP                                                                                                                                                                         | 39        | 5          | 1,964,000     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas    | CALLVALUE                                                                                                                                                                                 | 7         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
@@ -1441,36 +3843,36 @@ Opcodes grouped by functional category.
 
 ### DotNS_pvm - register
 
-- **Total Gas Used:** 1,213,204
+- **Total Gas Used:** 1,213,227
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=8,364,382,757, proof_size=350,830
-- **Weight Consumed:** ref_time=7,454,776,093 (89.1% of total), proof_size=342,334
+- **Total Weight:** ref_time=8,365,524,817, proof_size=350,830
+- **Weight Consumed:** ref_time=7,455,918,153 (89.1% of total), proof_size=342,334
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear      | 589,775   | 26         | 3,088,670,566 | 267,101    | 41.4%         | 78.0%           |
-| Crypto    | hash_keccak_256                                | 4,222     | 17         | 211,066,628   | 0          | 2.8%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear      | 589,774   | 26         | 3,088,670,566 | 267,101    | 41.4%         | 78.0%           |
+| Crypto    | hash_keccak_256                                | 4,221     | 17         | 211,066,628   | 0          | 2.8%          | 0.0%            |
 | Events    | deposit_event                                  | 613       | 1          | 30,648,352    | 0          | 0.4%          | 0.0%            |
 | Context   | caller, now                                    | 39        | 5          | 1,964,000     | 0          | 0.0%          | 0.0%            |
-| Calldata  | call_data_copy, call_data_load, call_data_size | 38        | 10         | 1,884,864     | 0          | 0.0%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_load, call_data_size | 39        | 10         | 1,884,864     | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 556,534       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                              | 6         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### dotns_rust - register
 
-- **Total Gas Used:** 800,655
+- **Total Gas Used:** 800,645
 - **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=2,766,955,910, proof_size=72,573
-- **Weight Consumed:** ref_time=1,857,349,246 (67.1% of total), proof_size=64,077
+- **Total Weight:** ref_time=2,766,418,470, proof_size=72,573
+- **Weight Consumed:** ref_time=1,856,811,806 (67.1% of total), proof_size=64,077
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 238,919   | 4          | 575,919,046 | 41,028     | 31.0%         | 64.0%           |
-| Crypto   | hash_keccak_256          | 3,215     | 13         | 160,768,312 | 0          | 8.7%          | 0.0%            |
+| Storage  | get_storage, set_storage | 238,916   | 4          | 575,919,046 | 41,028     | 31.0%         | 64.0%           |
+| Crypto   | hash_keccak_256          | 3,217     | 13         | 160,768,312 | 0          | 8.7%          | 0.0%            |
 | Events   | deposit_event            | 613       | 1          | 30,648,352  | 0          | 1.7%          | 0.0%            |
 | Calldata | call_data_copy           | 20        | 1          | 974,444     | 0          | 0.1%          | 0.0%            |
-| Context  | caller, now              | 16        | 2          | 758,000     | 0          | 0.0%          | 0.0%            |
+| Context  | caller, now              | 15        | 2          | 758,000     | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 556,534     | 0          | 0.0%          | 0.0%            |
 
 
@@ -1618,17 +4020,17 @@ Opcodes grouped by functional category.
 
 ### DotNS_pvm - renew
 
-- **Total Gas Used:** 597,050
-- **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=3,956,687,227, proof_size=124,885
+- **Total Gas Used:** 595,050
+- **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
+- **Total Weight:** ref_time=3,956,674,131, proof_size=124,882
 - **Weight Consumed:** ref_time=3,047,080,563 (77.0% of total), proof_size=116,389
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage   | get_storage_or_zero, set_storage_or_clear      | 7,465     | 4          | 373,237,696 | 41,156     | 12.2%         | 35.4%           |
-| Crypto    | hash_keccak_256                                | 1,239     | 5          | 61,898,339  | 0          | 2.0%          | 0.0%            |
-| Events    | deposit_event                                  | 782       | 1          | 39,075,136  | 0          | 1.3%          | 0.0%            |
-| Calldata  | call_data_copy, call_data_load, call_data_size | 37        | 9          | 1,843,624   | 0          | 0.1%          | 0.0%            |
+| Crypto    | hash_keccak_256                                | 1,237     | 5          | 61,898,339  | 0          | 2.0%          | 0.0%            |
+| Events    | deposit_event                                  | 781       | 1          | 39,075,136  | 0          | 1.3%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_load, call_data_size | 36        | 9          | 1,843,624   | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 | Context   | now                                            | 7         | 1          | 356,000     | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                              | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
@@ -1872,9 +4274,9 @@ Opcodes grouped by functional category.
 
 ### dotns_rust - transfer
 
-- **Total Gas Used:** 681,665
-- **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
-- **Total Weight:** ref_time=2,927,459,892, proof_size=73,276
+- **Total Gas Used:** 683,666
+- **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
+- **Total Weight:** ref_time=2,927,472,988, proof_size=73,279
 - **Weight Consumed:** ref_time=2,017,866,324 (68.9% of total), proof_size=64,783
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -2129,7 +4531,7 @@ Opcodes grouped by functional category.
 
 ### Escrow_evm - deploy
 
-- **Total Gas Used:** 15,694,839
+- **Total Gas Used:** 24,541,439
 - **Base Call Weight:** ref_time=1,578,216,799, proof_size=6,934
 - **Total Weight:** ref_time=1,987,160,734, proof_size=37,737
 - **Weight Consumed:** ref_time=408,943,935 (20.6% of total), proof_size=30,803
@@ -2149,7 +4551,7 @@ Opcodes grouped by functional category.
 
 ### Escrow_pvm - deploy
 
-- **Total Gas Used:** 76,681,330
+- **Total Gas Used:** 91,454,330
 - **Base Call Weight:** ref_time=2,054,887,357, proof_size=6,934
 - **Total Weight:** ref_time=2,485,693,665, proof_size=37,705
 - **Weight Consumed:** ref_time=430,806,308 (17.3% of total), proof_size=30,771
@@ -2164,7 +4566,7 @@ Opcodes grouped by functional category.
 
 ### escrow_rust - deploy
 
-- **Total Gas Used:** 44,230,664
+- **Total Gas Used:** 44,226,664
 - **Base Call Weight:** ref_time=1,718,814,802, proof_size=6,934
 - **Total Weight:** ref_time=1,967,400,741, proof_size=17,191
 - **Weight Consumed:** ref_time=248,585,939 (12.6% of total), proof_size=10,257
@@ -2306,142 +4708,142 @@ Opcodes grouped by functional category.
 
 ### FiatTokenProxy_evm - approve
 
-- **Total Gas Used:** 472,157
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,472,036,931, proof_size=70,864
+- **Total Gas Used:** 470,157
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,472,023,835, proof_size=70,861
 - **Weight Consumed:** ref_time=563,268,411 (38.3% of total), proof_size=62,560
 
 | Category     | Opcodes Used                                                                                  | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                 | 60,266    | 4          | 373,224,960 | 41,124     | 66.3%         | 65.7%           |
-| Calls        | DELEGATECALL                                                                                  | 2,752     | 1          | 137,609,534 | 20,095     | 24.4%         | 32.1%           |
+| Storage      | SLOAD, SSTORE                                                                                 | 60,265    | 4          | 373,224,960 | 41,124     | 66.3%         | 65.7%           |
+| Calls        | DELEGATECALL                                                                                  | 2,751     | 1          | 137,609,534 | 20,095     | 24.4%         | 32.1%           |
 | Crypto       | KECCAK256                                                                                     | 498       | 2          | 24,916,112  | 0          | 4.4%          | 0.0%            |
 | Events       | LOG3                                                                                          | 276       | 1          | 13,794,784  | 0          | 2.4%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP5, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4, SWAP5, SWAP6 | 64        | 133        | 3,011,186   | 0          | 0.5%          | 0.0%            |
-| Ether/Gas    | CALLVALUE, GAS                                                                                | 49        | 2          | 2,465,000   | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                         | 41        | 43         | 2,145,275   | 0          | 0.4%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP5, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4, SWAP5, SWAP6 | 52        | 133        | 3,011,186   | 0          | 0.5%          | 0.0%            |
+| Ether/Gas    | CALLVALUE, GAS                                                                                | 50        | 2          | 2,465,000   | 0          | 0.4%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                         | 47        | 43         | 2,145,275   | 0          | 0.4%          | 0.0%            |
 | Context      | CALLER                                                                                        | 16        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                      | 14        | 11         | 746,960     | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                      | 16        | 11         | 746,960     | 0          | 0.1%          | 0.0%            |
 | Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                | 12        | 3          | 583,668     | 0          | 0.1%          | 0.0%            |
 | Code         | CODECOPY                                                                                      | 11        | 1          | 552,464     | 0          | 0.1%          | 0.0%            |
 | Bitwise      | AND, NOT, SHL, SHR                                                                            | 8         | 17         | 397,851     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                                                           | 7         | 17         | 397,851     | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                 | 5         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                      | 5         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                           | 9         | 17         | 397,851     | 0          | 0.1%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                 | 9         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                      | 4         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                        | 0         | 2          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### FiatTokenProxy_pvm - approve
 
-- **Total Gas Used:** 478,416
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,785,008,640, proof_size=167,515
+- **Total Gas Used:** 476,416
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,784,995,544, proof_size=167,512
 - **Weight Consumed:** ref_time=876,240,120 (49.1% of total), proof_size=159,211
 
 | Category    | Opcodes Used                                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage     | get_storage_or_zero, set_storage_or_clear      | 60,265    | 4          | 373,224,960 | 41,124     | 42.6%         | 25.8%           |
-| Calls       | delegate_call_evm                              | 5,704     | 1          | 285,189,256 | 108,222    | 32.5%         | 68.0%           |
-| Crypto      | hash_keccak_256                                | 498       | 2          | 24,916,112  | 0          | 2.8%          | 0.0%            |
+| Storage     | get_storage_or_zero, set_storage_or_clear      | 60,264    | 4          | 373,224,960 | 41,124     | 42.6%         | 25.8%           |
+| Calls       | delegate_call_evm                              | 5,703     | 1          | 285,189,256 | 108,222    | 32.5%         | 68.0%           |
+| Crypto      | hash_keccak_256                                | 499       | 2          | 24,916,112  | 0          | 2.8%          | 0.0%            |
 | Events      | deposit_event                                  | 276       | 1          | 13,794,784  | 0          | 1.6%          | 0.0%            |
-| Ether/Gas   | ref_time_left, value_transferred               | 49        | 2          | 2,465,000   | 0          | 0.3%          | 0.0%            |
+| Ether/Gas   | ref_time_left, value_transferred               | 50        | 2          | 2,465,000   | 0          | 0.3%          | 0.0%            |
 | Calldata    | call_data_copy, call_data_load, call_data_size | 40        | 7          | 2,036,308   | 0          | 0.2%          | 0.0%            |
-| Return Data | return_data_copy, return_data_size             | 24        | 3          | 1,236,464   | 0          | 0.1%          | 0.0%            |
-| Return      | seal_return                                    | 23        | 2          | 1,113,068   | 0          | 0.1%          | 0.0%            |
-| Context     | caller                                         | 16        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
+| Return Data | return_data_copy, return_data_size             | 26        | 3          | 1,236,464   | 0          | 0.1%          | 0.0%            |
+| Return      | seal_return                                    | 22        | 2          | 1,113,068   | 0          | 0.1%          | 0.0%            |
+| Context     | caller                                         | 17        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### FiatTokenProxy_evm - changeAdmin
 
-- **Total Gas Used:** 348,798
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,244,108,749, proof_size=40,413
+- **Total Gas Used:** 346,798
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,244,095,653, proof_size=40,410
 - **Weight Consumed:** ref_time=335,772,397 (27.0% of total), proof_size=32,208
 
 | Category     | Opcodes Used                                                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage      | SLOAD, SSTORE                                                             | 6,105     | 3          | 305,260,251 | 30,867     | 90.9%         | 95.8%           |
 | Events       | LOG1                                                                      | 445       | 1          | 22,221,568  | 0          | 6.6%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4 | 35        | 80         | 1,770,827   | 0          | 0.5%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4 | 43        | 80         | 1,770,827   | 0          | 0.5%          | 0.0%            |
 | Code         | CODECOPY                                                                  | 33        | 3          | 1,657,392   | 0          | 0.5%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                     | 21        | 20         | 1,076,538   | 0          | 0.3%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                     | 18        | 20         | 1,076,538   | 0          | 0.3%          | 0.0%            |
 | Context      | CALLER                                                                    | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                                 | 7         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                             | 8         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                                 | 6         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                             | 4         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
 | Bitwise      | AND, NOT, SHL, SHR                                                        | 4         | 10         | 234,030     | 0          | 0.1%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                  | 4         | 8          | 187,224     | 0          | 0.1%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                  | 5         | 8          | 187,224     | 0          | 0.1%          | 0.0%            |
 | Comparison   | EQ, ISZERO, LT, SLT                                                       | 3         | 8          | 187,224     | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                | 1         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                | 0         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                      | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### FiatTokenProxy_pvm - changeAdmin
 
-- **Total Gas Used:** 350,240
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,316,168,643, proof_size=48,937
+- **Total Gas Used:** 348,239
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,316,155,547, proof_size=48,934
 - **Weight Consumed:** ref_time=407,832,291 (31.0% of total), proof_size=40,732
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 6,104     | 3          | 305,260,251 | 30,867     | 74.8%         | 75.8%           |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 6,105     | 3          | 305,260,251 | 30,867     | 74.8%         | 75.8%           |
 | Events    | deposit_event                             | 444       | 1          | 22,221,568  | 0          | 5.4%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 19        | 3          | 994,000     | 0          | 0.2%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 21        | 3          | 994,000     | 0          | 0.2%          | 0.0%            |
 | Return    | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 | Context   | caller                                    | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
-| Ether/Gas | value_transferred                         | 7         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
+| Ether/Gas | value_transferred                         | 6         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### FiatTokenProxy_evm - configureMinter
 
-- **Total Gas Used:** 531,109
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,779,640,348, proof_size=101,699
+- **Total Gas Used:** 529,109
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,779,627,252, proof_size=101,696
 - **Weight Consumed:** ref_time=870,871,828 (48.9% of total), proof_size=93,395
 
 | Category     | Opcodes Used                                                                                       | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | -------------------------------------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                      | 119,170   | 7          | 678,472,475 | 71,959     | 77.9%         | 77.0%           |
+| Storage      | SLOAD, SSTORE                                                                                      | 119,171   | 7          | 678,472,475 | 71,959     | 77.9%         | 77.0%           |
 | Calls        | DELEGATECALL                                                                                       | 2,752     | 1          | 137,609,534 | 20,095     | 15.8%         | 21.5%           |
-| Crypto       | KECCAK256                                                                                          | 500       | 2          | 24,916,112  | 0          | 2.9%          | 0.0%            |
+| Crypto       | KECCAK256                                                                                          | 498       | 2          | 24,916,112  | 0          | 2.9%          | 0.0%            |
 | Events       | LOG2                                                                                               | 276       | 1          | 13,794,784  | 0          | 1.6%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 73        | 172        | 3,947,306   | 0          | 0.5%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                              | 64        | 54         | 3,260,818   | 0          | 0.4%          | 0.0%            |
-| Ether/Gas    | CALLVALUE, GAS                                                                                     | 49        | 2          | 2,465,000   | 0          | 0.3%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                                                                | 17        | 35         | 819,105     | 0          | 0.1%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 76        | 172        | 3,947,306   | 0          | 0.5%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                              | 65        | 54         | 3,260,818   | 0          | 0.4%          | 0.0%            |
+| Ether/Gas    | CALLVALUE, GAS                                                                                     | 50        | 2          | 2,465,000   | 0          | 0.3%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                                | 16        | 35         | 819,105     | 0          | 0.1%          | 0.0%            |
 | Context      | CALLER                                                                                             | 16        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                           | 16        | 11         | 746,960     | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                           | 14        | 11         | 746,960     | 0          | 0.1%          | 0.0%            |
 | Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                     | 12        | 3          | 583,668     | 0          | 0.1%          | 0.0%            |
 | Code         | CODECOPY                                                                                           | 11        | 1          | 552,464     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                             | 13        | 16         | 374,448     | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                      | 6         | 13         | 304,239     | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                           | 1         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                             | 8         | 16         | 374,448     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                      | 8         | 13         | 304,239     | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                           | 3         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                             | 0         | 2          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### FiatTokenProxy_pvm - configureMinter
 
-- **Total Gas Used:** 537,458
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,097,070,890, proof_size=198,318
+- **Total Gas Used:** 535,457
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,097,057,794, proof_size=198,315
 - **Weight Consumed:** ref_time=1,188,302,370 (56.7% of total), proof_size=190,014
 
 | Category    | Opcodes Used                                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage     | get_storage_or_zero, set_storage_or_clear      | 119,169   | 7          | 678,422,747 | 71,927     | 57.1%         | 37.9%           |
 | Calls       | delegate_call_evm                              | 5,704     | 1          | 285,189,256 | 108,222    | 24.0%         | 57.0%           |
-| Crypto      | hash_keccak_256                                | 498       | 2          | 24,916,112  | 0          | 2.1%          | 0.0%            |
+| Crypto      | hash_keccak_256                                | 499       | 2          | 24,916,112  | 0          | 2.1%          | 0.0%            |
 | Events      | deposit_event                                  | 276       | 1          | 13,794,784  | 0          | 1.2%          | 0.0%            |
-| Ether/Gas   | ref_time_left, value_transferred               | 50        | 2          | 2,465,000   | 0          | 0.2%          | 0.0%            |
-| Calldata    | call_data_copy, call_data_load, call_data_size | 41        | 7          | 2,036,308   | 0          | 0.2%          | 0.0%            |
+| Ether/Gas   | ref_time_left, value_transferred               | 49        | 2          | 2,465,000   | 0          | 0.2%          | 0.0%            |
+| Calldata    | call_data_copy, call_data_load, call_data_size | 40        | 7          | 2,036,308   | 0          | 0.2%          | 0.0%            |
 | Return Data | return_data_copy, return_data_size             | 25        | 3          | 1,236,464   | 0          | 0.1%          | 0.0%            |
-| Return      | seal_return                                    | 22        | 2          | 1,113,068   | 0          | 0.1%          | 0.0%            |
+| Return      | seal_return                                    | 23        | 2          | 1,113,068   | 0          | 0.1%          | 0.0%            |
 | Context     | caller                                         | 16        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### FiatTokenProxy_evm - deploy
 
-- **Total Gas Used:** 10,421,752
+- **Total Gas Used:** 18,700,952
 - **Base Call Weight:** ref_time=1,537,127,842, proof_size=6,934
 - **Total Weight:** ref_time=1,943,797,882, proof_size=31,458
 - **Weight Consumed:** ref_time=406,670,040 (20.9% of total), proof_size=24,524
@@ -2463,7 +4865,7 @@ Opcodes grouped by functional category.
 
 ### FiatTokenProxy_pvm - deploy
 
-- **Total Gas Used:** 27,382,682
+- **Total Gas Used:** 37,364,682
 - **Base Call Weight:** ref_time=1,669,069,612, proof_size=6,934
 - **Total Weight:** ref_time=2,118,265,189, proof_size=31,458
 - **Weight Consumed:** ref_time=449,195,577 (21.2% of total), proof_size=24,524
@@ -2480,42 +4882,42 @@ Opcodes grouped by functional category.
 
 ### FiatTokenProxy_evm - initialize
 
-- **Total Gas Used:** 1,652,956
-- **Base Call Weight:** ref_time=913,823,576, proof_size=9,462
-- **Total Weight:** ref_time=3,431,996,811, proof_size=246,711
+- **Total Gas Used:** 1,650,956
+- **Base Call Weight:** ref_time=913,810,480, proof_size=9,459
+- **Total Weight:** ref_time=3,431,983,715, proof_size=246,708
 - **Weight Consumed:** ref_time=2,518,173,235 (73.4% of total), proof_size=237,249
 
 | Category     | Opcodes Used                                                                                                                                 | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                                                | 469,191   | 21         | 2,339,375,701 | 215,813    | 92.9%         | 91.0%           |
+| Storage      | SLOAD, SSTORE                                                                                                                                | 469,189   | 21         | 2,339,375,701 | 215,813    | 92.9%         | 91.0%           |
 | Calls        | DELEGATECALL                                                                                                                                 | 2,753     | 1          | 137,685,566   | 20,095     | 5.5%          | 8.5%            |
-| Stack        | DUP1, DUP16, DUP2, DUP3, DUP4, DUP5, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP15, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP9 | 295       | 655        | 15,009,124    | 0          | 0.6%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                        | 223       | 247        | 11,202,236    | 0          | 0.4%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                     | 53        | 26         | 2,722,991     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                       | 57        | 114        | 2,667,942     | 0          | 0.1%          | 0.0%            |
+| Stack        | DUP1, DUP16, DUP2, DUP3, DUP4, DUP5, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP15, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP9 | 306       | 655        | 15,009,124    | 0          | 0.6%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                        | 222       | 247        | 11,202,236    | 0          | 0.4%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                     | 56        | 26         | 2,722,991     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                       | 50        | 114        | 2,667,942     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas    | CALLVALUE, GAS                                                                                                                               | 50        | 2          | 2,465,000     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                      | 32        | 76         | 1,778,628     | 0          | 0.1%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                                     | 39        | 72         | 1,685,016     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                      | 34        | 76         | 1,778,628     | 0          | 0.1%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                                     | 34        | 72         | 1,685,016     | 0          | 0.1%          | 0.0%            |
 | Code         | CODECOPY                                                                                                                                     | 11        | 1          | 552,464       | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                                                                | 9         | 23         | 538,269       | 0          | 0.0%          | 0.0%            |
-| Context      | CALLER                                                                                                                                       | 8         | 1          | 402,000       | 0          | 0.0%          | 0.0%            |
-| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                                                               | 0         | 3          | 31,204        | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                                                                | 7         | 23         | 538,269       | 0          | 0.0%          | 0.0%            |
+| Context      | CALLER                                                                                                                                       | 9         | 1          | 402,000       | 0          | 0.0%          | 0.0%            |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                                                               | 1         | 3          | 31,204        | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN, STOP                                                                                                                                 | 0         | 2          | 0             | 0          | 0.0%          | 0.0%            |
 
 
 ### FiatTokenProxy_pvm - initialize
 
-- **Total Gas Used:** 1,664,542
-- **Base Call Weight:** ref_time=913,823,576, proof_size=9,462
-- **Total Weight:** ref_time=4,011,290,984, proof_size=343,074
+- **Total Gas Used:** 1,662,542
+- **Base Call Weight:** ref_time=913,810,480, proof_size=9,459
+- **Total Weight:** ref_time=4,011,277,888, proof_size=343,071
 - **Weight Consumed:** ref_time=3,097,467,408 (77.2% of total), proof_size=333,612
 
 | Category    | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage     | get_storage_or_zero, set_storage_or_clear      | 469,179   | 21         | 2,338,928,149 | 215,525    | 75.5%         | 64.6%           |
+| Storage     | get_storage_or_zero, set_storage_or_clear      | 469,182   | 21         | 2,338,928,149 | 215,525    | 75.5%         | 64.6%           |
 | Calls       | delegate_call_evm                              | 5,705     | 1          | 285,265,288   | 108,222    | 9.2%          | 32.4%           |
-| Calldata    | call_data_copy, call_data_load, call_data_size | 106       | 19         | 5,245,462     | 0          | 0.2%          | 0.0%            |
-| Ether/Gas   | ref_time_left, value_transferred               | 50        | 2          | 2,465,000     | 0          | 0.1%          | 0.0%            |
+| Calldata    | call_data_copy, call_data_load, call_data_size | 104       | 19         | 5,245,462     | 0          | 0.2%          | 0.0%            |
+| Ether/Gas   | ref_time_left, value_transferred               | 49        | 2          | 2,465,000     | 0          | 0.1%          | 0.0%            |
 | Return Data | return_data_copy, return_data_size             | 25        | 3          | 1,230,000     | 0          | 0.0%          | 0.0%            |
 | Return      | seal_return                                    | 22        | 2          | 1,100,396     | 0          | 0.0%          | 0.0%            |
 | Context     | caller                                         | 8         | 1          | 402,000       | 0          | 0.0%          | 0.0%            |
@@ -2523,93 +4925,93 @@ Opcodes grouped by functional category.
 
 ### FiatTokenProxy_evm - mint
 
-- **Total Gas Used:** 490,409
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,384,662,411, proof_size=163,433
+- **Total Gas Used:** 488,409
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,384,649,315, proof_size=163,430
 - **Weight Consumed:** ref_time=1,475,893,891 (61.9% of total), proof_size=155,129
 
 | Category     | Opcodes Used                                                                                                     | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | ---------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                    | 125,968   | 13         | 1,187,652,837 | 133,693    | 80.5%         | 86.2%           |
+| Storage      | SLOAD, SSTORE                                                                                                    | 125,969   | 13         | 1,187,652,837 | 133,693    | 80.5%         | 86.2%           |
 | Calls        | DELEGATECALL                                                                                                     | 2,752     | 1          | 137,609,534   | 20,095     | 9.3%          | 13.0%           |
-| Crypto       | KECCAK256                                                                                                        | 1,993     | 8          | 99,664,448    | 0          | 6.8%          | 0.0%            |
+| Crypto       | KECCAK256                                                                                                        | 1,994     | 8          | 99,664,448    | 0          | 6.8%          | 0.0%            |
 | Events       | LOG3                                                                                                             | 552       | 2          | 27,589,568    | 0          | 1.9%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP6, DUP8, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP6, SWAP7 | 141       | 304        | 6,966,293     | 0          | 0.5%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP6, DUP8, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4, SWAP6, SWAP7 | 135       | 304        | 6,966,293     | 0          | 0.5%          | 0.0%            |
 | Control Flow | JUMP, JUMPDEST, JUMPI                                                                                            | 105       | 101        | 5,211,068     | 0          | 0.4%          | 0.0%            |
 | Ether/Gas    | CALLVALUE, GAS                                                                                                   | 49        | 2          | 2,465,000     | 0          | 0.2%          | 0.0%            |
 | Context      | CALLER                                                                                                           | 40        | 5          | 2,010,000     | 0          | 0.1%          | 0.0%            |
 | Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                          | 25        | 49         | 1,146,747     | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                         | 14        | 11         | 746,960       | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                                    | 9         | 27         | 631,881       | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                         | 15        | 11         | 746,960       | 0          | 0.1%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                                    | 14        | 27         | 631,881       | 0          | 0.0%          | 0.0%            |
 | Bitwise      | AND, NOT, SHL, SHR                                                                                               | 13        | 26         | 608,478       | 0          | 0.0%          | 0.0%            |
-| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                                   | 12        | 3          | 583,668       | 0          | 0.0%          | 0.0%            |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                                   | 11        | 3          | 583,668       | 0          | 0.0%          | 0.0%            |
 | Code         | CODECOPY                                                                                                         | 11        | 1          | 552,464       | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                         | 7         | 17         | 397,851       | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                         | 5         | 17         | 397,851       | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                                           | 0         | 2          | 0             | 0          | 0.0%          | 0.0%            |
 
 
 ### FiatTokenProxy_pvm - mint
 
-- **Total Gas Used:** 500,731
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,900,762,989, proof_size=260,021
+- **Total Gas Used:** 498,731
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,900,749,893, proof_size=260,018
 - **Weight Consumed:** ref_time=1,991,994,469 (68.7% of total), proof_size=251,717
 
 | Category    | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage     | get_storage_or_zero, set_storage_or_clear      | 125,962   | 13         | 1,188,989,149 | 133,630    | 59.7%         | 53.1%           |
-| Calls       | delegate_call_evm                              | 5,704     | 1          | 285,189,256   | 108,222    | 14.3%         | 43.0%           |
-| Crypto      | hash_keccak_256                                | 1,993     | 8          | 99,664,448    | 0          | 5.0%          | 0.0%            |
+| Storage     | get_storage_or_zero, set_storage_or_clear      | 125,965   | 13         | 1,188,989,149 | 133,630    | 59.7%         | 53.1%           |
+| Calls       | delegate_call_evm                              | 5,703     | 1          | 285,189,256   | 108,222    | 14.3%         | 43.0%           |
+| Crypto      | hash_keccak_256                                | 1,992     | 8          | 99,664,448    | 0          | 5.0%          | 0.0%            |
 | Events      | deposit_event                                  | 552       | 2          | 27,589,568    | 0          | 1.4%          | 0.0%            |
 | Ether/Gas   | ref_time_left, value_transferred               | 50        | 2          | 2,465,000     | 0          | 0.1%          | 0.0%            |
-| Context     | caller                                         | 51        | 6          | 2,412,000     | 0          | 0.1%          | 0.0%            |
+| Context     | caller                                         | 48        | 6          | 2,412,000     | 0          | 0.1%          | 0.0%            |
 | Calldata    | call_data_copy, call_data_load, call_data_size | 40        | 7          | 2,036,308     | 0          | 0.1%          | 0.0%            |
-| Return Data | return_data_copy, return_data_size             | 24        | 3          | 1,236,464     | 0          | 0.1%          | 0.0%            |
-| Return      | seal_return                                    | 23        | 2          | 1,113,068     | 0          | 0.1%          | 0.0%            |
+| Return Data | return_data_copy, return_data_size             | 25        | 3          | 1,236,464     | 0          | 0.1%          | 0.0%            |
+| Return      | seal_return                                    | 22        | 2          | 1,113,068     | 0          | 0.1%          | 0.0%            |
 
 
 ### FiatTokenProxy_evm - transfer
 
-- **Total Gas Used:** 487,068
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,217,570,837, proof_size=153,176
+- **Total Gas Used:** 485,067
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,217,557,741, proof_size=153,173
 - **Weight Consumed:** ref_time=1,308,802,317 (59.0% of total), proof_size=144,872
 
 | Category     | Opcodes Used                                                                                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                             | 73,167    | 12         | 1,018,372,436 | 123,436    | 77.8%         | 85.2%           |
+| Storage      | SLOAD, SSTORE                                                                                             | 73,168    | 12         | 1,018,372,436 | 123,436    | 77.8%         | 85.2%           |
 | Calls        | DELEGATECALL                                                                                              | 2,751     | 1          | 137,609,534   | 20,095     | 10.5%         | 13.9%           |
-| Crypto       | KECCAK256                                                                                                 | 2,243     | 9          | 112,122,504   | 0          | 8.6%          | 0.0%            |
+| Crypto       | KECCAK256                                                                                                 | 2,244     | 9          | 112,122,504   | 0          | 8.6%          | 0.0%            |
 | Events       | LOG3                                                                                                      | 276       | 1          | 13,794,784    | 0          | 1.1%          | 0.0%            |
-| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP7, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP8 | 184       | 383        | 8,822,931     | 0          | 0.7%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                     | 129       | 119        | 6,701,059     | 0          | 0.5%          | 0.0%            |
-| Ether/Gas    | CALLVALUE, GAS                                                                                            | 48        | 2          | 2,465,000     | 0          | 0.2%          | 0.0%            |
+| Stack        | DUP1, DUP10, DUP2, DUP3, DUP4, DUP5, DUP7, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP8 | 169       | 383        | 8,822,931     | 0          | 0.7%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                     | 137       | 119        | 6,701,059     | 0          | 0.5%          | 0.0%            |
+| Ether/Gas    | CALLVALUE, GAS                                                                                            | 50        | 2          | 2,465,000     | 0          | 0.2%          | 0.0%            |
 | Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                   | 33        | 69         | 1,614,807     | 0          | 0.1%          | 0.0%            |
 | Context      | CALLER                                                                                                    | 24        | 3          | 1,206,000     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, SHL, SHR                                                                                        | 19        | 41         | 959,523       | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                        | 20        | 41         | 959,523       | 0          | 0.1%          | 0.0%            |
 | Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                  | 14        | 11         | 746,960       | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                             | 12        | 27         | 631,881       | 0          | 0.0%          | 0.0%            |
-| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                            | 12        | 3          | 583,668       | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                  | 12        | 24         | 561,672       | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                             | 14        | 27         | 631,881       | 0          | 0.0%          | 0.0%            |
+| Return Data  | RETURNDATACOPY, RETURNDATASIZE                                                                            | 11        | 3          | 583,668       | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                  | 11        | 24         | 561,672       | 0          | 0.0%          | 0.0%            |
 | Code         | CODECOPY                                                                                                  | 11        | 1          | 552,464       | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                                    | 0         | 2          | 0             | 0          | 0.0%          | 0.0%            |
 
 
 ### FiatTokenProxy_pvm - transfer
 
-- **Total Gas Used:** 496,626
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,695,482,940, proof_size=249,731
+- **Total Gas Used:** 494,626
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,695,469,844, proof_size=249,728
 - **Weight Consumed:** ref_time=1,786,714,420 (66.3% of total), proof_size=241,427
 
 | Category    | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage     | get_storage_or_zero, set_storage_or_clear      | 73,164    | 12         | 1,018,223,252 | 123,340    | 57.0%         | 51.1%           |
+| Storage     | get_storage_or_zero, set_storage_or_clear      | 73,167    | 12         | 1,018,223,252 | 123,340    | 57.0%         | 51.1%           |
 | Calls       | delegate_call_evm                              | 5,704     | 1          | 285,189,256   | 108,222    | 16.0%         | 44.8%           |
-| Crypto      | hash_keccak_256                                | 2,242     | 9          | 112,122,504   | 0          | 6.3%          | 0.0%            |
+| Crypto      | hash_keccak_256                                | 2,241     | 9          | 112,122,504   | 0          | 6.3%          | 0.0%            |
 | Events      | deposit_event                                  | 276       | 1          | 13,794,784    | 0          | 0.8%          | 0.0%            |
 | Ether/Gas   | ref_time_left, value_transferred               | 50        | 2          | 2,465,000     | 0          | 0.1%          | 0.0%            |
-| Calldata    | call_data_copy, call_data_load, call_data_size | 41        | 7          | 2,036,308     | 0          | 0.1%          | 0.0%            |
+| Calldata    | call_data_copy, call_data_load, call_data_size | 40        | 7          | 2,036,308     | 0          | 0.1%          | 0.0%            |
 | Return Data | return_data_copy, return_data_size             | 25        | 3          | 1,236,464     | 0          | 0.1%          | 0.0%            |
 | Context     | caller                                         | 24        | 3          | 1,206,000     | 0          | 0.1%          | 0.0%            |
 | Return      | seal_return                                    | 22        | 2          | 1,113,068     | 0          | 0.1%          | 0.0%            |
@@ -2664,7 +5066,7 @@ Opcodes grouped by functional category.
 
 ### FiatTokenV2_2_evm - deploy
 
-- **Total Gas Used:** 49,902,861
+- **Total Gas Used:** 49,898,861
 - **Base Call Weight:** ref_time=1,759,275,586, proof_size=6,934
 - **Total Weight:** ref_time=2,408,252,618, proof_size=58,283
 - **Weight Consumed:** ref_time=648,977,032 (26.9% of total), proof_size=51,349
@@ -2685,7 +5087,7 @@ Opcodes grouped by functional category.
 
 ### FiatTokenV2_2_pvm - deploy
 
-- **Total Gas Used:** 248,992,904
+- **Total Gas Used:** 248,988,904
 - **Base Call Weight:** ref_time=3,177,786,862, proof_size=6,934
 - **Total Weight:** ref_time=3,859,408,363, proof_size=58,477
 - **Weight Consumed:** ref_time=681,621,501 (17.7% of total), proof_size=51,543
@@ -2701,7 +5103,7 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_evm - deploy
 
-- **Total Gas Used:** 7,345,418
+- **Total Gas Used:** 15,395,418
 - **Base Call Weight:** ref_time=1,513,837,120, proof_size=6,934
 - **Total Weight:** ref_time=1,515,072,570, proof_size=6,934
 - **Weight Consumed:** ref_time=1,235,450 (0.1% of total), proof_size=0
@@ -2718,7 +5120,7 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_pvm - deploy
 
-- **Total Gas Used:** 9,250,745
+- **Total Gas Used:** 17,492,145
 - **Base Call Weight:** ref_time=1,528,703,881, proof_size=6,934
 - **Total Weight:** ref_time=1,540,422,459, proof_size=6,934
 - **Weight Consumed:** ref_time=11,718,578 (0.8% of total), proof_size=0
@@ -2732,21 +5134,21 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u32_ink - deploy
 
-- **Total Gas Used:** 9,732,817
-- **Base Call Weight:** ref_time=1,532,102,458, proof_size=6,934
-- **Total Weight:** ref_time=1,711,041,752, proof_size=17,191
-- **Weight Consumed:** ref_time=178,939,294 (10.5% of total), proof_size=10,257
+- **Total Gas Used:** 16,796,038
+- **Base Call Weight:** ref_time=1,523,420,785, proof_size=6,934
+- **Total Weight:** ref_time=1,699,068,259, proof_size=17,191
+- **Weight Consumed:** ref_time=175,647,474 (10.3% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 47,385    | 1          | 169,280,401 | 10,257     | 94.6%         | 100.0%          |
-| Calldata | call_data_copy | 39        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
+| Storage  | set_storage    | 47,386    | 1          | 169,280,401 | 10,257     | 96.4%         | 100.0%          |
+| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### fibonacci_u32_stylus - deploy
 
-- **Total Gas Used:** 10,008,889
+- **Total Gas Used:** 18,323,889
 - **Base Call Weight:** ref_time=1,534,631,257, proof_size=6,934
 - **Total Weight:** ref_time=1,543,622,438, proof_size=6,934
 - **Weight Consumed:** ref_time=8,991,181 (0.6% of total), proof_size=0
@@ -2759,27 +5161,27 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_evm - fib_10
 
-- **Total Gas Used:** 344,728
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,040,581,334, proof_size=8,410
+- **Total Gas Used:** 340,727
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,040,555,142, proof_size=8,404
 - **Weight Consumed:** ref_time=132,244,982 (12.7% of total), proof_size=205
 
 | Category     | Opcodes Used                                             | Total Gas | Call Count | ref time   | proof size | % of ref time | % of proof size |
 | ------------ | -------------------------------------------------------- | --------- | ---------- | ---------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 1,077     | 2,458      | 55,605,528 | 0          | 42.0%         | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                    | 1,064     | 1,266      | 52,024,869 | 0          | 39.3%         | 0.0%            |
-| Bitwise      | AND, NOT, SHR                                            | 293       | 621        | 14,533,263 | 0          | 11.0%         | 0.0%            |
-| Arithmetic   | ADD, SUB                                                 | 200       | 409        | 9,571,827  | 0          | 7.2%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                      | 4         | 5          | 117,015    | 0          | 0.1%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 1,169     | 2,458      | 55,605,528 | 0          | 42.0%         | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                    | 1,003     | 1,266      | 52,024,869 | 0          | 39.3%         | 0.0%            |
+| Bitwise      | AND, NOT, SHR                                            | 284       | 621        | 14,533,263 | 0          | 11.0%         | 0.0%            |
+| Arithmetic   | ADD, SUB                                                 | 181       | 409        | 9,571,827  | 0          | 7.2%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                      | 0         | 5          | 117,015    | 0          | 0.1%          | 0.0%            |
 | Calldata     | CALLDATALOAD, CALLDATASIZE                               | 1         | 4          | 78,010     | 0          | 0.1%          | 0.0%            |
 | Return       | STOP                                                     | 0         | 1          | 0          | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_pvm - fib_10
 
-- **Total Gas Used:** 350,486
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,328,501,149, proof_size=9,357
+- **Total Gas Used:** 346,486
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,328,474,957, proof_size=9,351
 - **Weight Consumed:** ref_time=420,164,797 (31.6% of total), proof_size=1,152
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -2790,9 +5192,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u128_rust - fib_10
 
-- **Total Gas Used:** 347,722
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,190,303,147, proof_size=8,520
+- **Total Gas Used:** 343,722
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,190,276,955, proof_size=8,514
 - **Weight Consumed:** ref_time=281,966,795 (23.7% of total), proof_size=315
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -2802,9 +5204,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_rust - fib_10
 
-- **Total Gas Used:** 413,781
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=4,493,234,036, proof_size=9,185
+- **Total Gas Used:** 409,780
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=4,493,207,844, proof_size=9,179
 - **Weight Consumed:** ref_time=3,584,897,684 (79.8% of total), proof_size=980
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -2814,36 +5216,36 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u32_ink - fib_10
 
-- **Total Gas Used:** 351,370
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,372,687,822, proof_size=30,082
-- **Weight Consumed:** ref_time=464,351,470 (33.8% of total), proof_size=21,877
+- **Total Gas Used:** 347,141
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,361,223,403, proof_size=29,537
+- **Weight Consumed:** ref_time=452,913,243 (33.3% of total), proof_size=21,338
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,744     | 2          | 237,208,118 | 20,514     | 51.1%         | 93.8%           |
+| Storage  | get_storage, set_storage | 4,745     | 2          | 237,208,118 | 20,514     | 52.4%         | 96.1%           |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.4%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### fibonacci_u32_macro_bump_alloc_rust - fib_10
 
-- **Total Gas Used:** 344,595
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,033,932,251, proof_size=8,636
+- **Total Gas Used:** 340,594
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,033,906,059, proof_size=8,630
 - **Weight Consumed:** ref_time=125,595,899 (12.1% of total), proof_size=431
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
 | Return   | seal_return                    | 11        | 1          | 556,534  | 0          | 0.4%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 7         | 2          | 362,660  | 0          | 0.3%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 8         | 2          | 362,660  | 0          | 0.3%          | 0.0%            |
 
 
 ### fibonacci_u32_macro_no_alloc_rust - fib_10
 
-- **Total Gas Used:** 344,733
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,040,860,649, proof_size=8,682
+- **Total Gas Used:** 340,733
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,040,834,457, proof_size=8,676
 - **Weight Consumed:** ref_time=132,524,297 (12.7% of total), proof_size=477
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -2854,9 +5256,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u32_rust - fib_10
 
-- **Total Gas Used:** 344,511
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,029,742,046, proof_size=8,439
+- **Total Gas Used:** 340,511
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,029,715,854, proof_size=8,433
 - **Weight Consumed:** ref_time=121,405,694 (11.8% of total), proof_size=234
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -2866,9 +5268,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u32_stylus - fib_10
 
-- **Total Gas Used:** 344,752
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,041,803,153, proof_size=9,725
+- **Total Gas Used:** 340,752
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,041,776,961, proof_size=9,719
 - **Weight Consumed:** ref_time=133,466,801 (12.8% of total), proof_size=1,520
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -2879,7 +5281,7 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_u256_evm - deploy
 
-- **Total Gas Used:** 7,254,763
+- **Total Gas Used:** 15,295,963
 - **Base Call Weight:** ref_time=1,513,128,412, proof_size=6,934
 - **Total Weight:** ref_time=1,514,354,974, proof_size=6,934
 - **Weight Consumed:** ref_time=1,226,562 (0.1% of total), proof_size=0
@@ -2896,7 +5298,7 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_u256_iter_evm - deploy
 
-- **Total Gas Used:** 7,246,522
+- **Total Gas Used:** 15,286,922
 - **Base Call Weight:** ref_time=1,513,063,984, proof_size=6,934
 - **Total Weight:** ref_time=1,514,289,738, proof_size=6,934
 - **Weight Consumed:** ref_time=1,225,754 (0.1% of total), proof_size=0
@@ -2913,7 +5315,7 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_u256_iter_pvm - deploy
 
-- **Total Gas Used:** 9,399,088
+- **Total Gas Used:** 17,654,888
 - **Base Call Weight:** ref_time=1,529,863,585, proof_size=6,934
 - **Total Weight:** ref_time=1,541,582,163, proof_size=6,934
 - **Weight Consumed:** ref_time=11,718,578 (0.8% of total), proof_size=0
@@ -2927,7 +5329,7 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_u256_pvm - deploy
 
-- **Total Gas Used:** 9,600,999
+- **Total Gas Used:** 17,876,399
 - **Base Call Weight:** ref_time=1,531,442,071, proof_size=6,934
 - **Total Weight:** ref_time=1,543,160,649, proof_size=6,934
 - **Weight Consumed:** ref_time=11,718,578 (0.8% of total), proof_size=0
@@ -2941,127 +5343,127 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_ink - deploy
 
-- **Total Gas Used:** 11,255,399
-- **Base Call Weight:** ref_time=1,544,005,531, proof_size=6,934
-- **Total Weight:** ref_time=1,723,146,365, proof_size=17,191
-- **Weight Consumed:** ref_time=179,140,834 (10.4% of total), proof_size=10,257
+- **Total Gas Used:** 19,090,004
+- **Base Call Weight:** ref_time=1,539,753,283, proof_size=6,934
+- **Total Weight:** ref_time=1,715,400,757, proof_size=17,191
+- **Weight Consumed:** ref_time=175,647,474 (10.2% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 47,385    | 1          | 169,280,401 | 10,257     | 94.5%         | 100.0%          |
+| Storage  | set_storage    | 47,386    | 1          | 169,280,401 | 10,257     | 96.4%         | 100.0%          |
 | Calldata | call_data_copy | 39        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### fibonacci_u256_iter_ink - deploy
 
-- **Total Gas Used:** 11,104,996
-- **Base Call Weight:** ref_time=1,542,829,720, proof_size=6,934
-- **Total Weight:** ref_time=1,721,970,554, proof_size=17,191
-- **Weight Consumed:** ref_time=179,140,834 (10.4% of total), proof_size=10,257
+- **Total Gas Used:** 19,105,827
+- **Base Call Weight:** ref_time=1,539,866,032, proof_size=6,934
+- **Total Weight:** ref_time=1,715,513,506, proof_size=17,191
+- **Weight Consumed:** ref_time=175,647,474 (10.2% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 47,386    | 1          | 169,280,401 | 10,257     | 94.5%         | 100.0%          |
+| Storage  | set_storage    | 47,386    | 1          | 169,280,401 | 10,257     | 96.4%         | 100.0%          |
 | Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### Fibonacci_u256_evm - fib_10
 
-- **Total Gas Used:** 344,281
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,018,257,585, proof_size=8,366
+- **Total Gas Used:** 342,281
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,018,244,489, proof_size=8,363
 - **Weight Consumed:** ref_time=109,921,233 (10.8% of total), proof_size=161
 
 | Category     | Opcodes Used                                      | Total Gas | Call Count | ref time   | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------- | --------- | ---------- | ---------- | ---------- | ------------- | --------------- |
-| Control Flow | JUMP, JUMPDEST, JUMPI                             | 1,028     | 1,265      | 51,946,859 | 0          | 47.3%         | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 893       | 1,943      | 43,818,217 | 0          | 39.9%         | 0.0%            |
-| Arithmetic   | ADD, SUB                                          | 180       | 408        | 9,548,424  | 0          | 8.7%          | 0.0%            |
-| Bitwise      | NOT, SHR                                          | 88        | 178        | 4,165,734  | 0          | 3.8%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                             | 1,045     | 1,265      | 51,946,859 | 0          | 47.3%         | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 872       | 1,943      | 43,818,217 | 0          | 39.9%         | 0.0%            |
+| Arithmetic   | ADD, SUB                                          | 204       | 408        | 9,548,424  | 0          | 8.7%          | 0.0%            |
+| Bitwise      | NOT, SHR                                          | 70        | 178        | 4,165,734  | 0          | 3.8%          | 0.0%            |
 | Comparison   | EQ, ISZERO, LT, SLT                               | 1         | 5          | 117,015    | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 3         | 4          | 78,010     | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 1         | 4          | 78,010     | 0          | 0.1%          | 0.0%            |
 | Return       | STOP                                              | 0         | 1          | 0          | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_u256_iter_evm - fib_10
 
-- **Total Gas Used:** 342,206
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=914,466,945, proof_size=8,362
+- **Total Gas Used:** 340,205
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=914,453,849, proof_size=8,359
 - **Weight Consumed:** ref_time=6,130,593 (0.7% of total), proof_size=157
 
 | Category     | Opcodes Used                                                    | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------- | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 56        | 126        | 2,909,773 | 0          | 47.5%         | 0.0%            |
+| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 61        | 126        | 2,909,773 | 0          | 47.5%         | 0.0%            |
 | Control Flow | JUMP, JUMPDEST, JUMPI                                           | 41        | 49         | 2,036,061 | 0          | 33.2%         | 0.0%            |
-| Arithmetic   | ADD                                                             | 10        | 19         | 444,657   | 0          | 7.3%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                             | 8         | 16         | 374,448   | 0          | 6.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 3         | 4          | 78,010    | 0          | 1.3%          | 0.0%            |
+| Arithmetic   | ADD                                                             | 9         | 19         | 444,657   | 0          | 7.3%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                             | 6         | 16         | 374,448   | 0          | 6.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 0         | 4          | 78,010    | 0          | 1.3%          | 0.0%            |
 | Bitwise      | NOT, SHR                                                        | 0         | 2          | 46,806    | 0          | 0.8%          | 0.0%            |
 | Return       | STOP                                                            | 0         | 1          | 0         | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_u256_iter_pvm - fib_10
 
-- **Total Gas Used:** 343,059
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=957,114,765, proof_size=9,429
+- **Total Gas Used:** 341,058
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=957,101,669, proof_size=9,426
 - **Weight Consumed:** ref_time=48,778,413 (5.1% of total), proof_size=1,224
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 2.0%          | 0.0%            |
+| Calldata | call_data_load, call_data_size | 19        | 3          | 994,000  | 0          | 2.0%          | 0.0%            |
 | Return   | seal_return                    | 11        | 1          | 550,198  | 0          | 1.1%          | 0.0%            |
 
 
 ### Fibonacci_u256_pvm - fib_10
 
-- **Total Gas Used:** 356,515
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,629,950,099, proof_size=9,527
+- **Total Gas Used:** 354,515
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,629,937,003, proof_size=9,524
 - **Weight Consumed:** ref_time=721,613,747 (44.3% of total), proof_size=1,322
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata | call_data_load, call_data_size | 21        | 3          | 994,000  | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return                    | 11        | 1          | 550,198  | 0          | 0.1%          | 0.0%            |
 
 
 ### fibonacci_u256_ink - fib_10
 
-- **Total Gas Used:** 387,932
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=3,200,802,309, proof_size=30,821
-- **Weight Consumed:** ref_time=2,292,465,957 (71.6% of total), proof_size=22,616
+- **Total Gas Used:** 385,488
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=3,178,586,501, proof_size=30,554
+- **Weight Consumed:** ref_time=2,270,263,245 (71.4% of total), proof_size=22,352
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,745     | 2          | 237,208,118 | 20,514     | 10.3%         | 90.7%           |
+| Storage  | get_storage, set_storage | 4,743     | 2          | 237,208,118 | 20,514     | 10.4%         | 91.8%           |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 
 
 ### fibonacci_u256_iter_ink - fib_10
 
-- **Total Gas Used:** 349,354
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,271,876,660, proof_size=30,748
-- **Weight Consumed:** ref_time=363,540,308 (28.6% of total), proof_size=22,543
+- **Total Gas Used:** 347,138
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,261,079,332, proof_size=30,561
+- **Weight Consumed:** ref_time=352,756,076 (28.0% of total), proof_size=22,359
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,744     | 2          | 237,208,118 | 20,514     | 65.2%         | 91.0%           |
-| Calldata | call_data_copy           | 39        | 1          | 1,908,332   | 0          | 0.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,745     | 2          | 237,208,118 | 20,514     | 67.2%         | 91.7%           |
+| Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.5%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
 
 
 ### fibonacci_u256_iter_primitive_types_rust - fib_10
 
-- **Total Gas Used:** 343,396
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=973,998,039, proof_size=9,056
+- **Total Gas Used:** 341,396
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=973,984,943, proof_size=9,053
 - **Weight Consumed:** ref_time=65,661,687 (6.7% of total), proof_size=851
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3071,9 +5473,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_iter_rust - fib_10
 
-- **Total Gas Used:** 345,230
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,065,696,026, proof_size=9,095
+- **Total Gas Used:** 343,230
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,065,682,930, proof_size=9,092
 - **Weight Consumed:** ref_time=157,359,674 (14.8% of total), proof_size=890
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3083,9 +5485,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_primitive_types_rust - fib_10
 
-- **Total Gas Used:** 382,587
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,933,518,096, proof_size=9,105
+- **Total Gas Used:** 380,586
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=2,933,505,000, proof_size=9,102
 - **Weight Consumed:** ref_time=2,025,181,744 (69.0% of total), proof_size=900
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3095,99 +5497,99 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_u256_evm - fib_15
 
-- **Total Gas Used:** 366,395
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,123,924,519, proof_size=8,366
+- **Total Gas Used:** 364,394
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=2,123,911,423, proof_size=8,363
 - **Weight Consumed:** ref_time=1,215,588,167 (57.2% of total), proof_size=161
 
 | Category     | Opcodes Used                                      | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Control Flow | JUMP, JUMPDEST, JUMPI                             | 11,522    | 14,049     | 575,932,228 | 0          | 47.4%         | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 9,740     | 21,568     | 486,415,753 | 0          | 40.0%         | 0.0%            |
-| Arithmetic   | ADD, SUB                                          | 2,122     | 4,555      | 106,600,665 | 0          | 8.8%          | 0.0%            |
-| Bitwise      | NOT, SHR                                          | 918       | 1,974      | 46,197,522  | 0          | 3.8%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                               | 2         | 5          | 117,015     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 3         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                             | 11,515    | 14,049     | 575,932,228 | 0          | 47.4%         | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 9,745     | 21,568     | 486,415,753 | 0          | 40.0%         | 0.0%            |
+| Arithmetic   | ADD, SUB                                          | 2,132     | 4,555      | 106,600,665 | 0          | 8.8%          | 0.0%            |
+| Bitwise      | NOT, SHR                                          | 913       | 1,974      | 46,197,522  | 0          | 3.8%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                               | 1         | 5          | 117,015     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 1         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                              | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_u256_iter_evm - fib_15
 
-- **Total Gas Used:** 342,254
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=916,885,255, proof_size=8,362
+- **Total Gas Used:** 338,253
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=916,859,063, proof_size=8,356
 - **Weight Consumed:** ref_time=8,548,903 (0.9% of total), proof_size=157
 
 | Category     | Opcodes Used                                                    | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------- | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 80        | 181        | 4,196,938 | 0          | 49.1%         | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 58        | 69         | 2,816,161 | 0          | 32.9%         | 0.0%            |
+| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 86        | 181        | 4,196,938 | 0          | 49.1%         | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 55        | 69         | 2,816,161 | 0          | 32.9%         | 0.0%            |
 | Arithmetic   | ADD                                                             | 14        | 29         | 678,687   | 0          | 7.9%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                             | 11        | 21         | 491,463   | 0          | 5.7%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 3         | 4          | 78,010    | 0          | 0.9%          | 0.0%            |
-| Bitwise      | NOT, SHR                                                        | 0         | 2          | 46,806    | 0          | 0.5%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                             | 9         | 21         | 491,463   | 0          | 5.7%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 0         | 4          | 78,010    | 0          | 0.9%          | 0.0%            |
+| Bitwise      | NOT, SHR                                                        | 2         | 2          | 46,806    | 0          | 0.5%          | 0.0%            |
 | Return       | STOP                                                            | 0         | 1          | 0         | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_u256_iter_pvm - fib_15
 
-- **Total Gas Used:** 343,475
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=977,940,565, proof_size=9,429
+- **Total Gas Used:** 341,475
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=977,927,469, proof_size=9,426
 - **Weight Consumed:** ref_time=69,604,213 (7.1% of total), proof_size=1,224
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 1.4%          | 0.0%            |
+| Calldata | call_data_load, call_data_size | 19        | 3          | 994,000  | 0          | 1.4%          | 0.0%            |
 | Return   | seal_return                    | 11        | 1          | 550,198  | 0          | 0.8%          | 0.0%            |
 
 
 ### Fibonacci_u256_pvm - fib_15
 
-- **Total Gas Used:** 501,302
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=8,869,266,899, proof_size=9,527
+- **Total Gas Used:** 499,301
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=8,869,253,803, proof_size=9,524
 - **Weight Consumed:** ref_time=7,960,930,547 (89.8% of total), proof_size=1,322
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata | call_data_load, call_data_size | 21        | 3          | 994,000  | 0          | 0.0%          | 0.0%            |
+| Calldata | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return                    | 11        | 1          | 550,198  | 0          | 0.0%          | 0.0%            |
 
 
 ### fibonacci_u256_ink - fib_15
 
-- **Total Gas Used:** 794,788
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=23,543,578,109, proof_size=30,821
-- **Weight Consumed:** ref_time=22,635,241,757 (96.1% of total), proof_size=22,616
+- **Total Gas Used:** 792,343
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=23,521,362,301, proof_size=30,554
+- **Weight Consumed:** ref_time=22,613,039,045 (96.1% of total), proof_size=22,352
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,745     | 2          | 237,208,118 | 20,514     | 1.0%          | 90.7%           |
+| Storage  | get_storage, set_storage | 4,744     | 2          | 237,208,118 | 20,514     | 1.0%          | 91.8%           |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 
 
 ### fibonacci_u256_iter_ink - fib_15
 
-- **Total Gas Used:** 350,167
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,312,520,560, proof_size=30,748
-- **Weight Consumed:** ref_time=404,184,208 (30.8% of total), proof_size=22,543
+- **Total Gas Used:** 348,072
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,307,769,432, proof_size=30,561
+- **Weight Consumed:** ref_time=399,446,176 (30.5% of total), proof_size=22,359
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,744     | 2          | 237,208,118 | 20,514     | 58.7%         | 91.0%           |
-| Calldata | call_data_copy           | 39        | 1          | 1,908,332   | 0          | 0.5%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,745     | 2          | 237,208,118 | 20,514     | 59.4%         | 91.7%           |
+| Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.5%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### fibonacci_u256_iter_primitive_types_rust - fib_15
 
-- **Total Gas Used:** 343,920
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,000,198,239, proof_size=9,056
+- **Total Gas Used:** 341,920
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,000,185,143, proof_size=9,053
 - **Weight Consumed:** ref_time=91,861,887 (9.2% of total), proof_size=851
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3197,9 +5599,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_iter_rust - fib_15
 
-- **Total Gas Used:** 346,775
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,142,953,026, proof_size=9,095
+- **Total Gas Used:** 344,775
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,142,939,930, proof_size=9,092
 - **Weight Consumed:** ref_time=234,616,674 (20.5% of total), proof_size=890
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3209,9 +5611,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_primitive_types_rust - fib_15
 
-- **Total Gas Used:** 790,649
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=23,336,621,536, proof_size=9,105
+- **Total Gas Used:** 788,648
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=23,336,608,440, proof_size=9,102
 - **Weight Consumed:** ref_time=22,428,285,184 (96.1% of total), proof_size=900
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3221,9 +5623,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_rust - fib_15
 
-- **Total Gas Used:** 1,138,826
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=40,745,510,256, proof_size=9,185
+- **Total Gas Used:** 1,136,826
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=40,745,497,160, proof_size=9,182
 - **Weight Consumed:** ref_time=39,837,173,904 (97.8% of total), proof_size=980
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3233,99 +5635,99 @@ Opcodes grouped by functional category.
 
 ### Fibonacci_u256_evm - fib_5
 
-- **Total Gas Used:** 342,287
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=918,537,402, proof_size=8,366
+- **Total Gas Used:** 340,287
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=918,524,306, proof_size=8,363
 - **Weight Consumed:** ref_time=10,201,050 (1.1% of total), proof_size=161
 
 | Category     | Opcodes Used                                      | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------- | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
-| Control Flow | JUMP, JUMPDEST, JUMPI                             | 91        | 112        | 4,688,401 | 0          | 46.0%         | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 79        | 173        | 3,900,500 | 0          | 38.2%         | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                             | 92        | 112        | 4,688,401 | 0          | 46.0%         | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 84        | 173        | 3,900,500 | 0          | 38.2%         | 0.0%            |
 | Arithmetic   | ADD, SUB                                          | 14        | 34         | 795,702   | 0          | 7.8%          | 0.0%            |
-| Bitwise      | NOT, SHR                                          | 11        | 16         | 374,448   | 0          | 3.7%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                               | 1         | 5          | 117,015   | 0          | 1.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 3         | 4          | 78,010    | 0          | 0.8%          | 0.0%            |
+| Bitwise      | NOT, SHR                                          | 6         | 16         | 374,448   | 0          | 3.7%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                               | 2         | 5          | 117,015   | 0          | 1.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 1         | 4          | 78,010    | 0          | 0.8%          | 0.0%            |
 | Return       | STOP                                              | 0         | 1          | 0         | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_u256_iter_evm - fib_5
 
-- **Total Gas Used:** 342,157
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=912,048,635, proof_size=8,362
+- **Total Gas Used:** 340,157
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=912,035,539, proof_size=8,359
 - **Weight Consumed:** ref_time=3,712,283 (0.4% of total), proof_size=157
 
 | Category     | Opcodes Used                                                    | Total Gas | Call Count | ref time  | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------- | --------- | ---------- | --------- | ---------- | ------------- | --------------- |
-| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 33        | 71         | 1,622,608 | 0          | 43.7%         | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 25        | 29         | 1,255,961 | 0          | 33.8%         | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                             | 4         | 11         | 257,433   | 0          | 6.9%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP4, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2, SWAP3 | 35        | 71         | 1,622,608 | 0          | 43.7%         | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                           | 24        | 29         | 1,255,961 | 0          | 33.8%         | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                             | 6         | 11         | 257,433   | 0          | 6.9%          | 0.0%            |
 | Arithmetic   | ADD                                                             | 4         | 9          | 210,627   | 0          | 5.7%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 3         | 4          | 78,010    | 0          | 2.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                      | 0         | 4          | 78,010    | 0          | 2.1%          | 0.0%            |
 | Bitwise      | NOT, SHR                                                        | 0         | 2          | 46,806    | 0          | 1.3%          | 0.0%            |
 | Return       | STOP                                                            | 0         | 1          | 0         | 0          | 0.0%          | 0.0%            |
 
 
 ### Fibonacci_u256_iter_pvm - fib_5
 
-- **Total Gas Used:** 342,642
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=936,288,965, proof_size=9,429
+- **Total Gas Used:** 340,642
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=936,275,869, proof_size=9,426
 - **Weight Consumed:** ref_time=27,952,613 (3.0% of total), proof_size=1,224
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 3.6%          | 0.0%            |
+| Calldata | call_data_load, call_data_size | 19        | 3          | 994,000  | 0          | 3.6%          | 0.0%            |
 | Return   | seal_return                    | 11        | 1          | 550,198  | 0          | 2.0%          | 0.0%            |
 
 
 ### Fibonacci_u256_pvm - fib_5
 
-- **Total Gas Used:** 343,455
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=976,960,499, proof_size=9,527
+- **Total Gas Used:** 341,455
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=976,947,403, proof_size=9,524
 - **Weight Consumed:** ref_time=68,624,147 (7.0% of total), proof_size=1,322
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | -------- | ---------- | ------------- | --------------- |
-| Calldata | call_data_load, call_data_size | 21        | 3          | 994,000  | 0          | 1.4%          | 0.0%            |
+| Calldata | call_data_load, call_data_size | 20        | 3          | 994,000  | 0          | 1.4%          | 0.0%            |
 | Return   | seal_return                    | 11        | 1          | 550,198  | 0          | 0.8%          | 0.0%            |
 
 
 ### fibonacci_u256_ink - fib_5
 
-- **Total Gas Used:** 351,252
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,366,788,309, proof_size=30,821
-- **Weight Consumed:** ref_time=458,451,957 (33.5% of total), proof_size=22,616
+- **Total Gas Used:** 346,807
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=1,344,559,405, proof_size=30,551
+- **Weight Consumed:** ref_time=436,249,245 (32.4% of total), proof_size=22,352
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,744     | 2          | 237,208,118 | 20,514     | 51.7%         | 90.7%           |
+| Storage  | get_storage, set_storage | 4,744     | 2          | 237,208,118 | 20,514     | 54.4%         | 91.8%           |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.4%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### fibonacci_u256_iter_ink - fib_5
 
-- **Total Gas Used:** 348,541
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,231,232,760, proof_size=30,748
-- **Weight Consumed:** ref_time=322,896,408 (26.2% of total), proof_size=22,543
+- **Total Gas Used:** 346,204
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,214,389,232, proof_size=30,561
+- **Weight Consumed:** ref_time=306,065,976 (25.2% of total), proof_size=22,359
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,743     | 2          | 237,208,118 | 20,514     | 73.5%         | 91.0%           |
-| Calldata | call_data_copy           | 39        | 1          | 1,908,332   | 0          | 0.6%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,744     | 2          | 237,208,118 | 20,514     | 77.5%         | 91.7%           |
+| Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.6%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
 
 
 ### fibonacci_u256_iter_primitive_types_rust - fib_5
 
-- **Total Gas Used:** 342,872
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=947,797,839, proof_size=9,056
+- **Total Gas Used:** 340,872
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=947,784,743, proof_size=9,053
 - **Weight Consumed:** ref_time=39,461,487 (4.2% of total), proof_size=851
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3335,9 +5737,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_iter_rust - fib_5
 
-- **Total Gas Used:** 343,685
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=988,439,026, proof_size=9,095
+- **Total Gas Used:** 341,685
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=988,425,930, proof_size=9,092
 - **Weight Consumed:** ref_time=80,102,674 (8.1% of total), proof_size=890
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3347,9 +5749,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_primitive_types_rust - fib_5
 
-- **Total Gas Used:** 345,797
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,094,062,516, proof_size=9,105
+- **Total Gas Used:** 343,797
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,094,049,420, proof_size=9,102
 - **Weight Consumed:** ref_time=185,726,164 (17.0% of total), proof_size=900
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3359,9 +5761,9 @@ Opcodes grouped by functional category.
 
 ### fibonacci_u256_rust - fib_5
 
-- **Total Gas Used:** 348,384
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,223,381,896, proof_size=9,185
+- **Total Gas Used:** 346,384
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,223,368,800, proof_size=9,182
 - **Weight Consumed:** ref_time=315,045,544 (25.8% of total), proof_size=980
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time | proof size | % of ref time | % of proof size |
@@ -3371,7 +5773,7 @@ Opcodes grouped by functional category.
 
 ### flipper_evm - deploy
 
-- **Total Gas Used:** 7,523,772
+- **Total Gas Used:** 15,565,572
 - **Base Call Weight:** ref_time=1,515,238,429, proof_size=6,934
 - **Total Weight:** ref_time=1,755,797,102, proof_size=27,480
 - **Weight Consumed:** ref_time=240,558,673 (13.7% of total), proof_size=20,546
@@ -3392,21 +5794,21 @@ Opcodes grouped by functional category.
 
 ### flipper_ink - deploy
 
-- **Total Gas Used:** 11,612,640
-- **Base Call Weight:** ref_time=1,546,318,165, proof_size=6,934
-- **Total Weight:** ref_time=1,749,173,921, proof_size=17,191
-- **Weight Consumed:** ref_time=202,855,756 (11.6% of total), proof_size=10,257
+- **Total Gas Used:** 19,518,565
+- **Base Call Weight:** ref_time=1,542,371,950, proof_size=6,934
+- **Total Weight:** ref_time=1,740,457,926, proof_size=17,191
+- **Weight Consumed:** ref_time=198,085,976 (11.4% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 47,586    | 1          | 169,280,783 | 10,257     | 83.4%         | 100.0%          |
-| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 0.9%          | 0.0%            |
+| Storage  | set_storage    | 47,586    | 1          | 169,280,783 | 10,257     | 85.5%         | 100.0%          |
+| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.0%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### flipper_pvm - deploy
 
-- **Total Gas Used:** 11,743,095
+- **Total Gas Used:** 20,219,695
 - **Base Call Weight:** ref_time=1,547,671,153, proof_size=6,934
 - **Total Weight:** ref_time=1,829,960,804, proof_size=27,577
 - **Weight Consumed:** ref_time=282,289,651 (15.4% of total), proof_size=20,643
@@ -3421,7 +5823,7 @@ Opcodes grouped by functional category.
 
 ### flipper_stylus - deploy
 
-- **Total Gas Used:** 14,446,836
+- **Total Gas Used:** 23,180,036
 - **Base Call Weight:** ref_time=1,568,336,434, proof_size=6,934
 - **Total Weight:** ref_time=2,227,964,550, proof_size=58,348
 - **Weight Consumed:** ref_time=659,628,116 (29.6% of total), proof_size=51,414
@@ -3435,63 +5837,63 @@ Opcodes grouped by functional category.
 
 ### flipper_evm - flip
 
-- **Total Gas Used:** 335,651
-- **Base Call Weight:** ref_time=907,917,280, proof_size=8,109
-- **Total Weight:** ref_time=1,146,733,892, proof_size=28,819
+- **Total Gas Used:** 333,651
+- **Base Call Weight:** ref_time=907,904,184, proof_size=8,106
+- **Total Weight:** ref_time=1,146,720,796, proof_size=28,816
 - **Weight Consumed:** ref_time=238,816,612 (20.8% of total), proof_size=20,710
 
 | Category     | Opcodes Used                                      | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage      | SLOAD, SSTORE                                     | 57,546    | 2          | 237,270,070 | 20,546     | 99.4%         | 99.2%           |
-| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 13        | 26         | 561,672     | 0          | 0.2%          | 0.0%            |
-| Control Flow | JUMPDEST, JUMPI                                   | 6         | 6          | 327,642     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHR                                 | 3         | 7          | 163,821     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                               | 1         | 6          | 140,418     | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 0         | 3          | 54,607      | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD                                               | 1         | 1          | 23,403      | 0          | 0.0%          | 0.0%            |
-| Memory       | MSTORE                                            | 1         | 1          | 23,403      | 0          | 0.0%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1 | 10        | 26         | 561,672     | 0          | 0.2%          | 0.0%            |
+| Control Flow | JUMPDEST, JUMPI                                   | 7         | 6          | 327,642     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHR                                 | 4         | 7          | 163,821     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                               | 4         | 6          | 140,418     | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                        | 1         | 3          | 54,607      | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD                                               | 0         | 1          | 23,403      | 0          | 0.0%          | 0.0%            |
+| Memory       | MSTORE                                            | 0         | 1          | 23,403      | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                            | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### flipper_ink - flip
 
-- **Total Gas Used:** 283,579
-- **Base Call Weight:** ref_time=907,917,280, proof_size=8,109
-- **Total Weight:** ref_time=1,183,137,717, proof_size=30,869
-- **Weight Consumed:** ref_time=275,220,437 (23.3% of total), proof_size=22,760
+- **Total Gas Used:** 281,286
+- **Base Call Weight:** ref_time=907,904,184, proof_size=8,106
+- **Total Weight:** ref_time=1,168,477,476, proof_size=30,621
+- **Weight Consumed:** ref_time=260,573,292 (22.3% of total), proof_size=22,515
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,744     | 2          | 237,210,452 | 20,516     | 86.2%         | 90.1%           |
-| Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.7%          | 0.0%            |
+| Storage  | get_storage, set_storage | 4,745     | 2          | 237,210,452 | 20,516     | 91.0%         | 91.1%           |
+| Calldata | call_data_copy           | 39        | 1          | 1,908,332   | 0          | 0.7%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
 
 
 ### flipper_pvm - flip
 
-- **Total Gas Used:** 336,100
-- **Base Call Weight:** ref_time=907,917,280, proof_size=8,109
-- **Total Weight:** ref_time=1,169,184,388, proof_size=30,951
+- **Total Gas Used:** 334,100
+- **Base Call Weight:** ref_time=907,904,184, proof_size=8,106
+- **Total Weight:** ref_time=1,169,171,292, proof_size=30,948
 - **Weight Consumed:** ref_time=261,267,108 (22.3% of total), proof_size=22,842
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage  | get_storage_or_zero, set_storage_or_clear | 57,544    | 2          | 237,220,342 | 20,514     | 90.8%         | 89.8%           |
-| Calldata | call_data_load, call_data_size            | 13        | 2          | 656,000     | 0          | 0.3%          | 0.0%            |
+| Calldata | call_data_load, call_data_size            | 12        | 2          | 656,000     | 0          | 0.3%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
 
 
 ### flipper_stylus - flip
 
-- **Total Gas Used:** 338,101
-- **Base Call Weight:** ref_time=907,917,280, proof_size=8,109
-- **Total Weight:** ref_time=1,269,246,658, proof_size=42,491
+- **Total Gas Used:** 336,101
+- **Base Call Weight:** ref_time=907,904,184, proof_size=8,106
+- **Total Weight:** ref_time=1,269,233,562, proof_size=42,488
 - **Weight Consumed:** ref_time=361,329,378 (28.5% of total), proof_size=34,382
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 58,902    | 3          | 305,148,059 | 30,771     | 84.5%         | 89.5%           |
-| Calldata | call_data_copy, call_data_size            | 13        | 3          | 677,012     | 0          | 0.2%          | 0.0%            |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 58,904    | 3          | 305,148,059 | 30,771     | 84.5%         | 89.5%           |
+| Calldata | call_data_copy, call_data_size            | 14        | 3          | 677,012     | 0          | 0.2%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
 
 
@@ -3674,7 +6076,7 @@ Opcodes grouped by functional category.
 
 ### FungibleCredential_evm - deploy
 
-- **Total Gas Used:** 21,840,414
+- **Total Gas Used:** 31,287,614
 - **Base Call Weight:** ref_time=1,626,682,762, proof_size=6,934
 - **Total Weight:** ref_time=1,866,872,489, proof_size=27,480
 - **Weight Consumed:** ref_time=240,189,727 (12.9% of total), proof_size=20,546
@@ -3694,7 +6096,7 @@ Opcodes grouped by functional category.
 
 ### FungibleCredential_pvm - deploy
 
-- **Total Gas Used:** 142,394,545
+- **Total Gas Used:** 163,551,545
 - **Base Call Weight:** ref_time=2,569,022,797, proof_size=6,934
 - **Total Weight:** ref_time=2,826,456,859, proof_size=27,448
 - **Weight Consumed:** ref_time=257,434,062 (9.1% of total), proof_size=20,514
@@ -3709,7 +6111,7 @@ Opcodes grouped by functional category.
 
 ### fungible_credential_rust - deploy
 
-- **Total Gas Used:** 55,083,679
+- **Total Gas Used:** 55,079,679
 - **Base Call Weight:** ref_time=1,796,096,188, proof_size=6,934
 - **Total Weight:** ref_time=2,044,141,156, proof_size=17,191
 - **Weight Consumed:** ref_time=248,044,968 (12.1% of total), proof_size=10,257
@@ -3959,7 +6361,7 @@ Opcodes grouped by functional category.
 
 ### incrementer_evm - deploy
 
-- **Total Gas Used:** 7,659,334
+- **Total Gas Used:** 15,712,934
 - **Base Call Weight:** ref_time=1,516,301,491, proof_size=6,934
 - **Total Weight:** ref_time=1,756,864,281, proof_size=27,480
 - **Weight Consumed:** ref_time=240,562,790 (13.7% of total), proof_size=20,546
@@ -3981,21 +6383,21 @@ Opcodes grouped by functional category.
 
 ### incrementer_ink - deploy
 
-- **Total Gas Used:** 12,443,292
-- **Base Call Weight:** ref_time=1,552,809,286, proof_size=6,934
-- **Total Weight:** ref_time=1,742,767,628, proof_size=17,191
-- **Weight Consumed:** ref_time=189,958,342 (10.9% of total), proof_size=10,257
+- **Total Gas Used:** 18,540,115
+- **Base Call Weight:** ref_time=1,535,397,619, proof_size=6,934
+- **Total Weight:** ref_time=1,716,958,461, proof_size=17,191
+- **Weight Consumed:** ref_time=181,560,842 (10.6% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 48,186    | 1          | 169,281,929 | 10,257     | 89.1%         | 100.0%          |
-| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.0%          | 0.0%            |
+| Storage  | set_storage    | 48,186    | 1          | 169,281,929 | 10,257     | 93.2%         | 100.0%          |
+| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 1.1%          | 0.0%            |
 | Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### incrementer_pvm - deploy
 
-- **Total Gas Used:** 12,697,022
+- **Total Gas Used:** 21,266,222
 - **Base Call Weight:** ref_time=1,555,128,694, proof_size=6,934
 - **Total Weight:** ref_time=1,837,283,985, proof_size=27,577
 - **Weight Consumed:** ref_time=282,155,291 (15.4% of total), proof_size=20,643
@@ -4010,7 +6412,7 @@ Opcodes grouped by functional category.
 
 ### incrementer_stylus - deploy
 
-- **Total Gas Used:** 17,693,620
+- **Total Gas Used:** 26,739,820
 - **Base Call Weight:** ref_time=1,593,704,959, proof_size=6,934
 - **Total Weight:** ref_time=2,242,181,195, proof_size=58,348
 - **Weight Consumed:** ref_time=648,476,236 (28.9% of total), proof_size=51,414
@@ -4024,44 +6426,44 @@ Opcodes grouped by functional category.
 
 ### incrementer_evm - inc
 
-- **Total Gas Used:** 399,674
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,147,883,152, proof_size=28,974
+- **Total Gas Used:** 397,674
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,147,870,056, proof_size=28,971
 - **Weight Consumed:** ref_time=239,546,800 (20.9% of total), proof_size=20,769
 
 | Category     | Opcodes Used                                             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | -------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                            | 57,545    | 2          | 237,270,070 | 20,546     | 99.0%         | 98.9%           |
+| Storage      | SLOAD, SSTORE                                            | 57,546    | 2          | 237,270,070 | 20,546     | 99.0%         | 98.9%           |
 | Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH4, SWAP1, SWAP2 | 20        | 38         | 850,309     | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMPDEST, JUMPI                                          | 9         | 8          | 483,662     | 0          | 0.2%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHR                                        | 4         | 8          | 187,224     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SGT, SLT                                 | 1         | 7          | 163,821     | 0          | 0.1%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                               | 1         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
-| Math         | SIGNEXTEND                                               | 1         | 2          | 78,010      | 0          | 0.0%          | 0.0%            |
+| Control Flow | JUMPDEST, JUMPI                                          | 7         | 8          | 483,662     | 0          | 0.2%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHR                                        | 3         | 8          | 187,224     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SGT, SLT                                 | 4         | 7          | 163,821     | 0          | 0.1%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                               | 0         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
+| Math         | SIGNEXTEND                                               | 2         | 2          | 78,010      | 0          | 0.0%          | 0.0%            |
 | Arithmetic   | ADD, SUB                                                 | 2         | 3          | 70,209      | 0          | 0.0%          | 0.0%            |
-| Memory       | MSTORE                                                   | 1         | 1          | 23,403      | 0          | 0.0%          | 0.0%            |
+| Memory       | MSTORE                                                   | 0         | 1          | 23,403      | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                   | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### incrementer_ink - inc
 
-- **Total Gas Used:** 347,711
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,189,738,710, proof_size=31,374
-- **Weight Consumed:** ref_time=281,402,358 (23.7% of total), proof_size=23,169
+- **Total Gas Used:** 345,242
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,166,306,761, proof_size=30,290
+- **Weight Consumed:** ref_time=257,983,505 (22.1% of total), proof_size=22,088
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 4,743     | 2          | 237,217,454 | 20,522     | 84.3%         | 88.6%           |
+| Storage  | get_storage, set_storage | 4,745     | 2          | 237,217,454 | 20,522     | 92.0%         | 92.9%           |
 | Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.7%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
 
 
 ### incrementer_pvm - inc
 
-- **Total Gas Used:** 400,248
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,176,600,280, proof_size=31,510
+- **Total Gas Used:** 398,248
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,176,587,184, proof_size=31,507
 - **Weight Consumed:** ref_time=268,263,928 (22.8% of total), proof_size=23,305
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -4073,9 +6475,9 @@ Opcodes grouped by functional category.
 
 ### incrementer_stylus - inc
 
-- **Total Gas Used:** 402,240
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,276,169,293, proof_size=44,162
+- **Total Gas Used:** 400,239
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,276,156,197, proof_size=44,159
 - **Weight Consumed:** ref_time=367,832,941 (28.8% of total), proof_size=35,957
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -4087,7 +6489,7 @@ Opcodes grouped by functional category.
 
 ### KeyRegistry_evm - deploy
 
-- **Total Gas Used:** 15,730,765
+- **Total Gas Used:** 24,596,165
 - **Base Call Weight:** ref_time=1,579,376,503, proof_size=6,934
 - **Total Weight:** ref_time=1,581,433,487, proof_size=6,934
 - **Weight Consumed:** ref_time=2,056,984 (0.1% of total), proof_size=0
@@ -4104,7 +6506,7 @@ Opcodes grouped by functional category.
 
 ### KeyRegistry_pvm - deploy
 
-- **Total Gas Used:** 86,978,172
+- **Total Gas Used:** 102,761,772
 - **Base Call Weight:** ref_time=2,136,276,028, proof_size=6,934
 - **Total Weight:** ref_time=2,148,800,766, proof_size=6,934
 - **Weight Consumed:** ref_time=12,524,738 (0.6% of total), proof_size=0
@@ -4118,7 +6520,7 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - deploy
 
-- **Total Gas Used:** 45,551,054
+- **Total Gas Used:** 57,313,254
 - **Base Call Weight:** ref_time=1,812,412,579, proof_size=6,934
 - **Total Weight:** ref_time=1,813,884,938, proof_size=6,934
 - **Weight Consumed:** ref_time=1,472,359 (0.1% of total), proof_size=0
@@ -4172,17 +6574,17 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - fetchPrekeyBundle
 
-- **Total Gas Used:** 433,411
-- **Base Call Weight:** ref_time=908,297,064, proof_size=8,196
-- **Total Weight:** ref_time=3,614,760,477, proof_size=150,343
+- **Total Gas Used:** 435,412
+- **Base Call Weight:** ref_time=908,310,160, proof_size=8,199
+- **Total Weight:** ref_time=3,614,773,573, proof_size=150,346
 - **Weight Consumed:** ref_time=2,706,463,413 (74.9% of total), proof_size=142,147
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 70,632    | 12         | 1,220,960,920 | 123,381    | 45.1%         | 86.8%           |
-| Crypto   | hash_keccak_256          | 3,212     | 13         | 160,623,541   | 0          | 5.9%          | 0.0%            |
-| Events   | deposit_event            | 108       | 1          | 5,368,000     | 0          | 0.2%          | 0.0%            |
-| Calldata | call_data_copy           | 20        | 1          | 974,444       | 0          | 0.0%          | 0.0%            |
+| Storage  | get_storage, set_storage | 70,635    | 12         | 1,220,960,920 | 123,381    | 45.1%         | 86.8%           |
+| Crypto   | hash_keccak_256          | 3,213     | 13         | 160,623,541   | 0          | 5.9%          | 0.0%            |
+| Events   | deposit_event            | 107       | 1          | 5,368,000     | 0          | 0.2%          | 0.0%            |
+| Calldata | call_data_copy           | 19        | 1          | 974,444       | 0          | 0.0%          | 0.0%            |
 | Return   | seal_return              | 12        | 1          | 607,222       | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 402,000       | 0          | 0.0%          | 0.0%            |
 
@@ -4290,18 +6692,18 @@ Opcodes grouped by functional category.
 
 ### key_registry_rust - updateSignedPrekey
 
-- **Total Gas Used:** 626,373
-- **Base Call Weight:** ref_time=910,025,736, proof_size=8,592
-- **Total Weight:** ref_time=2,222,824,836, proof_size=68,742
+- **Total Gas Used:** 628,373
+- **Base Call Weight:** ref_time=910,038,832, proof_size=8,595
+- **Total Weight:** ref_time=2,222,837,932, proof_size=68,745
 - **Weight Consumed:** ref_time=1,312,799,100 (59.1% of total), proof_size=60,150
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 7,469     | 4          | 373,514,608 | 41,384     | 28.5%         | 68.8%           |
+| Storage  | get_storage, set_storage | 7,470     | 4          | 373,514,608 | 41,384     | 28.5%         | 68.8%           |
 | Crypto   | hash_keccak_256          | 1,235     | 5          | 61,728,851  | 0          | 4.7%          | 0.0%            |
-| Events   | deposit_event            | 444       | 1          | 22,221,568  | 0          | 1.7%          | 0.0%            |
-| Calldata | call_data_copy           | 19        | 1          | 974,444     | 0          | 0.1%          | 0.0%            |
-| Context  | caller, now              | 16        | 2          | 758,000     | 0          | 0.1%          | 0.0%            |
+| Events   | deposit_event            | 445       | 1          | 22,221,568  | 0          | 1.7%          | 0.0%            |
+| Calldata | call_data_copy           | 20        | 1          | 974,444     | 0          | 0.1%          | 0.0%            |
+| Context  | caller, now              | 15        | 2          | 758,000     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 
 
@@ -4602,25 +7004,25 @@ Opcodes grouped by functional category.
 
 ### Log_evm - create_permissioned
 
-- **Total Gas Used:** 474,246
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=2,236,469,907, proof_size=127,573
+- **Total Gas Used:** 472,245
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=2,236,456,811, proof_size=127,570
 - **Weight Consumed:** ref_time=1,328,133,555 (59.4% of total), proof_size=119,368
 
 | Category     | Opcodes Used                                                                                                                                                                                  | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                                                                                                                                 | 130,689   | 11         | 1,254,366,003 | 113,115    | 94.4%         | 94.8%           |
-| Crypto       | KECCAK256                                                                                                                                                                                     | 746       | 3          | 37,261,176    | 0          | 2.8%          | 0.0%            |
+| Storage      | SLOAD, SSTORE                                                                                                                                                                                 | 130,687   | 11         | 1,254,366,003 | 113,115    | 94.4%         | 94.8%           |
+| Crypto       | KECCAK256                                                                                                                                                                                     | 745       | 3          | 37,261,176    | 0          | 2.8%          | 0.0%            |
 | Events       | LOG3                                                                                                                                                                                          | 276       | 1          | 13,794,784    | 0          | 1.0%          | 0.0%            |
-| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, PUSH0, PUSH1, PUSH17, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP10, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 115       | 257        | 5,967,765     | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                         | 53        | 46         | 2,675,743     | 0          | 0.2%          | 0.0%            |
+| Stack        | DUP1, DUP10, DUP11, DUP14, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, DUP8, PUSH0, PUSH1, PUSH17, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP10, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8, SWAP9 | 124       | 257        | 5,967,765     | 0          | 0.4%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                                                                         | 57        | 46         | 2,675,743     | 0          | 0.2%          | 0.0%            |
 | Context      | CALLER, TIMESTAMP                                                                                                                                                                             | 23        | 3          | 1,160,000     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                        | 29        | 49         | 1,146,747     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                                                                        | 18        | 49         | 1,146,747     | 0          | 0.1%          | 0.0%            |
 | Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                                                                       | 14        | 32         | 748,896       | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                                                                                                                 | 9         | 22         | 514,866       | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                                                                                      | 9         | 21         | 491,463       | 0          | 0.0%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                                                                                                                                                     | 7         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                    | 1         | 4          | 78,010        | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                                                                                                                 | 7         | 22         | 514,866       | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                                                                                      | 10        | 21         | 491,463       | 0          | 0.0%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                                                                                                                                                     | 6         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                                                                                                                    | 3         | 4          | 78,010        | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                                                                                                                        | 0         | 1          | 0             | 0          | 0.0%          | 0.0%            |
 
 
@@ -4661,7 +7063,7 @@ Opcodes grouped by functional category.
 
 ### Log_evm - deploy
 
-- **Total Gas Used:** 19,907,828
+- **Total Gas Used:** 29,167,428
 - **Base Call Weight:** ref_time=1,611,574,396, proof_size=6,934
 - **Total Weight:** ref_time=1,851,574,647, proof_size=27,480
 - **Weight Consumed:** ref_time=240,000,251 (13.0% of total), proof_size=20,546
@@ -4681,7 +7083,7 @@ Opcodes grouped by functional category.
 
 ### Log_pvm - deploy
 
-- **Total Gas Used:** 118,453,727
+- **Total Gas Used:** 137,287,127
 - **Base Call Weight:** ref_time=2,381,891,671, proof_size=6,934
 - **Total Weight:** ref_time=2,639,527,273, proof_size=27,448
 - **Weight Consumed:** ref_time=257,635,602 (9.8% of total), proof_size=20,514
@@ -4696,7 +7098,7 @@ Opcodes grouped by functional category.
 
 ### log_rust - deploy
 
-- **Total Gas Used:** 41,193,950
+- **Total Gas Used:** 52,527,750
 - **Base Call Weight:** ref_time=1,777,911,385, proof_size=6,934
 - **Total Weight:** ref_time=2,024,672,871, proof_size=17,191
 - **Weight Consumed:** ref_time=246,761,486 (12.2% of total), proof_size=10,257
@@ -4793,16 +7195,16 @@ Opcodes grouped by functional category.
 
 ### Log_pvm - transfer
 
-- **Total Gas Used:** 564,271
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=3,437,756,321, proof_size=278,367
+- **Total Gas Used:** 562,271
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=3,437,743,225, proof_size=278,364
 - **Weight Consumed:** ref_time=2,528,987,801 (73.6% of total), proof_size=270,063
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 146,310   | 21         | 2,035,368,913 | 215,941    | 80.5%         | 80.0%           |
-| Crypto    | hash_keccak_256                           | 1,980     | 8          | 99,099,488    | 0          | 3.9%          | 0.0%            |
-| Events    | deposit_event                             | 107       | 1          | 5,368,000     | 0          | 0.2%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 146,307   | 21         | 2,035,368,913 | 215,941    | 80.5%         | 80.0%           |
+| Crypto    | hash_keccak_256                           | 1,982     | 8          | 99,099,488    | 0          | 3.9%          | 0.0%            |
+| Events    | deposit_event                             | 108       | 1          | 5,368,000     | 0          | 0.2%          | 0.0%            |
 | Calldata  | call_data_load, call_data_size            | 28        | 4          | 1,332,000     | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                               | 11        | 1          | 550,198       | 0          | 0.0%          | 0.0%            |
 | Context   | caller                                    | 8         | 1          | 402,000       | 0          | 0.0%          | 0.0%            |
@@ -4828,7 +7230,7 @@ Opcodes grouped by functional category.
 
 ### Marketplace_pvm - deploy
 
-- **Total Gas Used:** 567,633,412
+- **Total Gas Used:** 630,069,212
 - **Base Call Weight:** ref_time=5,893,410,955, proof_size=6,934
 - **Total Weight:** ref_time=6,187,798,542, proof_size=27,448
 - **Weight Consumed:** ref_time=294,387,587 (4.8% of total), proof_size=20,514
@@ -4917,23 +7319,23 @@ Opcodes grouped by functional category.
 
 ### MarketplaceProxy_pvm - createItem_physical
 
-- **Total Gas Used:** 1,797,942
-- **Base Call Weight:** ref_time=912,985,432, proof_size=9,270
-- **Total Weight:** ref_time=9,161,303,464, proof_size=1,051,690
+- **Total Gas Used:** 1,795,942
+- **Base Call Weight:** ref_time=912,972,336, proof_size=9,267
+- **Total Weight:** ref_time=9,161,290,368, proof_size=1,051,687
 - **Weight Consumed:** ref_time=8,248,318,032 (90.0% of total), proof_size=1,042,420
 
 | Category    | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
 | Storage     | get_storage_or_zero, set_storage_or_clear      | 671,035   | 44         | 4,511,712,488 | 452,045    | 54.7%         | 43.4%           |
-| Calls       | call_evm, delegate_call_evm                    | 29,028    | 3          | 1,451,511,216 | 570,857    | 17.6%         | 54.8%           |
-| Crypto      | hash_keccak_256                                | 1,985     | 8          | 99,184,232    | 0          | 1.2%          | 0.0%            |
-| Events      | deposit_event                                  | 1,625     | 1          | 81,209,056    | 0          | 1.0%          | 0.0%            |
-| Immutables  | get_immutable_data                             | 1,270     | 2          | 63,591,268    | 7,602      | 0.8%          | 0.7%            |
-| Ether/Gas   | ref_time_left, value_transferred               | 139       | 5          | 7,059,000     | 0          | 0.1%          | 0.0%            |
-| Calldata    | call_data_copy, call_data_load, call_data_size | 138       | 26         | 6,979,994     | 0          | 0.1%          | 0.0%            |
+| Calls       | call_evm, delegate_call_evm                    | 29,029    | 3          | 1,451,511,216 | 570,857    | 17.6%         | 54.8%           |
+| Crypto      | hash_keccak_256                                | 1,983     | 8          | 99,184,232    | 0          | 1.2%          | 0.0%            |
+| Events      | deposit_event                                  | 1,624     | 1          | 81,209,056    | 0          | 1.0%          | 0.0%            |
+| Immutables  | get_immutable_data                             | 1,272     | 2          | 63,591,268    | 7,602      | 0.8%          | 0.7%            |
+| Ether/Gas   | ref_time_left, value_transferred               | 142       | 5          | 7,059,000     | 0          | 0.1%          | 0.0%            |
+| Calldata    | call_data_copy, call_data_load, call_data_size | 142       | 26         | 6,979,994     | 0          | 0.1%          | 0.0%            |
 | Return Data | return_data_copy, return_data_size             | 57        | 7          | 2,814,928     | 0          | 0.0%          | 0.0%            |
-| Context     | address, caller, now                           | 54        | 7          | 2,731,000     | 0          | 0.0%          | 0.0%            |
-| Return      | seal_return                                    | 44        | 4          | 2,226,136     | 0          | 0.0%          | 0.0%            |
+| Context     | address, caller, now                           | 55        | 7          | 2,731,000     | 0          | 0.0%          | 0.0%            |
+| Return      | seal_return                                    | 46        | 4          | 2,226,136     | 0          | 0.0%          | 0.0%            |
 
 
 ### MarketplaceProxy_evm - deactivateItem
@@ -4985,7 +7387,7 @@ Opcodes grouped by functional category.
 
 ### MarketplaceProxy_evm - deploy
 
-- **Total Gas Used:** 28,260,059
+- **Total Gas Used:** 36,444,859
 - **Base Call Weight:** ref_time=1,557,245,485, proof_size=6,934
 - **Total Weight:** ref_time=6,721,148,144, proof_size=576,148
 - **Weight Consumed:** ref_time=5,163,902,659 (76.8% of total), proof_size=569,214
@@ -5012,7 +7414,7 @@ Opcodes grouped by functional category.
 
 ### MarketplaceProxy_pvm - deploy
 
-- **Total Gas Used:** 43,599,918
+- **Total Gas Used:** 53,992,118
 - **Base Call Weight:** ref_time=1,702,232,269, proof_size=6,934
 - **Total Weight:** ref_time=6,856,095,329, proof_size=582,642
 - **Weight Consumed:** ref_time=5,153,863,060 (75.2% of total), proof_size=575,708
@@ -5154,22 +7556,22 @@ Opcodes grouped by functional category.
 
 ### MarketplaceProxy_pvm - purchaseItem_physical
 
-- **Total Gas Used:** 1,834,253
-- **Base Call Weight:** ref_time=912,212,768, proof_size=9,093
-- **Total Weight:** ref_time=11,596,860,486, proof_size=971,493
+- **Total Gas Used:** 1,836,254
+- **Base Call Weight:** ref_time=912,225,864, proof_size=9,096
+- **Total Weight:** ref_time=11,596,873,582, proof_size=971,496
 - **Weight Consumed:** ref_time=10,684,647,718 (92.1% of total), proof_size=962,400
 
 | Category    | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | ----------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage     | get_storage_or_zero, set_storage_or_clear      | 850,393   | 65         | 8,199,683,161 | 669,862    | 76.7%         | 69.6%           |
+| Storage     | get_storage_or_zero, set_storage_or_clear      | 850,395   | 65         | 8,199,683,161 | 669,862    | 76.7%         | 69.6%           |
 | Calls       | delegate_call_evm                              | 11,278    | 1          | 563,934,091   | 276,821    | 5.3%          | 28.8%           |
 | Crypto      | hash_keccak_256                                | 1,244     | 5          | 62,177,288    | 0          | 0.6%          | 0.0%            |
 | Immutables  | get_immutable_data                             | 636       | 1          | 31,795,634    | 3,801      | 0.3%          | 0.4%            |
 | Events      | deposit_event                                  | 445       | 1          | 22,221,568    | 0          | 0.2%          | 0.0%            |
-| Calldata    | call_data_copy, call_data_load, call_data_size | 90        | 16         | 4,521,952     | 0          | 0.0%          | 0.0%            |
-| Context     | caller, now                                    | 69        | 9          | 3,434,000     | 0          | 0.0%          | 0.0%            |
+| Calldata    | call_data_copy, call_data_load, call_data_size | 93        | 16         | 4,521,952     | 0          | 0.0%          | 0.0%            |
+| Context     | caller, now                                    | 70        | 9          | 3,434,000     | 0          | 0.0%          | 0.0%            |
 | Ether/Gas   | ref_time_left, value_transferred               | 49        | 2          | 2,465,000     | 0          | 0.0%          | 0.0%            |
-| Return Data | return_data_copy, return_data_size             | 23        | 3          | 1,236,464     | 0          | 0.0%          | 0.0%            |
+| Return Data | return_data_copy, return_data_size             | 25        | 3          | 1,236,464     | 0          | 0.0%          | 0.0%            |
 | Return      | seal_return                                    | 22        | 2          | 1,113,068     | 0          | 0.0%          | 0.0%            |
 
 
@@ -5494,7 +7896,7 @@ Opcodes grouped by functional category.
 
 ### MockMobRule_evm - deploy
 
-- **Total Gas Used:** 28,358,312
+- **Total Gas Used:** 28,356,312
 - **Base Call Weight:** ref_time=1,606,081,909, proof_size=6,934
 - **Total Weight:** ref_time=2,024,769,550, proof_size=37,737
 - **Weight Consumed:** ref_time=418,687,641 (20.7% of total), proof_size=30,803
@@ -5516,7 +7918,7 @@ Opcodes grouped by functional category.
 
 ### MockMobRule_pvm - deploy
 
-- **Total Gas Used:** 108,203,082
+- **Total Gas Used:** 125,634,282
 - **Base Call Weight:** ref_time=2,269,016,374, proof_size=6,934
 - **Total Weight:** ref_time=2,880,269,548, proof_size=37,705
 - **Weight Consumed:** ref_time=611,253,174 (21.2% of total), proof_size=30,771
@@ -5575,7 +7977,7 @@ Opcodes grouped by functional category.
 
 ### NonFungibleCredential_evm - deploy
 
-- **Total Gas Used:** 20,705,174
+- **Total Gas Used:** 30,042,174
 - **Base Call Weight:** ref_time=1,617,807,805, proof_size=6,934
 - **Total Weight:** ref_time=1,857,886,230, proof_size=27,480
 - **Weight Consumed:** ref_time=240,078,425 (12.9% of total), proof_size=20,546
@@ -5595,7 +7997,7 @@ Opcodes grouped by functional category.
 
 ### NonFungibleCredential_pvm - deploy
 
-- **Total Gas Used:** 142,110,279
+- **Total Gas Used:** 163,241,879
 - **Base Call Weight:** ref_time=2,566,816,138, proof_size=6,934
 - **Total Weight:** ref_time=2,824,115,840, proof_size=27,448
 - **Weight Consumed:** ref_time=257,299,702 (9.1% of total), proof_size=20,514
@@ -5610,7 +8012,7 @@ Opcodes grouped by functional category.
 
 ### non_fungible_credential_rust - deploy
 
-- **Total Gas Used:** 46,348,884
+- **Total Gas Used:** 58,183,084
 - **Base Call Weight:** ref_time=1,818,211,099, proof_size=6,934
 - **Total Weight:** ref_time=2,065,375,665, proof_size=17,191
 - **Weight Consumed:** ref_time=247,164,566 (12.0% of total), proof_size=10,257
@@ -5978,7 +8380,7 @@ Opcodes grouped by functional category.
 
 ### SimpleToken_evm - deploy
 
-- **Total Gas Used:** 8,018,964
+- **Total Gas Used:** 16,133,764
 - **Base Call Weight:** ref_time=1,519,088,002, proof_size=6,934
 - **Total Weight:** ref_time=1,520,388,900, proof_size=6,934
 - **Weight Consumed:** ref_time=1,300,898 (0.1% of total), proof_size=0
@@ -5995,7 +8397,7 @@ Opcodes grouped by functional category.
 
 ### SimpleToken_pvm - deploy
 
-- **Total Gas Used:** 17,916,414
+- **Total Gas Used:** 26,996,814
 - **Base Call Weight:** ref_time=1,596,433,816, proof_size=6,934
 - **Total Weight:** ref_time=1,608,891,374, proof_size=6,934
 - **Weight Consumed:** ref_time=12,457,558 (0.8% of total), proof_size=0
@@ -6009,21 +8411,21 @@ Opcodes grouped by functional category.
 
 ### simple_token_u256_ink - deploy
 
-- **Total Gas Used:** 30,232,037
-- **Base Call Weight:** ref_time=1,692,286,573, proof_size=6,934
-- **Total Weight:** ref_time=1,917,054,851, proof_size=17,191
-- **Weight Consumed:** ref_time=224,768,278 (11.7% of total), proof_size=10,257
+- **Total Gas Used:** 34,107,858
+- **Base Call Weight:** ref_time=1,646,719,870, proof_size=6,934
+- **Total Weight:** ref_time=1,855,096,228, proof_size=17,191
+- **Weight Consumed:** ref_time=208,376,358 (11.2% of total), proof_size=10,257
 
 | Category | Opcodes Used   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | -------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | set_storage    | 53,786    | 1          | 169,292,625 | 10,257     | 75.3%         | 100.0%          |
-| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 0.8%          | 0.0%            |
-| Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
+| Storage  | set_storage    | 53,786    | 1          | 169,292,625 | 10,257     | 81.2%         | 100.0%          |
+| Calldata | call_data_copy | 38        | 1          | 1,908,332   | 0          | 0.9%          | 0.0%            |
+| Return   | seal_return    | 11        | 1          | 550,198     | 0          | 0.3%          | 0.0%            |
 
 
 ### simple_token_u256_stylus - deploy
 
-- **Total Gas Used:** 31,660,912
+- **Total Gas Used:** 42,075,512
 - **Base Call Weight:** ref_time=1,703,883,613, proof_size=6,934
 - **Total Weight:** ref_time=1,720,802,034, proof_size=6,934
 - **Weight Consumed:** ref_time=16,918,421 (1.0% of total), proof_size=0
@@ -6036,9 +8438,9 @@ Opcodes grouped by functional category.
 
 ### SimpleToken_evm - mint
 
-- **Total Gas Used:** 523,788
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,413,586,998, proof_size=49,925
+- **Total Gas Used:** 521,788
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,413,573,902, proof_size=49,922
 - **Weight Consumed:** ref_time=504,818,478 (35.7% of total), proof_size=41,621
 
 | Category     | Opcodes Used                                                                                      | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -6046,37 +8448,37 @@ Opcodes grouped by functional category.
 | Storage      | SLOAD, SSTORE                                                                                     | 115,092   | 4          | 474,540,140 | 41,092     | 94.0%         | 98.7%           |
 | Events       | LOG3                                                                                              | 276       | 1          | 13,794,784  | 0          | 2.7%          | 0.0%            |
 | Crypto       | KECCAK256                                                                                         | 249       | 1          | 12,458,056  | 0          | 2.5%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP5, DUP6, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 29        | 68         | 1,568,001   | 0          | 0.3%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                             | 21        | 21         | 982,926     | 0          | 0.2%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                           | 1         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                          | 4         | 6          | 140,418     | 0          | 0.0%          | 0.0%            |
-| Bitwise      | AND, NOT, SHL, SHR                                                                                | 4         | 6          | 140,418     | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                     | 3         | 5          | 117,015     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                        | 1         | 5          | 101,413     | 0          | 0.0%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP5, DUP6, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3, SWAP4 | 28        | 68         | 1,568,001   | 0          | 0.3%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                             | 20        | 21         | 982,926     | 0          | 0.2%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                           | 5         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                          | 3         | 6          | 140,418     | 0          | 0.0%          | 0.0%            |
+| Bitwise      | AND, NOT, SHL, SHR                                                                                | 3         | 6          | 140,418     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                     | 2         | 5          | 117,015     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                        | 2         | 5          | 101,413     | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                                              | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### SimpleToken_pvm - mint
 
-- **Total Gas Used:** 525,508
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,499,610,773, proof_size=54,689
+- **Total Gas Used:** 523,508
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,499,597,677, proof_size=54,686
 - **Weight Consumed:** ref_time=590,842,253 (39.4% of total), proof_size=46,385
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 115,088   | 4          | 474,440,684 | 41,028     | 80.3%         | 88.5%           |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 115,089   | 4          | 474,440,684 | 41,028     | 80.3%         | 88.5%           |
 | Events   | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 2.3%          | 0.0%            |
 | Crypto   | hash_keccak_256                           | 249       | 1          | 12,458,056  | 0          | 2.1%          | 0.0%            |
-| Calldata | call_data_load, call_data_size            | 28        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
+| Calldata | call_data_load, call_data_size            | 26        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u128_no_alloc_rust - mint
 
-- **Total Gas Used:** 525,914
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,519,883,772, proof_size=52,272
+- **Total Gas Used:** 523,914
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,519,870,676, proof_size=52,269
 - **Weight Consumed:** ref_time=611,115,252 (40.2% of total), proof_size=43,968
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -6084,74 +8486,74 @@ Opcodes grouped by functional category.
 | Storage  | get_storage, set_storage       | 115,088   | 4          | 474,428,460 | 41,028     | 77.6%         | 93.3%           |
 | Crypto   | hash_keccak_256                | 498       | 2          | 24,916,112  | 0          | 4.1%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 2.3%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 6         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u256_ink - mint
 
-- **Total Gas Used:** 483,228
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,945,591,012, proof_size=60,704
-- **Weight Consumed:** ref_time=1,036,822,492 (53.3% of total), proof_size=52,400
+- **Total Gas Used:** 478,631
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,815,745,239, proof_size=57,872
+- **Weight Consumed:** ref_time=906,989,815 (50.0% of total), proof_size=49,571
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 63,889    | 4          | 474,503,148 | 41,092     | 45.8%         | 78.4%           |
-| Events   | deposit_event            | 276       | 1          | 13,794,784  | 0          | 1.3%          | 0.0%            |
-| Calldata | call_data_copy           | 39        | 1          | 1,908,332   | 0          | 0.2%          | 0.0%            |
+| Storage  | get_storage, set_storage | 63,889    | 4          | 474,503,148 | 41,092     | 52.3%         | 82.9%           |
+| Events   | deposit_event            | 276       | 1          | 13,794,784  | 0          | 1.5%          | 0.0%            |
+| Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.2%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u256_macro_bump_alloc_rust - mint
 
-- **Total Gas Used:** 533,469
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,577,648,106, proof_size=53,762
+- **Total Gas Used:** 531,469
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,577,635,010, proof_size=53,759
 - **Weight Consumed:** ref_time=668,879,586 (42.4% of total), proof_size=45,458
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 121,489   | 4          | 474,440,684 | 41,028     | 70.9%         | 90.3%           |
+| Storage  | get_storage, set_storage       | 121,490   | 4          | 474,440,684 | 41,028     | 70.9%         | 90.3%           |
 | Crypto   | hash_keccak_256                | 498       | 2          | 24,916,112  | 0          | 3.7%          | 0.0%            |
-| Events   | deposit_event                  | 275       | 1          | 13,794,784  | 0          | 2.1%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 8         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
+| Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 2.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u256_macro_no_alloc_rust - mint
 
-- **Total Gas Used:** 533,451
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,576,750,401, proof_size=53,097
+- **Total Gas Used:** 531,451
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,576,737,305, proof_size=53,094
 - **Weight Consumed:** ref_time=667,981,881 (42.4% of total), proof_size=44,793
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 121,489   | 4          | 474,440,684 | 41,028     | 71.0%         | 91.6%           |
+| Storage  | get_storage, set_storage       | 121,490   | 4          | 474,440,684 | 41,028     | 71.0%         | 91.6%           |
 | Crypto   | hash_keccak_256                | 499       | 2          | 24,916,112  | 0          | 3.7%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 2.1%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 8         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 6         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u256_no_alloc_rust - mint
 
-- **Total Gas Used:** 533,419
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,575,144,997, proof_size=52,329
+- **Total Gas Used:** 531,419
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,575,131,901, proof_size=52,326
 - **Weight Consumed:** ref_time=666,376,477 (42.3% of total), proof_size=44,025
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage  | get_storage, set_storage       | 121,489   | 4          | 474,440,684 | 41,028     | 71.2%         | 93.2%           |
-| Crypto   | hash_keccak_256                | 499       | 2          | 24,916,112  | 0          | 3.7%          | 0.0%            |
+| Crypto   | hash_keccak_256                | 498       | 2          | 24,916,112  | 0          | 3.7%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 2.1%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 8         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u256_stylus - mint
 
-- **Total Gas Used:** 530,556
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,752,002,360, proof_size=61,360
+- **Total Gas Used:** 528,556
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,751,989,264, proof_size=61,357
 - **Weight Consumed:** ref_time=843,233,840 (48.1% of total), proof_size=53,056
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -6159,134 +8561,134 @@ Opcodes grouped by functional category.
 | Storage  | get_storage_or_zero, set_storage_or_clear | 115,089   | 4          | 474,440,684 | 41,028     | 56.3%         | 77.3%           |
 | Crypto   | hash_keccak_256                           | 499       | 2          | 24,916,112  | 0          | 3.0%          | 0.0%            |
 | Events   | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 1.6%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size            | 15        | 3          | 684,308     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size            | 14        | 3          | 684,308     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u32_no_alloc_rust - mint
 
-- **Total Gas Used:** 521,092
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,518,803,927, proof_size=51,543
+- **Total Gas Used:** 519,092
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,518,790,831, proof_size=51,540
 - **Weight Consumed:** ref_time=610,035,407 (40.2% of total), proof_size=43,239
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 110,290   | 4          | 474,419,292 | 41,028     | 77.8%         | 94.9%           |
-| Crypto   | hash_keccak_256                | 498       | 2          | 24,916,112  | 0          | 4.1%          | 0.0%            |
+| Storage  | get_storage, set_storage       | 110,289   | 4          | 474,419,292 | 41,028     | 77.8%         | 94.9%           |
+| Crypto   | hash_keccak_256                | 500       | 2          | 24,916,112  | 0          | 4.1%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 2.3%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
 
 
 ### SimpleToken_evm - transfer
 
-- **Total Gas Used:** 418,708
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,439,608,209, proof_size=49,957
+- **Total Gas Used:** 416,708
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,439,595,113, proof_size=49,954
 - **Weight Consumed:** ref_time=530,839,689 (36.9% of total), proof_size=41,653
 
 | Category     | Opcodes Used                                                            | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ----------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                           | 9,492     | 4          | 474,540,652 | 41,124     | 89.4%         | 98.7%           |
+| Storage      | SLOAD, SSTORE                                                           | 9,491     | 4          | 474,540,652 | 41,124     | 89.4%         | 98.7%           |
 | Crypto       | KECCAK256                                                               | 747       | 3          | 37,374,168  | 0          | 7.0%          | 0.0%            |
-| Events       | LOG3                                                                    | 275       | 1          | 13,794,784  | 0          | 2.6%          | 0.0%            |
+| Events       | LOG3                                                                    | 276       | 1          | 13,794,784  | 0          | 2.6%          | 0.0%            |
 | Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3 | 35        | 69         | 1,552,399   | 0          | 0.3%          | 0.0%            |
 | Context      | CALLER                                                                  | 24        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
 | Control Flow | JUMP, JUMPDEST, JUMPI                                                   | 15        | 14         | 780,100     | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                           | 5         | 9          | 210,627     | 0          | 0.0%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                                     | 0         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                           | 4         | 9          | 210,627     | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                                     | 4         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
 | Arithmetic   | ADD, SUB                                                                | 3         | 6          | 140,418     | 0          | 0.0%          | 0.0%            |
 | Bitwise      | AND, NOT, SHL, SHR                                                      | 1         | 6          | 140,418     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                              | 3         | 5          | 101,413     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                              | 0         | 5          | 101,413     | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                    | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### SimpleToken_pvm - transfer
 
-- **Total Gas Used:** 421,113
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,559,858,582, proof_size=54,850
+- **Total Gas Used:** 419,113
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,559,845,486, proof_size=54,847
 - **Weight Consumed:** ref_time=651,090,062 (41.7% of total), proof_size=46,546
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 9,521     | 4          | 476,075,876 | 41,189     | 73.1%         | 88.5%           |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 9,523     | 4          | 476,075,876 | 41,189     | 73.1%         | 88.5%           |
 | Crypto   | hash_keccak_256                           | 747       | 3          | 37,374,168  | 0          | 5.7%          | 0.0%            |
 | Events   | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 2.1%          | 0.0%            |
-| Calldata | call_data_load, call_data_size            | 27        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
-| Context  | caller                                    | 25        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
+| Calldata | call_data_load, call_data_size            | 25        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
+| Context  | caller                                    | 24        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u128_no_alloc_rust - transfer
 
-- **Total Gas Used:** 474,375
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,582,933,199, proof_size=52,304
+- **Total Gas Used:** 472,375
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,582,920,103, proof_size=52,301
 - **Weight Consumed:** ref_time=674,164,679 (42.6% of total), proof_size=44,000
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 62,290    | 4          | 474,459,692 | 41,060     | 70.4%         | 93.3%           |
-| Crypto   | hash_keccak_256                | 996       | 4          | 49,832,224  | 0          | 7.4%          | 0.0%            |
+| Storage  | get_storage, set_storage       | 62,289    | 4          | 474,459,692 | 41,060     | 70.4%         | 93.3%           |
+| Crypto   | hash_keccak_256                | 998       | 4          | 49,832,224  | 0          | 7.4%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 2.0%          | 0.0%            |
 | Context  | caller                         | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 6         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
 
 
 ### simple_token_u256_ink - transfer
 
-- **Total Gas Used:** 490,877
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,328,060,821, proof_size=81,282
-- **Weight Consumed:** ref_time=1,419,292,301 (61.0% of total), proof_size=72,978
+- **Total Gas Used:** 485,728
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,170,604,068, proof_size=78,450
+- **Weight Consumed:** ref_time=1,261,848,644 (58.1% of total), proof_size=70,149
 
 | Category | Opcodes Used             | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage | 68,635    | 6          | 711,785,954 | 61,670     | 50.2%         | 84.5%           |
-| Events   | deposit_event            | 276       | 1          | 13,794,784  | 0          | 1.0%          | 0.0%            |
-| Calldata | call_data_copy           | 39        | 1          | 1,908,332   | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage, set_storage | 68,635    | 6          | 711,785,954 | 61,670     | 56.4%         | 87.9%           |
+| Events   | deposit_event            | 276       | 1          | 13,794,784  | 0          | 1.1%          | 0.0%            |
+| Calldata | call_data_copy           | 38        | 1          | 1,908,332   | 0          | 0.2%          | 0.0%            |
 | Return   | seal_return              | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 | Context  | caller                   | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### simple_token_u256_macro_bump_alloc_rust - transfer
 
-- **Total Gas Used:** 478,915
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,649,932,425, proof_size=53,826
+- **Total Gas Used:** 476,915
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,649,919,329, proof_size=53,823
 - **Weight Consumed:** ref_time=741,163,905 (44.9% of total), proof_size=45,522
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 65,490    | 4          | 474,503,148 | 41,092     | 64.0%         | 90.3%           |
+| Storage  | get_storage, set_storage       | 65,488    | 4          | 474,503,148 | 41,092     | 64.0%         | 90.3%           |
 | Crypto   | hash_keccak_256                | 998       | 4          | 49,832,224  | 0          | 6.7%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 1.9%          | 0.0%            |
-| Context  | caller                         | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 8         | 2          | 366,308     | 0          | 0.0%          | 0.0%            |
+| Context  | caller                         | 9         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.0%          | 0.0%            |
 
 
 ### simple_token_u256_macro_no_alloc_rust - transfer
 
-- **Total Gas Used:** 478,897
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,649,034,720, proof_size=53,161
+- **Total Gas Used:** 476,897
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,649,021,624, proof_size=53,158
 - **Weight Consumed:** ref_time=740,266,200 (44.9% of total), proof_size=44,857
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage  | get_storage, set_storage       | 65,490    | 4          | 474,503,148 | 41,092     | 64.1%         | 91.6%           |
-| Crypto   | hash_keccak_256                | 997       | 4          | 49,832,224  | 0          | 6.7%          | 0.0%            |
+| Crypto   | hash_keccak_256                | 996       | 4          | 49,832,224  | 0          | 6.7%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 1.9%          | 0.0%            |
 | Context  | caller                         | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 8         | 2          | 366,308     | 0          | 0.0%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 6         | 2          | 366,308     | 0          | 0.0%          | 0.0%            |
 
 
 ### simple_token_u256_no_alloc_rust - transfer
 
-- **Total Gas Used:** 478,877
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,648,033,936, proof_size=52,393
+- **Total Gas Used:** 476,877
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,648,020,840, proof_size=52,390
 - **Weight Consumed:** ref_time=739,265,416 (44.9% of total), proof_size=44,089
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
@@ -6295,38 +8697,38 @@ Opcodes grouped by functional category.
 | Crypto   | hash_keccak_256                | 996       | 4          | 49,832,224  | 0          | 6.7%          | 0.0%            |
 | Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 1.9%          | 0.0%            |
 | Context  | caller                         | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size | 8         | 2          | 366,308     | 0          | 0.0%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.0%          | 0.0%            |
 
 
 ### simple_token_u256_stylus - transfer
 
-- **Total Gas Used:** 427,879
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,898,145,087, proof_size=61,521
+- **Total Gas Used:** 425,879
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,898,131,991, proof_size=61,518
 - **Weight Consumed:** ref_time=989,376,567 (52.1% of total), proof_size=53,217
 
 | Category | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage_or_zero, set_storage_or_clear | 9,522     | 4          | 476,075,876 | 41,189     | 48.1%         | 77.4%           |
-| Crypto   | hash_keccak_256                           | 996       | 4          | 49,832,224  | 0          | 5.0%          | 0.0%            |
-| Events   | deposit_event                             | 275       | 1          | 13,794,784  | 0          | 1.4%          | 0.0%            |
-| Calldata | call_data_copy, call_data_size            | 15        | 3          | 684,308     | 0          | 0.1%          | 0.0%            |
+| Storage  | get_storage_or_zero, set_storage_or_clear | 9,520     | 4          | 476,075,876 | 41,189     | 48.1%         | 77.4%           |
+| Crypto   | hash_keccak_256                           | 997       | 4          | 49,832,224  | 0          | 5.0%          | 0.0%            |
+| Events   | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 1.4%          | 0.0%            |
+| Calldata | call_data_copy, call_data_size            | 14        | 3          | 684,308     | 0          | 0.1%          | 0.0%            |
 | Return   | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 | Context  | caller                                    | 8         | 1          | 402,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### simple_token_u32_no_alloc_rust - transfer
 
-- **Total Gas Used:** 472,072
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,587,808,950, proof_size=51,551
+- **Total Gas Used:** 470,072
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,587,795,854, proof_size=51,548
 - **Weight Consumed:** ref_time=679,040,430 (42.8% of total), proof_size=43,247
 
 | Category | Opcodes Used                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | -------- | ------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage  | get_storage, set_storage       | 59,890    | 4          | 474,427,100 | 41,036     | 69.9%         | 94.9%           |
-| Crypto   | hash_keccak_256                | 997       | 4          | 49,832,224  | 0          | 7.3%          | 0.0%            |
-| Events   | deposit_event                  | 276       | 1          | 13,794,784  | 0          | 2.0%          | 0.0%            |
+| Storage  | get_storage, set_storage       | 59,889    | 4          | 474,427,100 | 41,036     | 69.9%         | 94.9%           |
+| Crypto   | hash_keccak_256                | 999       | 4          | 49,832,224  | 0          | 7.3%          | 0.0%            |
+| Events   | deposit_event                  | 275       | 1          | 13,794,784  | 0          | 2.0%          | 0.0%            |
 | Context  | caller                         | 8         | 1          | 402,000     | 0          | 0.1%          | 0.0%            |
 | Calldata | call_data_copy, call_data_size | 7         | 2          | 366,308     | 0          | 0.1%          | 0.0%            |
 
@@ -6357,20 +8759,20 @@ Opcodes grouped by functional category.
 
 ### Store_pvm - delegate
 
-- **Total Gas Used:** 840,788
-- **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=2,943,604,009, proof_size=206,477
+- **Total Gas Used:** 838,788
+- **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
+- **Total Weight:** ref_time=2,943,590,913, proof_size=206,474
 - **Weight Consumed:** ref_time=2,033,997,345 (69.1% of total), proof_size=197,981
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear      | 290,439   | 12         | 1,322,006,872 | 123,116    | 65.0%         | 62.2%           |
-| Crypto    | hash_keccak_256                                | 1,986     | 8          | 99,374,906    | 0          | 4.9%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear      | 290,440   | 12         | 1,322,006,872 | 123,116    | 65.0%         | 62.2%           |
+| Crypto    | hash_keccak_256                                | 1,991     | 8          | 99,374,906    | 0          | 4.9%          | 0.0%            |
 | Events    | deposit_event                                  | 613       | 1          | 30,648,352    | 0          | 1.5%          | 0.0%            |
-| Context   | caller, now                                    | 40        | 5          | 1,964,000     | 0          | 0.1%          | 0.0%            |
-| Calldata  | call_data_copy, call_data_load, call_data_size | 36        | 9          | 1,835,416     | 0          | 0.1%          | 0.0%            |
+| Context   | caller, now                                    | 39        | 5          | 1,964,000     | 0          | 0.1%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_load, call_data_size | 37        | 9          | 1,835,416     | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 550,198       | 0          | 0.0%          | 0.0%            |
-| Ether/Gas | value_transferred                              | 7         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
+| Ether/Gas | value_transferred                              | 6         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### store_rust - delegate
@@ -6416,17 +8818,17 @@ Opcodes grouped by functional category.
 
 ### Store_pvm - delete_
 
-- **Total Gas Used:** 299,083
-- **Base Call Weight:** ref_time=909,187,592, proof_size=8,400
-- **Total Weight:** ref_time=2,818,362,834, proof_size=196,897
+- **Total Gas Used:** 297,083
+- **Base Call Weight:** ref_time=909,174,496, proof_size=8,397
+- **Total Weight:** ref_time=2,818,349,738, proof_size=196,894
 - **Weight Consumed:** ref_time=1,909,175,242 (67.7% of total), proof_size=188,497
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear      | 25,242    | 11         | 1,262,205,387 | 113,632    | 66.1%         | 60.3%           |
-| Crypto    | hash_keccak_256                                | 2,729     | 11         | 136,544,276   | 0          | 7.2%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear      | 25,246    | 11         | 1,262,205,387 | 113,632    | 66.1%         | 60.3%           |
+| Crypto    | hash_keccak_256                                | 2,732     | 11         | 136,544,276   | 0          | 7.2%          | 0.0%            |
 | Events    | deposit_event                                  | 613       | 1          | 30,648,352    | 0          | 1.6%          | 0.0%            |
-| Calldata  | call_data_copy, call_data_load, call_data_size | 32        | 9          | 1,537,630     | 0          | 0.1%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_load, call_data_size | 31        | 9          | 1,537,630     | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 550,198       | 0          | 0.0%          | 0.0%            |
 | Context   | caller                                         | 8         | 1          | 402,000       | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                              | 7         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
@@ -6510,7 +8912,7 @@ Opcodes grouped by functional category.
 
 ### Store_evm - deploy
 
-- **Total Gas Used:** 23,020,139
+- **Total Gas Used:** 32,590,939
 - **Base Call Weight:** ref_time=1,636,346,962, proof_size=6,934
 - **Total Weight:** ref_time=1,639,118,420, proof_size=6,934
 - **Weight Consumed:** ref_time=2,771,458 (0.2% of total), proof_size=0
@@ -6527,7 +8929,7 @@ Opcodes grouped by functional category.
 
 ### Store_pvm - deploy
 
-- **Total Gas Used:** 161,137,287
+- **Total Gas Used:** 184,119,287
 - **Base Call Weight:** ref_time=2,715,999,172, proof_size=6,934
 - **Total Weight:** ref_time=2,728,523,910, proof_size=6,934
 - **Weight Consumed:** ref_time=12,524,738 (0.5% of total), proof_size=0
@@ -6541,7 +8943,7 @@ Opcodes grouped by functional category.
 
 ### store_rust - deploy
 
-- **Total Gas Used:** 72,044,736
+- **Total Gas Used:** 86,378,736
 - **Base Call Weight:** ref_time=2,019,532,492, proof_size=6,934
 - **Total Weight:** ref_time=2,021,004,851, proof_size=6,934
 - **Weight Consumed:** ref_time=1,472,359 (0.1% of total), proof_size=0
@@ -6636,20 +9038,20 @@ Opcodes grouped by functional category.
 
 ### Store_pvm - set
 
-- **Total Gas Used:** 788,083
-- **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=2,948,345,025, proof_size=216,927
+- **Total Gas Used:** 786,083
+- **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
+- **Total Weight:** ref_time=2,948,331,929, proof_size=216,924
 - **Weight Consumed:** ref_time=2,038,738,361 (69.1% of total), proof_size=208,431
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time      | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ------------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear      | 241,058   | 13         | 1,492,947,425 | 133,566    | 73.2%         | 64.1%           |
-| Crypto    | hash_keccak_256                                | 1,739     | 7          | 86,902,726    | 0          | 4.3%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear      | 241,059   | 13         | 1,492,947,425 | 133,566    | 73.2%         | 64.1%           |
+| Crypto    | hash_keccak_256                                | 1,738     | 7          | 86,902,726    | 0          | 4.3%          | 0.0%            |
 | Events    | deposit_event                                  | 781       | 1          | 39,075,136    | 0          | 1.9%          | 0.0%            |
-| Calldata  | call_data_copy, call_data_load, call_data_size | 41        | 9          | 2,131,378     | 0          | 0.1%          | 0.0%            |
-| Context   | caller, now                                    | 15        | 2          | 758,000       | 0          | 0.0%          | 0.0%            |
+| Calldata  | call_data_copy, call_data_load, call_data_size | 43        | 9          | 2,131,378     | 0          | 0.1%          | 0.0%            |
+| Context   | caller, now                                    | 17        | 2          | 758,000       | 0          | 0.0%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 550,198       | 0          | 0.0%          | 0.0%            |
-| Ether/Gas | value_transferred                              | 7         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
+| Ether/Gas | value_transferred                              | 6         | 1          | 336,000       | 0          | 0.0%          | 0.0%            |
 
 
 ### store_rust - set
@@ -6671,44 +9073,44 @@ Opcodes grouped by functional category.
 
 ### Store_evm - set_update
 
-- **Total Gas Used:** 552,030
-- **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=1,705,688,610, proof_size=78,039
+- **Total Gas Used:** 550,030
+- **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
+- **Total Weight:** ref_time=1,705,675,514, proof_size=78,036
 - **Weight Consumed:** ref_time=796,081,946 (46.7% of total), proof_size=69,543
 
 | Category     | Opcodes Used                                                                                                                                     | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage      | SLOAD, SSTORE                                                                                                                                    | 14,238    | 6          | 711,848,418 | 61,734     | 89.4%         | 88.8%           |
-| Events       | LOG2                                                                                                                                             | 782       | 1          | 39,075,136  | 0          | 4.9%          | 0.0%            |
-| Crypto       | KECCAK256                                                                                                                                        | 497       | 2          | 24,820,775  | 0          | 3.1%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 54        | 137        | 3,159,405   | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                            | 27        | 26         | 1,302,767   | 0          | 0.2%          | 0.0%            |
-| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                         | 28        | 9          | 1,234,438   | 0          | 0.2%          | 0.0%            |
+| Events       | LOG2                                                                                                                                             | 781       | 1          | 39,075,136  | 0          | 4.9%          | 0.0%            |
+| Crypto       | KECCAK256                                                                                                                                        | 496       | 2          | 24,820,775  | 0          | 3.1%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, DUP7, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, PUSH9, SWAP1, SWAP2, SWAP3, SWAP4, SWAP5, SWAP6, SWAP7, SWAP8 | 61        | 137        | 3,159,405   | 0          | 0.4%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                                                                            | 29        | 26         | 1,302,767   | 0          | 0.2%          | 0.0%            |
+| Calldata     | CALLDATACOPY, CALLDATALOAD, CALLDATASIZE                                                                                                         | 24        | 9          | 1,234,438   | 0          | 0.2%          | 0.0%            |
 | Context      | CALLER, TIMESTAMP                                                                                                                                | 15        | 2          | 758,000     | 0          | 0.1%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                                                                         | 10        | 24         | 561,672     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                           | 10        | 21         | 491,463     | 0          | 0.1%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                                                                         | 9         | 24         | 561,672     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, OR, SHL, SHR                                                                                                                           | 9         | 21         | 491,463     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas    | CALLVALUE                                                                                                                                        | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
 | Comparison   | EQ, GT, ISZERO, LT, SLT                                                                                                                          | 7         | 12         | 280,836     | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                                                                                    | 7         | 10         | 234,030     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                                                                                    | 6         | 10         | 234,030     | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                                                                                             | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### Store_pvm - set_update
 
-- **Total Gas Used:** 557,402
-- **Base Call Weight:** ref_time=909,606,664, proof_size=8,496
-- **Total Weight:** ref_time=1,974,309,687, proof_size=145,095
+- **Total Gas Used:** 555,402
+- **Base Call Weight:** ref_time=909,593,568, proof_size=8,493
+- **Total Weight:** ref_time=1,974,296,591, proof_size=145,092
 - **Weight Consumed:** ref_time=1,064,703,023 (53.9% of total), proof_size=136,599
 
 | Category  | Opcodes Used                                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ---------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage   | get_storage_or_zero, set_storage_or_clear      | 14,236    | 6          | 711,848,418 | 61,734     | 66.9%         | 45.2%           |
-| Events    | deposit_event                                  | 782       | 1          | 39,075,136  | 0          | 3.7%          | 0.0%            |
-| Crypto    | hash_keccak_256                                | 496       | 2          | 24,820,775  | 0          | 2.3%          | 0.0%            |
+| Events    | deposit_event                                  | 781       | 1          | 39,075,136  | 0          | 3.7%          | 0.0%            |
+| Crypto    | hash_keccak_256                                | 497       | 2          | 24,820,775  | 0          | 2.3%          | 0.0%            |
 | Calldata  | call_data_copy, call_data_load, call_data_size | 35        | 7          | 1,752,252   | 0          | 0.2%          | 0.0%            |
-| Context   | caller, now                                    | 15        | 2          | 758,000     | 0          | 0.1%          | 0.0%            |
+| Context   | caller, now                                    | 16        | 2          | 758,000     | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                                    | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
-| Ether/Gas | value_transferred                              | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
+| Ether/Gas | value_transferred                              | 6         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### store_rust - set_update
@@ -6789,49 +9191,49 @@ Opcodes grouped by functional category.
 
 ### TetherToken_evm - approve
 
-- **Total Gas Used:** 468,528
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,290,605,008, proof_size=43,751
+- **Total Gas Used:** 466,528
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,290,591,912, proof_size=43,748
 - **Weight Consumed:** ref_time=381,836,488 (29.6% of total), proof_size=35,447
 
 | Category     | Opcodes Used                                                                   | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Storage      | SLOAD, SSTORE                                                                  | 58,906    | 3          | 305,247,515 | 30,835     | 79.9%         | 87.0%           |
-| Crypto       | KECCAK256                                                                      | 996       | 4          | 49,832,224  | 0          | 13.1%         | 0.0%            |
+| Crypto       | KECCAK256                                                                      | 997       | 4          | 49,832,224  | 0          | 13.1%         | 0.0%            |
 | Events       | LOG3                                                                           | 276       | 1          | 13,794,784  | 0          | 3.6%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3 | 39        | 85         | 1,911,245   | 0          | 0.5%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                          | 27        | 26         | 1,318,369   | 0          | 0.3%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3 | 42        | 85         | 1,911,245   | 0          | 0.5%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                          | 24        | 26         | 1,318,369   | 0          | 0.3%          | 0.0%            |
 | Context      | CALLER                                                                         | 24        | 3          | 1,206,000   | 0          | 0.3%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                                      | 6         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                                            | 6         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
-| Bitwise      | AND, NOT, SHL, SHR                                                             | 5         | 12         | 280,836     | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                  | 6         | 11         | 257,433     | 0          | 0.1%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                                      | 7         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                                            | 4         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
+| Bitwise      | AND, NOT, SHL, SHR                                                             | 8         | 12         | 280,836     | 0          | 0.1%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                  | 4         | 11         | 257,433     | 0          | 0.1%          | 0.0%            |
 | Arithmetic   | ADD, SUB                                                                       | 3         | 6          | 140,418     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                     | 1         | 7          | 132,617     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                     | 0         | 7          | 132,617     | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                           | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### TetherToken_pvm - approve
 
-- **Total Gas Used:** 472,750
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,501,669,496, proof_size=93,770
+- **Total Gas Used:** 470,749
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,501,656,400, proof_size=93,767
 - **Weight Consumed:** ref_time=592,900,976 (39.5% of total), proof_size=85,466
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 58,904    | 3          | 305,148,059 | 30,771     | 51.5%         | 36.0%           |
-| Crypto    | hash_keccak_256                           | 996       | 4          | 49,832,224  | 0          | 8.4%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 58,903    | 3          | 305,148,059 | 30,771     | 51.5%         | 36.0%           |
+| Crypto    | hash_keccak_256                           | 998       | 4          | 49,832,224  | 0          | 8.4%          | 0.0%            |
 | Events    | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 2.3%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 26        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 27        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
 | Context   | caller                                    | 24        | 3          | 1,206,000   | 0          | 0.2%          | 0.0%            |
 | Return    | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
-| Ether/Gas | value_transferred                         | 6         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
+| Ether/Gas | value_transferred                         | 7         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
 
 
 ### TetherToken_evm - deploy
 
-- **Total Gas Used:** 19,260,279
+- **Total Gas Used:** 28,191,679
 - **Base Call Weight:** ref_time=1,604,761,135, proof_size=6,934
 - **Total Weight:** ref_time=3,497,129,450, proof_size=150,692
 - **Weight Consumed:** ref_time=1,892,368,315 (54.1% of total), proof_size=143,758
@@ -6854,7 +9256,7 @@ Opcodes grouped by functional category.
 
 ### TetherToken_pvm - deploy
 
-- **Total Gas Used:** 120,449,882
+- **Total Gas Used:** 139,397,882
 - **Base Call Weight:** ref_time=2,391,324,502, proof_size=6,934
 - **Total Weight:** ref_time=4,628,305,323, proof_size=150,951
 - **Weight Consumed:** ref_time=2,236,980,821 (48.3% of total), proof_size=144,017
@@ -6871,42 +9273,42 @@ Opcodes grouped by functional category.
 
 ### TetherToken_evm - transfer
 
-- **Total Gas Used:** 479,084
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,818,383,584, proof_size=105,485
+- **Total Gas Used:** 477,084
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,818,370,488, proof_size=105,482
 - **Weight Consumed:** ref_time=909,615,064 (50.0% of total), proof_size=97,181
 
 | Category     | Opcodes Used                                                                               | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                              | 69,091    | 9          | 814,440,101 | 92,569     | 89.5%         | 95.3%           |
+| Storage      | SLOAD, SSTORE                                                                              | 69,089    | 9          | 814,440,101 | 92,569     | 89.5%         | 95.3%           |
 | Crypto       | KECCAK256                                                                                  | 1,245     | 5          | 62,290,280  | 0          | 6.8%          | 0.0%            |
 | Events       | LOG3                                                                                       | 276       | 1          | 13,794,784  | 0          | 1.5%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3 | 88        | 187        | 4,267,147   | 0          | 0.5%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                      | 80        | 70         | 3,908,301   | 0          | 0.4%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, POP, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP3 | 91        | 187        | 4,267,147   | 0          | 0.5%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                      | 79        | 70         | 3,908,301   | 0          | 0.4%          | 0.0%            |
 | Context      | CALLER                                                                                     | 32        | 4          | 1,608,000   | 0          | 0.2%          | 0.0%            |
-| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                    | 17        | 40         | 936,120     | 0          | 0.1%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                                                  | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                                              | 6         | 13         | 304,239     | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, DIV, MUL, SUB                                                                         | 6         | 10         | 280,836     | 0          | 0.0%          | 0.0%            |
-| Bitwise      | AND, NOT, SHL, SHR                                                                         | 2         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                 | 1         | 6          | 117,015     | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, GT, ISZERO, LT, SLT                                                                    | 16        | 40         | 936,120     | 0          | 0.1%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                                                  | 6         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                                              | 8         | 13         | 304,239     | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, DIV, MUL, SUB                                                                         | 5         | 10         | 280,836     | 0          | 0.0%          | 0.0%            |
+| Bitwise      | AND, NOT, SHL, SHR                                                                         | 4         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                 | 0         | 6          | 117,015     | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                                       | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### TetherToken_pvm - transfer
 
-- **Total Gas Used:** 484,438
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=2,086,105,022, proof_size=155,408
+- **Total Gas Used:** 482,438
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=2,086,091,926, proof_size=155,405
 - **Weight Consumed:** ref_time=1,177,336,502 (56.4% of total), proof_size=147,104
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 69,083    | 9          | 814,191,461 | 92,409     | 69.2%         | 62.8%           |
-| Crypto    | hash_keccak_256                           | 1,249     | 5          | 62,290,280  | 0          | 5.3%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 69,084    | 9          | 814,191,461 | 92,409     | 69.2%         | 62.8%           |
+| Crypto    | hash_keccak_256                           | 1,246     | 5          | 62,290,280  | 0          | 5.3%          | 0.0%            |
 | Events    | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 1.2%          | 0.0%            |
 | Context   | caller                                    | 32        | 4          | 1,608,000   | 0          | 0.1%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 27        | 4          | 1,332,000   | 0          | 0.1%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 26        | 4          | 1,332,000   | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                               | 11        | 1          | 550,198     | 0          | 0.0%          | 0.0%            |
 | Ether/Gas | value_transferred                         | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
 
@@ -7092,7 +9494,7 @@ Opcodes grouped by functional category.
 
 ### W3S_evm - deploy
 
-- **Total Gas Used:** 32,855,034
+- **Total Gas Used:** 43,128,434
 - **Base Call Weight:** ref_time=1,711,502,224, proof_size=6,934
 - **Total Weight:** ref_time=3,044,904,406, proof_size=119,953
 - **Weight Consumed:** ref_time=1,333,402,182 (43.8% of total), proof_size=113,019
@@ -7116,7 +9518,7 @@ Opcodes grouped by functional category.
 
 ### W3S_pvm - deploy
 
-- **Total Gas Used:** 223,278,034
+- **Total Gas Used:** 252,263,234
 - **Base Call Weight:** ref_time=3,199,466,884, proof_size=6,934
 - **Total Weight:** ref_time=4,917,904,402, proof_size=119,761
 - **Weight Consumed:** ref_time=1,718,437,518 (34.9% of total), proof_size=112,827
@@ -7390,7 +9792,7 @@ Opcodes grouped by functional category.
 
 ### WETH9_evm - deploy
 
-- **Total Gas Used:** 11,175,246
+- **Total Gas Used:** 19,522,446
 - **Base Call Weight:** ref_time=1,542,555,901, proof_size=6,934
 - **Total Weight:** ref_time=2,258,505,247, proof_size=68,572
 - **Weight Consumed:** ref_time=715,949,346 (31.7% of total), proof_size=61,638
@@ -7411,7 +9813,7 @@ Opcodes grouped by functional category.
 
 ### WETH9_pvm - deploy
 
-- **Total Gas Used:** 42,570,387
+- **Total Gas Used:** 54,026,387
 - **Base Call Weight:** ref_time=1,787,752,762, proof_size=6,934
 - **Total Weight:** ref_time=2,553,547,152, proof_size=68,476
 - **Weight Consumed:** ref_time=765,794,390 (30.0% of total), proof_size=61,542
@@ -7426,135 +9828,135 @@ Opcodes grouped by functional category.
 
 ### WETH9_evm - deposit
 
-- **Total Gas Used:** 352,286
-- **Base Call Weight:** ref_time=908,022,048, proof_size=8,133
-- **Total Weight:** ref_time=1,178,470,380, proof_size=30,360
+- **Total Gas Used:** 350,285
+- **Base Call Weight:** ref_time=908,008,952, proof_size=8,130
+- **Total Weight:** ref_time=1,178,457,284, proof_size=30,357
 - **Weight Consumed:** ref_time=270,448,332 (22.9% of total), proof_size=22,227
 
 | Category     | Opcodes Used                                                 | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------ | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                | 57,546    | 2          | 237,270,070 | 20,546     | 87.7%         | 92.4%           |
+| Storage      | SLOAD, SSTORE                                                | 57,545    | 2          | 237,270,070 | 20,546     | 87.7%         | 92.4%           |
 | Events       | LOG2                                                         | 276       | 1          | 13,794,784  | 0          | 5.1%          | 0.0%            |
-| Crypto       | KECCAK256                                                    | 249       | 1          | 12,458,056  | 0          | 4.6%          | 0.0%            |
-| Stack        | DUP1, DUP2, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3 | 24        | 53         | 1,209,155   | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                        | 23        | 18         | 1,092,140   | 0          | 0.4%          | 0.0%            |
+| Crypto       | KECCAK256                                                    | 250       | 1          | 12,458,056  | 0          | 4.6%          | 0.0%            |
+| Stack        | DUP1, DUP2, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3 | 27        | 53         | 1,209,155   | 0          | 0.4%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                        | 21        | 18         | 1,092,140   | 0          | 0.4%          | 0.0%            |
 | Context      | CALLER                                                       | 16        | 2          | 804,000     | 0          | 0.3%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                    | 14        | 2          | 672,000     | 0          | 0.2%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                          | 6         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                | 3         | 5          | 117,015     | 0          | 0.0%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                    | 13        | 2          | 672,000     | 0          | 0.2%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                          | 5         | 13         | 304,239     | 0          | 0.1%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                | 2         | 5          | 117,015     | 0          | 0.0%          | 0.0%            |
 | Calldata     | CALLDATALOAD, CALLDATASIZE                                   | 0         | 3          | 54,607      | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD                                                          | 1         | 2          | 46,806      | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD                                                          | 2         | 2          | 46,806      | 0          | 0.0%          | 0.0%            |
 | Bitwise      | NOT, SHR                                                     | 0         | 2          | 46,806      | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                         | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### WETH9_pvm - deposit
 
-- **Total Gas Used:** 354,089
-- **Base Call Weight:** ref_time=908,022,048, proof_size=8,133
-- **Total Weight:** ref_time=1,268,642,293, proof_size=45,882
+- **Total Gas Used:** 352,089
+- **Base Call Weight:** ref_time=908,008,952, proof_size=8,130
+- **Total Weight:** ref_time=1,268,629,197, proof_size=45,879
 - **Weight Consumed:** ref_time=360,620,245 (28.4% of total), proof_size=37,749
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 57,545    | 2          | 237,220,342 | 20,514     | 65.8%         | 54.3%           |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 57,543    | 2          | 237,220,342 | 20,514     | 65.8%         | 54.3%           |
 | Events    | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 3.8%          | 0.0%            |
-| Crypto    | hash_keccak_256                           | 249       | 1          | 12,458,056  | 0          | 3.5%          | 0.0%            |
+| Crypto    | hash_keccak_256                           | 250       | 1          | 12,458,056  | 0          | 3.5%          | 0.0%            |
 | Context   | caller                                    | 16        | 2          | 804,000     | 0          | 0.2%          | 0.0%            |
-| Ether/Gas | value_transferred                         | 13        | 2          | 672,000     | 0          | 0.2%          | 0.0%            |
+| Ether/Gas | value_transferred                         | 14        | 2          | 672,000     | 0          | 0.2%          | 0.0%            |
 | Calldata  | call_data_load, call_data_size            | 13        | 2          | 656,000     | 0          | 0.2%          | 0.0%            |
 | Return    | seal_return                               | 11        | 1          | 550,198     | 0          | 0.2%          | 0.0%            |
 
 
 ### WETH9_evm - transfer
 
-- **Total Gas Used:** 472,940
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,511,163,485, proof_size=61,398
+- **Total Gas Used:** 470,939
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,511,150,389, proof_size=61,395
 - **Weight Consumed:** ref_time=602,394,965 (39.9% of total), proof_size=53,094
 
 | Category     | Opcodes Used                                                                                | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage      | SLOAD, SSTORE                                                                               | 63,652    | 5          | 542,530,321 | 51,413     | 90.1%         | 96.8%           |
+| Storage      | SLOAD, SSTORE                                                                               | 63,650    | 5          | 542,530,321 | 51,413     | 90.1%         | 96.8%           |
 | Crypto       | KECCAK256                                                                                   | 747       | 3          | 37,374,168  | 0          | 6.2%          | 0.0%            |
 | Events       | LOG3                                                                                        | 276       | 1          | 13,794,784  | 0          | 2.3%          | 0.0%            |
-| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4 | 45        | 101        | 2,309,096   | 0          | 0.4%          | 0.0%            |
-| Control Flow | JUMP, JUMPDEST, JUMPI                                                                       | 32        | 28         | 1,560,200   | 0          | 0.3%          | 0.0%            |
-| Context      | CALLER                                                                                      | 16        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                                                         | 10        | 17         | 397,851     | 0          | 0.1%          | 0.0%            |
+| Stack        | DUP1, DUP2, DUP3, DUP4, DUP5, DUP6, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP2, SWAP4 | 50        | 101        | 2,309,096   | 0          | 0.4%          | 0.0%            |
+| Control Flow | JUMP, JUMPDEST, JUMPI                                                                       | 30        | 28         | 1,560,200   | 0          | 0.3%          | 0.0%            |
+| Context      | CALLER                                                                                      | 17        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                                                         | 7         | 17         | 397,851     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas    | CALLVALUE                                                                                   | 7         | 1          | 336,000     | 0          | 0.1%          | 0.0%            |
 | Memory       | MLOAD, MSTORE                                                                               | 5         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
-| Bitwise      | AND, NOT, SHL, SHR                                                                          | 2         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                                                    | 4         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                  | 1         | 5          | 101,413     | 0          | 0.0%          | 0.0%            |
+| Bitwise      | AND, NOT, SHL, SHR                                                                          | 1         | 8          | 187,224     | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                                                    | 3         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                                                  | 3         | 5          | 101,413     | 0          | 0.0%          | 0.0%            |
 | Return       | RETURN                                                                                      | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### WETH9_pvm - transfer
 
-- **Total Gas Used:** 476,216
-- **Base Call Weight:** ref_time=908,768,520, proof_size=8,304
-- **Total Weight:** ref_time=1,674,975,730, proof_size=76,920
+- **Total Gas Used:** 474,215
+- **Base Call Weight:** ref_time=908,755,424, proof_size=8,301
+- **Total Weight:** ref_time=1,674,962,634, proof_size=76,917
 - **Weight Consumed:** ref_time=766,207,210 (45.7% of total), proof_size=68,616
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Storage   | get_storage_or_zero, set_storage_or_clear | 63,649    | 5          | 542,480,593 | 51,381     | 70.8%         | 74.9%           |
-| Crypto    | hash_keccak_256                           | 748       | 3          | 37,374,168  | 0          | 4.9%          | 0.0%            |
+| Storage   | get_storage_or_zero, set_storage_or_clear | 63,650    | 5          | 542,480,593 | 51,381     | 70.8%         | 74.9%           |
+| Crypto    | hash_keccak_256                           | 747       | 3          | 37,374,168  | 0          | 4.9%          | 0.0%            |
 | Events    | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 1.8%          | 0.0%            |
 | Calldata  | call_data_load, call_data_size            | 27        | 4          | 1,332,000   | 0          | 0.2%          | 0.0%            |
 | Context   | caller                                    | 16        | 2          | 804,000     | 0          | 0.1%          | 0.0%            |
-| Return    | seal_return                               | 11        | 1          | 556,534     | 0          | 0.1%          | 0.0%            |
+| Return    | seal_return                               | 12        | 1          | 556,534     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas | value_transferred                         | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### WETH9_evm - withdraw
 
-- **Total Gas Used:** 358,041
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,706,253,387, proof_size=46,052
+- **Total Gas Used:** 356,041
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,706,240,291, proof_size=46,049
 - **Weight Consumed:** ref_time=797,917,035 (46.8% of total), proof_size=37,847
 
 | Category     | Opcodes Used                                                        | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | ------------ | ------------------------------------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
-| Calls        | CALL                                                                | 8,932     | 1          | 446,622,675 | 5,299      | 56.0%         | 14.0%           |
-| Storage      | SLOAD, SSTORE                                                       | 6,105     | 3          | 305,260,251 | 30,867     | 38.3%         | 81.6%           |
-| Crypto       | KECCAK256                                                           | 498       | 2          | 24,916,112  | 0          | 3.1%          | 0.0%            |
+| Calls        | CALL                                                                | 8,933     | 1          | 446,622,675 | 5,299      | 56.0%         | 14.0%           |
+| Storage      | SLOAD, SSTORE                                                       | 6,104     | 3          | 305,260,251 | 30,867     | 38.3%         | 81.6%           |
+| Crypto       | KECCAK256                                                           | 499       | 2          | 24,916,112  | 0          | 3.1%          | 0.0%            |
 | Events       | LOG2                                                                | 276       | 1          | 13,794,784  | 0          | 1.7%          | 0.0%            |
 | Context      | CALLER                                                              | 32        | 4          | 1,608,000   | 0          | 0.2%          | 0.0%            |
-| Stack        | DUP1, DUP2, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3, SWAP4 | 25        | 59         | 1,326,170   | 0          | 0.2%          | 0.0%            |
-| Control Flow | JUMPDEST, JUMPI                                                     | 19        | 14         | 881,513     | 0          | 0.1%          | 0.0%            |
-| Ether/Gas    | CALLVALUE                                                           | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
-| Comparison   | EQ, ISZERO, LT, SLT                                                 | 5         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
-| Memory       | MLOAD, MSTORE                                                       | 3         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
-| Calldata     | CALLDATALOAD, CALLDATASIZE                                          | 2         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
-| Arithmetic   | ADD, SUB                                                            | 1         | 2          | 46,806      | 0          | 0.0%          | 0.0%            |
-| Bitwise      | NOT, SHR                                                            | 1         | 2          | 46,806      | 0          | 0.0%          | 0.0%            |
+| Stack        | DUP1, DUP2, PUSH0, PUSH1, PUSH2, PUSH32, PUSH4, SWAP1, SWAP3, SWAP4 | 30        | 59         | 1,326,170   | 0          | 0.2%          | 0.0%            |
+| Control Flow | JUMPDEST, JUMPI                                                     | 16        | 14         | 881,513     | 0          | 0.1%          | 0.0%            |
+| Ether/Gas    | CALLVALUE                                                           | 6         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
+| Comparison   | EQ, ISZERO, LT, SLT                                                 | 3         | 11         | 257,433     | 0          | 0.0%          | 0.0%            |
+| Memory       | MLOAD, MSTORE                                                       | 5         | 7          | 163,821     | 0          | 0.0%          | 0.0%            |
+| Calldata     | CALLDATALOAD, CALLDATASIZE                                          | 1         | 4          | 78,010      | 0          | 0.0%          | 0.0%            |
+| Arithmetic   | ADD, SUB                                                            | 2         | 2          | 46,806      | 0          | 0.0%          | 0.0%            |
+| Bitwise      | NOT, SHR                                                            | 0         | 2          | 46,806      | 0          | 0.0%          | 0.0%            |
 | Return       | STOP                                                                | 0         | 1          | 0           | 0          | 0.0%          | 0.0%            |
 
 
 ### WETH9_pvm - withdraw
 
-- **Total Gas Used:** 360,389
-- **Base Call Weight:** ref_time=908,336,352, proof_size=8,205
-- **Total Weight:** ref_time=1,823,615,356, proof_size=61,606
+- **Total Gas Used:** 358,388
+- **Base Call Weight:** ref_time=908,323,256, proof_size=8,202
+- **Total Weight:** ref_time=1,823,602,260, proof_size=61,603
 - **Weight Consumed:** ref_time=915,279,004 (50.2% of total), proof_size=53,401
 
 | Category  | Opcodes Used                              | Total Gas | Call Count | ref time    | proof size | % of ref time | % of proof size |
 | --------- | ----------------------------------------- | --------- | ---------- | ----------- | ---------- | ------------- | --------------- |
 | Calls     | call_evm                                  | 8,944     | 1          | 447,179,209 | 5,299      | 48.9%         | 9.9%            |
 | Storage   | get_storage_or_zero, set_storage_or_clear | 6,105     | 3          | 305,260,251 | 30,867     | 33.4%         | 57.8%           |
-| Crypto    | hash_keccak_256                           | 499       | 2          | 24,916,112  | 0          | 2.7%          | 0.0%            |
+| Crypto    | hash_keccak_256                           | 498       | 2          | 24,916,112  | 0          | 2.7%          | 0.0%            |
 | Events    | deposit_event                             | 276       | 1          | 13,794,784  | 0          | 1.5%          | 0.0%            |
-| Context   | caller                                    | 33        | 4          | 1,608,000   | 0          | 0.2%          | 0.0%            |
-| Calldata  | call_data_load, call_data_size            | 21        | 3          | 994,000     | 0          | 0.1%          | 0.0%            |
+| Context   | caller                                    | 32        | 4          | 1,608,000   | 0          | 0.2%          | 0.0%            |
+| Calldata  | call_data_load, call_data_size            | 20        | 3          | 994,000     | 0          | 0.1%          | 0.0%            |
 | Return    | seal_return                               | 11        | 1          | 550,198     | 0          | 0.1%          | 0.0%            |
 | Ether/Gas | value_transferred                         | 7         | 1          | 336,000     | 0          | 0.0%          | 0.0%            |
 
 
 ### XENCrypto_evm - deploy
 
-- **Total Gas Used:** 38,557,778
+- **Total Gas Used:** 38,553,778
 - **Base Call Weight:** ref_time=1,679,094,940, proof_size=6,934
 - **Total Weight:** ref_time=2,333,068,726, proof_size=58,283
 - **Weight Consumed:** ref_time=653,973,786 (28.0% of total), proof_size=51,349
@@ -7576,7 +9978,7 @@ Opcodes grouped by functional category.
 
 ### XENCrypto_pvm - deploy
 
-- **Total Gas Used:** 274,103,798
+- **Total Gas Used:** 274,099,798
 - **Base Call Weight:** ref_time=3,327,388,678, proof_size=6,934
 - **Total Weight:** ref_time=4,260,066,203, proof_size=58,219
 - **Weight Consumed:** ref_time=932,677,525 (21.9% of total), proof_size=51,285

@@ -34,9 +34,47 @@ function loadPrivateKeys(): readonly [Hex, Hex] {
 
 const privateKeys = loadPrivateKeys()
 
-export const env = await createEnv({
-    rpcUrl,
-    privateKeys,
+type Env = Awaited<ReturnType<typeof createEnv>>
+let _env: Env | undefined
+
+/**
+ * Initialize the env singleton (connects to RPC).
+ * Must be called before using `env`. Safe to call multiple times.
+ */
+export async function initEnv(): Promise<Env> {
+    if (!_env) {
+        _env = await createEnv({ rpcUrl, privateKeys })
+    }
+    return _env
+}
+
+/**
+ * Lazy env proxy — allows importing this module without triggering RPC calls.
+ * Callers must call `initEnv()` before first use.
+ */
+function throwUninitialized(): never {
+    throw new Error(
+        'env not initialized — call `await initEnv()` before using env',
+    )
+}
+
+export const env: Env = new Proxy({} as Env, {
+    get(_, prop, receiver) {
+        if (!_env) throwUninitialized()
+        return Reflect.get(_env, prop, receiver)
+    },
+    has(_, prop) {
+        if (!_env) throwUninitialized()
+        return Reflect.has(_env, prop)
+    },
+    ownKeys() {
+        if (!_env) throwUninitialized()
+        return Reflect.ownKeys(_env)
+    },
+    getOwnPropertyDescriptor(_, prop) {
+        if (!_env) throwUninitialized()
+        return Reflect.getOwnPropertyDescriptor(_env, prop)
+    },
 })
 
 let firstDeploy = true
