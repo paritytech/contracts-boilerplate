@@ -1,0 +1,57 @@
+[package]
+name = "pvm-macro-contracts"
+version = "0.1.0"
+edition = "2024"
+publish = false
+build = "build.rs"
+
+[[bin]]
+name = "bench_erc20_macro"
+path = "src/bench_erc20_macro.rs"
+
+[[bin]]
+name = "bench_storage_macro"
+path = "src/bench_storage_macro.rs"
+
+[[bin]]
+name = "computation_macro"
+path = "src/computation_macro.rs"
+
+[[bin]]
+name = "bench_erc721_macro"
+path = "src/bench_erc721_macro.rs"
+
+[[bin]]
+name = "flipper_macro"
+path = "src/flipper_macro.rs"
+
+[[bin]]
+name = "incrementer_macro"
+path = "src/incrementer_macro.rs"
+
+[[bin]]
+name = "fibonacci_u32_macro"
+path = "src/fibonacci_u32_macro.rs"
+
+[[bin]]
+name = "simple_token_u256_macro"
+path = "src/simple_token_u256_macro.rs"
+
+[[bin]]
+name = "bench_erc1155_macro"
+path = "src/bench_erc1155_macro.rs"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+overflow-checks = false
+
+[dependencies]
+pvm_contract = { package = "pvm_contract", git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "charles/improve-macros-and-typegen" }
+polkavm-derive = "0.31.0"
+pvm-bump-allocator = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
+
+[build-dependencies]
+cargo-pvm-contract-builder = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }

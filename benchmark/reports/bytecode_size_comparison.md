@@ -1,6 +1,6 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-03-10
+Generated on: 2026-03-12
 resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 ## Fibonacci Implementations
@@ -14,6 +14,7 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | fibonacci_u32_macro_no_alloc_rust   | PVM     | 477          | +108.3%     |
 | fibonacci_u256_rust                 | PVM     | 980          | +327.9%     |
 | Fibonacci_pvm                       | PVM     | 1,152        | +403.1%     |
+| fibonacci_u32_macro_rust            | PVM     | 1,235        | +439.3%     |
 | fibonacci_u32_ink                   | PVM     | 1,363        | +495.2%     |
 | fibonacci_u32_stylus                | PVM     | 1,520        | +563.8%     |
 
@@ -45,78 +46,86 @@ resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.l
 | simple_token_u256_macro_no_alloc_rust   | PVM     | 3,765        | +578.4%     |
 | simple_token_u256_macro_bump_alloc_rust | PVM     | 4,430        | +698.2%     |
 | SimpleToken_pvm                         | PVM     | 5,357        | +865.2%     |
+| simple_token_u256_macro_rust            | PVM     | 5,780        | +941.4%     |
 | simple_token_u256_ink                   | PVM     | 11,308       | +1937.5%    |
 | simple_token_u256_stylus                | PVM     | 12,028       | +2067.2%    |
 
 
 ## flipper Implementations
 
-| Contract       | VM Type | Size (bytes) | vs Smallest |
-| -------------- | ------- | ------------ | ----------- |
-| flipper_evm    | EVM     | 284          | -           |
-| flipper_ink    | PVM     | 2,244        | +690.1%     |
-| flipper_pvm    | PVM     | 2,328        | +719.7%     |
-| flipper_stylus | PVM     | 3,611        | +1171.5%    |
+| Contract           | VM Type | Size (bytes) | vs Smallest |
+| ------------------ | ------- | ------------ | ----------- |
+| flipper_evm        | EVM     | 284          | -           |
+| flipper_macro_rust | PVM     | 2,239        | +688.4%     |
+| flipper_ink        | PVM     | 2,244        | +690.1%     |
+| flipper_pvm        | PVM     | 2,328        | +719.7%     |
+| flipper_stylus     | PVM     | 3,611        | +1171.5%    |
 
 
 ## incrementer Implementations
 
-| Contract           | VM Type | Size (bytes) | vs Smallest |
-| ------------------ | ------- | ------------ | ----------- |
-| incrementer_evm    | EVM     | 350          | -           |
-| incrementer_ink    | PVM     | 2,647        | +656.3%     |
-| incrementer_pvm    | PVM     | 2,791        | +697.4%     |
-| incrementer_stylus | PVM     | 5,186        | +1381.7%    |
+| Contract               | VM Type | Size (bytes) | vs Smallest |
+| ---------------------- | ------- | ------------ | ----------- |
+| incrementer_evm        | EVM     | 350          | -           |
+| incrementer_macro_rust | PVM     | 2,508        | +616.6%     |
+| incrementer_ink        | PVM     | 2,647        | +656.3%     |
+| incrementer_pvm        | PVM     | 2,791        | +697.4%     |
+| incrementer_stylus     | PVM     | 5,186        | +1381.7%    |
 
 
 ## BenchStorage Implementations
 
-| Contract             | VM Type | Size (bytes) | vs Smallest |
-| -------------------- | ------- | ------------ | ----------- |
-| BenchStorage_evm     | EVM     | 521          | -           |
-| BenchStorage_pvm     | PVM     | 3,060        | +487.3%     |
-| bench_storage_ink    | PVM     | 4,250        | +715.7%     |
-| bench_storage_stylus | PVM     | 10,392       | +1894.6%    |
+| Contract                 | VM Type | Size (bytes) | vs Smallest |
+| ------------------------ | ------- | ------------ | ----------- |
+| BenchStorage_evm         | EVM     | 521          | -           |
+| BenchStorage_pvm         | PVM     | 3,060        | +487.3%     |
+| bench_storage_macro_rust | PVM     | 3,610        | +592.9%     |
+| bench_storage_ink        | PVM     | 4,250        | +715.7%     |
+| bench_storage_stylus     | PVM     | 10,392       | +1894.6%    |
 
 
 ## Computation Implementations
 
-| Contract           | VM Type | Size (bytes) | vs Smallest |
-| ------------------ | ------- | ------------ | ----------- |
-| Computation_evm    | EVM     | 331          | -           |
-| computation_ink    | PVM     | 2,444        | +638.4%     |
-| computation_stylus | PVM     | 2,487        | +651.4%     |
-| Computation_pvm    | PVM     | 2,594        | +683.7%     |
+| Contract               | VM Type | Size (bytes) | vs Smallest |
+| ---------------------- | ------- | ------------ | ----------- |
+| Computation_evm        | EVM     | 331          | -           |
+| computation_macro_rust | PVM     | 1,501        | +353.5%     |
+| computation_ink        | PVM     | 2,444        | +638.4%     |
+| computation_stylus     | PVM     | 2,487        | +651.4%     |
+| Computation_pvm        | PVM     | 2,594        | +683.7%     |
 
 
 ## BenchERC20 Implementations
 
-| Contract           | VM Type | Size (bytes) | vs Smallest |
-| ------------------ | ------- | ------------ | ----------- |
-| BenchERC20_evm     | EVM     | 1,093        | -           |
-| BenchERC20_pvm     | PVM     | 9,826        | +799.0%     |
-| bench_erc20_stylus | PVM     | 20,565       | +1781.5%    |
-| bench_erc20_ink    | PVM     | 21,197       | +1839.3%    |
+| Contract               | VM Type | Size (bytes) | vs Smallest |
+| ---------------------- | ------- | ------------ | ----------- |
+| BenchERC20_evm         | EVM     | 1,093        | -           |
+| bench_erc20_macro_rust | PVM     | 9,238        | +745.2%     |
+| BenchERC20_pvm         | PVM     | 9,826        | +799.0%     |
+| bench_erc20_stylus     | PVM     | 20,565       | +1781.5%    |
+| bench_erc20_ink        | PVM     | 21,197       | +1839.3%    |
 
 
 ## BenchERC721 Implementations
 
-| Contract            | VM Type | Size (bytes) | vs Smallest |
-| ------------------- | ------- | ------------ | ----------- |
-| BenchERC721_evm     | EVM     | 1,121        | -           |
-| BenchERC721_pvm     | PVM     | 8,318        | +642.0%     |
-| bench_erc721_stylus | PVM     | 12,700       | +1032.9%    |
-| bench_erc721_ink    | PVM     | 15,109       | +1247.8%    |
+| Contract                | VM Type | Size (bytes) | vs Smallest |
+| ----------------------- | ------- | ------------ | ----------- |
+| BenchERC721_evm         | EVM     | 1,121        | -           |
+| bench_erc721_macro_rust | PVM     | 7,331        | +554.0%     |
+| BenchERC721_pvm         | PVM     | 8,318        | +642.0%     |
+| bench_erc721_stylus     | PVM     | 12,700       | +1032.9%    |
+| bench_erc721_ink        | PVM     | 15,109       | +1247.8%    |
 
 
 ## BenchERC1155 Implementations
 
-| Contract             | VM Type | Size (bytes) | vs Smallest |
-| -------------------- | ------- | ------------ | ----------- |
-| BenchERC1155_evm     | EVM     | 1,173        | -           |
-| BenchERC1155_pvm     | PVM     | 11,068       | +843.6%     |
-| bench_erc1155_stylus | PVM     | 21,232       | +1710.1%    |
-| bench_erc1155_ink    | PVM     | 22,858       | +1848.7%    |
+| Contract                 | VM Type | Size (bytes) | vs Smallest |
+| ------------------------ | ------- | ------------ | ----------- |
+| BenchERC1155_evm         | EVM     | 1,173        | -           |
+| bench_erc1155_macro_rust | PVM     | 8,582        | +631.6%     |
+| BenchERC1155_pvm         | PVM     | 11,068       | +843.6%     |
+| bench_erc1155_stylus     | PVM     | 21,232       | +1710.1%    |
+| bench_erc1155_ink        | PVM     | 22,858       | +1848.7%    |
 
 
 ## TetherToken Implementations
