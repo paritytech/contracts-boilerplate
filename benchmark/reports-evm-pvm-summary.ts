@@ -39,11 +39,15 @@ function fileSize(path: string): number | null {
 
 // ─── Constants ───
 
+import { datasetCategories } from './datasets.ts'
+
 // Test contracts are excluded from aggregate tables to avoid skewing real-world
 // workload analysis. They are still included in the variant-specific tables
 // (SimpleToken variants, Fibonacci variants, bytecode sizes).
-const TEST_CONTRACT_IDS = ['Fibonacci', 'Fibonacci_u256', 'SimpleToken']
-const TEST_EXCLUDE_SQL = TEST_CONTRACT_IDS.map((id) => `'${id}'`).join(',')
+const TEST_CONTRACT_IDS = datasetCategories['test-contracts'] ?? []
+const TEST_EXCLUDE_SQL = TEST_CONTRACT_IDS.map((id) =>
+    `'${id.replace(/'/g, "''")}'`
+).join(',')
 
 const EVM_TO_RUST: Record<string, string> = {
     DotNS: 'dotns_rust',

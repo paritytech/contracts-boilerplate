@@ -1,5 +1,6 @@
 import { db } from '../lib.ts'
 import { join } from '@std/path'
+import { datasetCategories as contractCategories } from '../datasets.ts'
 
 // Dataset descriptions for the HTML report
 export const DATASET_DESCRIPTIONS: Record<string, string> = {
@@ -85,12 +86,12 @@ combination of both VMs.</p>
 <p>Contracts have been slightly modified from their original source code to adapt to PVM or the test node configuration.</p>`,
 }
 
-// Canonical dataset ordering used across all charts and tables
-export const DATASET_ORDER = [
-    'test-contracts',
-    'ethereum-contracts',
-    'polkadot-contracts',
-]
+// Dataset categorization for contracts.
+// Imported directly from datasets.ts (no RPC needed thanks to lazy env).
+export const DATASET_CATEGORIES: Record<string, string[]> = {
+    ...contractCategories,
+}
+export const DATASET_ORDER: string[] = Object.keys(DATASET_CATEGORIES)
 
 function datasetSortOrder(a: string, b: string): number {
     const ai = DATASET_ORDER.indexOf(a)
@@ -98,35 +99,9 @@ function datasetSortOrder(a: string, b: string): number {
     return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
 }
 
-// Dataset categorization for contracts
-export const DATASET_CATEGORIES: Record<string, string[]> = {
-    'test-contracts': ['Fibonacci', 'Fibonacci_u256', 'SimpleToken'],
-    'ethereum-contracts': [
-        'TetherToken',
-        'WETH9',
-        'FiatTokenV2_2',
-        'FiatTokenProxy',
-        'XENCrypto',
-        'CoinTool_App',
-    ],
-    'polkadot-contracts': [
-        'Store',
-        'Log',
-        'NonFungibleCredential',
-        'FungibleCredential',
-        'Escrow',
-        'DotNS',
-        'KeyRegistry',
-        'DocumentAccessManagement',
-        'W3S',
-        'Marketplace',
-        'MarketplaceProxy',
-        'MockMobRule',
-    ],
-}
-
 import { getOpcodeCategory, OPCODE_CATEGORIES } from '../opcode-categories.ts'
 export { getOpcodeCategory, OPCODE_CATEGORIES }
+import { getImplTypeLabel, sortImplTypes } from './charts.ts'
 
 // Category descriptions for tooltips
 export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
@@ -1570,6 +1545,7 @@ export interface BytecodeSizeEntry {
     contract_id: string
     contract_name: string
     vm_type: string
+    impl_type: string
     size_bytes: number
     vs_smallest: string
 }
@@ -1585,22 +1561,35 @@ export interface BytecodeImplementation {
     name: string
     vm_type: string
     size_bytes: number
+    implType: string
 }
 
 export interface BytecodeSizeHierarchy {
+    implTypes: string[]
     datasets: Array<{
         name: string
-        evm_size: number | null
-        pvm_size: number | null
+        sizes: Record<string, number | null>
         contracts: Array<{
             name: string
-            evm_size: number | null
-            pvm_size: number | null
-            evm_name: string | null
-            pvm_name: string | null
+            sizes: Record<string, number | null>
             implementations: BytecodeImplementation[]
         }>
     }>
+}
+
+/** Infer impl type from contract name suffix (fallback for legacy markdown without Impl Type column). */
+function inferImplType(contractName: string, vmType: string): string {
+    if (vmType === 'EVM') return 'solidity'
+    const suffixes = ['_pvm', '_rust', '_ink', '_stylus']
+    for (const suffix of suffixes) {
+        if (contractName.endsWith(suffix)) {
+            return suffix === '_pvm' ? 'solidity' : suffix.slice(1)
+        }
+    }
+    const lastUnderscore = contractName.lastIndexOf('_')
+    return lastUnderscore !== -1
+        ? contractName.slice(lastUnderscore + 1)
+        : 'unknown'
 }
 
 export function getBytecodeComparison(): BytecodeSizeData {
@@ -1630,11 +1619,23 @@ export function getBytecodeComparison(): BytecodeSizeData {
                 const cells = row.split('|').map((c) => c.trim()).filter((c) =>
                     c
                 )
-                if (cells.length >= 4) {
+                if (cells.length >= 5) {
+                    // New format: Contract | VM Type | Impl Type | Size | vs Smallest
                     entries.push({
                         contract_id: contractId,
                         contract_name: cells[0],
                         vm_type: cells[1],
+                        impl_type: cells[2],
+                        size_bytes: parseInt(cells[3].replace(/,/g, ''), 10),
+                        vs_smallest: cells[4],
+                    })
+                } else if (cells.length >= 4) {
+                    // Legacy format without Impl Type — infer from name suffix
+                    entries.push({
+                        contract_id: contractId,
+                        contract_name: cells[0],
+                        vm_type: cells[1],
+                        impl_type: inferImplType(cells[0], cells[1]),
                         size_bytes: parseInt(cells[2].replace(/,/g, ''), 10),
                         vs_smallest: cells[3],
                     })
@@ -1662,42 +1663,6 @@ const EVM_TO_RUST: Record<string, string> = {
     Log: 'log_rust',
     NonFungibleCredential: 'non_fungible_credential_rust',
     Store: 'store_rust',
-}
-
-const EVM_TO_INK: Record<string, string> = {
-    Fibonacci: 'fibonacci',
-    Fibonacci_u256: 'fibonacci_u256',
-    Fibonacci_u256_iter: 'fibonacci_u256_iter',
-    SimpleToken: 'simple_token',
-}
-
-const CODEGEN_DIR = join(import.meta.dirname!, '..', '..', 'codegen')
-const RUST_DIR = join(import.meta.dirname!, '..', '..', 'rust')
-const INK_DIR = join(import.meta.dirname!, '..', '..', 'ink')
-
-function fileSize(path: string): number | null {
-    try {
-        return Deno.statSync(path).size
-    } catch {
-        return null
-    }
-}
-
-function rustBytecodeSizeFn(dbName: string): number | null {
-    const base = dbName.replace(/_rust$/, '')
-    return fileSize(
-        join(RUST_DIR, 'protocol-commons', base, `${base}.polkavm`),
-    ) ??
-        fileSize(
-            join(RUST_DIR, 'contracts', 'target', `${base}.release.polkavm`),
-        ) ??
-        fileSize(join(RUST_DIR, 'contracts', `${base}.polkavm`))
-}
-
-function inkBytecodeSizeFn(inkName: string): number | null {
-    return fileSize(
-        join(INK_DIR, inkName, 'target', 'ink', `${inkName}.polkavm`),
-    )
 }
 
 const NAME_MAP_VALUES = Object.entries(EVM_TO_RUST)
@@ -2740,172 +2705,91 @@ export function getCostGapDecomposition(): {
     }
 }
 
-// RQ2: Bytecode size comparison
-export interface BytecodeSizeCompRow {
-    contract: string
-    evm_bytes: number
-    pvm_sol_bytes: number
-    ratio: string
-    pvm_rust_bytes: string
-    rust_ratio: string
-    ink_bytes: string
-    ink_ratio: string
-}
-
-export function getBytecodeSizeComparison(): BytecodeSizeCompRow[] {
-    const deploys = db.prepare(`
-        SELECT REPLACE(contract_name, '_evm', '') as contract
-        FROM transactions
-        WHERE chain_name = 'eth-rpc'
-            AND contract_name LIKE '%_evm'
-            AND transaction_name = 'deploy'
-            AND weight_consumed_ref_time IS NOT NULL
-            AND base_call_weight_ref_time IS NOT NULL
-        ORDER BY contract
-    `).all() as { contract: string }[]
-
-    return deploys.map((r) => {
-        const evmSize = fileSize(join(CODEGEN_DIR, 'evm', `${r.contract}.bin`))
-        const pvmSize = fileSize(
-            join(CODEGEN_DIR, 'pvm', `${r.contract}.polkavm`),
-        )
-        const rustBytecodeNames: Record<string, string> = {
-            Fibonacci: 'fibonacci_rust',
-            Fibonacci_u256: 'fibonacci_u256_rust',
-            Fibonacci_u256_iter: 'fibonacci_u256_iter_rust',
-            SimpleToken: 'simple_token_with_alloc_rust',
-        }
-        const rustName = EVM_TO_RUST[r.contract] ??
-            rustBytecodeNames[r.contract]
-        const rustSize = rustName ? rustBytecodeSizeFn(rustName) : null
-        const inkName = EVM_TO_INK[r.contract]
-        const inkSize = inkName ? inkBytecodeSizeFn(inkName) : null
-        if (evmSize == null || pvmSize == null) return null
-        return {
-            contract: r.contract,
-            evm_bytes: evmSize,
-            pvm_sol_bytes: pvmSize,
-            ratio: `${(pvmSize / evmSize).toFixed(1)}x`,
-            pvm_rust_bytes: rustSize != null ? rustSize.toLocaleString() : '—',
-            rust_ratio: rustSize != null
-                ? `${(rustSize / evmSize).toFixed(1)}x`
-                : '—',
-            ink_bytes: inkSize != null ? inkSize.toLocaleString() : '—',
-            ink_ratio: inkSize != null
-                ? `${(inkSize / evmSize).toFixed(1)}x`
-                : '—',
-        }
-    }).filter((r): r is BytecodeSizeCompRow => r !== null).sort((a, b) =>
-        a.evm_bytes - b.evm_bytes
-    )
-}
-
 export function getBytecodeHierarchy(): BytecodeSizeHierarchy {
     const bytecodeData = getBytecodeComparison()
+    const allImplTypes = new Set<string>()
 
     // Group by dataset -> contract
     const datasetMap = new Map<
         string,
-        Map<
-            string,
-            {
-                evm_size: number | null
-                pvm_size: number | null
-                evm_name: string | null
-                pvm_name: string | null
-            }
-        >
+        Map<string, BytecodeImplementation[]>
     >()
 
     for (const group of bytecodeData.groups) {
         const dataset = getDatasetCategory(group.contract_id)
-
-        if (!datasetMap.has(dataset)) {
-            datasetMap.set(dataset, new Map())
-        }
-
+        if (!datasetMap.has(dataset)) datasetMap.set(dataset, new Map())
         const contractMap = datasetMap.get(dataset)!
 
-        // Find EVM and PVM sizes for this contract
-        let evmSize: number | null = null
-        let pvmSize: number | null = null
-        let evmName: string | null = null
-        let pvmName: string | null = null
         const implementations: BytecodeImplementation[] = []
-
         for (const entry of group.entries) {
+            const implType = getImplTypeLabel(entry.impl_type, entry.vm_type)
+            allImplTypes.add(implType)
             implementations.push({
                 name: entry.contract_name,
                 vm_type: entry.vm_type,
                 size_bytes: entry.size_bytes,
+                implType,
             })
-            if (entry.vm_type === 'EVM') {
-                evmSize = entry.size_bytes
-                evmName = entry.contract_name
-            } else if (entry.vm_type === 'PVM') {
-                // Prefer the Solidity-compiled PVM (_pvm suffix) for apples-to-apples comparison
-                const isSolidityPvm = entry.contract_name.endsWith('_pvm')
-                const currentIsSolidityPvm = pvmName?.endsWith('_pvm') ?? false
-                if (
-                    pvmSize === null || (isSolidityPvm && !currentIsSolidityPvm)
-                ) {
-                    pvmSize = entry.size_bytes
-                    pvmName = entry.contract_name
-                }
-            }
         }
+        contractMap.set(group.contract_id, implementations)
+    }
 
-        contractMap.set(group.contract_id, {
-            evm_size: evmSize,
-            pvm_size: pvmSize,
-            evm_name: evmName,
-            pvm_name: pvmName,
-            implementations,
-        })
+    const implTypes = sortImplTypes([...allImplTypes])
+
+    // Helper: pick representative size per impl type for a contract
+    // For each impl type, average across all implementations of that type
+    function sizesPerImplType(
+        impls: BytecodeImplementation[],
+    ): Record<string, number | null> {
+        const sizes: Record<string, number | null> = {}
+        for (const t of implTypes) {
+            const matching = impls.filter((i) => i.implType === t)
+            sizes[t] = matching.length > 0
+                ? Math.round(
+                    matching.reduce((s, i) => s + i.size_bytes, 0) /
+                        matching.length,
+                )
+                : null
+        }
+        return sizes
     }
 
     // Build hierarchy
     const datasets: BytecodeSizeHierarchy['datasets'] = []
 
     for (const [datasetName, contractMap] of datasetMap) {
-        let datasetEvmSize = 0
-        let datasetPvmSize = 0
-        let hasEvm = false
-        let hasPvm = false
-
         const contracts: BytecodeSizeHierarchy['datasets'][0]['contracts'] = []
 
-        for (const [contractName, sizes] of contractMap) {
-            if (sizes.evm_size !== null) {
-                datasetEvmSize += sizes.evm_size
-                hasEvm = true
-            }
-            if (sizes.pvm_size !== null) {
-                datasetPvmSize += sizes.pvm_size
-                hasPvm = true
-            }
-
+        for (const [contractName, impls] of contractMap) {
             contracts.push({
                 name: contractName,
-                evm_size: sizes.evm_size,
-                pvm_size: sizes.pvm_size,
-                evm_name: sizes.evm_name,
-                pvm_name: sizes.pvm_name,
-                implementations: sizes.implementations.sort((a, b) =>
+                sizes: sizesPerImplType(impls),
+                implementations: impls.sort((a, b) =>
                     a.size_bytes - b.size_bytes
                 ),
             })
         }
 
+        // Dataset-level sizes: sum of contract sizes per impl type
+        const datasetSizes: Record<string, number | null> = {}
+        for (const t of implTypes) {
+            const vals = contracts.map((c) => c.sizes[t]).filter(
+                (v): v is number => v !== null,
+            )
+            datasetSizes[t] = vals.length > 0
+                ? vals.reduce((s, v) => s + v, 0)
+                : null
+        }
+
         datasets.push({
             name: datasetName,
-            evm_size: hasEvm ? datasetEvmSize : null,
-            pvm_size: hasPvm ? datasetPvmSize : null,
+            sizes: datasetSizes,
             contracts: contracts.sort((a, b) => a.name.localeCompare(b.name)),
         })
     }
 
     return {
+        implTypes,
         datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
     }
 }

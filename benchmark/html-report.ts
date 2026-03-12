@@ -7,11 +7,11 @@ import { ensureDir } from '@std/fs'
 import { join } from '@std/path'
 
 import {
+    type BytecodeSizeHierarchy,
     DATASET_DESCRIPTIONS,
     DATASET_METHODOLOGY,
     getBaseVsMetered,
     getBytecodeHierarchy,
-    getBytecodeSizeComparison,
     getCategoryBreakdownHierarchy,
     getCategoryMappingHtml,
     getCostDecomposition7,
@@ -53,8 +53,11 @@ import {
 } from './html-report/templates.ts'
 
 import {
+    altImplLabel,
+    type AltWeightSeries,
     buildCategoryColorMap,
     COLORS,
+    getImplTypeColor,
     groupedBarChart,
     stackedBarChart,
     weightBreakdownChart,
@@ -92,7 +95,7 @@ export async function generateHtmlReport(): Promise<void> {
     scripts.push(bytecodeSection.scripts)
 
     // Section 6: EVM vs PVM Analysis
-    content += generateEvmPvmAnalysis()
+    content += generateEvmPvmAnalysis(bytecodeSection.hierarchy)
 
     // Generate final HTML
     const html = htmlDocument(content, scripts.join('\n'))
@@ -205,15 +208,17 @@ function generateGasAnalysis(): { html: string; scripts: string } {
             : null
     }
 
-    const avgRustTxPctDiff = (
+    // Discover all alt implementation types across all datasets
+    const avgAltTxPctDiff = (
         contracts: typeof hierarchy.datasets[0]['contracts'],
+        implLabel: string,
     ) => {
         const diffs: number[] = []
         for (const c of contracts) {
-            const rustAlts = c.alt_implementations.filter((a) =>
-                a.name.includes('rust')
+            const matchingAlts = c.alt_implementations.filter((a) =>
+                altImplLabel(a.name) === implLabel
             )
-            for (const alt of rustAlts) {
+            for (const alt of matchingAlts) {
                 for (const altTx of alt.transactions) {
                     const baseTx = c.transactions.find((t) =>
                         t.name === altTx.name
@@ -230,32 +235,52 @@ function generateGasAnalysis(): { html: string; scripts: string } {
             : null
     }
 
+    // Collect all unique alt impl labels
+    const altImplLabels = new Set<string>()
+    for (const ds of hierarchy.datasets) {
+        for (const c of ds.contracts) {
+            for (const alt of c.alt_implementations) {
+                altImplLabels.add(altImplLabel(alt.name))
+            }
+        }
+    }
+
+    const chartSeries: Array<{
+        label: string
+        data: (number | null)[]
+        color: string
+    }> = [
+        {
+            label: 'EVM',
+            data: hierarchy.datasets.map((d) =>
+                avgTxPctDiff(d.contracts, 'eth_rpc_evm_gas')
+            ),
+            color: COLORS.primary,
+        },
+        {
+            label: 'PVM (Solidity)',
+            data: hierarchy.datasets.map((d) =>
+                avgTxPctDiff(d.contracts, 'eth_rpc_pvm_gas')
+            ),
+            color: COLORS.success,
+        },
+    ]
+
+    for (const implLabel of altImplLabels) {
+        const color = getImplTypeColor(implLabel)
+        chartSeries.push({
+            label: implLabel,
+            data: hierarchy.datasets.map((d) =>
+                avgAltTxPctDiff(d.contracts, implLabel)
+            ),
+            color: color.bg,
+        })
+    }
+
     const chartScript = groupedBarChart(
         'gasAnalysisChart',
         labels,
-        [
-            {
-                label: 'EVM',
-                data: hierarchy.datasets.map((d) =>
-                    avgTxPctDiff(d.contracts, 'eth_rpc_evm_gas')
-                ),
-                color: COLORS.primary,
-            },
-            {
-                label: 'PVM (Solidity)',
-                data: hierarchy.datasets.map((d) =>
-                    avgTxPctDiff(d.contracts, 'eth_rpc_pvm_gas')
-                ),
-                color: COLORS.success,
-            },
-            {
-                label: 'PVM (Rust)',
-                data: hierarchy.datasets.map((d) =>
-                    avgRustTxPctDiff(d.contracts)
-                ),
-                color: COLORS.orange,
-            },
-        ],
+        chartSeries,
         { yLabel: 'Avg % difference vs Geth' },
     )
     scripts.push(chartScript)
@@ -311,14 +336,25 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
     // Stacked bar chart showing metered vs overhead breakdown
     const labels = hierarchy.datasets.map((d) => d.name)
 
-    // Compute Rust averages from alt_implementations at dataset level
-    const rustWeightData = {
-        refTime: hierarchy.datasets.map((d) => {
+    // Discover all alt implementation types from weight data
+    const altWeightLabels = new Set<string>()
+    for (const ds of hierarchy.datasets) {
+        for (const c of ds.contracts) {
+            for (const alt of c.alt_implementations) {
+                altWeightLabels.add(altImplLabel(alt.name))
+            }
+        }
+    }
+
+    // Build weight data for each alt implementation type
+    const altWeightSeries: AltWeightSeries[] = []
+    for (const implLabel of altWeightLabels) {
+        const refTime = hierarchy.datasets.map((d) => {
             let sum = 0, count = 0
             for (const c of d.contracts) {
                 for (
                     const alt of c.alt_implementations.filter((a) =>
-                        a.name.includes('rust')
+                        altImplLabel(a.name) === implLabel
                     )
                 ) {
                     for (const tx of alt.transactions) {
@@ -330,13 +366,13 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
                 }
             }
             return count > 0 ? Math.round(sum / count) : null
-        }),
-        meteredPct: hierarchy.datasets.map((d) => {
+        })
+        const meteredPct = hierarchy.datasets.map((d) => {
             let sum = 0, count = 0
             for (const c of d.contracts) {
                 for (
                     const alt of c.alt_implementations.filter((a) =>
-                        a.name.includes('rust')
+                        altImplLabel(a.name) === implLabel
                     )
                 ) {
                     for (const tx of alt.transactions) {
@@ -348,9 +384,14 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
                 }
             }
             return count > 0 ? sum / count : null
-        }),
+        })
+        if (refTime.some((v) => v !== null)) {
+            altWeightSeries.push({
+                label: implLabel,
+                data: { refTime, meteredPct },
+            })
+        }
     }
-    const hasRustWeight = rustWeightData.refTime.some((v) => v !== null)
 
     const chartScript = weightBreakdownChart(
         'weightAnalysisChart',
@@ -363,7 +404,7 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
             refTime: hierarchy.datasets.map((d) => d.pvm_ref_time),
             meteredPct: hierarchy.datasets.map((d) => d.pvm_metered_pct),
         },
-        hasRustWeight ? rustWeightData : null,
+        altWeightSeries,
         { yLabel: 'Avg ref_time per Transaction' },
     )
     scripts.push(chartScript)
@@ -465,7 +506,11 @@ function generateCategoryProfiling(): { html: string; scripts: string } {
     return { html, scripts: scripts.join('\n') }
 }
 
-function generateBytecodeSection(): { html: string; scripts: string } {
+function generateBytecodeSection(): {
+    html: string
+    scripts: string
+    hierarchy: BytecodeSizeHierarchy | null
+} {
     const hierarchy = getBytecodeHierarchy()
 
     if (hierarchy.datasets.length === 0) {
@@ -479,54 +524,32 @@ function generateBytecodeSection(): { html: string; scripts: string } {
                 ),
             ),
             scripts: '',
+            hierarchy: null,
         }
     }
 
     const scripts: string[] = []
-
-    // Show average bytecode size per contract at dataset level
+    const { implTypes } = hierarchy
     const labels = hierarchy.datasets.map((d) => d.name)
 
-    const avg = (
-        total: number | null,
-        contracts: typeof hierarchy.datasets[0]['contracts'],
-        vm: 'evm' | 'pvm',
-    ) => {
-        if (total === null) return null
-        const count =
-            contracts.filter((c) =>
-                vm === 'evm' ? c.evm_size !== null : c.pvm_size !== null
-            ).length
-        return count > 0 ? Math.round(total / count) : null
-    }
-
-    const evmData = hierarchy.datasets.map((d) =>
-        avg(d.evm_size, d.contracts, 'evm')
-    )
-    const pvmData = hierarchy.datasets.map((d) =>
-        avg(d.pvm_size, d.contracts, 'pvm')
-    )
-
-    // Compute average Rust PVM bytecode size per dataset
-    const rustBytecodeData = hierarchy.datasets.map((d) => {
-        const rustSizes: number[] = []
-        for (const c of d.contracts) {
-            const rustImpls = c.implementations.filter((i) =>
-                i.name.includes('rust') && i.vm_type === 'PVM'
-            )
-            if (rustImpls.length > 0) {
-                const avgRust = Math.round(
-                    rustImpls.reduce((s, i) => s + i.size_bytes, 0) /
-                        rustImpls.length,
-                )
-                rustSizes.push(avgRust)
-            }
+    // Build one Chart.js dataset per discovered impl type
+    const chartDatasets = implTypes.map((implType) => {
+        const color = getImplTypeColor(implType)
+        const data = hierarchy.datasets.map((d) => {
+            const vals = d.contracts
+                .map((c) => c.sizes[implType])
+                .filter((v): v is number => v !== null)
+            return vals.length > 0
+                ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length)
+                : null
+        })
+        return {
+            label: implType,
+            data,
+            backgroundColor: color.bg,
+            borderColor: color.border,
+            borderWidth: 1,
         }
-        return rustSizes.length > 0
-            ? Math.round(
-                rustSizes.reduce((s, v) => s + v, 0) / rustSizes.length,
-            )
-            : null
     })
 
     const chartScript = `
@@ -534,29 +557,7 @@ function generateBytecodeSection(): { html: string; scripts: string } {
             type: 'bar',
             data: {
                 labels: ${JSON.stringify(labels)},
-                datasets: [
-                    {
-                        label: 'EVM',
-                        data: ${JSON.stringify(evmData)},
-                        backgroundColor: 'rgba(13, 110, 253, 0.8)',
-                        borderColor: 'rgba(13, 110, 253, 1)',
-                        borderWidth: 1,
-                    },
-                    {
-                        label: 'PVM (Solidity)',
-                        data: ${JSON.stringify(pvmData)},
-                        backgroundColor: 'rgba(25, 135, 84, 0.8)',
-                        borderColor: 'rgba(25, 135, 84, 1)',
-                        borderWidth: 1,
-                    },
-                    {
-                        label: 'PVM (Rust)',
-                        data: ${JSON.stringify(rustBytecodeData)},
-                        backgroundColor: 'rgba(253, 126, 20, 0.8)',
-                        borderColor: 'rgba(253, 126, 20, 1)',
-                        borderWidth: 1,
-                    }
-                ]
+                datasets: ${JSON.stringify(chartDatasets)}
             },
             options: {
                 responsive: true,
@@ -608,10 +609,12 @@ function generateBytecodeSection(): { html: string; scripts: string } {
     `,
     )
 
-    return { html, scripts: scripts.join('\n') }
+    return { html, scripts: scripts.join('\n'), hierarchy }
 }
 
-function generateEvmPvmAnalysis(): string {
+function generateEvmPvmAnalysis(
+    bytecodeHierarchy: BytecodeSizeHierarchy | null,
+): string {
     const fmt = (n: number) => n.toLocaleString()
     let content = ''
 
@@ -775,37 +778,45 @@ function generateEvmPvmAnalysis(): string {
         )
     }
 
-    // Bytecode size comparison
-    const bytecodeComp = getBytecodeSizeComparison()
-    if (bytecodeComp.length > 0) {
-        content += card(
-            'Bytecode size comparison',
-            dataTable(
-                [
-                    'Contract',
-                    'EVM bytes',
-                    'PVM/Sol bytes',
-                    'Ratio',
-                    'PVM/Rust bytes',
-                    'Ratio',
-                    'ink! bytes',
-                    'Ratio',
-                ],
-                bytecodeComp.map(
-                    (r) => [
-                        r.contract,
-                        fmt(r.evm_bytes),
-                        fmt(r.pvm_sol_bytes),
-                        r.ratio,
-                        r.pvm_rust_bytes,
-                        r.rust_ratio,
-                        r.ink_bytes,
-                        r.ink_ratio,
-                    ],
-                ),
-                { numberColumns: [1, 2] },
-            ),
+    // Bytecode size comparison (derived from hierarchy)
+    if (bytecodeHierarchy && bytecodeHierarchy.datasets.length > 0) {
+        const allContracts = bytecodeHierarchy.datasets.flatMap((d) =>
+            d.contracts
         )
+        const bTypes = bytecodeHierarchy.implTypes
+        const evmType = bTypes.find((t) => t === 'EVM')
+
+        // Only show contracts that have an EVM implementation for ratio comparison
+        const rows = allContracts
+            .filter((c) => evmType && c.sizes[evmType] != null)
+            .sort((a, b) => (a.sizes[evmType!] ?? 0) - (b.sizes[evmType!] ?? 0))
+            .map((c) => {
+                const evmBytes = c.sizes[evmType!]!
+                const cells: (string | number)[] = [c.name]
+                for (const t of bTypes) {
+                    const sz = c.sizes[t]
+                    cells.push(sz != null ? fmt(sz) : '—')
+                    if (t === evmType) continue // no ratio for EVM vs itself
+                    cells.push(
+                        sz != null ? `${(sz / evmBytes).toFixed(1)}x` : '—',
+                    )
+                }
+                return cells
+            })
+
+        if (rows.length > 0) {
+            const headers: string[] = ['Contract']
+            const numberCols: number[] = []
+            for (const t of bTypes) {
+                numberCols.push(headers.length)
+                headers.push(`${t} bytes`)
+                if (t !== evmType) headers.push('Ratio')
+            }
+            content += card(
+                'Bytecode size comparison',
+                dataTable(headers, rows, { numberColumns: numberCols }),
+            )
+        }
     }
 
     // ── RQ3: What are the sources? ──

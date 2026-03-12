@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run --env-file --allow-all
 
-import { env } from '../tools/lib/index.ts'
+import { env, initEnv } from '../tools/lib/index.ts'
 import { abis } from '../codegen/abis.ts'
 import {
     decodeFunctionData,
@@ -11,6 +11,8 @@ import {
 } from 'viem'
 import { Dao, DaoAttacker } from '../codegen/addresses.ts'
 import type { Abi } from 'viem'
+
+await initEnv()
 
 const result = await env.debugClient.traceCall(
     {

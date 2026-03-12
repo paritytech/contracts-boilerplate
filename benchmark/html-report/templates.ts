@@ -704,11 +704,20 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
         }
 
-        function avgRustTxPctDiffs(contracts) {
+        // Map contract name suffix to display label (browser-side)
+        var SUFFIX_TO_LABEL = { rust: 'PVM/Rust', ink: 'PVM/ink!', stylus: 'PVM/Stylus' };
+        function altImplLabelJs(name) {
+            var parts = name.split('_');
+            var suffix = parts[parts.length - 1];
+            return SUFFIX_TO_LABEL[suffix] || ('PVM/' + suffix);
+        }
+
+        // Generic: compute avg pct diff for a given impl label across contracts
+        function avgAltTxPctDiffs(contracts, implLabel) {
             var diffs = [];
             contracts.forEach(function(c) {
-                var rustAlts = (c.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
-                rustAlts.forEach(function(alt) {
+                var alts = (c.alt_implementations || []).filter(function(a) { return altImplLabelJs(a.name) === implLabel; });
+                alts.forEach(function(alt) {
                     alt.transactions.forEach(function(altTx) {
                         var baseTx = c.transactions.find(function(t) { return t.name === altTx.name; });
                         var d = toPctDiff(altTx.pvm_gas, baseTx ? baseTx.geth_gas : null);
@@ -719,10 +728,10 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
         }
 
-        function avgRustPctDiffsForContract(contract) {
+        function avgAltPctDiffsForContract(contract, implLabel) {
             var diffs = [];
-            var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
-            rustAlts.forEach(function(alt) {
+            var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelJs(a.name) === implLabel; });
+            alts.forEach(function(alt) {
                 alt.transactions.forEach(function(altTx) {
                     var baseTx = contract.transactions.find(function(t) { return t.name === altTx.name; });
                     var d = toPctDiff(altTx.pvm_gas, baseTx ? baseTx.geth_gas : null);
@@ -732,10 +741,10 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
         }
 
-        function rustPctDiffForTx(contract, txName) {
+        function altPctDiffForTx(contract, txName, implLabel) {
             var diffs = [];
-            var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
-            rustAlts.forEach(function(alt) {
+            var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelJs(a.name) === implLabel; });
+            alts.forEach(function(alt) {
                 var altTx = alt.transactions.find(function(t) { return t.name === txName; });
                 if (altTx) {
                     var baseTx = contract.transactions.find(function(t) { return t.name === txName; });
@@ -746,19 +755,37 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
         }
 
+        // Discover all alt impl labels from hierarchy
+        var gasAltImplLabels = [];
+        (function() {
+            var labels = {};
+            gasHierarchy.datasets.forEach(function(ds) {
+                ds.contracts.forEach(function(c) {
+                    (c.alt_implementations || []).forEach(function(a) {
+                        labels[altImplLabelJs(a.name)] = true;
+                    });
+                });
+            });
+            gasAltImplLabels = Object.keys(labels);
+        })();
+
         function getChartData(level, parent) {
             let items = [];
             let title = 'Gas by Dataset';
             const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
+            var altData = {};
 
             if (level === 'datasets') {
                 items = gasHierarchy.datasets;
                 title = 'Avg Gas by Dataset' + suffix + ' (click to drill down)';
+                gasAltImplLabels.forEach(function(lbl) {
+                    altData[lbl] = items.map(function(i) { return avgAltTxPctDiffs(i.contracts, lbl); });
+                });
                 return {
                     labels: items.map(i => i.name),
                     evmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_evm_gas')),
                     pvmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_pvm_gas')),
-                    rustPvmData: items.map(i => avgRustTxPctDiffs(i.contracts)),
+                    altData: altData,
                     title: title,
                     canDrillDown: true
                 };
@@ -767,11 +794,14 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                 if (dataset) {
                     items = dataset.contracts;
                     title = 'Avg Gas by Contract: ' + parent + suffix + ' (click to drill down, right-click to go back)';
+                    gasAltImplLabels.forEach(function(lbl) {
+                        altData[lbl] = items.map(function(i) { return avgAltPctDiffsForContract(i, lbl); });
+                    });
                     return {
                         labels: items.map(i => i.name),
                         evmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_evm_gas')),
                         pvmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_pvm_gas')),
-                        rustPvmData: items.map(i => avgRustPctDiffsForContract(i)),
+                        altData: altData,
                         title: title,
                         canDrillDown: true
                     };
@@ -786,21 +816,27 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                         break;
                     }
                 }
+                gasAltImplLabels.forEach(function(lbl) {
+                    altData[lbl] = contract ? items.map(function(i) { return altPctDiffForTx(contract, i.name, lbl); }) : items.map(function() { return null; });
+                });
                 return {
                     labels: items.map(i => i.name),
                     evmData: items.map(i => toPctDiff(i.eth_rpc_evm_gas, i.geth_gas)),
                     pvmData: items.map(i => toPctDiff(i.eth_rpc_pvm_gas, i.geth_gas)),
-                    rustPvmData: contract ? items.map(i => rustPctDiffForTx(contract, i.name)) : items.map(() => null),
+                    altData: altData,
                     title: title,
                     canDrillDown: false
                 };
             }
 
+            gasAltImplLabels.forEach(function(lbl) {
+                altData[lbl] = items.map(function() { return null; });
+            });
             return {
                 labels: items.map(i => i.name),
                 evmData: items.map(i => toPctDiff(i.eth_rpc_evm_gas, i.geth_gas)),
                 pvmData: items.map(i => toPctDiff(i.eth_rpc_pvm_gas, i.geth_gas)),
-                rustPvmData: items.map(() => null),
+                altData: altData,
                 title: title,
                 canDrillDown: level !== 'transactions'
             };
@@ -816,7 +852,12 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             chart.data.labels = data.labels;
             chart.data.datasets[0].data = data.evmData;
             chart.data.datasets[1].data = data.pvmData;
-            chart.data.datasets[2].data = data.rustPvmData;
+            // Update alt impl datasets (indices 2+)
+            for (var i = 0; i < gasAltImplLabels.length; i++) {
+                if (chart.data.datasets[2 + i]) {
+                    chart.data.datasets[2 + i].data = data.altData[gasAltImplLabels[i]];
+                }
+            }
             chart.options.plugins.title.text = data.title;
             chart.options.plugins.title.display = true;
 
@@ -1301,18 +1342,65 @@ export function drilldownWeightChartScript(
             };
         }
 
-        function getRustWeightForItems(items, level, metric) {
-            // Extract Rust weight data from alt_implementations
-            // Returns { rustRefTime, rustMeteredPct } arrays parallel to items
-            var rustRefTime = [];
-            var rustMeteredPct = [];
+        // Map contract name suffix to display label (browser-side)
+        var WEIGHT_SUFFIX_TO_LABEL = { rust: 'PVM/Rust', ink: 'PVM/ink!', stylus: 'PVM/Stylus' };
+        function weightAltImplLabelJs(name) {
+            var parts = name.split('_');
+            var suffix = parts[parts.length - 1];
+            return WEIGHT_SUFFIX_TO_LABEL[suffix] || ('PVM/' + suffix);
+        }
+
+        // Discover all alt impl labels from weight hierarchy
+        var weightAltImplLabels = [];
+        (function() {
+            var labels = {};
+            weightHierarchyOriginal.datasets.forEach(function(ds) {
+                ds.contracts.forEach(function(c) {
+                    (c.alt_implementations || []).forEach(function(a) {
+                        labels[weightAltImplLabelJs(a.name)] = true;
+                    });
+                });
+            });
+            weightAltImplLabels = Object.keys(labels);
+        })();
+
+        // Color map for alt impl types
+        var WEIGHT_IMPL_COLORS = {
+            'PVM/Rust': { bg: 'rgba(253, 126, 20, 0.8)', border: 'rgba(253, 126, 20, 1)' },
+            'PVM/ink!': { bg: 'rgba(111, 66, 193, 0.8)', border: 'rgba(111, 66, 193, 1)' },
+            'PVM/Stylus': { bg: 'rgba(32, 201, 151, 0.8)', border: 'rgba(32, 201, 151, 1)' }
+        };
+        var WEIGHT_FALLBACK_COLORS = [
+            { bg: 'rgba(214, 51, 132, 0.8)', border: 'rgba(214, 51, 132, 1)' },
+            { bg: 'rgba(255, 193, 7, 0.8)', border: 'rgba(255, 193, 7, 1)' },
+            { bg: 'rgba(13, 202, 240, 0.8)', border: 'rgba(13, 202, 240, 1)' }
+        ];
+        function strHashJs(s) {
+            var h = 0;
+            for (var i = 0; i < s.length; i++) {
+                h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+            }
+            return Math.abs(h);
+        }
+        function getWeightImplColor(implLabel) {
+            if (WEIGHT_IMPL_COLORS[implLabel]) return WEIGHT_IMPL_COLORS[implLabel];
+            var c = WEIGHT_FALLBACK_COLORS[strHashJs(implLabel) % WEIGHT_FALLBACK_COLORS.length];
+            WEIGHT_IMPL_COLORS[implLabel] = c;
+            return c;
+        }
+
+        function getAltWeightForItems(items, level, metric, implLabel) {
+            // Extract weight data for a specific alt impl label
+            // Returns { refTime, meteredPct } arrays parallel to items
+            var refTime = [];
+            var meteredPct = [];
 
             if (level === 'datasets') {
                 items.forEach(function(dataset) {
                     var sum = 0, pctSum = 0, count = 0;
                     dataset.contracts.forEach(function(c) {
-                        var rustAlts = (c.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
-                        rustAlts.forEach(function(alt) {
+                        var alts = (c.alt_implementations || []).filter(function(a) { return weightAltImplLabelJs(a.name) === implLabel; });
+                        alts.forEach(function(alt) {
                             alt.transactions.forEach(function(tx) {
                                 var val = metric === 'ref_time' ? tx.pvm_ref_time : tx.pvm_proof_size;
                                 if (val !== null) { sum += val; count++; }
@@ -1320,22 +1408,22 @@ export function drilldownWeightChartScript(
                             });
                         });
                     });
-                    rustRefTime.push(count > 0 ? Math.round(sum / count) : null);
-                    rustMeteredPct.push(count > 0 ? pctSum / count : null);
+                    refTime.push(count > 0 ? Math.round(sum / count) : null);
+                    meteredPct.push(count > 0 ? pctSum / count : null);
                 });
             } else if (level === 'contracts') {
                 items.forEach(function(contract) {
                     var sum = 0, pctSum = 0, count = 0;
-                    var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
-                    rustAlts.forEach(function(alt) {
+                    var alts = (contract.alt_implementations || []).filter(function(a) { return weightAltImplLabelJs(a.name) === implLabel; });
+                    alts.forEach(function(alt) {
                         alt.transactions.forEach(function(tx) {
                             var val = metric === 'ref_time' ? tx.pvm_ref_time : tx.pvm_proof_size;
                             if (val !== null) { sum += val; count++; }
                             if (tx.pvm_metered_pct !== null) { pctSum += tx.pvm_metered_pct; }
                         });
                     });
-                    rustRefTime.push(count > 0 ? Math.round(sum / count) : null);
-                    rustMeteredPct.push(count > 0 ? pctSum / count : null);
+                    refTime.push(count > 0 ? Math.round(sum / count) : null);
+                    meteredPct.push(count > 0 ? pctSum / count : null);
                 });
             } else if (level === 'transactions') {
                 // Find the parent contract to get alt_implementations
@@ -1350,8 +1438,8 @@ export function drilldownWeightChartScript(
                 items.forEach(function(tx) {
                     var sum = 0, pctSum = 0, count = 0;
                     if (contract) {
-                        var rustAlts = (contract.alt_implementations || []).filter(function(a) { return a.name.indexOf('rust') !== -1; });
-                        rustAlts.forEach(function(alt) {
+                        var alts = (contract.alt_implementations || []).filter(function(a) { return weightAltImplLabelJs(a.name) === implLabel; });
+                        alts.forEach(function(alt) {
                             var altTx = alt.transactions.find(function(t) { return t.name === tx.name; });
                             if (altTx) {
                                 var val = metric === 'ref_time' ? altTx.pvm_ref_time : altTx.pvm_proof_size;
@@ -1360,12 +1448,12 @@ export function drilldownWeightChartScript(
                             }
                         });
                     }
-                    rustRefTime.push(count > 0 ? Math.round(sum / count) : null);
-                    rustMeteredPct.push(count > 0 ? pctSum / count : null);
+                    refTime.push(count > 0 ? Math.round(sum / count) : null);
+                    meteredPct.push(count > 0 ? pctSum / count : null);
                 });
             }
 
-            return { rustRefTime: rustRefTime, rustMeteredPct: rustMeteredPct };
+            return { refTime: refTime, meteredPct: meteredPct };
         }
 
         function getWeightChartData(level, parent, metric) {
@@ -1408,10 +1496,31 @@ export function drilldownWeightChartScript(
 
             // Calculate metered and overhead portions based on metric
             let evmMetered, evmOverhead, pvmMetered, pvmOverhead;
-            let rustMetered, rustOverhead;
 
-            // Get Rust data
-            const rustData = getRustWeightForItems(items, level, metric);
+            // Get alt impl data for all discovered labels
+            var altData = {};
+            weightAltImplLabels.forEach(function(lbl) {
+                var d = getAltWeightForItems(items, level, metric, lbl);
+                if (metric === 'ref_time') {
+                    altData[lbl] = {
+                        metered: d.refTime.map(function(val, idx) {
+                            if (val === null || d.meteredPct[idx] === null) return null;
+                            return val * (d.meteredPct[idx] / 100);
+                        }),
+                        overhead: d.refTime.map(function(val, idx) {
+                            if (val === null || d.meteredPct[idx] === null) return null;
+                            return val * (1 - d.meteredPct[idx] / 100);
+                        }),
+                        meteredPct: d.meteredPct
+                    };
+                } else {
+                    altData[lbl] = {
+                        metered: d.refTime,
+                        overhead: d.refTime.map(function() { return null; }),
+                        meteredPct: d.meteredPct
+                    };
+                }
+            });
 
             if (metric === 'ref_time') {
                 evmMetered = items.map((i, idx) => {
@@ -1434,30 +1543,19 @@ export function drilldownWeightChartScript(
                     if (val === null || i.pvm_metered_pct === null) return null;
                     return val * (1 - i.pvm_metered_pct / 100);
                 });
-                rustMetered = rustData.rustRefTime.map((val, idx) => {
-                    if (val === null || rustData.rustMeteredPct[idx] === null) return null;
-                    return val * (rustData.rustMeteredPct[idx] / 100);
-                });
-                rustOverhead = rustData.rustRefTime.map((val, idx) => {
-                    if (val === null || rustData.rustMeteredPct[idx] === null) return null;
-                    return val * (1 - rustData.rustMeteredPct[idx] / 100);
-                });
             } else {
                 evmMetered = evmValues;
                 evmOverhead = evmValues.map(() => null);
                 pvmMetered = pvmValues;
                 pvmOverhead = pvmValues.map(() => null);
-                rustMetered = rustData.rustRefTime;
-                rustOverhead = rustData.rustRefTime.map(() => null);
             }
 
             return {
                 labels: items.map(i => i.name),
                 evmMetered, evmOverhead, pvmMetered, pvmOverhead,
-                rustMetered, rustOverhead,
+                altData: altData,
                 evmMeteredPct: items.map(i => i.evm_metered_pct),
                 pvmMeteredPct: items.map(i => i.pvm_metered_pct),
-                rustMeteredPct: rustData.rustMeteredPct,
                 title, metric, yLabel
             };
         }
@@ -1475,19 +1573,58 @@ export function drilldownWeightChartScript(
             chart.data.datasets[2].data = data.pvmMetered;
             chart.data.datasets[3].data = data.pvmOverhead;
 
-            // Ensure Rust datasets exist (they may not if initial chart had no Rust data)
-            while (chart.data.datasets.length < 6) {
-                chart.data.datasets.push({
-                    label: '',
-                    data: [],
-                    backgroundColor: chart.data.datasets.length === 4 ? 'rgba(253, 126, 20, 0.8)' : 'rgba(253, 126, 20, 0.4)',
-                    borderColor: 'rgba(253, 126, 20, 1)',
-                    borderWidth: 1,
-                    stack: 'rust',
-                });
+            // Ensure alt impl datasets exist (2 per impl: metered + overhead, starting at index 4)
+            for (var ai = 0; ai < weightAltImplLabels.length; ai++) {
+                var _lbl = weightAltImplLabels[ai];
+                var _clr = getWeightImplColor(_lbl);
+                var _stack = _lbl.toLowerCase().replace(/[^a-z]/g, '');
+                var metIdx = 4 + ai * 2;
+                var ovrIdx = 4 + ai * 2 + 1;
+                if (!chart.data.datasets[metIdx]) {
+                    chart.data.datasets.push({
+                        label: _lbl + ' Metered', data: [],
+                        backgroundColor: _clr.bg, borderColor: _clr.border,
+                        borderWidth: 1, stack: _stack,
+                    });
+                }
+                if (!chart.data.datasets[ovrIdx]) {
+                    chart.data.datasets.push({
+                        label: _lbl + ' Overhead', data: [],
+                        backgroundColor: _clr.bg.replace('0.8', '0.4'), borderColor: _clr.border,
+                        borderWidth: 1, stack: _stack,
+                    });
+                }
             }
-            chart.data.datasets[4].data = data.rustMetered;
-            chart.data.datasets[5].data = data.rustOverhead;
+
+            // Update alt impl datasets dynamically
+            for (var i = 0; i < weightAltImplLabels.length; i++) {
+                var lbl = weightAltImplLabels[i];
+                var color = getWeightImplColor(lbl);
+                var lightColor = color.bg.replace('0.8', '0.4');
+                var meteredIdx = 4 + i * 2;
+                var overheadIdx = 4 + i * 2 + 1;
+                var stackId = lbl.toLowerCase().replace(/[^a-z]/g, '');
+
+                chart.data.datasets[meteredIdx].data = data.altData[lbl].metered;
+                chart.data.datasets[meteredIdx].backgroundColor = color.bg;
+                chart.data.datasets[meteredIdx].borderColor = color.border;
+                chart.data.datasets[meteredIdx].stack = stackId;
+
+                chart.data.datasets[overheadIdx].data = data.altData[lbl].overhead;
+                chart.data.datasets[overheadIdx].backgroundColor = lightColor;
+                chart.data.datasets[overheadIdx].borderColor = color.border;
+                chart.data.datasets[overheadIdx].stack = stackId;
+
+                if (data.metric === 'ref_time') {
+                    chart.data.datasets[meteredIdx].label = lbl + ' Metered';
+                    chart.data.datasets[overheadIdx].label = lbl + ' Overhead';
+                    chart.data.datasets[overheadIdx].hidden = false;
+                } else {
+                    chart.data.datasets[meteredIdx].label = lbl;
+                    chart.data.datasets[overheadIdx].label = '';
+                    chart.data.datasets[overheadIdx].hidden = true;
+                }
+            }
 
             chart.options.plugins.title.text = data.title;
             chart.options.scales.y.title.text = data.yLabel;
@@ -1497,26 +1634,26 @@ export function drilldownWeightChartScript(
                 chart.data.datasets[1].label = 'EVM Overhead';
                 chart.data.datasets[2].label = 'PVM (Solidity) Metered';
                 chart.data.datasets[3].label = 'PVM (Solidity) Overhead';
-                chart.data.datasets[4].label = 'Rust Metered';
-                chart.data.datasets[5].label = 'Rust Overhead';
                 chart.data.datasets[1].hidden = false;
                 chart.data.datasets[3].hidden = false;
-                chart.data.datasets[5].hidden = false;
             } else {
                 chart.data.datasets[0].label = 'EVM';
                 chart.data.datasets[1].label = '';
                 chart.data.datasets[2].label = 'PVM (Solidity)';
                 chart.data.datasets[3].label = '';
-                chart.data.datasets[4].label = 'PVM (Rust)';
-                chart.data.datasets[5].label = '';
                 chart.data.datasets[1].hidden = true;
                 chart.data.datasets[3].hidden = true;
-                chart.data.datasets[5].hidden = true;
             }
 
-            window.weightEvmMeteredPct = data.evmMeteredPct;
-            window.weightPvmMeteredPct = data.pvmMeteredPct;
-            window.weightRustMeteredPct = data.rustMeteredPct;
+            // Update tooltip pct data
+            var pctEntries = [
+                { key: 'evm', label: 'EVM', pct: data.evmMeteredPct },
+                { key: 'pvm', label: 'PVM/Solidity', pct: data.pvmMeteredPct }
+            ];
+            weightAltImplLabels.forEach(function(lbl) {
+                pctEntries.push({ key: lbl.toLowerCase().replace(/[^a-z]/g, ''), label: lbl, pct: data.altData[lbl].meteredPct });
+            });
+            window.weightPctData = pctEntries;
             chart.update();
         }
 
@@ -2593,18 +2730,20 @@ export function fibonacciComparisonTable(data: FibonacciTableData[]): string {
 
 // Bytecode Size Hierarchy Types and Functions
 export interface BytecodeHierarchyData {
+    implTypes: string[]
     datasets: Array<{
         name: string
-        evm_size: number | null
-        pvm_size: number | null
+        sizes: Record<string, number | null>
         contracts: Array<{
             name: string
-            evm_size: number | null
-            pvm_size: number | null
-            evm_name: string | null
-            pvm_name: string | null
+            sizes: Record<string, number | null>
             implementations: Array<
-                { name: string; vm_type: string; size_bytes: number }
+                {
+                    name: string
+                    vm_type: string
+                    size_bytes: number
+                    implType: string
+                }
             >
         }>
     }>
@@ -2623,28 +2762,28 @@ function calcSizeDiff(evm: number | null, pvm: number | null): string {
 }
 
 export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
-    let rowId = 3000 // Start from 3000 to avoid conflicts with other table IDs
+    let rowId = 3000
     const rows: string[] = []
+    const evmKey = 'EVM'
+    const pvmSolKey = 'PVM/Solidity'
 
-    // Helper to compute average size per contract
-    function avgSize(
+    function avgSizeForType(
         contracts: BytecodeHierarchyData['datasets'][0]['contracts'],
-        key: 'evm_size' | 'pvm_size',
+        implType: string,
     ): number | null {
-        const vals = contracts.map((c) => c[key]).filter((v): v is number =>
-            v !== null
+        const vals = contracts.map((c) => c.sizes[implType]).filter(
+            (v): v is number => v !== null,
         )
         return vals.length > 0
             ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length)
             : null
     }
 
-    // Collect all contracts for overall average
     const allContracts = data.datasets.flatMap((d) => d.contracts)
 
     for (const dataset of data.datasets) {
-        const dsAvgEvm = avgSize(dataset.contracts, 'evm_size')
-        const dsAvgPvm = avgSize(dataset.contracts, 'pvm_size')
+        const dsAvgEvm = avgSizeForType(dataset.contracts, evmKey)
+        const dsAvgPvm = avgSizeForType(dataset.contracts, pvmSolKey)
 
         const datasetId = rowId++
         rows.push(`
@@ -2657,28 +2796,35 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
         `)
 
         for (const contract of dataset.contracts) {
-            const hasMultipleImpls = contract.implementations.length > 2
-            const contractId = hasMultipleImpls ? rowId++ : -1
+            const evmSize = contract.sizes[evmKey] ?? null
+            const pvmSolSize = contract.sizes[pvmSolKey] ?? null
 
-            const evmLabel = contract.evm_name
-                ? `<span title="${contract.evm_name}">${
-                    formatBytes(contract.evm_size)
+            const evmImpl = contract.implementations.find((i) =>
+                i.implType === evmKey
+            )
+            const pvmSolImpl = contract.implementations.find((i) =>
+                i.implType === pvmSolKey
+            )
+            // Collect all non-Solidity PVM impls
+            const altImpls = contract.implementations.filter((i) =>
+                i.implType !== evmKey && i.implType !== pvmSolKey
+            )
+            const hasAltImpls = altImpls.length > 0
+            const contractId = hasAltImpls ? rowId++ : -1
+
+            const evmLabel = evmImpl
+                ? `<span title="${evmImpl.name}">${formatBytes(evmSize)}</span>`
+                : 'N/A'
+            const pvmLabel = pvmSolImpl
+                ? `<span title="${pvmSolImpl.name}">${
+                    formatBytes(pvmSolSize)
                 }</span>`
                 : 'N/A'
-            const pvmLabel = contract.pvm_name
-                ? `<span title="${contract.pvm_name}">${
-                    formatBytes(contract.pvm_size)
-                }</span>`
-                : 'N/A'
 
-            if (hasMultipleImpls) {
-                const altPvmImpls = contract.implementations
-                    .filter((i) =>
-                        i.vm_type !== 'EVM' && !i.name.endsWith('_pvm')
-                    )
+            if (hasAltImpls) {
                 const allPvmSizes: LabeledValue[] = [
-                    { value: contract.pvm_size, label: 'solidity' },
-                    ...altPvmImpls.map((i) => ({
+                    { value: pvmSolSize, label: 'solidity' },
+                    ...altImpls.map((i) => ({
                         value: i.size_bytes as number | null,
                         label: getImplLabel(contract.name, i.name),
                     })),
@@ -2689,8 +2835,8 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
                     formatBytes,
                 )
                 const diffWithRange = withDiffRange(
-                    calcSizeDiff(contract.evm_size, contract.pvm_size),
-                    contract.evm_size,
+                    calcSizeDiff(evmSize, pvmSolSize),
+                    evmSize,
                     allPvmSizes,
                 )
 
@@ -2703,13 +2849,7 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
                     </tr>
                 `)
 
-                // Combined Solidity row (EVM + PVM)
-                const evmImpl = contract.implementations.find((i) =>
-                    i.vm_type === 'EVM'
-                )
-                const pvmSolImpl = contract.implementations.find((i) =>
-                    i.name.endsWith('_pvm')
-                )
+                // Solidity row (EVM + PVM)
                 if (evmImpl || pvmSolImpl) {
                     rows.push(`
                         <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}">
@@ -2734,11 +2874,8 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
                     `)
                 }
 
-                // Alt implementations with parenthetical labels
-                for (const impl of contract.implementations) {
-                    if (impl.vm_type === 'EVM' || impl.name.endsWith('_pvm')) {
-                        continue
-                    }
+                // Alt implementations
+                for (const impl of altImpls) {
                     const label = getImplLabel(contract.name, impl.name)
                     rows.push(`
                         <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}">
@@ -2750,7 +2887,7 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
                         formatBytes(impl.size_bytes)
                     }</td>
                             <td class="number">${
-                        calcSizeDiff(contract.evm_size, impl.size_bytes)
+                        calcSizeDiff(evmSize, impl.size_bytes)
                     }</td>
                         </tr>
                     `)
@@ -2762,7 +2899,7 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
                         <td class="number">${evmLabel}</td>
                         <td class="number">${pvmLabel}</td>
                         <td class="number">${
-                    calcSizeDiff(contract.evm_size, contract.pvm_size)
+                    calcSizeDiff(evmSize, pvmSolSize)
                 }</td>
                     </tr>
                 `)
@@ -2770,10 +2907,9 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
         }
     }
 
-    const overallAvgEvm = avgSize(allContracts, 'evm_size')
-    const overallAvgPvm = avgSize(allContracts, 'pvm_size')
+    const overallAvgEvm = avgSizeForType(allContracts, evmKey)
+    const overallAvgPvm = avgSizeForType(allContracts, pvmSolKey)
 
-    // Add average row
     rows.push(`
         <tr class="level-0 total-row" style="border-top: 2px solid var(--border-color); font-weight: 700;">
             <td>Avg per contract</td>
@@ -2786,7 +2922,7 @@ export function expandableBytecodeTable(data: BytecodeHierarchyData): string {
     `)
 
     return `
-    <p class="table-note">Dataset rows show the average bytecode size for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink).</p>
+    <p class="table-note">Dataset rows show the average bytecode size for the Solidity implementation. Colored ranges show the min..max across all PVM implementations.</p>
     <table class="expandable-table expandable-bytecode-table">
         <thead>
             <tr>
@@ -2812,29 +2948,10 @@ export function drilldownBytecodeChartScript(
         let bytecodeCurrentLevel = 'datasets';
         let bytecodeCurrentParent = null;
 
-        function avgSize(dataset, vm) {
-            var contracts = dataset.contracts.filter(function(c) { return vm === 'evm' ? c.evm_size !== null : c.pvm_size !== null; });
-            var total = vm === 'evm' ? dataset.evm_size : dataset.pvm_size;
-            return total !== null && contracts.length > 0 ? Math.round(total / contracts.length) : null;
-        }
-
-        function avgRustBytecodeSize(contracts) {
-            // For each contract, avg Rust impl sizes, then avg across contracts
-            var sizes = [];
-            contracts.forEach(function(c) {
-                var rustImpls = (c.implementations || []).filter(function(i) { return i.name.indexOf('rust') !== -1 && i.vm_type === 'PVM'; });
-                if (rustImpls.length > 0) {
-                    var avg = Math.round(rustImpls.reduce(function(s, i) { return s + i.size_bytes; }, 0) / rustImpls.length);
-                    sizes.push(avg);
-                }
-            });
-            return sizes.length > 0 ? Math.round(sizes.reduce(function(s, v) { return s + v; }, 0) / sizes.length) : null;
-        }
-
-        function contractRustBytecodeSize(contract) {
-            var rustImpls = (contract.implementations || []).filter(function(i) { return i.name.indexOf('rust') !== -1 && i.vm_type === 'PVM'; });
-            if (rustImpls.length === 0) return null;
-            return Math.round(rustImpls.reduce(function(s, i) { return s + i.size_bytes; }, 0) / rustImpls.length);
+        // Avg of contract sizes for a given impl type across a dataset
+        function avgImplTypeSize(contracts, implType) {
+            var vals = contracts.map(function(c) { return c.sizes[implType]; }).filter(function(v) { return v !== null && v !== undefined; });
+            return vals.length > 0 ? Math.round(vals.reduce(function(s, v) { return s + v; }, 0) / vals.length) : null;
         }
 
         function updateBytecodeChart(level, parent) {
@@ -2842,23 +2959,32 @@ export function drilldownBytecodeChartScript(
             bytecodeCurrentParent = parent;
 
             const chart = Chart.getChart('bytecodeChart');
+            const implTypes = bytecodeHierarchy.implTypes;
 
             if (level === 'datasets') {
                 const items = bytecodeHierarchy.datasets;
-                chart.data.labels = items.map(i => i.name);
-                chart.data.datasets[0].data = items.map(i => avgSize(i, 'evm'));
-                chart.data.datasets[1].data = items.map(i => avgSize(i, 'pvm'));
-                chart.data.datasets[2].data = items.map(i => avgRustBytecodeSize(i.contracts));
+                chart.data.labels = items.map(function(i) { return i.name; });
+                implTypes.forEach(function(implType, idx) {
+                    if (idx < chart.data.datasets.length) {
+                        chart.data.datasets[idx].data = items.map(function(d) {
+                            return avgImplTypeSize(d.contracts, implType);
+                        });
+                    }
+                });
                 chart.options.plugins.title.text = 'Avg Bytecode Size per Contract (click to drill down)';
                 chart.options.scales.y.title.text = 'Avg Size (bytes)';
             } else if (level === 'contracts' && parent) {
-                const dataset = bytecodeHierarchy.datasets.find(d => d.name === parent);
+                const dataset = bytecodeHierarchy.datasets.find(function(d) { return d.name === parent; });
                 if (!dataset) return;
                 const items = dataset.contracts;
-                chart.data.labels = items.map(i => i.name);
-                chart.data.datasets[0].data = items.map(i => i.evm_size);
-                chart.data.datasets[1].data = items.map(i => i.pvm_size);
-                chart.data.datasets[2].data = items.map(i => contractRustBytecodeSize(i));
+                chart.data.labels = items.map(function(i) { return i.name; });
+                implTypes.forEach(function(implType, idx) {
+                    if (idx < chart.data.datasets.length) {
+                        chart.data.datasets[idx].data = items.map(function(c) {
+                            return c.sizes[implType] !== undefined ? c.sizes[implType] : null;
+                        });
+                    }
+                });
                 chart.options.plugins.title.text = 'Bytecode Size: ' + parent + ' (right-click to go back)';
                 chart.options.scales.y.title.text = 'Size (bytes)';
             }

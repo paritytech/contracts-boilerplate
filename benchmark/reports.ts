@@ -654,6 +654,7 @@ async function generateBytecodeComparison(contracts: Artifacts) {
         contract_name: string
         size_bytes: number
         vm_type: string
+        impl_type: string
     }
 
     const bytecodeData: BytecodeEntry[] = []
@@ -669,6 +670,7 @@ async function generateBytecodeComparison(contracts: Artifacts) {
                 contract_name: src.getName(),
                 size_bytes: sizeBytes,
                 vm_type: vmType,
+                impl_type: src.implType,
             })
         }
     }
@@ -696,6 +698,7 @@ async function generateBytecodeComparison(contracts: Artifacts) {
             return {
                 'Contract': entry.contract_name,
                 'VM Type': entry.vm_type,
+                'Impl Type': entry.impl_type,
                 'Size (bytes)': entry.size_bytes.toLocaleString(),
                 'vs Smallest': vsSmallest,
             }
