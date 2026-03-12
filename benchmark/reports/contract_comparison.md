@@ -1,6 +1,6 @@
 # Revive Contract Comparison
 
-Generated on: 2026-03-10
+Generated on: 2026-03-12
 resolc: Solidity frontend for the revive compiler version 1.0.0+commit.b080c1d.llvm-18.1.8
 
 Comparison of gas usage across different contract implementations.
@@ -29,82 +29,90 @@ Comparison of gas usage across different contract implementations.
 
 ### BenchERC20 - deploy
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| BenchERC20_evm     | 1,897,343,440 | -       | 369,074,448      | -                 | 19.5%     | 27,448 |
-| BenchERC20_pvm     | 2,119,951,698 | +11.7%  | 451,510,259      | +22.3%            | 21.3%     | 27,448 |
-| bench_erc20_ink    | 2,705,290,120 | +42.6%  | 853,695,984      | +131.3%           | 31.6%     | 27,448 |
-| bench_erc20_stylus | 2,792,818,995 | +47.2%  | 951,404,483      | +157.8%           | 34.1%     | 58,219 |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| BenchERC20_evm         | 1,897,343,440 | -       | 369,074,448      | -                 | 19.5%     | 27,448 |
+| BenchERC20_pvm         | 2,119,951,698 | +11.7%  | 451,510,259      | +22.3%            | 21.3%     | 27,448 |
+| bench_erc20_macro_rust | 2,189,357,069 | +15.4%  | 547,331,110      | +48.3%            | 25.0%     | 27,448 |
+| bench_erc20_ink        | 2,705,290,120 | +42.6%  | 853,695,984      | +131.3%           | 31.6%     | 27,448 |
+| bench_erc20_stylus     | 2,792,818,995 | +47.2%  | 951,404,483      | +157.8%           | 34.1%     | 58,219 |
 
 
 ### BenchERC20 - transfer
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| BenchERC20_evm     | 1,440,642,256 | -       | 531,873,736      | -                 | 36.9%     | 50,359 |
-| BenchERC20_pvm     | 1,571,019,209 | +9.0%   | 662,250,689      | +24.5%            | 42.2%     | 59,222 |
-| bench_erc20_stylus | 1,953,947,940 | +35.6%  | 1,045,179,420    | +96.5%            | 53.5%     | 69,961 |
-| bench_erc20_ink    | 2,525,950,492 | +75.3%  | 1,617,181,972    | +204.1%           | 64.0%     | 91,171 |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| BenchERC20_evm         | 1,440,642,256 | -       | 531,873,736      | -                 | 36.9%     | 50,359 |
+| BenchERC20_pvm         | 1,571,019,209 | +9.0%   | 662,250,689      | +24.5%            | 42.2%     | 59,222 |
+| bench_erc20_stylus     | 1,953,947,940 | +35.6%  | 1,045,179,420    | +96.5%            | 53.5%     | 69,961 |
+| bench_erc20_macro_rust | 2,050,381,364 | +42.3%  | 1,141,612,844    | +114.6%           | 55.7%     | 57,582 |
+| bench_erc20_ink        | 2,525,950,492 | +75.3%  | 1,617,181,972    | +204.1%           | 64.0%     | 91,171 |
 
 
 ### BenchERC721 - deploy
 
-| Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| BenchERC721_evm     | 1,529,619,794 | -       | 1,415,230        | -                 | 0.1%      | 6,934  |
-| BenchERC721_pvm     | 1,656,651,381 | +8.3%   | 12,524,738       | +785.0%           | 0.8%      | 6,934  |
-| bench_erc721_stylus | 1,732,163,378 | +13.2%  | 17,455,861       | +1133.4%          | 1.0%      | 6,934  |
-| bench_erc721_ink    | 1,933,389,094 | +26.4%  | 179,879,814      | +12610.3%         | 9.3%      | 17,191 |
+| Implementation          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ----------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| BenchERC721_evm         | 1,529,619,794 | -       | 1,415,230        | +2006.6%          | 0.1%      | 6,934  |
+| bench_erc721_macro_rust | 1,597,177,490 | +4.4%   | 67,180           | -                 | 0.0%      | 6,934  |
+| BenchERC721_pvm         | 1,656,651,381 | +8.3%   | 12,524,738       | +18543.6%         | 0.8%      | 6,934  |
+| bench_erc721_stylus     | 1,732,163,378 | +13.2%  | 17,455,861       | +25883.7%         | 1.0%      | 6,934  |
+| bench_erc721_ink        | 1,933,389,094 | +26.4%  | 179,879,814      | +267658.0%        | 9.3%      | 17,191 |
 
 
 ### BenchERC721 - mint
 
-| Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| BenchERC721_evm     | 1,568,617,213 | -       | 660,280,861      | -                 | 42.1%     | 70,970 |
-| BenchERC721_pvm     | 1,679,392,887 | +7.1%   | 771,056,535      | +16.8%            | 45.9%     | 78,065 |
-| bench_erc721_stylus | 2,029,212,247 | +29.4%  | 1,120,875,895    | +69.8%            | 55.2%     | 82,447 |
-| bench_erc721_ink    | 2,169,230,400 | +38.3%  | 1,260,894,048    | +91.0%            | 58.1%     | 86,666 |
+| Implementation          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ----------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| BenchERC721_evm         | 1,568,617,213 | -       | 660,280,861      | -                 | 42.1%     | 70,970 |
+| BenchERC721_pvm         | 1,679,392,887 | +7.1%   | 771,056,535      | +16.8%            | 45.9%     | 78,065 |
+| bench_erc721_macro_rust | 1,727,447,116 | +10.1%  | 819,110,764      | +24.1%            | 47.4%     | 44,375 |
+| bench_erc721_stylus     | 2,029,212,247 | +29.4%  | 1,120,875,895    | +69.8%            | 55.2%     | 82,447 |
+| bench_erc721_ink        | 2,169,230,400 | +38.3%  | 1,260,894,048    | +91.0%            | 58.1%     | 86,666 |
 
 
 ### BenchStorage - deploy
 
-| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| BenchStorage_evm     | 1,519,834,394 | -       | 1,294,030        | -                 | 0.1%      | 6,934  |
-| BenchStorage_pvm     | 1,571,557,695 | +3.4%   | 12,121,658       | +836.7%           | 0.8%      | 6,934  |
-| bench_storage_stylus | 1,686,792,462 | +11.0%  | 9,259,901        | +615.6%           | 0.5%      | 6,934  |
-| bench_storage_ink    | 1,758,483,181 | +15.7%  | 179,879,814      | +13800.7%         | 10.2%     | 17,191 |
+| Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| BenchStorage_evm         | 1,519,834,394 | -       | 1,294,030        | +1826.2%          | 0.1%      | 6,934  |
+| bench_storage_macro_rust | 1,568,362,067 | +3.2%   | 67,180           | -                 | 0.0%      | 6,934  |
+| BenchStorage_pvm         | 1,571,557,695 | +3.4%   | 12,121,658       | +17943.6%         | 0.8%      | 6,934  |
+| bench_storage_stylus     | 1,686,792,462 | +11.0%  | 9,259,901        | +13683.7%         | 0.5%      | 6,934  |
+| bench_storage_ink        | 1,758,483,181 | +15.7%  | 179,879,814      | +267658.0%        | 10.2%     | 17,191 |
 
 
 ### BenchStorage - readWrite_100
 
-| Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
-| -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | --------- |
-| bench_storage_ink    | 32,369,376,185 | -       | 31,460,620,761   | -                 | 97.2%     | 2,087,665 |
-| BenchStorage_evm     | 32,874,004,245 | +1.6%   | 31,965,235,725   | +1.6%             | 97.2%     | 3,095,499 |
-| BenchStorage_pvm     | 35,647,987,302 | +10.1%  | 34,739,218,782   | +10.4%            | 97.5%     | 3,098,064 |
-| bench_storage_stylus | 51,893,119,325 | +60.3%  | 50,984,350,805   | +62.1%            | 98.2%     | 3,105,396 |
+| Implementation           | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
+| ------------------------ | -------------- | ------- | ---------------- | ----------------- | --------- | --------- |
+| bench_storage_ink        | 32,369,389,281 | -       | 31,460,620,761   | -                 | 97.2%     | 2,087,668 |
+| BenchStorage_evm         | 32,874,004,245 | +1.6%   | 31,965,235,725   | +1.6%             | 97.2%     | 3,095,499 |
+| BenchStorage_pvm         | 35,647,987,302 | +10.1%  | 34,739,218,782   | +10.4%            | 97.5%     | 3,098,064 |
+| bench_storage_stylus     | 51,893,119,325 | +60.3%  | 50,984,350,805   | +62.1%            | 98.2%     | 3,105,396 |
+| bench_storage_macro_rust | 52,770,200,679 | +63.0%  | 51,861,432,159   | +64.8%            | 98.3%     | 2,066,514 |
 
 
 ### BenchStorage - read_100
 
-| Implementation       | ref_time       | vs Best  | metered_ref_time | vs Best (metered) | % metered | pov       |
-| -------------------- | -------------- | -------- | ---------------- | ----------------- | --------- | --------- |
-| BenchStorage_evm     | 1,008,874,142  | -        | 100,105,622      | -                 | 9.9%      | 8,799     |
-| BenchStorage_pvm     | 2,541,964,523  | +152.0%  | 1,633,196,003    | +1531.5%          | 64.2%     | 11,364    |
-| bench_storage_ink    | 11,596,567,180 | +1049.5% | 10,687,798,660   | +10576.5%         | 92.2%     | 1,050,111 |
-| bench_storage_stylus | 16,072,466,906 | +1493.1% | 15,163,698,386   | +15047.7%         | 94.3%     | 1,047,596 |
+| Implementation           | ref_time       | vs Best  | metered_ref_time | vs Best (metered) | % metered | pov       |
+| ------------------------ | -------------- | -------- | ---------------- | ----------------- | --------- | --------- |
+| BenchStorage_evm         | 1,008,874,142  | -        | 100,105,622      | -                 | 9.9%      | 8,799     |
+| BenchStorage_pvm         | 2,541,964,523  | +152.0%  | 1,633,196,003    | +1531.5%          | 64.2%     | 11,364    |
+| bench_storage_ink        | 11,596,567,180 | +1049.5% | 10,687,798,660   | +10576.5%         | 92.2%     | 1,050,111 |
+| bench_storage_stylus     | 16,072,466,906 | +1493.1% | 15,163,698,386   | +15047.7%         | 94.3%     | 1,047,596 |
+| bench_storage_macro_rust | 22,201,508,199 | +2100.6% | 21,292,739,679   | +21170.3%         | 95.9%     | 1,039,214 |
 
 
 ### BenchStorage - write_100
 
-| Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
-| -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | --------- |
-| bench_storage_ink    | 21,810,252,993 | -       | 20,901,484,473   | -                 | 95.8%     | 1,060,352 |
-| BenchStorage_evm     | 26,012,473,834 | +19.3%  | 25,103,705,314   | +20.1%            | 96.5%     | 2,066,567 |
-| BenchStorage_pvm     | 28,435,903,318 | +30.4%  | 27,527,134,798   | +31.7%            | 96.8%     | 2,069,100 |
-| bench_storage_stylus | 36,356,024,921 | +66.7%  | 35,447,256,401   | +69.6%            | 97.5%     | 2,076,432 |
+| Implementation           | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
+| ------------------------ | -------------- | ------- | ---------------- | ----------------- | --------- | --------- |
+| bench_storage_ink        | 21,810,252,993 | -       | 20,901,484,473   | -                 | 95.8%     | 1,060,352 |
+| BenchStorage_evm         | 26,012,473,834 | +19.3%  | 25,103,705,314   | +20.1%            | 96.5%     | 2,066,567 |
+| BenchStorage_pvm         | 28,435,903,318 | +30.4%  | 27,527,134,798   | +31.7%            | 96.8%     | 2,069,100 |
+| bench_storage_macro_rust | 31,533,738,531 | +44.6%  | 30,624,970,011   | +46.5%            | 97.1%     | 1,039,198 |
+| bench_storage_stylus     | 36,356,024,921 | +66.7%  | 35,447,256,401   | +69.6%            | 97.5%     | 2,076,432 |
 
 
 ### CoinTool_App - deploy
@@ -125,32 +133,35 @@ Comparison of gas usage across different contract implementations.
 
 ### Computation - deploy
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| Computation_evm    | 1,516,735,684 | -       | 1,255,650        | -                 | 0.1%      | 6,934  |
-| computation_stylus | 1,560,004,067 | +2.9%   | 9,797,341        | +680.3%           | 0.6%      | 6,934  |
-| Computation_pvm    | 1,564,387,733 | +3.1%   | 12,457,558       | +892.1%           | 0.8%      | 6,934  |
-| computation_ink    | 1,728,319,059 | +13.9%  | 178,804,934      | +14140.0%         | 10.3%     | 17,191 |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| Computation_evm        | 1,516,735,684 | -       | 1,255,650        | +1769.1%          | 0.1%      | 6,934  |
+| computation_macro_rust | 1,534,327,976 | +1.2%   | 67,180           | -                 | 0.0%      | 6,934  |
+| computation_stylus     | 1,560,004,067 | +2.9%   | 9,797,341        | +14483.7%         | 0.6%      | 6,934  |
+| Computation_pvm        | 1,564,387,733 | +3.1%   | 12,457,558       | +18443.6%         | 0.8%      | 6,934  |
+| computation_ink        | 1,728,319,059 | +13.9%  | 178,804,934      | +266058.0%        | 10.3%     | 17,191 |
 
 
 ### Computation - odd_product_10
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| Computation_evm    | 924,281,963   | -       | 15,945,611       | -                 | 1.7%      | 8,510  |
-| computation_stylus | 969,693,221   | +4.9%   | 61,356,869       | +284.8%           | 6.3%      | 10,692 |
-| Computation_pvm    | 999,675,452   | +8.2%   | 91,339,100       | +472.8%           | 9.1%      | 10,799 |
-| computation_ink    | 1,037,385,110 | +12.2%  | 129,048,758      | +709.3%           | 12.4%     | 20,906 |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| Computation_evm        | 924,281,963   | -       | 15,945,611       | -                 | 1.7%      | 8,510  |
+| computation_macro_rust | 948,964,969   | +2.7%   | 40,628,617       | +154.8%           | 4.3%      | 9,702  |
+| computation_stylus     | 969,693,221   | +4.9%   | 61,356,869       | +284.8%           | 6.3%      | 10,692 |
+| Computation_pvm        | 999,675,452   | +8.2%   | 91,339,100       | +472.8%           | 9.1%      | 10,799 |
+| computation_ink        | 1,037,385,110 | +12.2%  | 129,048,758      | +709.3%           | 12.4%     | 20,906 |
 
 
 ### Computation - triangle_10
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
-| Computation_evm    | 921,114,757   | -       | 12,778,405       | -                 | 1.4%      | 8,510  |
-| computation_stylus | 967,677,821   | +5.1%   | 59,341,469       | +364.4%           | 6.1%      | 10,692 |
-| Computation_pvm    | 990,942,052   | +7.6%   | 82,605,700       | +546.4%           | 8.3%      | 10,799 |
-| computation_ink    | 1,035,168,170 | +12.4%  | 126,831,818      | +892.5%           | 12.3%     | 20,906 |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov    |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------ |
+| Computation_evm        | 921,114,757   | -       | 12,778,405       | -                 | 1.4%      | 8,510  |
+| computation_macro_rust | 947,487,009   | +2.9%   | 39,150,657       | +206.4%           | 4.1%      | 9,702  |
+| computation_stylus     | 967,677,821   | +5.1%   | 59,341,469       | +364.4%           | 6.1%      | 10,692 |
+| Computation_pvm        | 990,928,956   | +7.6%   | 82,605,700       | +546.4%           | 8.3%      | 10,796 |
+| computation_ink        | 1,035,168,170 | +12.4%  | 126,831,818      | +892.5%           | 12.3%     | 20,906 |
 
 
 ### DocumentAccessManagement - configurePublicAccess
@@ -174,7 +185,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | DocumentAccessManagement_evm | 4,176,458,885 | -       | 3,264,311,597    | -                 | 78.2%     | 295,995 |
-| DocumentAccessManagement_pvm | 5,239,524,985 | +25.5%  | 4,327,377,697    | +32.6%            | 82.6%     | 396,943 |
+| DocumentAccessManagement_pvm | 5,239,511,889 | +25.5%  | 4,327,377,697    | +32.6%            | 82.6%     | 396,940 |
 
 
 ### DocumentAccessManagement - deploy
@@ -247,9 +258,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,766,955,910 | -       | 1,857,349,246    | -                 | 67.1%     | 72,573  |
-| DotNS_evm      | 4,191,375,547 | +51.5%  | 3,281,768,883    | +76.7%            | 78.3%     | 263,190 |
-| DotNS_pvm      | 8,364,382,757 | +202.3% | 7,454,776,093    | +301.4%           | 89.1%     | 350,830 |
+| dotns_rust     | 2,766,418,470 | -       | 1,856,811,806    | -                 | 67.1%     | 72,573  |
+| DotNS_evm      | 4,191,679,786 | +51.5%  | 3,282,073,122    | +76.8%            | 78.3%     | 263,190 |
+| DotNS_pvm      | 8,366,666,877 | +202.4% | 7,457,060,213    | +301.6%           | 89.1%     | 350,830 |
 
 
 ### DotNS - register_with_duration
@@ -258,7 +269,7 @@ Comparison of gas usage across different contract implementations.
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | dotns_rust     | 2,764,818,539 | -       | 1,855,211,875    | -                 | 67.1%     | 72,613  |
 | DotNS_evm      | 4,184,583,251 | +51.4%  | 3,274,976,587    | +76.5%            | 78.3%     | 263,222 |
-| DotNS_pvm      | 8,210,498,073 | +197.0% | 7,300,891,409    | +293.5%           | 88.9%     | 350,732 |
+| DotNS_pvm      | 8,211,640,133 | +197.0% | 7,302,033,469    | +293.6%           | 88.9%     | 350,732 |
 
 
 ### DotNS - release
@@ -310,7 +321,7 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| dotns_rust     | 2,927,459,892 | -       | 2,017,866,324    | -                 | 68.9%     | 73,276  |
+| dotns_rust     | 2,927,472,988 | -       | 2,017,866,324    | -                 | 68.9%     | 73,279  |
 | DotNS_evm      | 4,059,964,795 | +38.7%  | 3,150,358,131    | +56.1%            | 77.6%     | 284,024 |
 | DotNS_pvm      | 6,901,842,570 | +135.8% | 5,992,235,906    | +197.0%           | 86.8%     | 361,664 |
 
@@ -438,8 +449,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| FiatTokenProxy_evm | 2,678,082,793 | -       | 1,768,921,393    | -                 | 66.1%     | 194,454 |
-| FiatTokenProxy_pvm | 3,324,722,166 | +24.1%  | 2,415,560,766    | +36.6%            | 72.7%     | 291,105 |
+| FiatTokenProxy_evm | 2,678,095,889 | -       | 1,768,921,393    | -                 | 66.1%     | 194,457 |
+| FiatTokenProxy_pvm | 3,324,735,262 | +24.1%  | 2,415,560,766    | +36.6%            | 72.7%     | 291,108 |
 
 
 ### FiatTokenV2_2 - deploy
@@ -548,9 +559,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| FungibleCredential_evm   | 1,776,113,377 | -       | 867,371,049      | -                 | 48.8%     | 97,801  |
-| FungibleCredential_pvm   | 2,080,193,939 | +17.1%  | 1,171,451,611    | +35.1%            | 56.3%     | 156,350 |
-| fungible_credential_rust | 2,267,804,897 | +27.7%  | 1,359,062,569    | +56.7%            | 59.9%     | 67,347  |
+| FungibleCredential_evm   | 1,776,126,473 | -       | 867,371,049      | -                 | 48.8%     | 97,804  |
+| FungibleCredential_pvm   | 2,080,207,035 | +17.1%  | 1,171,451,611    | +35.1%            | 56.3%     | 156,353 |
+| fungible_credential_rust | 2,267,817,993 | +27.7%  | 1,359,062,569    | +56.7%            | 59.9%     | 67,350  |
 
 
 ### FungibleCredential - createClass_nontransferable
@@ -611,9 +622,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| FungibleCredential_evm   | 3,711,449,879 | -       | 2,802,288,479    | -                 | 75.5%     | 272,618 |
-| fungible_credential_rust | 4,214,222,625 | +13.5%  | 3,305,061,225    | +17.9%            | 78.4%     | 159,654 |
-| FungibleCredential_pvm   | 4,351,159,116 | +17.2%  | 3,441,997,716    | +22.8%            | 79.1%     | 330,879 |
+| FungibleCredential_evm   | 3,711,462,975 | -       | 2,802,288,479    | -                 | 75.5%     | 272,621 |
+| fungible_credential_rust | 4,214,235,721 | +13.5%  | 3,305,061,225    | +17.9%            | 78.4%     | 159,657 |
+| FungibleCredential_pvm   | 4,351,172,212 | +17.2%  | 3,441,997,716    | +22.8%            | 79.1%     | 330,882 |
 
 
 ### KeyRegistry - deploy
@@ -629,9 +640,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| KeyRegistry_evm   | 2,526,768,406 | -       | 1,618,458,246    | -                 | 64.1%     | 187,320 |
-| KeyRegistry_pvm   | 3,379,383,233 | +33.7%  | 2,471,073,073    | +52.7%            | 73.1%     | 221,922 |
-| key_registry_rust | 3,614,760,477 | +43.1%  | 2,706,463,413    | +67.2%            | 74.9%     | 150,343 |
+| KeyRegistry_evm   | 2,526,794,598 | -       | 1,618,458,246    | -                 | 64.1%     | 187,326 |
+| KeyRegistry_pvm   | 3,379,396,329 | +33.7%  | 2,471,073,073    | +52.7%            | 73.1%     | 221,925 |
+| key_registry_rust | 3,614,799,765 | +43.1%  | 2,706,463,413    | +67.2%            | 74.9%     | 150,352 |
 
 
 ### KeyRegistry - registerIdentity
@@ -648,7 +659,7 @@ Comparison of gas usage across different contract implementations.
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
 | KeyRegistry_evm   | 2,119,980,112 | -       | 1,209,941,280    | -                 | 57.1%     | 105,468 |
-| key_registry_rust | 2,222,824,836 | +4.9%   | 1,312,799,100    | +8.5%             | 59.1%     | 68,742  |
+| key_registry_rust | 2,222,837,932 | +4.9%   | 1,312,799,100    | +8.5%             | 59.1%     | 68,745  |
 | KeyRegistry_pvm   | 2,599,386,806 | +22.6%  | 1,689,347,974    | +39.6%            | 65.0%     | 160,647 |
 
 
@@ -784,24 +795,24 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| MarketplaceProxy_evm | 11,447,779,690 | -       | 10,537,243,210   | -                 | 92.0%     | 930,777 |
-| MarketplaceProxy_pvm | 11,527,300,900 | +0.7%   | 10,616,764,420   | +0.8%             | 92.1%     | 945,701 |
+| MarketplaceProxy_evm | 11,447,805,882 | -       | 10,537,243,210   | -                 | 92.0%     | 930,783 |
+| MarketplaceProxy_pvm | 11,527,327,092 | +0.7%   | 10,616,764,420   | +0.8%             | 92.1%     | 945,707 |
 
 
 ### MarketplaceProxy - purchaseItem_physical
 
 | Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| MarketplaceProxy_evm | 11,517,363,636 | -       | 10,605,137,772   | -                 | 92.1%     | 956,572 |
-| MarketplaceProxy_pvm | 11,596,860,486 | +0.7%   | 10,684,647,718   | +0.7%             | 92.1%     | 971,493 |
+| MarketplaceProxy_evm | 11,517,389,828 | -       | 10,605,137,772   | -                 | 92.1%     | 956,578 |
+| MarketplaceProxy_pvm | 11,596,899,774 | +0.7%   | 10,684,647,718   | +0.7%             | 92.1%     | 971,502 |
 
 
 ### MarketplaceProxy - purchaseItem_with_matchmaker
 
 | Implementation       | ref_time       | vs Best | metered_ref_time | vs Best (metered) | % metered | pov       |
 | -------------------- | -------------- | ------- | ---------------- | ----------------- | --------- | --------- |
-| MarketplaceProxy_evm | 12,838,672,877 | -       | 11,928,136,397   | -                 | 92.9%     | 1,022,895 |
-| MarketplaceProxy_pvm | 12,918,194,087 | +0.6%   | 12,007,657,607   | +0.7%             | 93.0%     | 1,037,819 |
+| MarketplaceProxy_evm | 12,838,699,069 | -       | 11,928,136,397   | -                 | 92.9%     | 1,022,901 |
+| MarketplaceProxy_pvm | 12,918,220,279 | +0.6%   | 12,007,657,607   | +0.7%             | 93.0%     | 1,037,825 |
 
 
 ### MarketplaceProxy - registerMatchMaker
@@ -832,8 +843,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| MarketplaceProxy_evm | 2,149,933,941 | -       | 1,241,623,781    | -                 | 57.8%     | 347,547 |
-| MarketplaceProxy_pvm | 2,228,530,935 | +3.7%   | 1,320,220,775    | +6.3%             | 59.2%     | 362,471 |
+| MarketplaceProxy_evm | 2,149,960,133 | -       | 1,241,623,781    | -                 | 57.8%     | 347,553 |
+| MarketplaceProxy_pvm | 2,228,557,127 | +3.7%   | 1,320,220,775    | +6.3%             | 59.2%     | 362,477 |
 
 
 ### MockMobRule - addCounterEvidence
@@ -917,9 +928,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| non_fungible_credential_rust | 3,234,129,791 | -       | 2,325,387,463    | -                 | 71.9%     | 109,726 |
-| NonFungibleCredential_evm    | 6,411,955,717 | +98.3%  | 5,503,213,389    | +136.7%           | 85.8%     | 508,554 |
-| NonFungibleCredential_pvm    | 7,685,622,564 | +137.6% | 6,776,880,236    | +191.4%           | 88.2%     | 567,971 |
+| non_fungible_credential_rust | 3,234,142,887 | -       | 2,325,387,463    | -                 | 71.9%     | 109,729 |
+| NonFungibleCredential_evm    | 6,411,968,813 | +98.3%  | 5,503,213,389    | +136.7%           | 85.8%     | 508,557 |
+| NonFungibleCredential_pvm    | 7,685,635,660 | +137.6% | 6,776,880,236    | +191.4%           | 88.2%     | 567,974 |
 
 
 ### NonFungibleCredential - updateMetadata
@@ -989,9 +1000,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Store_evm      | 2,774,835,960 | -       | 1,865,255,488    | -                 | 67.2%     | 180,891 |
-| store_rust     | 3,471,944,875 | +25.1%  | 2,562,364,403    | +37.4%            | 73.8%     | 143,317 |
-| Store_pvm      | 4,198,658,108 | +51.3%  | 3,289,077,636    | +76.3%            | 78.3%     | 248,432 |
+| Store_evm      | 2,774,849,056 | -       | 1,865,255,488    | -                 | 67.2%     | 180,894 |
+| store_rust     | 3,471,957,971 | +25.1%  | 2,562,364,403    | +37.4%            | 73.8%     | 143,320 |
+| Store_pvm      | 4,198,671,204 | +51.3%  | 3,289,077,636    | +76.3%            | 78.3%     | 248,435 |
 
 
 ### Store - delete_
@@ -1034,9 +1045,9 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| Store_evm      | 2,974,530,484 | -       | 2,064,517,844    | -                 | 69.4%     | 201,440 |
-| store_rust     | 3,509,126,473 | +18.0%  | 2,599,113,833    | +25.9%            | 74.1%     | 132,669 |
-| Store_pvm      | 4,325,034,535 | +45.4%  | 3,415,021,895    | +65.4%            | 79.0%     | 268,465 |
+| Store_evm      | 2,974,543,580 | -       | 2,064,517,844    | -                 | 69.4%     | 201,443 |
+| store_rust     | 3,509,139,569 | +18.0%  | 2,599,113,833    | +25.9%            | 74.1%     | 132,672 |
+| Store_pvm      | 4,325,047,631 | +45.4%  | 3,415,021,895    | +65.4%            | 79.0%     | 268,468 |
 
 
 ### Store - set_update
@@ -1076,8 +1087,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| TetherToken_evm | 2,105,131,434 | -       | 1,195,970,034    | -                 | 56.8%     | 126,185 |
-| TetherToken_pvm | 2,454,405,401 | +16.6%  | 1,545,244,001    | +29.2%            | 63.0%     | 176,140 |
+| TetherToken_evm | 2,105,144,530 | -       | 1,195,970,034    | -                 | 56.8%     | 126,188 |
+| TetherToken_pvm | 2,454,418,497 | +16.6%  | 1,545,244,001    | +29.2%            | 63.0%     | 176,143 |
 
 
 ### W3S - buyTicket
@@ -1092,15 +1103,15 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| W3S_evm        | 3,168,632,564 | -       | 2,260,322,404    | -                 | 71.3%     | 201,403 |
-| W3S_pvm        | 3,808,558,630 | +20.2%  | 2,900,248,470    | +28.3%            | 76.2%     | 316,789 |
+| W3S_evm        | 3,168,658,756 | -       | 2,260,322,404    | -                 | 71.3%     | 201,409 |
+| W3S_pvm        | 3,808,584,822 | +20.2%  | 2,900,248,470    | +28.3%            | 76.2%     | 316,795 |
 
 
 ### W3S - configurePaymentToken
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| W3S_evm        | 2,099,275,768 | -       | 1,190,088,176    | -                 | 56.7%     | 122,516 |
+| W3S_evm        | 2,099,262,672 | -       | 1,190,088,176    | -                 | 56.7%     | 122,513 |
 | W3S_pvm        | 2,514,900,144 | +19.8%  | 1,605,712,552    | +34.9%            | 63.8%     | 215,979 |
 
 
@@ -1132,8 +1143,8 @@ Comparison of gas usage across different contract implementations.
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | pov     |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ------- |
-| W3S_evm        | 4,463,397,362 | -       | 3,554,655,034    | -                 | 79.6%     | 311,370 |
-| W3S_pvm        | 5,335,811,993 | +19.5%  | 4,427,069,665    | +24.5%            | 83.0%     | 405,125 |
+| W3S_evm        | 4,463,423,554 | -       | 3,554,655,034    | -                 | 79.6%     | 311,376 |
+| W3S_pvm        | 5,335,838,185 | +19.5%  | 4,427,069,665    | +24.5%            | 83.0%     | 405,131 |
 
 
 ### W3S - revokeVolunteerRole

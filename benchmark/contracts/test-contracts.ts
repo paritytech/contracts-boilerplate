@@ -1,6 +1,6 @@
 import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
-import { Artifacts, ink, rust, solidity, stylus } from '../lib.ts'
+import { Artifacts, ink, rust, rustPvm, solidity, stylus } from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { parseEther } from 'viem'
 
@@ -12,6 +12,7 @@ export const testContracts: Artifacts = [
         srcs: [
             ink('fibonacci_u32_ink'),
             stylus('fibonacci_u32'),
+            rustPvm('fibonacci_u32_macro'),
             rust('fibonacci_u32'),
             rust('fibonacci_u128'),
             rust('fibonacci_u256'),
@@ -99,6 +100,7 @@ export const testContracts: Artifacts = [
         id: 'SimpleToken',
         srcs: [
             ink('simple_token_u256_ink'),
+            rustPvm('simple_token_u256_macro'),
             stylus('simple_token_u256'),
             rust('simple_token_u32_no_alloc'),
             // TODO: this one generates a contract with uint32 abi selectors (instead of uint256)
@@ -159,6 +161,7 @@ export const testContracts: Artifacts = [
         id: 'flipper',
         srcs: [
             ink('flipper_ink'),
+            rustPvm('flipper_macro'),
             stylus('flipper'),
             // @ts-ignore - run `deno task build` to generate ABI
             ...solidity('flipper.sol', 'flipper'),
@@ -189,6 +192,7 @@ export const testContracts: Artifacts = [
         id: 'incrementer',
         srcs: [
             ink('incrementer_ink'),
+            rustPvm('incrementer_macro'),
             stylus('incrementer'),
             // @ts-ignore - run `deno task build` to generate ABI
             ...solidity('incrementer.sol', 'incrementer'),
@@ -220,6 +224,7 @@ export const testContracts: Artifacts = [
         srcs: [
             ink('bench_storage_ink'),
             stylus('bench_storage'),
+            rustPvm('bench_storage_macro'),
             // @ts-ignore - run `deno task build` to generate ABI
             ...solidity('BenchStorage.sol', 'BenchStorage'),
         ],
@@ -274,6 +279,7 @@ export const testContracts: Artifacts = [
         srcs: [
             ink('computation_ink'),
             stylus('computation'),
+            rustPvm('computation_macro'),
             // @ts-ignore - run `deno task build` to generate ABI
             ...solidity('Computation.sol', 'Computation'),
         ],
@@ -316,6 +322,7 @@ export const testContracts: Artifacts = [
         srcs: [
             ink('bench_erc20_ink'),
             stylus('bench_erc20'),
+            rustPvm('bench_erc20_macro'),
             // @ts-ignore - run `deno task build` to generate ABI
             ...solidity('BenchERC20.sol', 'BenchERC20'),
         ],
@@ -354,6 +361,7 @@ export const testContracts: Artifacts = [
         srcs: [
             ink('bench_erc721_ink'),
             stylus('bench_erc721'),
+            rustPvm('bench_erc721_macro'),
             // @ts-ignore - run `deno task build` to generate ABI
             ...solidity('BenchERC721.sol', 'BenchERC721'),
         ],
@@ -383,6 +391,7 @@ export const testContracts: Artifacts = [
         id: 'BenchERC1155',
         srcs: [
             ink('bench_erc1155_ink'),
+            rustPvm('bench_erc1155_macro'),
             stylus('bench_erc1155'),
             // @ts-ignore - run `deno task build` to generate ABI
             ...solidity('BenchERC1155.sol', 'BenchERC1155'),
