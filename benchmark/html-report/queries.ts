@@ -328,13 +328,31 @@ export function getExecutiveSummary(): ExecutiveSummary {
     }
 
     // Split eth-rpc by VM/language based on contract_name suffix
+    // Discover all distinct suffixes dynamically from the database
+    const suffixRows = db.prepare(`
+        SELECT DISTINCT contract_name FROM transactions WHERE chain_name = 'eth-rpc'
+    `).all() as { contract_name: string }[]
+    const knownSuffixes = [
+        ...new Set(
+            suffixRows
+                .map((r) => r.contract_name.split('_').pop()!)
+                .filter((s) => s.length > 0),
+        ),
+    ]
+
+    // Build CASE WHEN clauses dynamically
+    const caseClauses = knownSuffixes.map((suffix) => {
+        const label = getImplTypeLabel(
+            suffix === 'evm' ? 'solidity' : suffix,
+            suffix === 'evm' ? 'EVM' : 'PVM',
+        )
+        return `WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_${suffix}' THEN 'eth-rpc (${label})'`
+    }).join('\n                ')
+
     const chains = db.prepare(`
         SELECT
             CASE
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_evm' THEN 'eth-rpc (EVM)'
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_pvm' THEN 'eth-rpc (PVM/Solidity)'
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_rust' THEN 'eth-rpc (PVM/Rust)'
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_ink' THEN 'eth-rpc (PVM/Ink)'
+                ${caseClauses}
                 ELSE chain_name
             END as chain_name,
             COUNT(DISTINCT contract_name) as contract_count,
@@ -1068,26 +1086,35 @@ export interface FibonacciImplementation {
     proof_size: number | null
 }
 
-const FIBONACCI_VARIANTS = [
-    { pattern: 'Fibonacci_evm', label: 'EVM (Solidity)' },
-    { pattern: 'Fibonacci_pvm', label: 'PVM (Solidity)' },
-    { pattern: 'fibonacci_u32_ink', label: 'PVM (ink! u32)' },
-    { pattern: 'fibonacci_u32_rust', label: 'PVM (Rust u32)' },
-    {
-        pattern: 'fibonacci_u32_macro_no_alloc_rust',
-        label: 'PVM (Rust u32 macro no_alloc)',
-    },
-    {
-        pattern: 'fibonacci_u32_macro_bump_alloc_rust',
-        label: 'PVM (Rust u32 macro bump_alloc)',
-    },
-    { pattern: 'fibonacci_u128_rust', label: 'PVM (Rust u128)' },
-]
+/** Build a human-readable label from a fibonacci contract_name */
+function fibLabel(name: string): string {
+    if (name === 'Fibonacci_evm') return 'EVM (Solidity)'
+    if (name === 'Fibonacci_pvm') return 'PVM (Solidity)'
+    // For alt impls like "fibonacci_u32_rust", extract suffix and description
+    const suffix = name.split('_').pop() ?? ''
+    const implLabel = getImplTypeLabel(suffix, 'PVM') // e.g. "PVM/Rust"
+    // Extract the middle portion as description (e.g. "u32", "u128", "u32_macro_no_alloc")
+    const desc = name
+        .replace(/^fibonacci_/, '')
+        .replace(new RegExp(`_${suffix}$`), '')
+    return desc ? `${implLabel} (${desc})` : implLabel
+}
 
 export function getFibonacciComparison(): FibonacciImplementation[] {
+    // Autodiscover all fibonacci-related contracts from the database
+    const variants = db.prepare(`
+        SELECT DISTINCT contract_name
+        FROM transactions
+        WHERE chain_name = 'eth-rpc'
+            AND weight_consumed_ref_time IS NOT NULL
+            AND (contract_name LIKE 'Fibonacci_%' OR contract_name LIKE 'fibonacci_%')
+        ORDER BY contract_name
+    `).all() as { contract_name: string }[]
+
     const results: FibonacciImplementation[] = []
 
-    for (const { pattern, label } of FIBONACCI_VARIANTS) {
+    for (const { contract_name } of variants) {
+        const label = fibLabel(contract_name)
         const data = db.prepare(`
             SELECT
                 transaction_name,
@@ -1099,7 +1126,7 @@ export function getFibonacciComparison(): FibonacciImplementation[] {
                 AND contract_name = ?
                 AND weight_consumed_ref_time IS NOT NULL
             ORDER BY transaction_name
-        `).all(pattern) as Array<
+        `).all(contract_name) as Array<
             {
                 transaction_name: string
                 ref_time: number
@@ -1113,7 +1140,7 @@ export function getFibonacciComparison(): FibonacciImplementation[] {
                 ? (row.weight_consumed / row.ref_time) * 100
                 : 0
             results.push({
-                variant: pattern,
+                variant: contract_name,
                 label,
                 transaction_name: row.transaction_name,
                 ref_time: row.ref_time,

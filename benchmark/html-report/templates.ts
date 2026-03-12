@@ -1,4 +1,5 @@
 import { getStyles } from './styles.ts'
+import { getImplHexColor } from './charts.ts'
 
 export function htmlDocument(content: string, scripts: string): string {
     const styles = getStyles()
@@ -138,12 +139,48 @@ export function htmlDocument(content: string, scripts: string): string {
             if (abs >= 1e3) return (v / 1e3).toFixed(1) + 'K';
             return v.toLocaleString();
         }
+        var IMPL_FIXED_HEX = { evm: '#0d6efd', solidity: '#198754' };
+        var IMPL_HEX_PALETTE = ['#fd7e14','#6f42c1','#20c997','#d63384','#ffc107','#0dcaf0','#dc3545','#6c757d'];
+        var _implHexCache = {};
+        var _implHexNext = 0;
         function implColorJS(label) {
             var l = label.toLowerCase();
-            if (l === 'solidity') return '#198754';
-            if (l === 'ink') return '#6f42c1';
-            return '#d56a10';
+            if (IMPL_FIXED_HEX[l]) return IMPL_FIXED_HEX[l];
+            if (_implHexCache[l]) return _implHexCache[l];
+            var c = IMPL_HEX_PALETTE[_implHexNext % IMPL_HEX_PALETTE.length];
+            _implHexNext++;
+            _implHexCache[l] = c;
+            return c;
         }
+        // ── Shared alt-impl helpers (used by gas and weight drilldowns) ──
+        function displaySuffixShared(suffix) {
+            return suffix.charAt(0).toUpperCase() + suffix.slice(1);
+        }
+        function altImplLabelShared(name) {
+            var parts = name.split('_');
+            var suffix = parts[parts.length - 1];
+            return 'PVM/' + displaySuffixShared(suffix);
+        }
+        var CHART_PALETTE = [
+            { bg: 'rgba(253, 126, 20, 0.8)', border: 'rgba(253, 126, 20, 1)' },
+            { bg: 'rgba(111, 66, 193, 0.8)', border: 'rgba(111, 66, 193, 1)' },
+            { bg: 'rgba(32, 201, 151, 0.8)', border: 'rgba(32, 201, 151, 1)' },
+            { bg: 'rgba(214, 51, 132, 0.8)', border: 'rgba(214, 51, 132, 1)' },
+            { bg: 'rgba(255, 193, 7, 0.8)', border: 'rgba(255, 193, 7, 1)' },
+            { bg: 'rgba(13, 202, 240, 0.8)', border: 'rgba(13, 202, 240, 1)' },
+            { bg: 'rgba(220, 53, 69, 0.8)', border: 'rgba(220, 53, 69, 1)' },
+            { bg: 'rgba(108, 117, 125, 0.8)', border: 'rgba(108, 117, 125, 1)' }
+        ];
+        var _chartColorCache = {};
+        var _chartColorNext = 0;
+        function getChartImplColor(implLabel) {
+            if (_chartColorCache[implLabel]) return _chartColorCache[implLabel];
+            var c = CHART_PALETTE[_chartColorNext % CHART_PALETTE.length];
+            _chartColorNext++;
+            _chartColorCache[implLabel] = c;
+            return c;
+        }
+
         function getImplLabelJS(contractName, altName) {
             var base = contractName.replace(/_pvm$/, '');
             var snake = base.replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2').replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
@@ -539,11 +576,8 @@ function getImplLabel(contractName: string, altName: string): string {
 
 /** Generate a small colored tag for an implementation label */
 function implTag(label: string): string {
-    const lower = label.toLowerCase()
-    let cls = 'impl-tag-rust'
-    if (lower === 'solidity') cls = 'impl-tag-solidity'
-    else if (lower === 'ink') cls = 'impl-tag-ink'
-    return `<span class="impl-tag ${cls}">${label}</span>`
+    const color = getImplHexColor(label.toLowerCase())
+    return `<span class="impl-tag" style="background:${color}20;color:${color}">${label}</span>`
 }
 
 function formatGas(value: number | null): string {
@@ -579,10 +613,7 @@ interface LabeledValue {
 
 /** Map implementation label to its CSS color */
 function implColor(label: string): string {
-    const lower = label.toLowerCase()
-    if (lower === 'solidity') return '#198754'
-    if (lower === 'ink') return '#6f42c1'
-    return '#d56a10' // rust and other alts
+    return getImplHexColor(label.toLowerCase())
 }
 
 /** Append a colored min..max range indicator below an aggregated value */
@@ -705,18 +736,11 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
         }
 
         // Map contract name suffix to display label (browser-side)
-        var SUFFIX_TO_LABEL = { rust: 'PVM/Rust', ink: 'PVM/ink!', stylus: 'PVM/Stylus' };
-        function altImplLabelJs(name) {
-            var parts = name.split('_');
-            var suffix = parts[parts.length - 1];
-            return SUFFIX_TO_LABEL[suffix] || ('PVM/' + suffix);
-        }
-
         // Generic: compute avg pct diff for a given impl label across contracts
         function avgAltTxPctDiffs(contracts, implLabel) {
             var diffs = [];
             contracts.forEach(function(c) {
-                var alts = (c.alt_implementations || []).filter(function(a) { return altImplLabelJs(a.name) === implLabel; });
+                var alts = (c.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
                 alts.forEach(function(alt) {
                     alt.transactions.forEach(function(altTx) {
                         var baseTx = c.transactions.find(function(t) { return t.name === altTx.name; });
@@ -730,7 +754,7 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
 
         function avgAltPctDiffsForContract(contract, implLabel) {
             var diffs = [];
-            var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelJs(a.name) === implLabel; });
+            var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
             alts.forEach(function(alt) {
                 alt.transactions.forEach(function(altTx) {
                     var baseTx = contract.transactions.find(function(t) { return t.name === altTx.name; });
@@ -743,7 +767,7 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
 
         function altPctDiffForTx(contract, txName, implLabel) {
             var diffs = [];
-            var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelJs(a.name) === implLabel; });
+            var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
             alts.forEach(function(alt) {
                 var altTx = alt.transactions.find(function(t) { return t.name === txName; });
                 if (altTx) {
@@ -762,7 +786,7 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             gasHierarchy.datasets.forEach(function(ds) {
                 ds.contracts.forEach(function(c) {
                     (c.alt_implementations || []).forEach(function(a) {
-                        labels[altImplLabelJs(a.name)] = true;
+                        labels[altImplLabelShared(a.name)] = true;
                     });
                 });
             });
@@ -1005,7 +1029,7 @@ export function gasAnalysisFilterControls(): string {
         </label>
         <span class="excl-indicator" style="display:none"></span>
     </div>
-    <p class="table-note">Dataset and contract rows show the average gas for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink). Click a transaction row to exclude it.</p>
+    <p class="table-note">Dataset and contract rows show the average gas for the Solidity implementation. Colored ranges show the min..max across all PVM implementations. Click a transaction row to exclude it.</p>
     `
 }
 
@@ -1342,14 +1366,6 @@ export function drilldownWeightChartScript(
             };
         }
 
-        // Map contract name suffix to display label (browser-side)
-        var WEIGHT_SUFFIX_TO_LABEL = { rust: 'PVM/Rust', ink: 'PVM/ink!', stylus: 'PVM/Stylus' };
-        function weightAltImplLabelJs(name) {
-            var parts = name.split('_');
-            var suffix = parts[parts.length - 1];
-            return WEIGHT_SUFFIX_TO_LABEL[suffix] || ('PVM/' + suffix);
-        }
-
         // Discover all alt impl labels from weight hierarchy
         var weightAltImplLabels = [];
         (function() {
@@ -1357,37 +1373,12 @@ export function drilldownWeightChartScript(
             weightHierarchyOriginal.datasets.forEach(function(ds) {
                 ds.contracts.forEach(function(c) {
                     (c.alt_implementations || []).forEach(function(a) {
-                        labels[weightAltImplLabelJs(a.name)] = true;
+                        labels[altImplLabelShared(a.name)] = true;
                     });
                 });
             });
             weightAltImplLabels = Object.keys(labels);
         })();
-
-        // Color map for alt impl types
-        var WEIGHT_IMPL_COLORS = {
-            'PVM/Rust': { bg: 'rgba(253, 126, 20, 0.8)', border: 'rgba(253, 126, 20, 1)' },
-            'PVM/ink!': { bg: 'rgba(111, 66, 193, 0.8)', border: 'rgba(111, 66, 193, 1)' },
-            'PVM/Stylus': { bg: 'rgba(32, 201, 151, 0.8)', border: 'rgba(32, 201, 151, 1)' }
-        };
-        var WEIGHT_FALLBACK_COLORS = [
-            { bg: 'rgba(214, 51, 132, 0.8)', border: 'rgba(214, 51, 132, 1)' },
-            { bg: 'rgba(255, 193, 7, 0.8)', border: 'rgba(255, 193, 7, 1)' },
-            { bg: 'rgba(13, 202, 240, 0.8)', border: 'rgba(13, 202, 240, 1)' }
-        ];
-        function strHashJs(s) {
-            var h = 0;
-            for (var i = 0; i < s.length; i++) {
-                h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-            }
-            return Math.abs(h);
-        }
-        function getWeightImplColor(implLabel) {
-            if (WEIGHT_IMPL_COLORS[implLabel]) return WEIGHT_IMPL_COLORS[implLabel];
-            var c = WEIGHT_FALLBACK_COLORS[strHashJs(implLabel) % WEIGHT_FALLBACK_COLORS.length];
-            WEIGHT_IMPL_COLORS[implLabel] = c;
-            return c;
-        }
 
         function getAltWeightForItems(items, level, metric, implLabel) {
             // Extract weight data for a specific alt impl label
@@ -1399,7 +1390,7 @@ export function drilldownWeightChartScript(
                 items.forEach(function(dataset) {
                     var sum = 0, pctSum = 0, count = 0;
                     dataset.contracts.forEach(function(c) {
-                        var alts = (c.alt_implementations || []).filter(function(a) { return weightAltImplLabelJs(a.name) === implLabel; });
+                        var alts = (c.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
                         alts.forEach(function(alt) {
                             alt.transactions.forEach(function(tx) {
                                 var val = metric === 'ref_time' ? tx.pvm_ref_time : tx.pvm_proof_size;
@@ -1414,7 +1405,7 @@ export function drilldownWeightChartScript(
             } else if (level === 'contracts') {
                 items.forEach(function(contract) {
                     var sum = 0, pctSum = 0, count = 0;
-                    var alts = (contract.alt_implementations || []).filter(function(a) { return weightAltImplLabelJs(a.name) === implLabel; });
+                    var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
                     alts.forEach(function(alt) {
                         alt.transactions.forEach(function(tx) {
                             var val = metric === 'ref_time' ? tx.pvm_ref_time : tx.pvm_proof_size;
@@ -1438,7 +1429,7 @@ export function drilldownWeightChartScript(
                 items.forEach(function(tx) {
                     var sum = 0, pctSum = 0, count = 0;
                     if (contract) {
-                        var alts = (contract.alt_implementations || []).filter(function(a) { return weightAltImplLabelJs(a.name) === implLabel; });
+                        var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
                         alts.forEach(function(alt) {
                             var altTx = alt.transactions.find(function(t) { return t.name === tx.name; });
                             if (altTx) {
@@ -1576,7 +1567,7 @@ export function drilldownWeightChartScript(
             // Ensure alt impl datasets exist (2 per impl: metered + overhead, starting at index 4)
             for (var ai = 0; ai < weightAltImplLabels.length; ai++) {
                 var _lbl = weightAltImplLabels[ai];
-                var _clr = getWeightImplColor(_lbl);
+                var _clr = getChartImplColor(_lbl);
                 var _stack = _lbl.toLowerCase().replace(/[^a-z]/g, '');
                 var metIdx = 4 + ai * 2;
                 var ovrIdx = 4 + ai * 2 + 1;
@@ -1599,7 +1590,7 @@ export function drilldownWeightChartScript(
             // Update alt impl datasets dynamically
             for (var i = 0; i < weightAltImplLabels.length; i++) {
                 var lbl = weightAltImplLabels[i];
-                var color = getWeightImplColor(lbl);
+                var color = getChartImplColor(lbl);
                 var lightColor = color.bg.replace('0.8', '0.4');
                 var meteredIdx = 4 + i * 2;
                 var overheadIdx = 4 + i * 2 + 1;
@@ -1830,7 +1821,7 @@ export function weightAnalysisFilterControls(): string {
             proof_size
         </label>
     </div>
-    <p class="table-note">Dataset and contract rows show the average weight for the Solidity implementation. Colored ranges show the min..max across all PVM implementations (Solidity, Rust, Ink). Click a transaction row to exclude it.</p>
+    <p class="table-note">Dataset and contract rows show the average weight for the Solidity implementation. Colored ranges show the min..max across all PVM implementations. Click a transaction row to exclude it.</p>
     `
 }
 

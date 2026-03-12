@@ -632,7 +632,7 @@ function bytecodeSizeTable(): string {
         'Ratio ': r.rustSize != null
             ? `${(r.rustSize / r.evmSize).toFixed(1)}x`
             : '—',
-        'ink! bytes': r.inkSize != null ? fmt(r.inkSize) : '—',
+        'Ink bytes': r.inkSize != null ? fmt(r.inkSize) : '—',
         'Ratio  ': r.inkSize != null
             ? `${(r.inkSize / r.evmSize).toFixed(1)}x`
             : '—',

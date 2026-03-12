@@ -344,13 +344,9 @@ footer {
     vertical-align: middle;
     letter-spacing: 0.02em;
 }
-.impl-tag-solidity { background: rgba(25, 135, 84, 0.15); color: #198754; }
-.impl-tag-rust { background: rgba(253, 126, 20, 0.15); color: #d56a10; }
-.impl-tag-ink { background: rgba(111, 66, 193, 0.15); color: #6f42c1; }
-
 /* Alt implementation rows: subtle left accent */
 .expandable-table tr.alt-impl-row td:first-child {
-    border-left: 3px solid rgba(253, 126, 20, 0.5);
+    border-left: 3px solid rgba(108, 117, 125, 0.4);
     padding-left: calc(3.5rem - 3px);
 }
 

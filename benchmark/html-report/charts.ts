@@ -369,62 +369,12 @@ export function buildCategoryColorMap(
 }
 
 // ── Implementation type helpers ──
+// There are only two VMs: EVM and PVM. The contract name suffix is the language.
+// Suffix "evm" → EVM (always Solidity), "pvm" → PVM/Solidity, anything else → PVM/{lang}.
 
-// Display labels for known impl types (language tag from ContractInfo.implType).
-// The key is `${vmType}/${implType}` for PVM, or just `EVM` for EVM.
-const IMPL_DISPLAY_LABELS: Record<string, string> = {
-    'solidity/EVM': 'EVM',
-    'solidity/PVM': 'PVM/Solidity',
-    'rust/PVM': 'PVM/Rust',
-    'ink/PVM': 'PVM/ink!',
-    'stylus/PVM': 'PVM/Stylus',
-}
-
-// Canonical sort order for display labels
-const IMPL_DISPLAY_ORDER = [
-    'EVM',
-    'PVM/Solidity',
-    'PVM/Rust',
-    'PVM/ink!',
-    'PVM/Stylus',
-]
-
-const IMPL_TYPE_COLORS: Record<string, { bg: string; border: string }> = {
-    'EVM': { bg: 'rgba(13, 110, 253, 0.8)', border: 'rgba(13, 110, 253, 1)' },
-    'PVM/Solidity': {
-        bg: 'rgba(25, 135, 84, 0.8)',
-        border: 'rgba(25, 135, 84, 1)',
-    },
-    'PVM/Rust': {
-        bg: 'rgba(253, 126, 20, 0.8)',
-        border: 'rgba(253, 126, 20, 1)',
-    },
-    'PVM/ink!': {
-        bg: 'rgba(111, 66, 193, 0.8)',
-        border: 'rgba(111, 66, 193, 1)',
-    },
-    'PVM/Stylus': {
-        bg: 'rgba(32, 201, 151, 0.8)',
-        border: 'rgba(32, 201, 151, 1)',
-    },
-}
-
-// Fallback palette for unknown impl types
-const FALLBACK_COLORS = [
-    { bg: COLORS.pink, border: 'rgba(214, 51, 132, 1)' },
-    { bg: COLORS.warning, border: 'rgba(255, 193, 7, 1)' },
-    { bg: COLORS.info, border: 'rgba(13, 202, 240, 1)' },
-    { bg: COLORS.danger, border: 'rgba(220, 53, 69, 1)' },
-    { bg: COLORS.secondary, border: 'rgba(108, 117, 125, 1)' },
-]
-
-/** Simple string hash to deterministically pick a fallback color index. */
-function strHash(s: string): number {
-    let h = 0
-    for (let i = 0; i < s.length; i++) {
-        h = ((h << 5) - h + s.charCodeAt(i)) | 0
-    }
-    return Math.abs(h)
+/** Capitalize a suffix for display. */
+function displaySuffix(suffix: string): string {
+    return suffix.charAt(0).toUpperCase() + suffix.slice(1)
 }
 
 /**
@@ -432,50 +382,87 @@ function strHash(s: string): number {
  * E.g. ('rust', 'PVM') => 'PVM/Rust', ('solidity', 'EVM') => 'EVM'
  */
 export function getImplTypeLabel(implType: string, vmType: string): string {
-    const key = `${implType}/${vmType}`
-    if (IMPL_DISPLAY_LABELS[key]) return IMPL_DISPLAY_LABELS[key]
-    // Unknown impl type — capitalize the language tag
     if (vmType === 'EVM') return 'EVM'
-    const capitalized = implType.charAt(0).toUpperCase() + implType.slice(1)
-    return `PVM/${capitalized}`
-}
-
-/** Get chart color for an impl type label. Assigns fallback colors for unknown types. */
-export function getImplTypeColor(
-    implType: string,
-): { bg: string; border: string } {
-    if (IMPL_TYPE_COLORS[implType]) return IMPL_TYPE_COLORS[implType]
-    // Deterministically pick from fallback palette based on the type name
-    const color = FALLBACK_COLORS[strHash(implType) % FALLBACK_COLORS.length]
-    IMPL_TYPE_COLORS[implType] = color
-    return color
-}
-
-/** Canonical ordering: known types first, then unknown alphabetically. */
-export function sortImplTypes(types: string[]): string[] {
-    return [...types].sort((a, b) => {
-        const ai = IMPL_DISPLAY_ORDER.indexOf(a)
-        const bi = IMPL_DISPLAY_ORDER.indexOf(b)
-        if (ai !== -1 && bi !== -1) return ai - bi
-        if (ai !== -1) return -1
-        if (bi !== -1) return 1
-        return a.localeCompare(b)
-    })
+    return `PVM/${displaySuffix(implType)}`
 }
 
 /**
- * Infer the PVM display label from an alt implementation contract name.
- * E.g. "fibonacci_u32_rust" -> "PVM/Rust", "flipper_ink" -> "PVM/ink!", "flipper_stylus" -> "PVM/Stylus"
+ * Infer the display label from a contract name suffix.
+ * E.g. "fibonacci_u32_rust" -> "PVM/Rust", "flipper_ink" -> "PVM/Ink"
  */
-const SUFFIX_TO_LABEL: Record<string, string> = {
-    rust: 'PVM/Rust',
-    ink: 'PVM/ink!',
-    stylus: 'PVM/Stylus',
-}
-
 export function altImplLabel(contractName: string): string {
     const suffix = contractName.split('_').pop() ?? ''
-    return SUFFIX_TO_LABEL[suffix] ?? `PVM/${suffix}`
+    return `PVM/${displaySuffix(suffix)}`
+}
+
+// ── Color assignment ──
+// EVM and PVM/Solidity are the two primary series (always present), so they get
+// fixed colors. Every other impl type gets the next unused color from the
+// palette (sequential assignment guarantees no collisions).
+
+function implTypeColorFromRgb(r: number, g: number, b: number) {
+    return {
+        bg: `rgba(${r}, ${g}, ${b}, 0.8)`,
+        border: `rgba(${r}, ${g}, ${b}, 1)`,
+        hex: '#' + [r, g, b].map((c) => c.toString(16).padStart(2, '0')).join(''),
+    }
+}
+
+const IMPL_COLORS = {
+    evm: implTypeColorFromRgb(13, 110, 253),
+    solidity: implTypeColorFromRgb(25, 135, 84),
+}
+
+const PALETTE = [
+    implTypeColorFromRgb(253, 126, 20),
+    implTypeColorFromRgb(111, 66, 193),
+    implTypeColorFromRgb(32, 201, 151),
+    implTypeColorFromRgb(214, 51, 132),
+    implTypeColorFromRgb(255, 193, 7),
+    implTypeColorFromRgb(13, 202, 240),
+    implTypeColorFromRgb(220, 53, 69),
+    implTypeColorFromRgb(108, 117, 125),
+]
+
+let _nextPaletteIdx = 0
+const _colorCache: Record<string, typeof PALETTE[0]> = {}
+
+function getColorForKey(key: string): typeof PALETTE[0] {
+    if (key in IMPL_COLORS) return IMPL_COLORS[key as keyof typeof IMPL_COLORS]
+    if (_colorCache[key]) return _colorCache[key]
+    const color = PALETTE[_nextPaletteIdx % PALETTE.length]
+    _nextPaletteIdx++
+    _colorCache[key] = color
+    return color
+}
+
+/** Get chart color for an impl type display label (e.g. "EVM", "PVM/Rust"). */
+export function getImplTypeColor(
+    implType: string,
+): { bg: string; border: string } {
+    if (implType === 'EVM') return getColorForKey('evm')
+    if (implType === 'PVM/Solidity') return getColorForKey('solidity')
+    // Extract suffix: "PVM/Rust" -> "rust"
+    const suffix = implType.replace(/^PVM\//, '').toLowerCase()
+    return getColorForKey(suffix)
+}
+
+/** Hex color for an impl suffix (e.g. 'rust', 'ink', 'solidity'). */
+export function getImplHexColor(implSuffix: string): string {
+    return getColorForKey(implSuffix).hex
+}
+
+/** Sort display labels: EVM first, then PVM/Solidity, then others alphabetically. */
+export function sortImplTypes(types: string[]): string[] {
+    return [...types].sort((a, b) => {
+        // EVM always first
+        if (a === 'EVM') return -1
+        if (b === 'EVM') return 1
+        // PVM/Solidity second
+        if (a === 'PVM/Solidity') return -1
+        if (b === 'PVM/Solidity') return 1
+        return a.localeCompare(b)
+    })
 }
 
 export { COLORS }
