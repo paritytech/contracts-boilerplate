@@ -11,6 +11,7 @@ import {
     DATASET_DESCRIPTIONS,
     DATASET_METHODOLOGY,
     getBaseVsMetered,
+    getBenchmarkMetadata,
     getBytecodeHierarchy,
     getCategoryBreakdownHierarchy,
     getCategoryMappingHtml,
@@ -46,6 +47,7 @@ import {
     gasAnalysisFilterControls,
     htmlDocument,
     metricGrid,
+    povChartScript,
     sectionCard,
     weightAnalysisFilterControls,
 } from './html-report/templates.ts'
@@ -96,7 +98,7 @@ export async function generateHtmlReport(): Promise<void> {
     content += generateEvmPvmAnalysis(bytecodeSection.hierarchy)
 
     // Generate final HTML
-    const html = htmlDocument(content, scripts.join('\n'))
+    const html = htmlDocument(content, scripts.join('\n'), getBenchmarkMetadata())
 
     const outputPath = join(REPORTS_DIR, 'benchmark_report.html')
     await Deno.writeTextFile(outputPath, html)
@@ -409,6 +411,9 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
     // Add drilldown chart script
     scripts.push(drilldownWeightChartScript(hierarchy))
 
+    // Add PoV chart (benchmarked vs actual)
+    scripts.push(povChartScript(hierarchy))
+
     const html = sectionCard(
         'weight',
         'Weight Analysis (Revive only)',
@@ -419,13 +424,23 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
                 chartCanvas('weightAnalysisChart', 'wide'),
             )
         }
-        ${weightAnalysisFilterControls()}
         ${
             card(
-                'Detailed Weight Comparison (click to expand)',
-                expandableWeightTable(hierarchy),
+                'proof_size: Benchmarked vs Consumed (synced with weight chart drill-down)',
+                chartCanvas('povAnalysisChart', 'wide'),
             )
         }
+        ${weightAnalysisFilterControls()}
+        ${(() => {
+            const { refTimeTable, proofSizeTable } = expandableWeightTable(hierarchy)
+            return card(
+                'ref_time Comparison (click to expand)',
+                refTimeTable,
+            ) + card(
+                'proof_size Comparison (click to expand)',
+                proofSizeTable,
+            )
+        })()}
     `,
     )
 
@@ -714,6 +729,8 @@ function generateEvmPvmAnalysis(
                     'Txs cheaper',
                     'Median proof_size',
                     'Txs cheaper',
+                    'Median consumed',
+                    'Txs cheaper',
                 ],
                 medians.map(
                     (r) => [
@@ -722,6 +739,8 @@ function generateEvmPvmAnalysis(
                         r.txs_cheaper_rt,
                         r.median_proof_size,
                         r.txs_cheaper_pov,
+                        r.median_consumed,
+                        r.txs_cheaper_consumed,
                     ],
                 ),
             ),
@@ -889,6 +908,13 @@ function generateEvmPvmAnalysis(
                         fmt(costGap.totals.pvm_pov),
                         fmt(costGap.totals.pvm_pov - costGap.totals.evm_pov),
                         costGap.totals.pov_diff,
+                    ],
+                    [
+                        'Consumed proof_size',
+                        fmt(costGap.totals.evm_consumed),
+                        fmt(costGap.totals.pvm_consumed),
+                        fmt(costGap.totals.pvm_consumed - costGap.totals.evm_consumed),
+                        costGap.totals.consumed_diff,
                     ],
                 ],
                 { numberColumns: [1, 2, 3] },
