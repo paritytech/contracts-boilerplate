@@ -210,13 +210,13 @@ Generated on: 2026-03-19
 
 ## PVM extrinsic weight breakdown
 
-|               | n   | Total extrinsic ref_time | Attributed (host fns) | Unattributed (PVM execution + code loading) | Base call weight | Extrinsic overhead |
-| ------------- | --- | ------------------------ | --------------------- | ------------------------------------------- | ---------------- | ------------------ |
-| Execution txs | 114 | 354,473,913,978          | 46.5%                 | 29.2%                                       | 14.7%            | 9.6%               |
-| Deploy txs    | 37  | 73,929,262,197           | 14.4%                 | 4.8%                                        | 65.8%            | 14.9%              |
+|               | n   | Total extrinsic ref_time | Attributed (host fns) | PVM execution + initial code loading | Base call weight | Extrinsic overhead |
+| ------------- | --- | ------------------------ | --------------------- | ------------------------------------ | ---------------- | ------------------ |
+| Execution txs | 114 | 354,473,913,978          | 46.5%                 | 29.2%                                | 14.7%            | 9.6%               |
+| Deploy txs    | 37  | 73,929,262,197           | 14.4%                 | 4.8%                                 | 65.8%            | 14.9%              |
 
 
-_Weighted totals: each transaction contributes proportionally to its extrinsic cost. "Attributed" = host function calls tracked individually (storage reads/writes, hashing, cross-contract calls, events). "Unattributed" = metered weight not attributed to any host function — primarily PVM bytecode execution (interpreter fuel) and contract code loading. "Base call weight" = pallet-revive's fixed overhead for the `call` or `instantiate` extrinsic (includes code upload/storage cost for deploys). "Extrinsic overhead" = the runtime's `base_extrinsic` weight — a fixed per-extrinsic cost (298,506,000 ref_time) covering signature verification, nonce checks, transaction payment, and the transaction extension pipeline. The breakdown varies by transaction cost — cheap transactions are dominated by fixed costs (base call + extrinsic overhead), expensive transactions by execution (host functions + PVM execution)._
+_Weighted totals: each transaction contributes proportionally to its extrinsic cost. "Attributed (host fns)" = host function calls tracked individually (storage reads/writes, hashing, events, cross-contract calls). Cross-contract call costs include callee code loading. "PVM execution + initial code loading" = metered weight not broken down into individual host function calls — covers PVM bytecode interpretation (interpreter fuel) and initial contract code loading (loading the entry-point contract from storage). "Base call weight" = pallet-revive's fixed overhead for the `call` or `instantiate` extrinsic (includes code upload/storage cost for deploys). "Extrinsic overhead" = the runtime's `base_extrinsic` weight — a fixed per-extrinsic cost (298,506,000 ref_time) covering signature verification, nonce checks, transaction payment, and the transaction extension pipeline. The breakdown varies by transaction cost — cheap transactions are dominated by fixed costs (base call + extrinsic overhead), expensive transactions by execution (host functions + PVM execution)._
 
 ## Actual PoV vs benchmarked proof_size
 

@@ -1301,7 +1301,7 @@ function pvmWeightBreakdownTable(): string | null {
         'n': r.n,
         'Total extrinsic ref_time': fmt(Math.round(r.total_ext)),
         'Attributed (host fns)': fmtP(r.total_attr, r.total_ext),
-        'Unattributed (PVM execution + code loading)': fmtP(r.total_unattr, r.total_ext),
+        'PVM execution + initial code loading': fmtP(r.total_unattr, r.total_ext),
         'Base call weight': fmtP(r.total_base, r.total_ext),
         'Extrinsic overhead': fmtP(r.total_overhead, r.total_ext),
     })
@@ -1327,8 +1327,8 @@ function pvmWeightBreakdownTable(): string | null {
     let md = table(rows) + '\n\n'
 
     md += `_Weighted totals: each transaction contributes proportionally to its extrinsic cost. `
-    md += `"Attributed" = host function calls tracked individually (storage reads/writes, hashing, cross-contract calls, events). `
-    md += `"Unattributed" = metered weight not attributed to any host function — primarily PVM bytecode execution (interpreter fuel) and contract code loading. `
+    md += `"Attributed (host fns)" = host function calls tracked individually (storage reads/writes, hashing, events, cross-contract calls). Cross-contract call costs include callee code loading. `
+    md += `"PVM execution + initial code loading" = metered weight not broken down into individual host function calls — covers PVM bytecode interpretation (interpreter fuel) and initial contract code loading (loading the entry-point contract from storage). `
     md += `"Base call weight" = pallet-revive's fixed overhead for the \`call\` or \`instantiate\` extrinsic (includes code upload/storage cost for deploys). `
     md += `"Extrinsic overhead" = the runtime's \`base_extrinsic\` weight — a fixed per-extrinsic cost (${fmt(overhead)} ref_time) covering signature verification, nonce checks, transaction payment, and the transaction extension pipeline. `
     md += `The breakdown varies by transaction cost — cheap transactions are dominated by fixed costs (base call + extrinsic overhead), expensive transactions by execution (host functions + PVM execution)._\n\n`
