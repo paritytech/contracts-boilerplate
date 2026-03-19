@@ -7,6 +7,7 @@ import { protocolCommonsContracts } from './contracts/protocol-commons-contracts
 import { hackm3Contracts } from './contracts/hackm3-contracts.ts'
 import { w3sContracts } from './contracts/w3s-contracts.ts'
 import { mark3tContracts } from './contracts/mark3t-contracts.ts'
+import { mixedWorkloadsContracts } from './contracts/mixed-workloads-contracts.ts'
 
 /**
  * Dataset mapping: dataset name -> contract artifacts
@@ -22,6 +23,7 @@ export const datasets: Record<string, Artifacts> = {
         ...w3sContracts,
         ...mark3tContracts,
     ],
+    'mixed-workloads': mixedWorkloadsContracts,
 }
 
 /**

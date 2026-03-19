@@ -151,7 +151,9 @@ function topOpsTable(deploy: boolean): string {
 
     const totals = db.prepare(`
 		SELECT SUM(weight_consumed_ref_time) as metered_rt,
-			SUM(COALESCE(weight_consumed_proof_size, 0)) as metered_pov
+			SUM(COALESCE(weight_consumed_proof_size, 0)) as metered_pov,
+			SUM(post_dispatch_ref_time) as extrinsic_rt,
+			SUM(COALESCE(post_dispatch_pov, 0)) as extrinsic_pov
 		FROM transactions
 		WHERE chain_name = 'eth-rpc'
 			AND transaction_name ${txFilter}
@@ -159,7 +161,7 @@ function topOpsTable(deploy: boolean): string {
 			AND base_call_weight_ref_time IS NOT NULL
 			AND (contract_name LIKE '%_evm' OR contract_name LIKE '%_pvm')
 			AND contract_id NOT IN (${TEST_EXCLUDE_SQL})
-	`).get() as { metered_rt: number; metered_pov: number }
+	`).get() as { metered_rt: number; metered_pov: number; extrinsic_rt: number; extrinsic_pov: number }
 
     const cats = db.prepare(`
 		SELECT ${catCase} as category,
@@ -193,7 +195,10 @@ function topOpsTable(deploy: boolean): string {
         totals.metered_pov > 0
             ? (v / totals.metered_pov * 100).toFixed(1) + '%'
             : '—'
-
+    const exRtPct = (v: number) =>
+        totals.extrinsic_rt > 0
+            ? (v / totals.extrinsic_rt * 100).toFixed(1) + '%'
+            : '—'
     const named = cats.filter((r) => r.category !== 'Other attributed')
     const sqlOther = cats.find((r) => r.category === 'Other attributed')
     const top3 = named.slice(0, 3)
@@ -207,9 +212,10 @@ function topOpsTable(deploy: boolean): string {
     const makeRow = (cat: string, rt: number, pov: number, calls: string) => ({
         'Category': cat,
         'Total ref_time': fmt(Math.round(rt)),
-        '% of ref_time': rtPct(rt),
+        '% of metered ref_time': rtPct(rt),
+        '% of extrinsic ref_time': exRtPct(rt),
         'Total proof_size': fmt(Math.round(pov)),
-        '% of proof_size': povPct(pov),
+        '% of metered proof_size': povPct(pov),
         'Calls': calls,
     })
 
@@ -218,7 +224,7 @@ function topOpsTable(deploy: boolean): string {
             makeRow(r.category, r.total_rt, r.total_pov, fmt(r.calls))
         ),
         makeRow('Other attributed', remainRt, remainPov, fmt(remainCalls)),
-        makeRow('Unattributed', unattrRt, unattrPov, '—'),
+        makeRow('Unattributed (interpreter + bytecode)', unattrRt, unattrPov, '—'),
     ]) + '\n\n'
 }
 
@@ -974,7 +980,7 @@ function costDecomposition7Table(): string {
             'Rust avg': '—',
         },
         {
-            'Category': 'Unattributed',
+            'Category': 'Unattributed (interpreter + bytecode)',
             'EVM total (calls)': `${
                 fmt(Math.round((evmTotals.total_rt - evmAttrRt) / 1_000_000))
             }M / ${
@@ -1237,6 +1243,207 @@ function actualPovTable(): string | null {
     return md
 }
 
+// ─── PVM extrinsic weight breakdown ───
+
+function pvmWeightBreakdownTable(): string | null {
+    // Check we have the needed columns
+    try {
+        db.prepare(`SELECT post_dispatch_ref_time FROM transactions LIMIT 1`).get()
+    } catch {
+        return null
+    }
+
+    const query = (isDeploy: boolean) => {
+        const txFilter = isDeploy ? "= 'deploy'" : "<> 'deploy'"
+        return db.prepare(`
+            SELECT
+                COUNT(*) as n,
+                SUM(t.post_dispatch_ref_time) as total_ext,
+                SUM(COALESCE(s.attributed_rt, 0)) as total_attr,
+                SUM(t.weight_consumed_ref_time - COALESCE(s.attributed_rt, 0)) as total_unattr,
+                SUM(t.base_call_weight_ref_time) as total_base,
+                SUM(t.post_dispatch_ref_time - t.weight_consumed_ref_time
+                    - t.base_call_weight_ref_time) as total_overhead
+            FROM transactions t
+            LEFT JOIN (
+                SELECT hash, chain_name, SUM(weight_cost_ref_time) as attributed_rt
+                FROM transaction_steps
+                GROUP BY hash, chain_name
+            ) s ON t.hash = s.hash AND t.chain_name = s.chain_name
+            WHERE t.chain_name = 'eth-rpc'
+                AND t.contract_name LIKE '%_pvm'
+                AND t.transaction_name ${txFilter}
+                AND t.weight_consumed_ref_time IS NOT NULL
+                AND t.base_call_weight_ref_time IS NOT NULL
+                AND t.post_dispatch_ref_time IS NOT NULL
+        `).get() as {
+            n: number
+            total_ext: number
+            total_attr: number
+            total_unattr: number
+            total_base: number
+            total_overhead: number
+        } | undefined
+    }
+
+    const calls = query(false)
+    const deploys = query(true)
+    if (!calls && !deploys) return null
+
+    const fmtP = (v: number, total: number) =>
+        total > 0 ? (v / total * 100).toFixed(1) + '%' : '—'
+
+    const makeRow = (
+        label: string,
+        r: NonNullable<ReturnType<typeof query>>,
+    ) => ({
+        '': label,
+        'n': r.n,
+        'Total extrinsic ref_time': fmt(Math.round(r.total_ext)),
+        'Attributed (host fns)': fmtP(r.total_attr, r.total_ext),
+        'Unattributed (PVM execution + code loading)': fmtP(r.total_unattr, r.total_ext),
+        'Base call weight': fmtP(r.total_base, r.total_ext),
+        'Extrinsic overhead': fmtP(r.total_overhead, r.total_ext),
+    })
+
+    const rows = []
+    if (calls && calls.n > 0) rows.push(makeRow('Execution txs', calls))
+    if (deploys && deploys.n > 0) rows.push(makeRow('Deploy txs', deploys))
+
+    // The extrinsic overhead (base_extrinsic) is constant per transaction
+    const overheadRow = db.prepare(`
+        SELECT post_dispatch_ref_time - weight_consumed_ref_time
+            - base_call_weight_ref_time as overhead
+        FROM transactions
+        WHERE chain_name = 'eth-rpc'
+            AND contract_name LIKE '%_pvm'
+            AND post_dispatch_ref_time IS NOT NULL
+            AND weight_consumed_ref_time IS NOT NULL
+            AND base_call_weight_ref_time IS NOT NULL
+        LIMIT 1
+    `).get() as { overhead: number } | undefined
+    const overhead = overheadRow?.overhead ?? 0
+
+    let md = table(rows) + '\n\n'
+
+    md += `_Weighted totals: each transaction contributes proportionally to its extrinsic cost. `
+    md += `"Attributed" = host function calls tracked individually (storage reads/writes, hashing, cross-contract calls, events). `
+    md += `"Unattributed" = metered weight not attributed to any host function — primarily PVM bytecode execution (interpreter fuel) and contract code loading. `
+    md += `"Base call weight" = pallet-revive's fixed overhead for the \`call\` or \`instantiate\` extrinsic (includes code upload/storage cost for deploys). `
+    md += `"Extrinsic overhead" = the runtime's \`base_extrinsic\` weight — a fixed per-extrinsic cost (${fmt(overhead)} ref_time) covering signature verification, nonce checks, transaction payment, and the transaction extension pipeline. `
+    md += `The breakdown varies by transaction cost — cheap transactions are dominated by fixed costs (base call + extrinsic overhead), expensive transactions by execution (host functions + PVM execution)._\n\n`
+
+    return md
+}
+
+// ─── Post-dispatch PoV by bytecode size ───
+
+const BYTECODE_SIZE_GROUPS: Record<string, string[]> = {
+    'Minimal bytecode': [
+        'Fibonacci', 'Fibonacci_u256', 'Fibonacci_u256_iter',
+        'Computation', 'flipper', 'incrementer', 'BenchStorage',
+    ],
+    'Small bytecode': [
+        'SimpleToken', 'BenchERC20', 'BenchERC721', 'BenchERC1155', 'WETH9',
+    ],
+    'Medium bytecode': [
+        'TetherToken', 'Escrow', 'KeyRegistry', 'MockMobRule', 'Log', 'CoinTool_App',
+    ],
+    'Large bytecode': [
+        'FungibleCredential', 'NonFungibleCredential', 'DotNS', 'Store',
+        'DocumentAccessManagement', 'W3S',
+    ],
+    'Proxy + delegatecall': ['FiatTokenProxy'],
+}
+
+function postDispatchPovByBytecodeSizeTable(): string | null {
+    // Check if post_dispatch_pov data exists
+    const hasData = db.prepare(`
+        SELECT COUNT(*) as cnt FROM transactions
+        WHERE post_dispatch_pov IS NOT NULL AND transaction_name <> 'deploy'
+            AND (contract_name LIKE '%_pvm' OR contract_name LIKE '%_evm')
+    `).get() as { cnt: number }
+
+    if (hasData.cnt === 0) return null
+
+    // Get all EVM↔PVM pairs with post_dispatch_pov
+    const pairs = db.prepare(`
+        SELECT
+            REPLACE(e.contract_name, '_evm', '') as base_contract,
+            e.post_dispatch_pov as evm_pov,
+            p.post_dispatch_pov as pvm_pov
+        FROM transactions e
+        JOIN transactions p
+            ON REPLACE(e.contract_name, '_evm', '_pvm') = p.contract_name
+            AND e.transaction_name = p.transaction_name
+            AND e.chain_name = p.chain_name
+        WHERE e.contract_name LIKE '%_evm'
+            AND e.contract_name NOT LIKE 'MarketplaceProxy%'
+            AND e.transaction_name <> 'deploy'
+            AND e.post_dispatch_pov IS NOT NULL
+            AND p.post_dispatch_pov IS NOT NULL
+    `).all() as Array<{ base_contract: string; evm_pov: number; pvm_pov: number }>
+
+    if (pairs.length === 0) return null
+
+    // Count EVM lower vs higher
+    const evmLower = pairs.filter((p) => p.evm_pov < p.pvm_pov).length
+    const total = pairs.length
+
+    // Aggregate by group
+    const groupRows: Array<{
+        'Contract group': string
+        Txs: number
+        'EVM PoV range': string
+        'PVM PoV range': string
+        'Diff range': string
+        Ratio: string
+        'Overhead %': string
+    }> = []
+
+    for (const [groupName, contracts] of Object.entries(BYTECODE_SIZE_GROUPS)) {
+        const groupPairs = pairs.filter((p) => contracts.includes(p.base_contract))
+        if (groupPairs.length === 0) continue
+
+        const evmPovs = groupPairs.map((p) => p.evm_pov)
+        const pvmPovs = groupPairs.map((p) => p.pvm_pov)
+        const diffs = groupPairs.map((p) => p.pvm_pov - p.evm_pov)
+        const ratios = groupPairs.map((p) => p.pvm_pov / p.evm_pov)
+        const overheads = groupPairs.map((p) => (p.pvm_pov - p.evm_pov) / p.evm_pov * 100)
+
+        const minR = Math.min(...ratios).toFixed(2)
+        const maxR = Math.max(...ratios).toFixed(2)
+        const minO = Math.round(Math.min(...overheads))
+        const maxO = Math.round(Math.max(...overheads))
+
+        groupRows.push({
+            'Contract group': groupName,
+            Txs: groupPairs.length,
+            'EVM PoV range': `${fmt(Math.min(...evmPovs))} – ${fmt(Math.max(...evmPovs))}`,
+            'PVM PoV range': `${fmt(Math.min(...pvmPovs))} – ${fmt(Math.max(...pvmPovs))}`,
+            'Diff range': `${fmt(Math.min(...diffs))} – ${fmt(Math.max(...diffs))}`,
+            Ratio: minR === maxR ? `${minR}x` : `${minR}x – ${maxR}x`,
+            'Overhead %': minO === maxO ? `+${minO}%` : `+${minO}% – +${maxO}%`,
+        })
+    }
+
+    let md = `Every EVM non-deploy transaction has lower post-dispatch PoV than its PVM equivalent (${evmLower}/${total} EVM lower). `
+    md += `The overhead scales with PVM bytecode size — larger contracts require more proof data to load their code into the trie proof.\n\n`
+    md += table(groupRows) + '\n\n'
+
+    // Add contracts in each group
+    md += '**Contracts in each group:**\n'
+    for (const [groupName, contracts] of Object.entries(BYTECODE_SIZE_GROUPS)) {
+        const note = groupName === 'Proxy + delegatecall'
+            ? ` (small proxy bytecode, but \`delegatecall\`s into the large FiatTokenV2_2 implementation, loading both contracts' code at runtime)`
+            : ''
+        md += `- **${groupName}**: ${contracts.join(', ')}${note}\n`
+    }
+    md += '\n'
+
+    return md
+}
+
 // ─── Main ───
 
 export async function generateEvmPvmSummary() {
@@ -1327,11 +1534,23 @@ export async function generateEvmPvmSummary() {
     md += `## PVM cost gap decomposition\n\n`
     md += costGapDecompositionTable()
 
+    const pvmBreakdown = pvmWeightBreakdownTable()
+    if (pvmBreakdown) {
+        md += `## PVM extrinsic weight breakdown\n\n`
+        md += pvmBreakdown
+    }
+
     const povSection = actualPovTable()
     if (povSection) {
         md += `## Actual PoV vs benchmarked proof_size\n\n`
         md += `Comparison of the weight-estimated proof_size (from the pallet meter) vs the actual PoV measured by the trie proof recorder via StorageWeightReclaim.\n\n`
         md += povSection
+    }
+
+    const povByBytecodeSize = postDispatchPovByBytecodeSizeTable()
+    if (povByBytecodeSize) {
+        md += `### Post-dispatch PoV overhead by contract bytecode size\n\n`
+        md += povByBytecodeSize
     }
 
     const outPath = join(REPORTS_DIR, 'evm_pvm_summary.md')

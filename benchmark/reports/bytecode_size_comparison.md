@@ -1,10 +1,9 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-03-17
+Generated on: 2026-03-19
 
 ### Benchmark Environment
 
-- **Chain:** Geth --dev | **Node:** Geth v1.16.4-stable | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 - **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1021004 | **Node:** polkadot-omni-node 1.21.2-5a82c9637e4 | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 
 ## Fibonacci Implementations
@@ -272,5 +271,61 @@ Generated on: 2026-03-17
 | --------------- | ------- | --------- | ------------ | ----------- |
 | MockMobRule_evm | EVM     | solidity  | 5,892        | -           |
 | MockMobRule_pvm | PVM     | solidity  | 47,111       | +699.6%     |
+
+
+## MixedERC20 Implementations
+
+| Contract       | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| -------------- | ------- | --------- | ------------ | ----------- |
+| MixedERC20_evm | EVM     | solidity  | 2,842        | -           |
+| MixedERC20_pvm | PVM     | solidity  | 24,818       | +773.3%     |
+
+
+## MixedFactory Implementations
+
+| Contract         | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ---------------- | ------- | --------- | ------------ | ----------- |
+| MixedFactory_evm | EVM     | solidity  | 810          | -           |
+| MixedFactory_pvm | PVM     | solidity  | 5,316        | +556.3%     |
+
+
+## MixedERC20Factory Implementations
+
+| Contract              | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| --------------------- | ------- | --------- | ------------ | ----------- |
+| MixedERC20Factory_evm | EVM     | solidity  | 3,253        | -           |
+| MixedERC20Factory_pvm | PVM     | solidity  | 3,579        | +10.0%      |
+
+
+## MixedSwapToken0 Implementations
+
+| Contract            | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ------------------- | ------- | --------- | ------------ | ----------- |
+| MixedSwapToken0_evm | EVM     | solidity  | 2,842        | -           |
+| MixedSwapToken0_pvm | PVM     | solidity  | 24,818       | +773.3%     |
+
+
+## MixedSwapToken1 Implementations
+
+| Contract            | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ------------------- | ------- | --------- | ------------ | ----------- |
+| MixedSwapToken1_evm | EVM     | solidity  | 2,842        | -           |
+| MixedSwapToken1_pvm | PVM     | solidity  | 24,818       | +773.3%     |
+
+
+## MixedPool Implementations
+
+| Contract      | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ------------- | ------- | --------- | ------------ | ----------- |
+| MixedPool_evm | EVM     | solidity  | 1,966        | -           |
+| MixedPool_pvm | PVM     | solidity  | 20,408       | +938.0%     |
+
+
+## MixedSwapRouter Implementations
+
+| Contract            | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ------------------- | ------- | --------- | ------------ | ----------- |
+| MixedSwapRouter_evm | EVM     | solidity  | 1,086        | -           |
+| MixedSwapRouter_pvm | PVM     | solidity  | 7,902        | +627.6%     |
 
 
