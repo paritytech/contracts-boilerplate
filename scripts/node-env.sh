@@ -6,7 +6,7 @@
 
 PS4='  '
 
-POLKADOT_SDK_DIR="${POLKADOT_SDK_DIR:-$HOME/polkadot-sdk}"
+export POLKADOT_SDK_DIR="${POLKADOT_SDK_DIR:-$HOME/polkadot-sdk}"
 FOUNDRY_DIR="${FOUNDRY_DIR:-$HOME/github/foundry-polkadot}"
 RETESTER_DIR="${RETESTER_DIR:-$HOME/github/revive-differential-tests}"
 
