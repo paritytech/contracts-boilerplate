@@ -255,6 +255,7 @@ export const testContracts: Artifacts = [
                     })
                 },
             },
+            // TODO: readWrite_100 surpasses the weight limit of westend assethub runtime. Retry with new weights
             // {
             //     name: 'readWrite_100',
             //     exec: (address) => {
