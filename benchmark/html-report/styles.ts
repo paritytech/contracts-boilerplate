@@ -509,6 +509,10 @@ details.methodology a:hover {
     text-decoration: underline;
 }
 
+.bottleneck-rt { background: rgba(220, 53, 69, 0.15); }
+.bottleneck-pov { background: rgba(13, 110, 253, 0.15); }
+.methodology-note { padding: 1rem; border-left: 3px solid var(--accent-color); background: var(--bg-secondary); border-radius: 0 0.25rem 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+
 @media (max-width: 768px) {
     .container {
         padding: 0.5rem;

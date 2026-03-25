@@ -39,7 +39,8 @@ function getBenchmarkMetadata(): string {
         const chain = row.system_chain ?? row.chain_name
         md += `- **Chain:** ${chain}`
         if (row.runtime_spec_name) {
-            md += ` | **Runtime:** ${row.runtime_spec_name}@${row.runtime_spec_version}`
+            md +=
+                ` | **Runtime:** ${row.runtime_spec_name}@${row.runtime_spec_version}`
         }
         if (row.system_name) {
             md += ` | **Node:** ${row.system_name} ${row.system_version ?? ''}`
@@ -100,8 +101,7 @@ async function generateOpcodeAnalysis() {
             t.weight_consumed_proof_size,
             t.base_call_weight_ref_time,
             t.base_call_weight_proof_size,
-            COALESCE(t.actual_pov, t.post_dispatch_pov) as actual_pov,
-            t.benchmarked_pov,
+            t.post_dispatch_pov,
             s.op,
             SUM(s.gas_cost) as total_gas_cost,
             COUNT(*) as count,
@@ -124,8 +124,7 @@ async function generateOpcodeAnalysis() {
         weight_consumed_proof_size: number | null
         base_call_weight_ref_time: number | null
         base_call_weight_proof_size: number | null
-        actual_pov: number | null
-        benchmarked_pov: number | null
+        post_dispatch_pov: number | null
         op: string | null
         total_gas_cost: number | null
         count: number
@@ -175,8 +174,7 @@ async function generateOpcodeAnalysis() {
             ) {
                 const totalRefTime = tx.base_call_weight_ref_time +
                     tx.weight_consumed_ref_time
-                const meteredPov =
-                    (tx.base_call_weight_proof_size ?? 0) +
+                const meteredPov = (tx.base_call_weight_proof_size ?? 0) +
                     (tx.weight_consumed_proof_size ?? 0)
                 const weightConsumedPercent =
                     ((tx.weight_consumed_ref_time / totalRefTime) * 100)
@@ -193,18 +191,9 @@ async function generateOpcodeAnalysis() {
                     }`,
                 ]
 
-                if (tx.benchmarked_pov !== null) {
+                if (tx.post_dispatch_pov !== null) {
                     lines.push(
-                        `- **Benchmarked PoV:** ${tx.benchmarked_pov.toLocaleString()}`,
-                    )
-                }
-                if (tx.actual_pov !== null) {
-                    const benchmarkedPov = tx.benchmarked_pov ?? meteredPov
-                    const overchargeRatio = tx.actual_pov > 0
-                        ? (benchmarkedPov / tx.actual_pov).toFixed(1)
-                        : 'N/A'
-                    lines.push(
-                        `- **Consumed PoV:** ${tx.actual_pov.toLocaleString()} (benchmarked/consumed = ${overchargeRatio}x)`,
+                        `- **Post-dispatch PoV:** ${tx.post_dispatch_pov.toLocaleString()}`,
                     )
                 }
 
@@ -333,8 +322,7 @@ async function generateCategoryAnalysis() {
             t.weight_consumed_proof_size,
             t.base_call_weight_ref_time,
             t.base_call_weight_proof_size,
-            COALESCE(t.actual_pov, t.post_dispatch_pov) as actual_pov,
-            t.benchmarked_pov,
+            t.post_dispatch_pov,
             s.op,
             SUM(s.gas_cost) as total_gas_cost,
             COUNT(*) as count,
@@ -357,8 +345,7 @@ async function generateCategoryAnalysis() {
         weight_consumed_proof_size: number | null
         base_call_weight_ref_time: number | null
         base_call_weight_proof_size: number | null
-        actual_pov: number | null
-        benchmarked_pov: number | null
+        post_dispatch_pov: number | null
         op: string | null
         total_gas_cost: number | null
         count: number
@@ -404,8 +391,7 @@ async function generateCategoryAnalysis() {
             ) {
                 const totalRefTime = tx.base_call_weight_ref_time +
                     tx.weight_consumed_ref_time
-                const meteredPov =
-                    (tx.base_call_weight_proof_size ?? 0) +
+                const meteredPov = (tx.base_call_weight_proof_size ?? 0) +
                     (tx.weight_consumed_proof_size ?? 0)
                 const weightConsumedPercent =
                     ((tx.weight_consumed_ref_time / totalRefTime) * 100)
@@ -422,18 +408,9 @@ async function generateCategoryAnalysis() {
                     }`,
                 ]
 
-                if (tx.benchmarked_pov !== null) {
+                if (tx.post_dispatch_pov !== null) {
                     lines.push(
-                        `- **Benchmarked PoV:** ${tx.benchmarked_pov.toLocaleString()}`,
-                    )
-                }
-                if (tx.actual_pov !== null) {
-                    const benchmarkedPov = tx.benchmarked_pov ?? meteredPov
-                    const overchargeRatio = tx.actual_pov > 0
-                        ? (benchmarkedPov / tx.actual_pov).toFixed(1)
-                        : 'N/A'
-                    lines.push(
-                        `- **Consumed PoV:** ${tx.actual_pov.toLocaleString()} (benchmarked/consumed = ${overchargeRatio}x)`,
+                        `- **Post-dispatch PoV:** ${tx.post_dispatch_pov.toLocaleString()}`,
                     )
                 }
 
@@ -560,8 +537,7 @@ async function generateContractComparison() {
             t.weight_consumed_proof_size,
             t.base_call_weight_ref_time,
             t.base_call_weight_proof_size,
-            COALESCE(t.actual_pov, t.post_dispatch_pov) as actual_pov,
-            t.benchmarked_pov,
+            t.post_dispatch_pov,
             SUM(s.gas_cost) as total_opcode_gas
         FROM transactions t
         LEFT JOIN transaction_steps s ON s.hash = t.hash AND s.chain_name = t.chain_name
@@ -577,8 +553,7 @@ async function generateContractComparison() {
         weight_consumed_proof_size: number | null
         base_call_weight_ref_time: number | null
         base_call_weight_proof_size: number | null
-        actual_pov: number | null
-        benchmarked_pov: number | null
+        post_dispatch_pov: number | null
         total_opcode_gas: number | null
     }>
 
@@ -686,19 +661,8 @@ async function generateContractComparison() {
                         result['% metered'] = `${meterPercent}%`
                         result['metered pov'] = totalProofSize.toLocaleString()
 
-                        result['benchmarked pov'] = row.benchmarked_pov?.toLocaleString() ?? '-'
-
-                        if (row.actual_pov !== null) {
-                            const benchmarkedPov = row.benchmarked_pov ?? totalProofSize
-                            result['consumed pov'] = row.actual_pov
-                                .toLocaleString()
-                            result['pov overcharge'] = row.actual_pov > 0
-                                ? `${(benchmarkedPov / row.actual_pov).toFixed(1)}x`
-                                : 'N/A'
-                        } else {
-                            result['consumed pov'] = '-'
-                            result['pov overcharge'] = '-'
-                        }
+                        result['post_dispatch pov'] =
+                            row.post_dispatch_pov?.toLocaleString() ?? '-'
                     }
 
                     return result

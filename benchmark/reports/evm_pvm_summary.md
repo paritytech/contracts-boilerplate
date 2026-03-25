@@ -1,9 +1,10 @@
 # EVM vs PVM Cost Summary
 
-Generated on: 2026-03-19
+Generated on: 2026-03-24
 
 ### Benchmark Environment
 
+- **Chain:** Geth --dev | **Node:** Geth v1.16.4-stable | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 - **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1021004 | **Node:** polkadot-omni-node 1.21.2-5a82c9637e4 | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 
 ## Base weight vs metered weight
@@ -54,12 +55,12 @@ Generated on: 2026-03-19
 | Consumed proof_size | 649,641        | 3,129,806       | +381.8% | 1,261,143      | +94.1%  |
 
 
-**Per-transaction medians:**
-| Comparison                   | Median ref_time | Txs cheaper | Median proof_size | Txs cheaper  | Median consumed | Txs cheaper   |
-| ---------------------------- | --------------- | ----------- | ----------------- | ------------ | --------------- | ------------- |
-| PVM/Sol vs EVM (95 txs)      | +45.9%          | 2/95        | +34.8%            | 0/95         | +376.5%         | 0/95          |
-| PVM/Rust vs EVM (46 txs)     | +27.0%          | 13/46       | -54.4%            | 44/46        | +81.3%          | 0/46          |
-| PVM/Rust vs PVM/Sol (46 txs) | -23.8%          | 31/46       | -66.7%            | 46/46        | -61.2%          | 46/46         |
+**Per-transaction medians (with interquartile range):**
+| Comparison                   | Median ref_time | IQR ref_time       | Lower observed cost | Median proof_size | IQR proof_size     | Lower observed cost  | Median consumed | Lower observed cost   |
+| ---------------------------- | --------------- | ------------------ | ------------------- | ----------------- | ------------------ | -------------------- | --------------- | --------------------- |
+| PVM/Sol vs EVM (95 txs)      | +45.9%          | [+30.9% .. +76.7%] | 2/95                | +34.8%            | [+20.3% .. +71.3%] | 0/95                 | +376.5%         | 0/95                  |
+| PVM/Rust vs EVM (46 txs)     | +26.8%          | [-6.9% .. +62.9%]  | 13/46               | -54.5%            | [-71.9% .. -27.8%] | 44/46                | +80.1%          | 0/46                  |
+| PVM/Rust vs PVM/Sol (46 txs) | -23.9%          | [-47.3% .. +10.6%] | 31/46               | -67.0%            | [-76.0% .. -58.3%] | 46/46                | -61.8%          | 46/46                 |
 
 
 ## Deployment cost totals
@@ -116,9 +117,9 @@ Generated on: 2026-03-19
 | Store                    | 7,835     | 74,865             | 9.6x  | 31,625         | 4.0x   | —         | —       |
 | DotNS                    | 8,168     | 75,233             | 9.2x  | 23,049         | 2.8x   | —         | —       |
 | DocumentAccessManagement | 9,460     | 90,027             | 9.5x  | —              | —      | —         | —       |
-| XENCrypto                | 10,489    | 112,823            | 10.8x | —              | —      | —         | —       |
+| XENCrypto                | 10,489    | 306,120            | 29.2x | —              | —      | —         | —       |
 | W3S                      | 12,501    | 104,881            | 8.4x  | —              | —      | —         | —       |
-| FiatTokenV2_2            | 15,467    | 103,535            | 6.7x  | —              | —      | —         | —       |
+| FiatTokenV2_2            | 15,467    | 411,352            | 26.6x | —              | —      | —         | —       |
 
 
 ## SimpleToken implementation variants
@@ -217,130 +218,6 @@ Generated on: 2026-03-19
 
 
 _Weighted totals: each transaction contributes proportionally to its extrinsic cost. "Attributed (host fns)" = host function calls tracked individually (storage reads/writes, hashing, events, cross-contract calls). Cross-contract call costs include callee code loading. "PVM execution + initial code loading" = metered weight not broken down into individual host function calls — covers PVM bytecode interpretation (interpreter fuel) and initial contract code loading (loading the entry-point contract from storage). "Base call weight" = pallet-revive's fixed overhead for the `call` or `instantiate` extrinsic (includes code upload/storage cost for deploys). "Extrinsic overhead" = the runtime's `base_extrinsic` weight — a fixed per-extrinsic cost (298,506,000 ref_time) covering signature verification, nonce checks, transaction payment, and the transaction extension pipeline. The breakdown varies by transaction cost — cheap transactions are dominated by fixed costs (base call + extrinsic overhead), expensive transactions by execution (host functions + PVM execution)._
-
-## Actual PoV vs benchmarked proof_size
-
-Comparison of the weight-estimated proof_size (from the pallet meter) vs the actual PoV measured by the trie proof recorder via StorageWeightReclaim.
-
-| Contract                 | Call                         | EVM benchmarked | EVM consumed | EVM overcharge | PVM benchmarked | PVM consumed | PVM overcharge |
-| ------------------------ | ---------------------------- | --------------- | ------------ | -------------- | --------------- | ------------ | -------------- |
-| BenchERC1155             | create                       | 60,227          | 8,157        | +638.3%        | 70,116          | 18,611       | +276.7%        |
-| BenchERC20               | transfer                     | 60,142          | 8,653        | +595.0%        | 69,005          | 17,596       | +292.2%        |
-| BenchERC721              | mint                         | 80,753          | 8,402        | +861.1%        | 87,848          | 15,592       | +463.4%        |
-| BenchStorage             | read_100                     | 18,582          | 3,791        | +390.2%        | 21,147          | 6,450        | +227.9%        |
-| BenchStorage             | write_100                    | 2,076,353       | 8,313        | +24877.2%      | 2,078,886       | 10,715       | +19301.6%      |
-| CoinTool_App             | t                            | 442,126         | 32,950       | +1241.8%       | 762,256         | 168,994      | +351.1%        |
-| Computation              | odd_product_10               | 18,293          | 3,370        | +442.8%        | 20,582          | 5,994        | +243.4%        |
-| Computation              | triangle_10                  | 18,293          | 3,370        | +442.8%        | 20,582          | 5,994        | +243.4%        |
-| DocumentAccessManagement | configurePublicAccess        | 79,030          | 18,461       | +328.1%        | 159,597         | 99,002       | +61.2%         |
-| DocumentAccessManagement | createDocument               | 305,752         | 17,279       | +1669.5%       | 406,668         | 97,849       | +315.6%        |
-| DocumentAccessManagement | createDocument2              | 305,784         | 18,165       | +1583.4%       | 406,732         | 98,706       | +312.1%        |
-| DocumentAccessManagement | grantAccessWithShare         | 295,463         | 18,231       | +1520.7%       | 375,993         | 98,772       | +280.7%        |
-| DocumentAccessManagement | registerKeys                 | 68,680          | 17,786       | +286.1%        | 169,887         | 98,327       | +72.8%         |
-| DocumentAccessManagement | revokeAccess                 | 428,862         | 18,946       | +2163.6%       | 510,069         | 99,487       | +412.7%        |
-| DocumentAccessManagement | transferOwnership            | 356,743         | 18,744       | +1803.2%       | 447,562         | 99,285       | +350.8%        |
-| DocumentAccessManagement | updateDocument               | 110,613         | 14,681       | +653.4%        | 191,206         | 95,288       | +100.7%        |
-| DotNS                    | createSubdomain              | 304,268         | 18,063       | +1584.5%       | 391,843         | 84,431       | +364.1%        |
-| DotNS                    | register                     | 272,979         | 15,619       | +1647.7%       | 360,619         | 81,658       | +341.6%        |
-| DotNS                    | register_with_duration       | 273,011         | 16,333       | +1571.5%       | 360,521         | 82,236       | +338.4%        |
-| DotNS                    | release                      | 293,813         | 18,567       | +1482.4%       | 362,003         | 84,606       | +327.9%        |
-| DotNS                    | renew                        | 67,580          | 13,174       | +413.0%        | 134,674         | 80,543       | +67.2%         |
-| DotNS                    | setAddress                   | 77,869          | 13,313       | +484.9%        | 155,252         | 80,593       | +92.6%         |
-| DotNS                    | setMetadata                  | 67,548          | 16,867       | +300.5%        | 134,642         | 82,880       | +62.5%         |
-| DotNS                    | setSubdomainOwner            | 304,425         | 15,609       | +1850.3%       | 382,000         | 82,645       | +362.2%        |
-| DotNS                    | transfer                     | 293,813         | 14,027       | +1994.6%       | 371,453         | 81,103       | +358.0%        |
-| Escrow                   | create_simple                | 320,481         | 11,738       | +2630.3%       | 370,930         | 41,605       | +791.6%        |
-| Escrow                   | create_with_arbiter          | 320,609         | 12,387       | +2488.3%       | 371,057         | 42,254       | +778.2%        |
-| Escrow                   | create_with_expiry           | 320,641         | 12,829       | +2399.3%       | 371,056         | 42,696       | +769.1%        |
-| Escrow                   | create_with_releaseTime      | 320,673         | 12,452       | +2475.3%       | 370,991         | 42,319       | +776.7%        |
-| Escrow                   | refund                       | 171,485         | 12,514       | +1270.3%       | 201,063         | 42,381       | +374.4%        |
-| Escrow                   | release                      | 171,485         | 14,387       | +1091.9%       | 201,063         | 44,254       | +354.3%        |
-| FiatTokenProxy           | approve                      | 80,650          | 25,357       | +218.1%        | 177,304         | 122,259      | +45.0%         |
-| FiatTokenProxy           | changeAdmin                  | 50,199          | 5,468        | +818.1%        | 58,723          | 14,101       | +316.4%        |
-| FiatTokenProxy           | configureMinter              | 111,488         | 25,493       | +337.3%        | 208,107         | 122,395      | +70.0%         |
-| FiatTokenProxy           | initialize                   | 256,500         | 25,021       | +925.1%        | 352,863         | 121,923      | +189.4%        |
-| FiatTokenProxy           | mint                         | 173,222         | 25,737       | +573.0%        | 269,810         | 122,639      | +120.0%        |
-| FiatTokenProxy           | transfer                     | 162,965         | 25,495       | +539.2%        | 259,520         | 122,397      | +112.0%        |
-| FiatTokenProxy           | transferFrom                 | 204,243         | 22,903       | +791.8%        | 300,894         | 119,673      | +151.4%        |
-| Fibonacci                | fib_10                       | 18,193          | 3,605        | +404.7%        | 19,140          | 4,689        | +308.2%        |
-| Fibonacci_u256           | fib_10                       | 18,149          | 3,254        | +457.7%        | 19,310          | 4,651        | +315.2%        |
-| Fibonacci_u256           | fib_15                       | 18,149          | 3,254        | +457.7%        | 19,310          | 4,651        | +315.2%        |
-| Fibonacci_u256           | fib_5                        | 18,149          | 3,254        | +457.7%        | 19,310          | 4,651        | +315.2%        |
-| Fibonacci_u256_iter      | fib_10                       | 18,145          | 3,661        | +395.6%        | 19,212          | 4,624        | +315.5%        |
-| Fibonacci_u256_iter      | fib_15                       | 18,145          | 3,661        | +395.6%        | 19,209          | 4,624        | +315.4%        |
-| Fibonacci_u256_iter      | fib_5                        | 18,145          | 3,661        | +395.6%        | 19,212          | 4,624        | +315.5%        |
-| FungibleCredential       | burn                         | 107,590         | 12,456       | +763.8%        | 166,139         | 70,349       | +136.2%        |
-| FungibleCredential       | createClass_nontransferable  | 148,979         | 15,244       | +877.3%        | 258,975         | 73,071       | +254.4%        |
-| FungibleCredential       | createClass_transferable     | 148,979         | 15,002       | +893.1%        | 259,039         | 72,829       | +255.7%        |
-| FungibleCredential       | issue                        | 261,771         | 15,514       | +1587.3%       | 319,936         | 73,341       | +336.2%        |
-| FungibleCredential       | issue_more                   | 117,981         | 12,667       | +831.4%        | 176,530         | 70,560       | +150.2%        |
-| FungibleCredential       | revoke                       | 107,689         | 12,460       | +764.3%        | 166,241         | 70,353       | +136.3%        |
-| FungibleCredential       | transfer                     | 282,407         | 16,187       | +1644.7%       | 340,668         | 74,014       | +360.3%        |
-| KeyRegistry              | fetchPrekeyBundle            | 197,109         | 13,117       | +1402.7%       | 231,711         | 47,341       | +389.5%        |
-| KeyRegistry              | registerIdentity             | 197,473         | 11,787       | +1575.3%       | 231,882         | 46,544       | +398.2%        |
-| KeyRegistry              | updateSignedPrekey           | 115,257         | 9,318        | +1136.9%       | 170,436         | 43,999       | +287.4%        |
-| KeyRegistry              | uploadOneTimePrekeys         | 207,730         | 12,432       | +1570.9%       | 242,139         | 47,189       | +413.1%        |
-| Log                      | addWriter                    | 116,851         | 13,814       | +745.9%        | 164,592         | 61,931       | +165.8%        |
-| Log                      | append                       | 157,975         | 13,616       | +1060.2%       | 205,748         | 61,733       | +233.3%        |
-| Log                      | append_2                     | 157,975         | 13,748       | +1049.1%       | 205,748         | 61,865       | +232.6%        |
-| Log                      | create_nonpermissioned       | 137,298         | 13,272       | +934.5%        | 226,260         | 61,389       | +268.6%        |
-| Log                      | create_permissioned          | 137,362         | 13,652       | +906.2%        | 226,388         | 61,769       | +266.5%        |
-| Log                      | removeWriter                 | 199,259         | 14,054       | +1317.8%       | 247,419         | 62,171       | +298.0%        |
-| Log                      | transfer                     | 240,351         | 14,087       | +1606.2%       | 288,156         | 62,204       | +363.2%        |
-| MarketplaceProxy         | createItem_digital           | 1,031,567       | 283,345      | +264.1%        | 1,061,415       | 294,730      | +260.1%        |
-| MarketplaceProxy         | createItem_physical          | 1,031,631       | 283,719      | +263.6%        | 1,061,479       | 295,104      | +259.7%        |
-| MarketplaceProxy         | deactivateItem               | 336,861         | 282,551      | +19.2%         | 351,785         | 294,005      | +19.7%         |
-| MarketplaceProxy         | markAsShipped                | 511,680         | 285,487      | +79.2%         | 526,604         | 296,908      | +77.4%         |
-| MarketplaceProxy         | purchaseItem_digital         | 940,566         | 286,771      | +228.0%        | 955,490         | 298,192      | +220.4%        |
-| MarketplaceProxy         | purchaseItem_physical        | 966,361         | 286,515      | +237.3%        | 981,285         | 297,936      | +229.4%        |
-| MarketplaceProxy         | purchaseItem_with_matchmaker | 1,032,684       | 289,110      | +257.2%        | 1,047,608       | 300,531      | +248.6%        |
-| MarketplaceProxy         | registerMatchMaker           | 460,236         | 283,690      | +62.2%         | 475,160         | 295,144      | +61.0%         |
-| MarketplaceProxy         | registerShop                 | 460,721         | 282,183      | +63.3%         | 475,645         | 293,535      | +62.0%         |
-| MarketplaceProxy         | updateItem                   | 563,964         | 283,640      | +98.8%         | 578,888         | 295,061      | +96.2%         |
-| MarketplaceProxy         | updateMatchMakerFee          | 357,336         | 280,123      | +27.6%         | 372,260         | 291,790      | +27.6%         |
-| MixedERC20               | mint                         | 61,122          | 9,926        | +515.8%        | 83,936          | 32,671       | +156.9%        |
-| MixedERC20               | transfer                     | 61,154          | 10,029       | +509.8%        | 84,000          | 32,774       | +156.3%        |
-| MixedFactory             | deployCreate                 | 46,052          | 11,325       | +306.6%        | 50,347          | 17,636       | +185.5%        |
-| MixedFactory             | deployCreate2                | 46,084          | 11,109       | +314.8%        | 50,411          | 16,388       | +207.6%        |
-| MixedSwapRouter          | swap                         | 404,441         | 16,554       | +2343.2%       | 528,917         | 65,648       | +705.7%        |
-| MockMobRule              | addCounterEvidence           | 64,943          | 13,806       | +370.4%        | 106,456         | 55,348       | +92.3%         |
-| MockMobRule              | createDispute                | 219,287         | 13,435       | +1532.2%       | 260,892         | 54,944       | +374.8%        |
-| MockMobRule              | resolveCase                  | 75,043          | 14,104       | +432.1%        | 116,553         | 55,582       | +109.7%        |
-| NonFungibleCredential    | issue_nontransferable        | 354,176         | 15,644       | +2164.0%       | 454,330         | 74,007       | +513.9%        |
-| NonFungibleCredential    | issue_transferable           | 354,048         | 14,687       | +2310.6%       | 454,041         | 73,050       | +521.5%        |
-| NonFungibleCredential    | issue_with_expiry            | 354,240         | 16,017       | +2111.7%       | 454,231         | 74,380       | +510.7%        |
-| NonFungibleCredential    | revoke                       | 55,498          | 11,908       | +366.1%        | 114,464         | 70,601       | +62.1%         |
-| NonFungibleCredential    | transfer                     | 518,343         | 16,456       | +3049.9%       | 577,760         | 74,819       | +672.2%        |
-| NonFungibleCredential    | updateMetadata               | 45,308          | 11,979       | +278.2%        | 104,274         | 70,672       | +47.5%         |
-| SimpleToken              | mint                         | 59,708          | 7,869        | +658.8%        | 64,472          | 12,969       | +397.1%        |
-| SimpleToken              | transfer                     | 59,740          | 4,788        | +1147.7%       | 64,633          | 9,451        | +583.9%        |
-| Store                    | delegate                     | 149,402         | 14,659       | +919.2%        | 216,266         | 81,885       | +164.1%        |
-| Store                    | deleteFor                    | 190,680         | 15,572       | +1124.5%       | 258,221         | 82,769       | +212.0%        |
-| Store                    | delete_                      | 139,145         | 15,206       | +815.1%        | 206,686         | 82,403       | +150.8%        |
-| Store                    | revokeDelegation             | 201,007         | 15,308       | +1213.1%       | 268,548         | 82,505       | +225.5%        |
-| Store                    | set                          | 159,691         | 14,659       | +989.4%        | 226,716         | 81,885       | +176.9%        |
-| Store                    | setFor                       | 211,229         | 15,168       | +1292.6%       | 278,254         | 82,365       | +237.8%        |
-| Store                    | set_update                   | 87,825          | 12,072       | +627.5%        | 154,884         | 79,609       | +94.6%         |
-| TetherToken              | approve                      | 53,534          | 12,366       | +332.9%        | 103,556         | 62,601       | +65.4%         |
-| TetherToken              | transfer                     | 115,271         | 12,609       | +814.2%        | 165,194         | 62,844       | +162.9%        |
-| TetherToken              | transferFrom                 | 135,974         | 9,620        | +1313.5%       | 185,929         | 59,554       | +212.2%        |
-| W3S                      | buyTicket                    | 420,604         | 25,933       | +1521.9%       | 536,315         | 141,006      | +280.3%        |
-| W3S                      | checkIn                      | 211,192         | 26,367       | +701.0%        | 326,578         | 140,967      | +131.7%        |
-| W3S                      | configurePaymentToken        | 132,305         | 19,383       | +582.6%        | 225,768         | 112,316      | +101.0%        |
-| W3S                      | grantVolunteerRole           | 70,437          | 19,413       | +262.8%        | 163,935         | 112,246      | +46.0%         |
-| W3S                      | pauseSales                   | 60,052          | 19,644       | +205.7%        | 153,579         | 112,439      | +36.6%         |
-| W3S                      | redeemTicketStaff            | 321,159         | 19,957       | +1509.3%       | 414,914         | 112,690      | +268.2%        |
-| W3S                      | revokeVolunteerRole          | 70,469          | 19,713       | +257.5%        | 164,128         | 112,610      | +45.7%         |
-| W3S                      | setMerkleRoot                | 49,990          | 16,151       | +209.5%        | 143,552         | 109,548      | +31.0%         |
-| W3S                      | unpauseSales                 | 60,084          | 19,713       | +204.8%        | 153,743         | 112,541      | +36.6%         |
-| WETH9                    | deposit                      | 40,146          | 9,578        | +319.1%        | 55,668          | 24,367       | +128.5%        |
-| WETH9                    | transfer                     | 71,184          | 9,717        | +632.6%        | 86,706          | 24,506       | +253.8%        |
-| WETH9                    | withdraw                     | 55,838          | 7,793        | +616.5%        | 71,392          | 22,549       | +216.6%        |
-| flipper                  | flip                         | 38,602          | 7,316        | +427.6%        | 40,734          | 9,768        | +317.0%        |
-| incrementer              | inc                          | 38,757          | 7,639        | +407.4%        | 41,293          | 9,609        | +329.7%        |
-
-
-Average proof_size overcharge: EVM +1125.7%, PVM +424.6%
 
 ### Post-dispatch PoV overhead by contract bytecode size
 

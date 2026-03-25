@@ -551,7 +551,9 @@ export const mark3tContracts: Artifacts = [
                             DISPUTE_METADATA_CID,
                         ],
                     })
-                    await env.wallet.waitForTransactionReceipt({ hash: disputeTx })
+                    await env.wallet.waitForTransactionReceipt({
+                        hash: disputeTx,
+                    })
                     // Get the case ID
                     const caseId = await env.wallet.readContract({
                         address,
@@ -584,7 +586,9 @@ export const mark3tContracts: Artifacts = [
                             DISPUTE_METADATA_CID,
                         ],
                     })
-                    await env.wallet.waitForTransactionReceipt({ hash: disputeTx })
+                    await env.wallet.waitForTransactionReceipt({
+                        hash: disputeTx,
+                    })
                     const caseId = await env.wallet.readContract({
                         address,
                         abi: abis.MockMobRule,

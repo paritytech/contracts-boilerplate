@@ -134,7 +134,7 @@ start_omni_node() {
         --instant-seal \
         --rpc-methods unsafe \
         --rpc-cors all \
-        -lruntime::revive=debug,runtime::storage_reclaim_pallet=trace \
+        -lruntime::revive=debug \
         > "$OMNI_LOG" 2>&1 &
     OMNI_PID=$!
     echo "omni-node PID: $OMNI_PID (log: $OMNI_LOG)"
@@ -222,17 +222,7 @@ fi
 
 # ─── Run benchmark ───
 echo "── Running benchmark (deploy + execute) ──"
-LOG_LEVEL=DEBUG deno run --env-file -A benchmark/contracts.ts --execute --report
-
-# ─── Import PoV from logs (omni-node only) ───
-if [ "$MODE" = "omni-node" ] && [ -f "$OMNI_LOG" ]; then
-    echo "── Importing PoV from logs ──"
-    deno run -A benchmark/import-pov.ts "$OMNI_LOG" --chain "$CHAIN_NAME"
-fi
-
-# ─── Generate reports (again, now with PoV data) ───
-echo "── Generating reports ──"
-deno run --env-file -A benchmark/contracts.ts --report --html-report
+LOG_LEVEL=DEBUG deno run --env-file -A benchmark/contracts.ts --execute --report --html-report
 
 echo ""
 echo "── Done ──"

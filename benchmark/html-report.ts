@@ -6,9 +6,9 @@
 import { ensureDir } from '@std/fs'
 import { join } from '@std/path'
 
+import { datasetDescriptions } from './datasets.ts'
 import {
     type BytecodeSizeHierarchy,
-    DATASET_DESCRIPTIONS,
     DATASET_METHODOLOGY,
     getBaseVsMetered,
     getBenchmarkMetadata,
@@ -47,7 +47,6 @@ import {
     gasAnalysisFilterControls,
     htmlDocument,
     metricGrid,
-    povChartScript,
     sectionCard,
     weightAnalysisFilterControls,
 } from './html-report/templates.ts'
@@ -98,7 +97,11 @@ export async function generateHtmlReport(): Promise<void> {
     content += generateEvmPvmAnalysis(bytecodeSection.hierarchy)
 
     // Generate final HTML
-    const html = htmlDocument(content, scripts.join('\n'), getBenchmarkMetadata())
+    const html = htmlDocument(
+        content,
+        scripts.join('\n'),
+        getBenchmarkMetadata(),
+    )
 
     const outputPath = join(REPORTS_DIR, 'benchmark_report.html')
     await Deno.writeTextFile(outputPath, html)
@@ -122,7 +125,7 @@ function generateExecutiveSummary(): string {
         chain.avg_proof_size ? Math.round(chain.avg_proof_size) : 'N/A',
     ])
 
-    const datasetDescriptions = Object.entries(DATASET_DESCRIPTIONS).map(
+    const datasetList = Object.entries(datasetDescriptions).map(
         ([name, desc]) => {
             const methodology = DATASET_METHODOLOGY[name]
             const details = methodology
@@ -134,11 +137,15 @@ function generateExecutiveSummary(): string {
 
     const summaryContent = `
         ${metricGrid(metrics)}
+        <div class="methodology-note" style="margin-top: 1.5rem; padding: 1rem; border-left: 3px solid var(--accent-color); background: var(--bg-secondary); border-radius: 0 0.25rem 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+            Single-run on omni-node with Westend Asset Hub runtime. Gas is deterministic per EVM spec; ref_time and proof_size are deterministic per pallet-revive weight metering; post_dispatch is actual PoV reported by the runtime.
+            Ratio comparisons use geometric mean.
+        </div>
         <div style="margin-top: 1.5rem;">
             ${
         card(
             'Datasets',
-            `<ul style="margin: 0; padding-left: 1.25rem; line-height: 1.8;">${datasetDescriptions}</ul>`,
+            `<ul style="margin: 0; padding-left: 1.25rem; line-height: 1.8;">${datasetList}</ul>`,
         )
     }
         </div>
@@ -187,33 +194,30 @@ function generateGasAnalysis(): { html: string; scripts: string } {
     // Average per-transaction % difference at dataset level
     const labels = hierarchy.datasets.map((d) => d.name)
 
-    const toPctDiff = (val: number | null, base: number | null) =>
-        val !== null && base !== null && base > 0
-            ? Math.round((val / base - 1) * 10000) / 100
-            : null
-
-    const avgTxPctDiff = (
+    const geoMeanPctDiff = (
         contracts: typeof hierarchy.datasets[0]['contracts'],
         valKey: 'eth_rpc_evm_gas' | 'eth_rpc_pvm_gas',
     ) => {
-        const diffs = contracts
+        const ratios = contracts
             .flatMap((c) =>
-                c.transactions.map((tx) => toPctDiff(tx[valKey], tx.geth_gas))
+                c.transactions
+                    .filter((tx) =>
+                        tx[valKey] !== null && tx.geth_gas !== null &&
+                        tx.geth_gas > 0
+                    )
+                    .map((tx) => tx[valKey]! / tx.geth_gas!)
             )
-            .filter((d): d is number => d !== null)
-        return diffs.length > 0
-            ? Math.round(
-                diffs.reduce((s, d) => s + d, 0) / diffs.length * 100,
-            ) / 100
-            : null
+        if (ratios.length === 0) return null
+        const logSum = ratios.reduce((s, r) => s + Math.log(r), 0)
+        const geoMean = Math.exp(logSum / ratios.length)
+        return Math.round((geoMean - 1) * 10000) / 100
     }
 
-    // Discover all alt implementation types across all datasets
-    const avgAltTxPctDiff = (
+    const geoMeanAltPctDiff = (
         contracts: typeof hierarchy.datasets[0]['contracts'],
         implLabel: string,
     ) => {
-        const diffs: number[] = []
+        const ratios: number[] = []
         for (const c of contracts) {
             const matchingAlts = c.alt_implementations.filter((a) =>
                 altImplLabel(a.name) === implLabel
@@ -223,16 +227,19 @@ function generateGasAnalysis(): { html: string; scripts: string } {
                     const baseTx = c.transactions.find((t) =>
                         t.name === altTx.name
                     )
-                    const d = toPctDiff(altTx.pvm_gas, baseTx?.geth_gas ?? null)
-                    if (d !== null) diffs.push(d)
+                    if (
+                        altTx.pvm_gas !== null && baseTx?.geth_gas != null &&
+                        baseTx.geth_gas > 0
+                    ) {
+                        ratios.push(altTx.pvm_gas / baseTx.geth_gas)
+                    }
                 }
             }
         }
-        return diffs.length > 0
-            ? Math.round(
-                diffs.reduce((s, d) => s + d, 0) / diffs.length * 100,
-            ) / 100
-            : null
+        if (ratios.length === 0) return null
+        const logSum = ratios.reduce((s, r) => s + Math.log(r), 0)
+        const geoMean = Math.exp(logSum / ratios.length)
+        return Math.round((geoMean - 1) * 10000) / 100
     }
 
     // Collect all unique alt impl labels
@@ -253,14 +260,14 @@ function generateGasAnalysis(): { html: string; scripts: string } {
         {
             label: 'EVM',
             data: hierarchy.datasets.map((d) =>
-                avgTxPctDiff(d.contracts, 'eth_rpc_evm_gas')
+                geoMeanPctDiff(d.contracts, 'eth_rpc_evm_gas')
             ),
             color: COLORS.primary,
         },
         {
             label: 'PVM (Solidity)',
             data: hierarchy.datasets.map((d) =>
-                avgTxPctDiff(d.contracts, 'eth_rpc_pvm_gas')
+                geoMeanPctDiff(d.contracts, 'eth_rpc_pvm_gas')
             ),
             color: COLORS.success,
         },
@@ -271,7 +278,7 @@ function generateGasAnalysis(): { html: string; scripts: string } {
         chartSeries.push({
             label: implLabel,
             data: hierarchy.datasets.map((d) =>
-                avgAltTxPctDiff(d.contracts, implLabel)
+                geoMeanAltPctDiff(d.contracts, implLabel)
             ),
             color: color.bg,
         })
@@ -281,7 +288,7 @@ function generateGasAnalysis(): { html: string; scripts: string } {
         'gasAnalysisChart',
         labels,
         chartSeries,
-        { yLabel: 'Avg % difference vs Geth' },
+        { yLabel: 'Geometric mean % difference vs Geth' },
     )
     scripts.push(chartScript)
 
@@ -411,9 +418,6 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
     // Add drilldown chart script
     scripts.push(drilldownWeightChartScript(hierarchy))
 
-    // Add PoV chart (benchmarked vs actual)
-    scripts.push(povChartScript(hierarchy))
-
     const html = sectionCard(
         'weight',
         'Weight Analysis (Revive only)',
@@ -424,23 +428,25 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
                 chartCanvas('weightAnalysisChart', 'wide'),
             )
         }
-        ${
-            card(
-                'proof_size: Benchmarked vs Consumed (synced with weight chart drill-down)',
-                chartCanvas('povAnalysisChart', 'wide'),
-            )
-        }
         ${weightAnalysisFilterControls()}
-        ${(() => {
-            const { refTimeTable, proofSizeTable } = expandableWeightTable(hierarchy)
-            return card(
-                'ref_time Comparison (click to expand)',
-                refTimeTable,
-            ) + card(
-                'proof_size Comparison (click to expand)',
-                proofSizeTable,
-            )
-        })()}
+        ${
+            (() => {
+                const { refTimeTable, proofSizeTable } = expandableWeightTable(
+                    hierarchy,
+                )
+                return card(
+                    'ref_time Comparison (click to expand)',
+                    refTimeTable,
+                ) + card(
+                    'proof_size Comparison (click to expand)',
+                    `<p class="table-note" style="margin-bottom: 0.75rem;">
+                    <strong>base_call</strong>: fixed overhead charged per contract call (independent of what the contract does).
+                    <strong>metered</strong>: proof_size consumed by the contract's own execution (storage reads/writes, code access).
+                    <strong>post_dispatch</strong>: actual proof_size recorded after the extrinsic executes — the real on-chain PoV cost reported by the runtime.
+                </p>` + proofSizeTable,
+                )
+            })()
+        }
     `,
     )
 
@@ -676,10 +682,8 @@ function generateEvmPvmAnalysis(
         )
     }
 
-    // ── RQ2: What are the cost differences? ──
     content += card('RQ2: What are the cost differences?', '')
 
-    // 93 EVM↔PVM/Sol execution cost totals
     const execTotals = getExecTotals()
     const execPairCount = getExecTotalsPairCount()
     if (execTotals.length > 0) {
@@ -726,11 +730,11 @@ function generateEvmPvmAnalysis(
                 [
                     'Comparison',
                     'Median ref_time',
-                    'Txs cheaper',
+                    'Lower observed cost',
                     'Median proof_size',
-                    'Txs cheaper',
+                    'Lower observed cost',
                     'Median consumed',
-                    'Txs cheaper',
+                    'Lower observed cost',
                 ],
                 medians.map(
                     (r) => [
@@ -913,7 +917,10 @@ function generateEvmPvmAnalysis(
                         'Consumed proof_size',
                         fmt(costGap.totals.evm_consumed),
                         fmt(costGap.totals.pvm_consumed),
-                        fmt(costGap.totals.pvm_consumed - costGap.totals.evm_consumed),
+                        fmt(
+                            costGap.totals.pvm_consumed -
+                                costGap.totals.evm_consumed,
+                        ),
                         costGap.totals.consumed_diff,
                     ],
                 ],

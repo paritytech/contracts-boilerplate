@@ -2,7 +2,11 @@ import { getStyles } from './styles.ts'
 import { getImplHexColor } from './charts.ts'
 import type { BenchmarkMetadataRow } from './queries.ts'
 
-export function htmlDocument(content: string, scripts: string, metadata?: BenchmarkMetadataRow[]): string {
+export function htmlDocument(
+    content: string,
+    scripts: string,
+    metadata?: BenchmarkMetadataRow[],
+): string {
     const styles = getStyles()
     const date = new Date().toISOString().split('T')[0]
 
@@ -20,16 +24,23 @@ export function htmlDocument(content: string, scripts: string, metadata?: Benchm
         <div class="container">
             <h1>Contract Benchmark Report</h1>
             <p>Generated on ${date}</p>
-            ${(metadata ?? []).map((m) => {
-                const chain = m.system_chain ?? m.chain_name
-                let line = `<p><strong>${chain}</strong>`
-                if (m.runtime_spec_name) line += ` | Runtime: ${m.runtime_spec_name}@${m.runtime_spec_version}`
-                if (m.system_name) line += ` | Node: ${m.system_name} ${m.system_version ?? ''}`
-                if (m.resolc_version) line += ` | resolc: ${m.resolc_version}`
-                if (m.solc_version) line += ` | solc: ${m.solc_version}`
-                line += `</p>`
-                return line
-            }).join('\n            ')}
+            ${
+        (metadata ?? []).map((m) => {
+            const chain = m.system_chain ?? m.chain_name
+            let line = `<p><strong>${chain}</strong>`
+            if (m.runtime_spec_name) {
+                line +=
+                    ` | Runtime: ${m.runtime_spec_name}@${m.runtime_spec_version}`
+            }
+            if (m.system_name) {
+                line += ` | Node: ${m.system_name} ${m.system_version ?? ''}`
+            }
+            if (m.resolc_version) line += ` | resolc: ${m.resolc_version}`
+            if (m.solc_version) line += ` | solc: ${m.solc_version}`
+            line += `</p>`
+            return line
+        }).join('\n            ')
+    }
         </div>
     </header>
 
@@ -137,11 +148,6 @@ export function htmlDocument(content: string, scripts: string, metadata?: Benchm
             if (w === null) return 'N/A';
             var ps = pct !== null ? ' (' + pct.toFixed(1) + '%)' : '';
             return w.toLocaleString() + ps;
-        }
-        function fmtActualPov(v) { return v !== null ? v.toLocaleString() : '-'; }
-        function fmtPovOvercharge(proof, actual) {
-            if (actual === null || actual === 0 || proof === null) return 'N/A';
-            return (proof / actual).toFixed(1) + 'x';
         }
         function fmtCatPct(v) { return v.toFixed(1) + '%'; }
         function fmtCompact(v) {
@@ -732,50 +738,66 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
             return val !== null && base !== null && base > 0 ? Math.round((val / base - 1) * 10000) / 100 : null;
         }
 
-        function avgOfTxPctDiffs(contracts, valKey) {
-            var diffs = [];
+        function geoMeanOfTxRatios(contracts, valKey) {
+            var ratios = [];
             contracts.forEach(function(c) {
                 c.transactions.forEach(function(tx) {
-                    var d = toPctDiff(tx[valKey], tx.geth_gas);
-                    if (d !== null) diffs.push(d);
+                    if (tx[valKey] !== null && tx.geth_gas !== null && tx.geth_gas > 0) {
+                        ratios.push(tx[valKey] / tx.geth_gas);
+                    }
                 });
             });
-            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+            if (ratios.length === 0) return null;
+            var logSum = ratios.reduce(function(s, r) { return s + Math.log(r); }, 0);
+            var gm = Math.exp(logSum / ratios.length);
+            return Math.round((gm - 1) * 10000) / 100;
         }
 
-        function avgOfPctDiffs(children, valKey) {
-            var diffs = children.map(function(c) { return toPctDiff(c[valKey], c.geth_gas); }).filter(function(d) { return d !== null; });
-            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+        function geoMeanOfChildRatios(children, valKey) {
+            var ratios = children.filter(function(c) { return c[valKey] !== null && c.geth_gas !== null && c.geth_gas > 0; })
+                .map(function(c) { return c[valKey] / c.geth_gas; });
+            if (ratios.length === 0) return null;
+            var logSum = ratios.reduce(function(s, r) { return s + Math.log(r); }, 0);
+            var gm = Math.exp(logSum / ratios.length);
+            return Math.round((gm - 1) * 10000) / 100;
         }
 
         // Map contract name suffix to display label (browser-side)
         // Generic: compute avg pct diff for a given impl label across contracts
-        function avgAltTxPctDiffs(contracts, implLabel) {
-            var diffs = [];
+        function geoMeanAltTxRatios(contracts, implLabel) {
+            var ratios = [];
             contracts.forEach(function(c) {
                 var alts = (c.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
                 alts.forEach(function(alt) {
                     alt.transactions.forEach(function(altTx) {
                         var baseTx = c.transactions.find(function(t) { return t.name === altTx.name; });
-                        var d = toPctDiff(altTx.pvm_gas, baseTx ? baseTx.geth_gas : null);
-                        if (d !== null) diffs.push(d);
+                        if (altTx.pvm_gas !== null && baseTx && baseTx.geth_gas !== null && baseTx.geth_gas > 0) {
+                            ratios.push(altTx.pvm_gas / baseTx.geth_gas);
+                        }
                     });
                 });
             });
-            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+            if (ratios.length === 0) return null;
+            var logSum = ratios.reduce(function(s, r) { return s + Math.log(r); }, 0);
+            var gm = Math.exp(logSum / ratios.length);
+            return Math.round((gm - 1) * 10000) / 100;
         }
 
-        function avgAltPctDiffsForContract(contract, implLabel) {
-            var diffs = [];
+        function geoMeanAltRatiosForContract(contract, implLabel) {
+            var ratios = [];
             var alts = (contract.alt_implementations || []).filter(function(a) { return altImplLabelShared(a.name) === implLabel; });
             alts.forEach(function(alt) {
                 alt.transactions.forEach(function(altTx) {
                     var baseTx = contract.transactions.find(function(t) { return t.name === altTx.name; });
-                    var d = toPctDiff(altTx.pvm_gas, baseTx ? baseTx.geth_gas : null);
-                    if (d !== null) diffs.push(d);
+                    if (altTx.pvm_gas !== null && baseTx && baseTx.geth_gas !== null && baseTx.geth_gas > 0) {
+                        ratios.push(altTx.pvm_gas / baseTx.geth_gas);
+                    }
                 });
             });
-            return diffs.length > 0 ? Math.round(diffs.reduce(function(s, d) { return s + d; }, 0) / diffs.length * 100) / 100 : null;
+            if (ratios.length === 0) return null;
+            var logSum = ratios.reduce(function(s, r) { return s + Math.log(r); }, 0);
+            var gm = Math.exp(logSum / ratios.length);
+            return Math.round((gm - 1) * 10000) / 100;
         }
 
         function altPctDiffForTx(contract, txName, implLabel) {
@@ -816,12 +838,12 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                 items = gasHierarchy.datasets;
                 title = 'Avg Gas by Dataset' + suffix + ' (click to drill down)';
                 gasAltImplLabels.forEach(function(lbl) {
-                    altData[lbl] = items.map(function(i) { return avgAltTxPctDiffs(i.contracts, lbl); });
+                    altData[lbl] = items.map(function(i) { return geoMeanAltTxRatios(i.contracts, lbl); });
                 });
                 return {
                     labels: items.map(i => i.name),
-                    evmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_evm_gas')),
-                    pvmData: items.map(i => avgOfTxPctDiffs(i.contracts, 'eth_rpc_pvm_gas')),
+                    evmData: items.map(i => geoMeanOfTxRatios(i.contracts, 'eth_rpc_evm_gas')),
+                    pvmData: items.map(i => geoMeanOfTxRatios(i.contracts, 'eth_rpc_pvm_gas')),
                     altData: altData,
                     title: title,
                     canDrillDown: true
@@ -832,12 +854,12 @@ export function drilldownChartScript(hierarchy: GasHierarchyData): string {
                     items = dataset.contracts;
                     title = 'Avg Gas by Contract: ' + parent + suffix + ' (click to drill down, right-click to go back)';
                     gasAltImplLabels.forEach(function(lbl) {
-                        altData[lbl] = items.map(function(i) { return avgAltPctDiffsForContract(i, lbl); });
+                        altData[lbl] = items.map(function(i) { return geoMeanAltRatiosForContract(i, lbl); });
                     });
                     return {
                         labels: items.map(i => i.name),
-                        evmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_evm_gas')),
-                        pvmData: items.map(i => avgOfPctDiffs(i.transactions, 'eth_rpc_pvm_gas')),
+                        evmData: items.map(i => geoMeanOfChildRatios(i.transactions, 'eth_rpc_evm_gas')),
+                        pvmData: items.map(i => geoMeanOfChildRatios(i.transactions, 'eth_rpc_pvm_gas')),
                         altData: altData,
                         title: title,
                         canDrillDown: true
@@ -1048,7 +1070,7 @@ export function gasAnalysisFilterControls(): string {
         </label>
         <span class="excl-indicator" style="display:none"></span>
     </div>
-    <p class="table-note">Dataset and contract rows show the average gas for the Solidity implementation. Colored ranges show the min..max across all PVM implementations. Click a transaction row to exclude it.</p>
+    <p class="table-note">Dataset and contract rows show the average gas for the Solidity implementation. Colored ranges show the min..max across all PVM implementations. Chart uses geometric mean of ratios (not arithmetic mean of % differences). Click a transaction row to exclude it.</p>
     `
 }
 
@@ -1271,36 +1293,32 @@ export interface WeightRow {
     pvm_ref_time: number | null
     evm_proof_size: number | null
     pvm_proof_size: number | null
-    evm_actual_pov: number | null
-    pvm_actual_pov: number | null
-    evm_benchmarked_pov: number | null
-    pvm_benchmarked_pov: number | null
     evm_metered_pct: number | null
     pvm_metered_pct: number | null
     evm_metered_pct_proof_size: number | null
     pvm_metered_pct_proof_size: number | null
     evm_metered_ref_time: number | null
     pvm_metered_ref_time: number | null
+    evm_post_dispatch_pov: number | null
+    pvm_post_dispatch_pov: number | null
 }
 
 export interface AltWeightImpl {
     name: string
     pvm_ref_time: number | null
     pvm_proof_size: number | null
-    pvm_actual_pov: number | null
-    pvm_benchmarked_pov: number | null
     pvm_metered_pct: number | null
     pvm_metered_pct_proof_size: number | null
     pvm_metered_ref_time: number | null
+    pvm_post_dispatch_pov: number | null
     transactions: Array<{
         name: string
         pvm_ref_time: number | null
         pvm_proof_size: number | null
-        pvm_actual_pov: number | null
-        pvm_benchmarked_pov: number | null
         pvm_metered_pct: number | null
         pvm_metered_pct_proof_size: number | null
         pvm_metered_ref_time: number | null
+        pvm_post_dispatch_pov: number | null
     }>
 }
 
@@ -1319,21 +1337,6 @@ export interface WeightHierarchyData {
 
 function formatWeight(value: number | null): string {
     return value !== null ? value.toLocaleString() : 'N/A'
-}
-
-function formatActualPov(value: number | null): string {
-    return value !== null ? value.toLocaleString() : '-'
-}
-
-function formatPovOvercharge(
-    meteredProofSize: number | null,
-    actualPov: number | null,
-): string {
-    if (actualPov === null || actualPov === 0 || meteredProofSize === null) {
-        return 'N/A'
-    }
-    const ratio = meteredProofSize / actualPov
-    return `${ratio.toFixed(1)}x`
 }
 
 function formatWeightWithPct(
@@ -1386,12 +1389,12 @@ export function drilldownWeightChartScript(
                             pvm_ref_time: avgOfFiltered(filteredTxs, 'pvm_ref_time'),
                             evm_proof_size: avgOfFiltered(filteredTxs, 'evm_proof_size'),
                             pvm_proof_size: avgOfFiltered(filteredTxs, 'pvm_proof_size'),
-                            evm_actual_pov: avgOfFiltered(filteredTxs, 'evm_actual_pov'),
-                            pvm_actual_pov: avgOfFiltered(filteredTxs, 'pvm_actual_pov'),
                             evm_metered_pct: avgPctOfFiltered(filteredTxs, 'evm_metered_pct'),
                             pvm_metered_pct: avgPctOfFiltered(filteredTxs, 'pvm_metered_pct'),
                             evm_metered_ref_time: avgOfFiltered(filteredTxs, 'evm_metered_ref_time'),
                             pvm_metered_ref_time: avgOfFiltered(filteredTxs, 'pvm_metered_ref_time'),
+                            evm_post_dispatch_pov: avgOfFiltered(filteredTxs, 'evm_post_dispatch_pov'),
+                            pvm_post_dispatch_pov: avgOfFiltered(filteredTxs, 'pvm_post_dispatch_pov'),
                             transactions: filteredTxs,
                             alt_implementations: filteredAlts
                         };
@@ -1405,12 +1408,12 @@ export function drilldownWeightChartScript(
                         pvm_ref_time: avgOfFiltered(allTxs, 'pvm_ref_time'),
                         evm_proof_size: avgOfFiltered(allTxs, 'evm_proof_size'),
                         pvm_proof_size: avgOfFiltered(allTxs, 'pvm_proof_size'),
-                        evm_actual_pov: avgOfFiltered(allTxs, 'evm_actual_pov'),
-                        pvm_actual_pov: avgOfFiltered(allTxs, 'pvm_actual_pov'),
                         evm_metered_pct: avgPctOfFiltered(allTxs, 'evm_metered_pct'),
                         pvm_metered_pct: avgPctOfFiltered(allTxs, 'pvm_metered_pct'),
                         evm_metered_ref_time: avgOfFiltered(allTxs, 'evm_metered_ref_time'),
-                        pvm_metered_ref_time: avgOfFiltered(allTxs, 'pvm_metered_ref_time')
+                        pvm_metered_ref_time: avgOfFiltered(allTxs, 'pvm_metered_ref_time'),
+                        evm_post_dispatch_pov: avgOfFiltered(allTxs, 'evm_post_dispatch_pov'),
+                        pvm_post_dispatch_pov: avgOfFiltered(allTxs, 'pvm_post_dispatch_pov')
                     };
                 }).filter(d => d.contracts.length > 0)
             };
@@ -1660,9 +1663,6 @@ export function drilldownWeightChartScript(
             chart.data.datasets[1].hidden = false;
             chart.data.datasets[3].hidden = false;
 
-            // Sync PoV chart to same drill level
-            updatePovChart(level, parent);
-
             // Update tooltip pct data
             var pctEntries = [
                 { key: 'evm', label: 'EVM', pct: data.evmMeteredPct },
@@ -1731,23 +1731,20 @@ export function drilldownWeightChartScript(
                 var cells = row.querySelectorAll('td');
                 var evmMet = meteredPs(v.evm_proof_size, v.evm_metered_pct_proof_size);
                 var pvmMet = meteredPs(v.pvm_proof_size, v.pvm_metered_pct_proof_size);
-                // EVM: base_call, metered, benchmarked, actual
+                // EVM: base_call, metered, post_dispatch
                 cells[1].innerHTML = fmtWeight(v.evm_proof_size);
                 cells[2].innerHTML = fmtWeightPct(evmMet, v.evm_metered_pct_proof_size);
-                cells[3].innerHTML = fmtWeight(v.evm_benchmarked_pov);
-                cells[4].innerHTML = fmtActualPov(v.evm_actual_pov);
-                // PVM: base_call, metered, benchmarked, actual
-                cells[5].innerHTML = rangeProof ? jsWithRange(fmtWeight(v.pvm_proof_size), rangeProof, fmtCompact) : fmtWeight(v.pvm_proof_size);
-                cells[6].innerHTML = fmtWeightPct(pvmMet, v.pvm_metered_pct_proof_size);
-                cells[7].innerHTML = fmtWeight(v.pvm_benchmarked_pov);
-                cells[8].innerHTML = fmtActualPov(v.pvm_actual_pov);
-                // Delta: base_call, metered, actual
-                cells[9].innerHTML = rangeProof ? jsWithDiffRange(fmtDiff(v.evm_proof_size, v.pvm_proof_size), v.evm_proof_size, rangeProof) : fmtDiff(v.evm_proof_size, v.pvm_proof_size);
-                cells[10].innerHTML = fmtDiff(evmMet, pvmMet);
-                cells[11].innerHTML = fmtDiff(v.evm_actual_pov, v.pvm_actual_pov);
+                cells[3].innerHTML = fmtWeight(v.evm_post_dispatch_pov !== undefined ? v.evm_post_dispatch_pov : null);
+                // PVM: base_call, metered, post_dispatch
+                cells[4].innerHTML = rangeProof ? jsWithRange(fmtWeight(v.pvm_proof_size), rangeProof, fmtCompact) : fmtWeight(v.pvm_proof_size);
+                cells[5].innerHTML = fmtWeightPct(pvmMet, v.pvm_metered_pct_proof_size);
+                cells[6].innerHTML = fmtWeight(v.pvm_post_dispatch_pov !== undefined ? v.pvm_post_dispatch_pov : null);
+                // Delta: base_call, metered, post_dispatch
+                cells[7].innerHTML = rangeProof ? jsWithDiffRange(fmtDiff(v.evm_proof_size, v.pvm_proof_size), v.evm_proof_size, rangeProof) : fmtDiff(v.evm_proof_size, v.pvm_proof_size);
+                cells[8].innerHTML = fmtDiff(evmMet, pvmMet);
+                cells[9].innerHTML = fmtDiff(v.evm_post_dispatch_pov !== undefined ? v.evm_post_dispatch_pov : null, v.pvm_post_dispatch_pov !== undefined ? v.pvm_post_dispatch_pov : null);
             }
 
-            // Helper: compute weight avgs from array of txs
             function wAvgs(txs) {
                 return {
                     evm_ref_time: avgArr(txs.map(function(t){ return t.evm_ref_time; })),
@@ -1755,15 +1752,13 @@ export function drilldownWeightChartScript(
                     evm_metered_pct: avgPctArr(txs.map(function(t){ return t.evm_metered_pct; })),
                     evm_proof_size: avgArr(txs.map(function(t){ return t.evm_proof_size; })),
                     evm_metered_pct_proof_size: avgPctArr(txs.map(function(t){ return t.evm_metered_pct_proof_size; })),
-                    evm_actual_pov: avgArr(txs.map(function(t){ return t.evm_actual_pov; })),
-                    evm_benchmarked_pov: avgArr(txs.map(function(t){ return t.evm_benchmarked_pov; })),
+                    evm_post_dispatch_pov: avgArr(txs.map(function(t){ return t.evm_post_dispatch_pov; })),
                     pvm_ref_time: avgArr(txs.map(function(t){ return t.pvm_ref_time; })),
                     pvm_metered_ref_time: avgArr(txs.map(function(t){ return t.pvm_metered_ref_time; })),
                     pvm_metered_pct: avgPctArr(txs.map(function(t){ return t.pvm_metered_pct; })),
                     pvm_proof_size: avgArr(txs.map(function(t){ return t.pvm_proof_size; })),
                     pvm_metered_pct_proof_size: avgPctArr(txs.map(function(t){ return t.pvm_metered_pct_proof_size; })),
-                    pvm_actual_pov: avgArr(txs.map(function(t){ return t.pvm_actual_pov; })),
-                    pvm_benchmarked_pov: avgArr(txs.map(function(t){ return t.pvm_benchmarked_pov; })),
+                    pvm_post_dispatch_pov: avgArr(txs.map(function(t){ return t.pvm_post_dispatch_pov; })),
                 };
             }
 
@@ -1903,176 +1898,6 @@ export function drilldownWeightChartScript(
     `
 }
 
-export function povChartScript(hierarchy: WeightHierarchyData): string {
-    return `
-        (function() {
-            var povHierarchyOriginal = ${JSON.stringify(hierarchy)};
-            var povHierarchy = JSON.parse(JSON.stringify(povHierarchyOriginal));
-
-            function filterPovHierarchy() {
-                if (excludedTxKeys.size === 0) {
-                    povHierarchy = JSON.parse(JSON.stringify(povHierarchyOriginal));
-                    return;
-                }
-                povHierarchy = JSON.parse(JSON.stringify(povHierarchyOriginal));
-                povHierarchy.datasets.forEach(function(ds) {
-                    ds.contracts.forEach(function(c) {
-                        c.transactions = c.transactions.filter(function(tx) {
-                            return !excludedTxKeys.has(c.name + ':' + tx.name);
-                        });
-                    });
-                });
-            }
-
-            function getPovData(level, parent) {
-                var items = [];
-                var title = '';
-                if (level === 'datasets') {
-                    items = povHierarchy.datasets;
-                    title = 'Avg proof_size per Transaction by Dataset (synced with weight chart)';
-                } else if (level === 'contracts' && parent) {
-                    var ds = povHierarchy.datasets.find(function(d) { return d.name === parent; });
-                    if (ds) { items = ds.contracts; title = 'Avg proof_size per Transaction: ' + parent; }
-                } else if (level === 'transactions' && parent) {
-                    for (var di = 0; di < povHierarchy.datasets.length; di++) {
-                        var c = povHierarchy.datasets[di].contracts.find(function(c) { return c.name === parent; });
-                        if (c) { items = c.transactions; title = 'proof_size by Transaction: ' + parent; break; }
-                    }
-                }
-
-                // For aggregated levels (datasets, contracts), compute averages from transactions
-                function avgField(txs, field) {
-                    var vals = txs.map(function(t) { return t[field]; }).filter(function(v) { return v !== null; });
-                    return vals.length > 0 ? Math.round(vals.reduce(function(s, v) { return s + v; }, 0) / vals.length) : null;
-                }
-
-                var labels = items.map(function(i) { return i.name; });
-                var evmBench = [], pvmBench = [], evmActual = [], pvmActual = [];
-
-                if (level === 'transactions') {
-                    evmBench = items.map(function(i) { return i.evm_benchmarked_pov; });
-                    pvmBench = items.map(function(i) { return i.pvm_benchmarked_pov; });
-                    evmActual = items.map(function(i) { return i.evm_actual_pov; });
-                    pvmActual = items.map(function(i) { return i.pvm_actual_pov; });
-                } else if (level === 'contracts') {
-                    items.forEach(function(contract) {
-                        evmBench.push(avgField(contract.transactions, 'evm_benchmarked_pov'));
-                        pvmBench.push(avgField(contract.transactions, 'pvm_benchmarked_pov'));
-                        evmActual.push(avgField(contract.transactions, 'evm_actual_pov'));
-                        pvmActual.push(avgField(contract.transactions, 'pvm_actual_pov'));
-                    });
-                } else {
-                    items.forEach(function(dataset) {
-                        var allTxs = [];
-                        dataset.contracts.forEach(function(c) { c.transactions.forEach(function(t) { allTxs.push(t); }); });
-                        evmBench.push(avgField(allTxs, 'evm_benchmarked_pov'));
-                        pvmBench.push(avgField(allTxs, 'pvm_benchmarked_pov'));
-                        evmActual.push(avgField(allTxs, 'evm_actual_pov'));
-                        pvmActual.push(avgField(allTxs, 'pvm_actual_pov'));
-                    });
-                }
-
-                return { labels: labels, evmBench: evmBench, pvmBench: pvmBench, evmActual: evmActual, pvmActual: pvmActual, title: title };
-            }
-
-            // Click to drill down on PoV chart
-            document.getElementById('povAnalysisChart').onclick = function(evt) {
-                var chart = Chart.getChart('povAnalysisChart');
-                var points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
-                if (points.length > 0) {
-                    var index = points[0].index;
-                    var label = chart.data.labels[index];
-                    if (weightCurrentLevel === 'datasets') {
-                        updateWeightChart('contracts', label);
-                    } else if (weightCurrentLevel === 'contracts') {
-                        updateWeightChart('transactions', label);
-                    }
-                }
-            };
-
-            // Right-click to go back on PoV chart
-            document.getElementById('povAnalysisChart').oncontextmenu = function(evt) {
-                evt.preventDefault();
-                if (weightCurrentLevel === 'transactions') {
-                    for (var di = 0; di < weightHierarchy.datasets.length; di++) {
-                        if (weightHierarchy.datasets[di].contracts.find(function(c) { return c.name === weightCurrentParent; })) {
-                            updateWeightChart('contracts', weightHierarchy.datasets[di].name);
-                            return;
-                        }
-                    }
-                } else if (weightCurrentLevel === 'contracts') {
-                    updateWeightChart('datasets', null);
-                }
-            };
-
-            window.updatePovChart = function(level, parent) {
-                filterPovHierarchy();
-                var chart = Chart.getChart('povAnalysisChart');
-                if (!chart) return;
-                var data = getPovData(level, parent);
-                chart.data.labels = data.labels;
-                chart.data.datasets[0].data = data.evmBench;
-                chart.data.datasets[1].data = data.evmActual;
-                chart.data.datasets[2].data = data.pvmBench;
-                chart.data.datasets[3].data = data.pvmActual;
-                chart.options.plugins.title.text = data.title;
-                chart.update();
-            };
-
-            var initData = getPovData('datasets', null);
-            new Chart(document.getElementById('povAnalysisChart'), {
-                type: 'bar',
-                data: {
-                    labels: initData.labels,
-                    datasets: [
-                        {
-                            label: 'EVM Benchmarked',
-                            data: initData.evmBench,
-                            backgroundColor: 'rgba(13, 110, 253, 0.5)',
-                            borderColor: 'rgba(13, 110, 253, 1)',
-                            borderWidth: 1,
-                        },
-                        {
-                            label: 'EVM Consumed',
-                            data: initData.evmActual,
-                            backgroundColor: 'rgba(13, 110, 253, 0.9)',
-                            borderColor: 'rgba(13, 110, 253, 1)',
-                            borderWidth: 1,
-                        },
-                        {
-                            label: 'PVM Benchmarked',
-                            data: initData.pvmBench,
-                            backgroundColor: 'rgba(25, 135, 84, 0.5)',
-                            borderColor: 'rgba(25, 135, 84, 1)',
-                            borderWidth: 1,
-                        },
-                        {
-                            label: 'PVM Consumed',
-                            data: initData.pvmActual,
-                            backgroundColor: 'rgba(25, 135, 84, 0.9)',
-                            borderColor: 'rgba(25, 135, 84, 1)',
-                            borderWidth: 1,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        title: { display: true, text: initData.title },
-                        legend: { position: 'top' },
-                    },
-                    scales: {
-                        x: { ticks: { maxRotation: 45, minRotation: 45 } },
-                        y: { beginAtZero: true, title: { display: true, text: 'proof_size (bytes)' } },
-                    },
-                },
-            });
-        })();
-    `
-}
-
 export function weightAnalysisFilterControls(): string {
     return `
     <div class="filter-controls">
@@ -2095,7 +1920,9 @@ export function weightAnalysisFilterControls(): string {
     `
 }
 
-export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable: string; proofSizeTable: string } {
+export function expandableWeightTable(
+    data: WeightHierarchyData,
+): { refTimeTable: string; proofSizeTable: string } {
     type WeightTx =
         WeightHierarchyData['datasets'][0]['contracts'][0]['transactions'][0]
     function avgWeight(txs: WeightTx[], key: keyof WeightTx): number | null {
@@ -2125,16 +1952,20 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
             evm_metered_ref_time: avgWeight(txs, 'evm_metered_ref_time'),
             evm_metered_pct: avgPct(txs, 'evm_metered_pct'),
             evm_proof_size: avgWeight(txs, 'evm_proof_size'),
-            evm_metered_pct_proof_size: avgPct(txs, 'evm_metered_pct_proof_size'),
-            evm_actual_pov: avgWeight(txs, 'evm_actual_pov'),
-            evm_benchmarked_pov: avgWeight(txs, 'evm_benchmarked_pov'),
+            evm_metered_pct_proof_size: avgPct(
+                txs,
+                'evm_metered_pct_proof_size',
+            ),
+            evm_post_dispatch_pov: avgWeight(txs, 'evm_post_dispatch_pov'),
             pvm_ref_time: avgWeight(txs, 'pvm_ref_time'),
             pvm_metered_ref_time: avgWeight(txs, 'pvm_metered_ref_time'),
             pvm_metered_pct: avgPct(txs, 'pvm_metered_pct'),
             pvm_proof_size: avgWeight(txs, 'pvm_proof_size'),
-            pvm_metered_pct_proof_size: avgPct(txs, 'pvm_metered_pct_proof_size'),
-            pvm_actual_pov: avgWeight(txs, 'pvm_actual_pov'),
-            pvm_benchmarked_pov: avgWeight(txs, 'pvm_benchmarked_pov'),
+            pvm_metered_pct_proof_size: avgPct(
+                txs,
+                'pvm_metered_pct_proof_size',
+            ),
+            pvm_post_dispatch_pov: avgWeight(txs, 'pvm_post_dispatch_pov'),
         }
     }
 
@@ -2144,7 +1975,6 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
         proof: LabeledValue[]
     }
 
-    // ── Alt tx lookup builder (shared by both tables) ──
     interface AltTxData {
         label: string
         pvm_ref_time: number | null
@@ -2152,8 +1982,7 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
         pvm_metered_pct: number | null
         pvm_proof_size: number | null
         pvm_metered_pct_proof_size: number | null
-        pvm_actual_pov: number | null
-        pvm_benchmarked_pov: number | null
+        pvm_post_dispatch_pov: number | null
     }
 
     function buildAltTxLookup(
@@ -2172,9 +2001,9 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
                         pvm_metered_ref_time: tx.pvm_metered_ref_time,
                         pvm_metered_pct: tx.pvm_metered_pct,
                         pvm_proof_size: tx.pvm_proof_size,
-                        pvm_metered_pct_proof_size: tx.pvm_metered_pct_proof_size,
-                        pvm_actual_pov: tx.pvm_actual_pov,
-                        pvm_benchmarked_pov: tx.pvm_benchmarked_pov,
+                        pvm_metered_pct_proof_size:
+                            tx.pvm_metered_pct_proof_size,
+                        pvm_post_dispatch_pov: tx.pvm_post_dispatch_pov,
                     })
                 }
             }
@@ -2234,29 +2063,53 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
         const cells: string[] = []
         // EVM
         cells.push(td(formatWeight(v.evm_ref_time), true))
-        cells.push(td(formatWeightWithPct(v.evm_metered_ref_time, v.evm_metered_pct)))
+        cells.push(
+            td(formatWeightWithPct(v.evm_metered_ref_time, v.evm_metered_pct)),
+        )
         // PVM
         cells.push(td(
             rangeAll?.ref
-                ? withRange(formatWeight(v.pvm_ref_time), rangeAll.ref, formatCompact)
+                ? withRange(
+                    formatWeight(v.pvm_ref_time),
+                    rangeAll.ref,
+                    formatCompact,
+                )
                 : formatWeight(v.pvm_ref_time),
             true,
         ))
         cells.push(td(
             rangeAll?.metered
-                ? withRange(formatWeightWithPct(v.pvm_metered_ref_time, v.pvm_metered_pct), rangeAll.metered, formatCompact)
-                : formatWeightWithPct(v.pvm_metered_ref_time, v.pvm_metered_pct),
+                ? withRange(
+                    formatWeightWithPct(
+                        v.pvm_metered_ref_time,
+                        v.pvm_metered_pct,
+                    ),
+                    rangeAll.metered,
+                    formatCompact,
+                )
+                : formatWeightWithPct(
+                    v.pvm_metered_ref_time,
+                    v.pvm_metered_pct,
+                ),
         ))
         // Delta
         cells.push(td(
             rangeAll
-                ? withDiffRange(calcDiff(v.evm_ref_time, v.pvm_ref_time), v.evm_ref_time, rangeAll.ref)
+                ? withDiffRange(
+                    calcDiff(v.evm_ref_time, v.pvm_ref_time),
+                    v.evm_ref_time,
+                    rangeAll.ref,
+                )
                 : calcDiff(v.evm_ref_time, v.pvm_ref_time),
             true,
         ))
         cells.push(td(
             rangeAll
-                ? withDiffRange(calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time), v.evm_metered_ref_time, rangeAll.metered)
+                ? withDiffRange(
+                    calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time),
+                    v.evm_metered_ref_time,
+                    rangeAll.metered,
+                )
                 : calcDiff(v.evm_metered_ref_time, v.pvm_metered_ref_time),
         ))
         return cells.join('')
@@ -2286,26 +2139,66 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
             for (const tx of contract.transactions) {
                 const wTag = hasAlts ? ' ' + implTag('solidity') : ''
                 rtRows.push(`
-                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
+                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${
+                    escAttr(tx.name)
+                }" data-dataset="${escAttr(dataset.name)}" data-contract="${
+                    escAttr(contract.name)
+                }">
                         <td>${tx.name}${wTag}</td>
-                        <td class="number group-start">${formatWeight(tx.evm_ref_time)}</td>
-                        <td class="number">${formatWeightWithPct(tx.evm_metered_ref_time, tx.evm_metered_pct)}</td>
-                        <td class="number group-start">${formatWeight(tx.pvm_ref_time)}</td>
-                        <td class="number">${formatWeightWithPct(tx.pvm_metered_ref_time, tx.pvm_metered_pct)}</td>
-                        <td class="number group-start">${calcDiff(tx.evm_ref_time, tx.pvm_ref_time)}</td>
-                        <td class="number">${calcDiff(tx.evm_metered_ref_time, tx.pvm_metered_ref_time)}</td>
+                        <td class="number group-start">${
+                    formatWeight(tx.evm_ref_time)
+                }</td>
+                        <td class="number">${
+                    formatWeightWithPct(
+                        tx.evm_metered_ref_time,
+                        tx.evm_metered_pct,
+                    )
+                }</td>
+                        <td class="number group-start">${
+                    formatWeight(tx.pvm_ref_time)
+                }</td>
+                        <td class="number">${
+                    formatWeightWithPct(
+                        tx.pvm_metered_ref_time,
+                        tx.pvm_metered_pct,
+                    )
+                }</td>
+                        <td class="number group-start">${
+                    calcDiff(tx.evm_ref_time, tx.pvm_ref_time)
+                }</td>
+                        <td class="number">${
+                    calcDiff(tx.evm_metered_ref_time, tx.pvm_metered_ref_time)
+                }</td>
                     </tr>
                 `)
                 for (const alt of (altByName.get(tx.name) || [])) {
                     rtRows.push(`
-                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
+                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}" data-txname="${
+                        escAttr(tx.name)
+                    }" data-dataset="${escAttr(dataset.name)}" data-contract="${
+                        escAttr(contract.name)
+                    }">
                             <td>${tx.name} ${implTag(alt.label)}</td>
                             <td class="number group-start"></td>
                             <td class="number"></td>
-                            <td class="number group-start">${formatWeight(alt.pvm_ref_time)}</td>
-                            <td class="number">${formatWeightWithPct(alt.pvm_metered_ref_time, alt.pvm_metered_pct)}</td>
-                            <td class="number group-start">${calcDiff(tx.evm_ref_time, alt.pvm_ref_time)}</td>
-                            <td class="number">${calcDiff(tx.evm_metered_ref_time, alt.pvm_metered_ref_time)}</td>
+                            <td class="number group-start">${
+                        formatWeight(alt.pvm_ref_time)
+                    }</td>
+                            <td class="number">${
+                        formatWeightWithPct(
+                            alt.pvm_metered_ref_time,
+                            alt.pvm_metered_pct,
+                        )
+                    }</td>
+                            <td class="number group-start">${
+                        calcDiff(tx.evm_ref_time, alt.pvm_ref_time)
+                    }</td>
+                            <td class="number">${
+                        calcDiff(
+                            tx.evm_metered_ref_time,
+                            alt.pvm_metered_ref_time,
+                        )
+                    }</td>
                         </tr>
                     `)
                 }
@@ -2366,32 +2259,50 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
         rangeAll?: PvmRanges,
     ) {
         const cells: string[] = []
-        const evmMetered = meteredProofSize(v.evm_proof_size, v.evm_metered_pct_proof_size)
-        const pvmMetered = meteredProofSize(v.pvm_proof_size, v.pvm_metered_pct_proof_size)
-        // EVM
+        const evmMetered = meteredProofSize(
+            v.evm_proof_size,
+            v.evm_metered_pct_proof_size,
+        )
+        const pvmMetered = meteredProofSize(
+            v.pvm_proof_size,
+            v.pvm_metered_pct_proof_size,
+        )
+        // EVM: base_call, metered, post_dispatch
         cells.push(td(formatWeight(v.evm_proof_size), true))
-        cells.push(td(formatWeightWithPct(evmMetered, v.evm_metered_pct_proof_size)))
-        cells.push(td(formatWeight(v.evm_benchmarked_pov)))
-        cells.push(td(formatActualPov(v.evm_actual_pov)))
-        // PVM
+        cells.push(
+            td(formatWeightWithPct(evmMetered, v.evm_metered_pct_proof_size)),
+        )
+        cells.push(td(formatWeight(v.evm_post_dispatch_pov)))
+        // PVM: base_call, metered, post_dispatch
         cells.push(td(
             rangeAll?.proof
-                ? withRange(formatWeight(v.pvm_proof_size), rangeAll.proof, formatCompact)
+                ? withRange(
+                    formatWeight(v.pvm_proof_size),
+                    rangeAll.proof,
+                    formatCompact,
+                )
                 : formatWeight(v.pvm_proof_size),
             true,
         ))
-        cells.push(td(formatWeightWithPct(pvmMetered, v.pvm_metered_pct_proof_size)))
-        cells.push(td(formatWeight(v.pvm_benchmarked_pov)))
-        cells.push(td(formatActualPov(v.pvm_actual_pov)))
-        // Delta
+        cells.push(
+            td(formatWeightWithPct(pvmMetered, v.pvm_metered_pct_proof_size)),
+        )
+        cells.push(td(formatWeight(v.pvm_post_dispatch_pov)))
+        // Delta: base_call, metered, post_dispatch
         cells.push(td(
             rangeAll
-                ? withDiffRange(calcDiff(v.evm_proof_size, v.pvm_proof_size), v.evm_proof_size, rangeAll.proof)
+                ? withDiffRange(
+                    calcDiff(v.evm_proof_size, v.pvm_proof_size),
+                    v.evm_proof_size,
+                    rangeAll.proof,
+                )
                 : calcDiff(v.evm_proof_size, v.pvm_proof_size),
             true,
         ))
         cells.push(td(calcDiff(evmMetered, pvmMetered)))
-        cells.push(td(calcDiff(v.evm_actual_pov, v.pvm_actual_pov)))
+        cells.push(
+            td(calcDiff(v.evm_post_dispatch_pov, v.pvm_post_dispatch_pov)),
+        )
         return cells.join('')
     }
 
@@ -2419,38 +2330,111 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
             for (const tx of contract.transactions) {
                 const wTag = hasAlts ? ' ' + implTag('solidity') : ''
                 psRows.push(`
-                    <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
-                        <td>${tx.name}${wTag}</td>
-                        <td class="number group-start">${formatWeight(tx.evm_proof_size)}</td>
-                        <td class="number">${formatWeightWithPct(meteredProofSize(tx.evm_proof_size, tx.evm_metered_pct_proof_size), tx.evm_metered_pct_proof_size)}</td>
-                        <td class="number">${formatWeight(tx.evm_benchmarked_pov)}</td>
-                        <td class="number">${formatActualPov(tx.evm_actual_pov)}</td>
-                        <td class="number group-start">${formatWeight(tx.pvm_proof_size)}</td>
-                        <td class="number">${formatWeightWithPct(meteredProofSize(tx.pvm_proof_size, tx.pvm_metered_pct_proof_size), tx.pvm_metered_pct_proof_size)}</td>
-                        <td class="number">${formatWeight(tx.pvm_benchmarked_pov)}</td>
-                        <td class="number">${formatActualPov(tx.pvm_actual_pov)}</td>
-                        <td class="number group-start">${calcDiff(tx.evm_proof_size, tx.pvm_proof_size)}</td>
-                        <td class="number">${calcDiff(meteredProofSize(tx.evm_proof_size, tx.evm_metered_pct_proof_size), meteredProofSize(tx.pvm_proof_size, tx.pvm_metered_pct_proof_size))}</td>
-                        <td class="number">${calcDiff(tx.evm_actual_pov, tx.pvm_actual_pov)}</td>
-                    </tr>
-                `)
-                for (const alt of (altByName.get(tx.name) || [])) {
-                    psRows.push(`
-                        <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}" data-txname="${escAttr(tx.name)}" data-dataset="${escAttr(dataset.name)}" data-contract="${escAttr(contract.name)}">
-                            <td>${tx.name} ${implTag(alt.label)}</td>
-                            <td class="number group-start"></td>
-                            <td class="number"></td>
-                            <td class="number"></td>
-                            <td class="number"></td>
-                            <td class="number group-start">${formatWeight(alt.pvm_proof_size)}</td>
-                            <td class="number">${formatWeightWithPct(meteredProofSize(alt.pvm_proof_size, alt.pvm_metered_pct_proof_size), alt.pvm_metered_pct_proof_size)}</td>
-                            <td class="number">${formatWeight(alt.pvm_benchmarked_pov)}</td>
-                            <td class="number">${formatActualPov(alt.pvm_actual_pov)}</td>
-                            <td class="number group-start">${calcDiff(tx.evm_proof_size, alt.pvm_proof_size)}</td>
-                            <td class="number">${calcDiff(meteredProofSize(tx.evm_proof_size, tx.evm_metered_pct_proof_size), meteredProofSize(alt.pvm_proof_size, alt.pvm_metered_pct_proof_size))}</td>
-                            <td class="number">${calcDiff(tx.evm_actual_pov, alt.pvm_actual_pov)}</td>
+                        <tr class="level-2 hidden-row" data-level="2" data-parent="${contractId}" data-txname="${
+                    escAttr(tx.name)
+                }" data-dataset="${escAttr(dataset.name)}" data-contract="${
+                    escAttr(contract.name)
+                }">
+                            <td>${tx.name}${wTag}</td>
+                            <td class="number group-start">${
+                    formatWeight(tx.evm_proof_size)
+                }</td>
+                            <td class="number">${
+                    formatWeightWithPct(
+                        meteredProofSize(
+                            tx.evm_proof_size,
+                            tx.evm_metered_pct_proof_size,
+                        ),
+                        tx.evm_metered_pct_proof_size,
+                    )
+                }</td>
+                            <td class="number">${
+                    formatWeight(tx.evm_post_dispatch_pov)
+                }</td>
+                            <td class="number group-start">${
+                    formatWeight(tx.pvm_proof_size)
+                }</td>
+                            <td class="number">${
+                    formatWeightWithPct(
+                        meteredProofSize(
+                            tx.pvm_proof_size,
+                            tx.pvm_metered_pct_proof_size,
+                        ),
+                        tx.pvm_metered_pct_proof_size,
+                    )
+                }</td>
+                            <td class="number">${
+                    formatWeight(tx.pvm_post_dispatch_pov)
+                }</td>
+                            <td class="number group-start">${
+                    calcDiff(tx.evm_proof_size, tx.pvm_proof_size)
+                }</td>
+                            <td class="number">${
+                    calcDiff(
+                        meteredProofSize(
+                            tx.evm_proof_size,
+                            tx.evm_metered_pct_proof_size,
+                        ),
+                        meteredProofSize(
+                            tx.pvm_proof_size,
+                            tx.pvm_metered_pct_proof_size,
+                        ),
+                    )
+                }</td>
+                            <td class="number">${
+                    calcDiff(tx.evm_post_dispatch_pov, tx.pvm_post_dispatch_pov)
+                }</td>
                         </tr>
                     `)
+                for (const alt of (altByName.get(tx.name) || [])) {
+                    psRows.push(`
+                            <tr class="level-2 hidden-row alt-impl-row" data-level="2" data-parent="${contractId}" data-txname="${
+                        escAttr(tx.name)
+                    }" data-dataset="${escAttr(dataset.name)}" data-contract="${
+                        escAttr(contract.name)
+                    }">
+                                <td>${tx.name} ${implTag(alt.label)}</td>
+                                <td class="number group-start"></td>
+                                <td class="number"></td>
+                                <td class="number"></td>
+                                <td class="number group-start">${
+                        formatWeight(alt.pvm_proof_size)
+                    }</td>
+                                <td class="number">${
+                        formatWeightWithPct(
+                            meteredProofSize(
+                                alt.pvm_proof_size,
+                                alt.pvm_metered_pct_proof_size,
+                            ),
+                            alt.pvm_metered_pct_proof_size,
+                        )
+                    }</td>
+                                <td class="number">${
+                        formatWeight(alt.pvm_post_dispatch_pov)
+                    }</td>
+                                <td class="number group-start">${
+                        calcDiff(tx.evm_proof_size, alt.pvm_proof_size)
+                    }</td>
+                                <td class="number">${
+                        calcDiff(
+                            meteredProofSize(
+                                tx.evm_proof_size,
+                                tx.evm_metered_pct_proof_size,
+                            ),
+                            meteredProofSize(
+                                alt.pvm_proof_size,
+                                alt.pvm_metered_pct_proof_size,
+                            ),
+                        )
+                    }</td>
+                                <td class="number">${
+                        calcDiff(
+                            tx.evm_post_dispatch_pov,
+                            alt.pvm_post_dispatch_pov,
+                        )
+                    }</td>
+                            </tr>
+                        `)
                 }
             }
         }
@@ -2469,22 +2453,20 @@ export function expandableWeightTable(data: WeightHierarchyData): { refTimeTable
         <thead>
             <tr>
                 <th rowspan="2">Name</th>
-                <th colspan="4" class="group-header group-start">EVM</th>
-                <th colspan="4" class="group-header group-start">PVM</th>
+                <th colspan="3" class="group-header group-start">EVM</th>
+                <th colspan="3" class="group-header group-start">PVM</th>
                 <th colspan="3" class="group-header group-start">Δ (PVM vs EVM)</th>
             </tr>
             <tr>
                 <th class="number group-start">base_call</th>
                 <th class="number">metered</th>
-                <th class="number">benchmarked</th>
-                <th class="number">consumed</th>
+                <th class="number">post_dispatch</th>
                 <th class="number group-start">base_call</th>
                 <th class="number">metered</th>
-                <th class="number">benchmarked</th>
-                <th class="number">consumed</th>
+                <th class="number">post_dispatch</th>
                 <th class="number group-start">base_call</th>
                 <th class="number">metered</th>
-                <th class="number">consumed</th>
+                <th class="number">post_dispatch</th>
             </tr>
         </thead>
         <tbody>

@@ -94,30 +94,6 @@ Each contract is an `Artifact` with:
 - `evm_pvm_summary.md` - Comprehensive EVM vs PVM cost analysis
 - `benchmark_report.html` - Interactive HTML report with charts
 
-## Actual PoV Measurement
-
-To measure real proof_size (vs weight estimates), run benchmarks on a parachain node with proof recording:
-
-```sh
-# 1. Start Asset Hub Westend with instant seal + trace logging
-polkadot-parachain --instant-seal --chain asset-hub-westend-local \
-  -lruntime::storage_reclaim_pallet=trace 2>&1 | tee collator.log
-
-# 2. Start eth-rpc pointing at the collator
-pallet-revive-eth-rpc --node-rpc-url ws://127.0.0.1:9944 --dev
-
-# 3. Run benchmarks as usual
-./benchmark/contracts.ts --execute
-
-# 4. Import actual PoV from collator logs
-./benchmark/import-pov.ts collator.log --chain eth-rpc
-
-# 5. Regenerate reports (includes actual PoV section if data exists)
-./benchmark/contracts.ts --report
-```
-
-The `import-pov.ts` script parses `StorageWeightReclaim` log lines and joins on `block_number` to populate the `actual_pov` column in the transactions table.
-
 ## Conventions
 
 - Contract filenames use `snake_case`, contract names use `PascalCase`

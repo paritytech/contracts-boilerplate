@@ -26,6 +26,18 @@ export const datasets: Record<string, Artifacts> = {
     'mixed-workloads': mixedWorkloadsContracts,
 }
 
+/** Short description of each dataset, shown in reports. */
+export const datasetDescriptions: Record<string, string> = {
+    'test-contracts':
+        'Small test contracts used for basic benchmarking (e.g. Fibonacci, SimpleToken).',
+    'ethereum-contracts':
+        'The most actively used contracts on Ethereum in 2025 (e.g. USDT, WETH, USDC, XEN).',
+    'polkadot-contracts':
+        'Real-world contracts being built by teams at Parity for the Polkadot ecosystem.',
+    'mixed-workloads':
+        'Workload from resolc-compiler-tests combining ERC-20 and DEX operations to benchmark interaction patterns.',
+}
+
 /**
  * Dataset categories: dataset name -> contract IDs.
  * Derived from the actual contract definitions — importable by any script

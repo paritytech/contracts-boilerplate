@@ -1,6 +1,12 @@
 import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
-import { Artifacts, ContractInfo, ImplType, loadAddresses, solidity } from '../lib.ts'
+import {
+    Artifacts,
+    ContractInfo,
+    ImplType,
+    loadAddresses,
+    solidity,
+} from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { uploadCodePVM } from '../../tools/lib/pvm.ts'
 import { readBytecode } from '../../utils/index.ts'
@@ -357,7 +363,7 @@ export const mixedWorkloadsContracts: Artifacts = [
         calls: [
             {
                 name: 'swap',
-                exec: async (address) => {
+                exec: (address) => {
                     // @ts-ignore - run `deno task build` to generate ABI
                     return env.wallet.writeContract({
                         address,

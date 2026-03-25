@@ -25,8 +25,6 @@ CREATE TABLE IF NOT EXISTS benchmark_metadata (
     recorded_at TEXT NOT NULL
 );
 
-
-
 CREATE TABLE IF NOT EXISTS transactions (
     hash BLOB NOT NULL,
     chain_name TEXT NOT NULL,
@@ -42,8 +40,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     weight_consumed_proof_size INTEGER,
     base_call_weight_ref_time INTEGER,
     base_call_weight_proof_size INTEGER,
-    actual_pov INTEGER,
-    benchmarked_pov INTEGER,
 
     PRIMARY KEY (hash, chain_name)
 );
@@ -380,8 +376,15 @@ async function jsonRpc(url: string, method: string): Promise<unknown> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', method, id: 1 }),
     })
-    const { result } = await resp.json()
-    return result
+    const json = await resp.json()
+    if (json.error) {
+        throw new Error(
+            `RPC ${method}: ${
+                json.error.message ?? JSON.stringify(json.error)
+            }`,
+        )
+    }
+    return json.result
 }
 
 function getToolVersion(cmd: string, args: string[]): string | null {
@@ -428,17 +431,21 @@ async function recordMetadata() {
     if (isGeth) {
         // Geth: get version from web3_clientVersion
         try {
-            const clientVersion = (await jsonRpc(rpcUrl, 'web3_clientVersion')) as string
+            const clientVersion =
+                (await jsonRpc(rpcUrl, 'web3_clientVersion')) as string
             // e.g. "Geth/v1.14.3-stable-ab48ba42/darwin-arm64/go1.22.3"
             systemName = 'Geth'
-            systemVersion = clientVersion?.match(/v[\d.]+[^ /]*/)?.[0] ?? clientVersion
+            systemVersion = clientVersion?.match(/v[\d.]+[^ /]*/)?.[0] ??
+                clientVersion
             systemChain = 'Geth --dev'
         } catch {
             logger.debug('Could not query geth web3_clientVersion')
         }
     } else {
         // Substrate node: query via substrate RPC on port 9944
-        const nodeUrl = rpcUrl.replace(':8545', ':9944')
+        const parsed = new URL(rpcUrl)
+        parsed.port = '9944'
+        const nodeUrl = parsed.toString().replace(/\/$/, '')
         try {
             const [chain, name, version, runtimeVersion] = await Promise.all([
                 jsonRpc(nodeUrl, 'system_chain'),
@@ -464,9 +471,9 @@ async function recordMetadata() {
     }
 
     const resolcVersion = getToolVersion('resolc', ['--version'])
-        ?.match(/version\s+([\d.]+\+commit\.\w+)/)?.[1] ?? getToolVersion('resolc', ['--version'])
+        ?.match(/version\s+([\d.]+\+commit\.\w+)/)?.[1] ?? null
     const solcVersion = getToolVersion('solc', ['--version'])
-        ?.match(/([\d.]+\+commit\.\w+)/)?.[1] ?? getToolVersion('solc', ['--version'])
+        ?.match(/([\d.]+\+commit\.\w+)/)?.[1] ?? null
 
     db.prepare(`
         INSERT OR REPLACE INTO benchmark_metadata (
@@ -490,7 +497,9 @@ async function recordMetadata() {
     )
 
     logger.debug(
-        `Recorded metadata: chain=${systemChain}, runtime=${specName ?? 'EVM'}@${specVersion ?? ''}, node=${systemName} ${systemVersion}`,
+        `Recorded metadata: chain=${systemChain}, runtime=${
+            specName ?? 'EVM'
+        }@${specVersion ?? ''}, node=${systemName} ${systemVersion}`,
     )
 }
 
