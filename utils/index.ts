@@ -150,21 +150,7 @@ export async function createEnv({
         chain,
     }).extend(publicActions)
 
-    if (serverWallet) {
-        const endowment = parseEther('1000')
-        for (const targetWallet of [wallet, wallet2]) {
-            const address = targetWallet.account.address
-            const balance = await serverWallet.getBalance(targetWallet.account)
-            if (balance < endowment / 2n) {
-                const hash = await serverWallet.sendTransaction({
-                    account: serverWallet.account,
-                    to: address,
-                    value: endowment,
-                })
-                await serverWallet.waitForTransactionReceipt({ hash })
-            }
-        }
-    }
+    await fundWallets(rpcUrl, [wallet, wallet2], serverWallet)
 
     const debugClient = createClient({
         chain,
@@ -262,6 +248,119 @@ export async function createEnv({
         wallet,
         wallet2,
         debugClient,
+    }
+}
+
+/**
+ * Ensure each wallet has at least 500 ETH (in 18-decimal units).
+ *
+ * Tries Alice's Substrate account first (works on omni-node / asset-hub).
+ * Falls back to serverWallet via eth-rpc (works on Geth where there is no Substrate RPC).
+ */
+async function fundWallets(
+    rpcUrl: string,
+    // deno-lint-ignore no-explicit-any
+    wallets: any[],
+    // deno-lint-ignore no-explicit-any
+    serverWallet: any | undefined,
+): Promise<void> {
+    const endowment = parseEther('1000')
+    const threshold = endowment / 2n
+
+    const getUnfunded = async (): Promise<Hex[]> => {
+        const result: Hex[] = []
+        for (const w of wallets) {
+            const balance: bigint = await w.getBalance(w.account)
+            if (balance < threshold) result.push(w.account.address)
+        }
+        return result
+    }
+
+    let addresses = await getUnfunded()
+    if (addresses.length === 0) return
+
+    // Try Alice (Substrate RPC) first — this is the primary path
+    try {
+        await fundFromAlice(rpcUrl, addresses, endowment)
+        addresses = await getUnfunded()
+        if (addresses.length === 0) return
+    } catch {
+        // No Substrate RPC (e.g. Geth) — fall through to serverWallet
+    }
+
+    // Fallback: fund via eth-rpc serverWallet (Geth)
+    if (serverWallet) {
+        for (const address of addresses) {
+            if (address === serverWallet.account.address) continue
+            const hash = await serverWallet.sendTransaction({
+                account: serverWallet.account,
+                to: address,
+                value: endowment,
+            })
+            await serverWallet.waitForTransactionReceipt({ hash })
+        }
+    }
+}
+
+/**
+ * Fund Ethereum addresses from Alice's Substrate account via `balances.transferKeepAlive`.
+ * Alice is pre-funded in every Substrate dev genesis preset.
+ */
+async function fundFromAlice(
+    ethRpcUrl: string,
+    addresses: Hex[],
+    amountEth: bigint,
+): Promise<void> {
+    const { ApiPromise, Keyring, WsProvider } = await import('@polkadot/api')
+
+    const parsed = new URL(ethRpcUrl)
+    parsed.protocol = 'ws:'
+    parsed.port = '9944'
+    const wsUrl = parsed.toString().replace(/\/$/, '')
+
+    const api = await ApiPromise.create({
+        provider: new WsProvider(wsUrl),
+        noInitWarn: true,
+    })
+
+    try {
+        // eth-rpc uses 18 decimals; the native Substrate token may differ.
+        const decimals = api.registry.chainDecimals[0] ?? 12
+        const substrateAmount = decimals < 18
+            ? amountEth / 10n ** BigInt(18 - decimals)
+            : amountEth * 10n ** BigInt(decimals - 18)
+
+        const keyring = new Keyring({ type: 'sr25519' })
+        const alice = keyring.addFromUri('//Alice')
+
+        for (const ethAddr of addresses) {
+            // Pallet-revive maps 20-byte ETH addresses to 32-byte AccountId32
+            // by right-padding with 0xee: `eth_address ++ 0xee * 12`
+            const hex = ethAddr.replace(/^0x/, '').toLowerCase() +
+                'ee'.repeat(12)
+            const dest = new Uint8Array(
+                hex.match(/.{2}/g)!.map((b) => parseInt(b, 16)),
+            )
+
+            await new Promise<void>((resolve, reject) => {
+                api.tx.balances
+                    .transferKeepAlive(dest, substrateAmount)
+                    .signAndSend(alice, ({ status, dispatchError }) => {
+                        if (dispatchError) {
+                            reject(
+                                new Error(
+                                    `Fund ${ethAddr}: ${dispatchError.toString()}`,
+                                ),
+                            )
+                        } else if (status.isInBlock || status.isFinalized) {
+                            resolve()
+                        }
+                    })
+                    .catch(reject)
+            })
+        }
+    } finally {
+        await api.disconnect()
     }
 }
 
