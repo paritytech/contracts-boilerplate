@@ -231,18 +231,19 @@ export const testContracts: Artifacts = [
             })
         },
         calls: [
-            {
-                name: 'write_100',
-                exec: (address) => {
-                    // @ts-ignore - run `deno task build` to generate ABI
-                    return env.wallet.writeContract({
-                        address,
-                        abi: abis.BenchStorage,
-                        functionName: 'write',
-                        args: [env.wallet.account.address, 100],
-                    })
-                },
-            },
+            // TODO: stylus tx is getting stuck in the pool
+            // {
+            //     name: 'write_100',
+            //     exec: (address) => {
+            //         // @ts-ignore - run `deno task build` to generate ABI
+            //         return env.wallet.writeContract({
+            //             address,
+            //             abi: abis.BenchStorage,
+            //             functionName: 'write',
+            //             args: [env.wallet.account.address, 100],
+            //         })
+            //     },
+            // },
             {
                 name: 'read_100',
                 exec: (address) => {

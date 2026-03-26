@@ -36,17 +36,20 @@ trap cleanup EXIT INT TERM
 # ─── Parse args ───
 SKIP_NODES=false
 SKIP_CONTRACTS_BUILD=false
+BUILD_NODES=false
 for arg in "$@"; do
     case "$arg" in
         --geth) MODE="geth" ;;
         --skip-nodes) SKIP_NODES=true ;;
         --skip-contracts-build) SKIP_CONTRACTS_BUILD=true ;;
+        --build-nodes) BUILD_NODES=true ;;
         --help|-h)
-            echo "Usage: $0 [--geth] [--skip-nodes] [--skip-contracts-build]"
+            echo "Usage: $0 [--geth] [--skip-nodes] [--skip-contracts-build] [--build-nodes]"
             echo ""
             echo "  --geth                   Run benchmark against geth --dev (EVM only)"
             echo "  --skip-nodes             Don't start nodes (assume already running)"
             echo "  --skip-contracts-build   Skip building contracts (use existing artifacts)"
+            echo "  --build-nodes            Build polkadot-sdk binaries with debug features"
             echo ""
             echo "By default, starts omni-node with asset-hub-westend runtime."
             echo "With --geth, starts geth in dev mode for EVM-only comparison."
@@ -58,12 +61,23 @@ done
 
 cd "$PROJECT_DIR"
 
+# ─── Build polkadot-sdk binaries ───
+if [ "$BUILD_NODES" = true ]; then
+    echo "── Building polkadot-sdk binaries (with debug features) ──"
+    cargo build --release \
+        --manifest-path "$POLKADOT_SDK/Cargo.toml" \
+        -p polkadot-omni-node \
+        -p pallet-revive-eth-rpc \
+        --features asset-hub-westend-runtime/debug
+fi
+
 # ─── Preflight checks ───
 preflight_omni_node() {
     for bin in "$POLKADOT_PARACHAIN" "$OMNI_NODE" "$ETH_RPC"; do
         if [ ! -x "$bin" ]; then
             echo "ERROR: Binary not found: $bin"
-            echo "Build with: cargo build --release -p polkadot-parachain-bin -p polkadot-omni-node -p pallet-revive-eth-rpc"
+            echo "Build with: $0 --build-nodes"
+            echo "Or manually: cargo build --release -p polkadot-omni-node -p pallet-revive-eth-rpc --features asset-hub-westend-runtime/debug"
             exit 1
         fi
     done
