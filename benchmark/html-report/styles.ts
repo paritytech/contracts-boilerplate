@@ -131,6 +131,7 @@ nav a.active {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow);
+    scroll-margin-top: 80px;
 }
 
 .card-title {
@@ -138,6 +139,29 @@ nav a.active {
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text-primary);
+}
+
+.section-title a,
+.card-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.section-title a:hover,
+.card-title a:hover {
+    text-decoration: underline;
+}
+
+.section-title a::after,
+.card-title a::after {
+    content: ' #';
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.section-title a:hover::after,
+.card-title a:hover::after {
+    opacity: 0.4;
 }
 
 .chart-container {
