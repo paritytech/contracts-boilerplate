@@ -51,6 +51,26 @@ export function htmlDocument(content: string, scripts: string): string {
     </footer>
 
     <script>
+        // ── Scroll-margin: sync with actual nav height ──
+        (function() {
+            var resizeTimer;
+            function updateScrollMargins() {
+                var nav = document.querySelector('nav');
+                if (!nav) return;
+                var margin = nav.offsetHeight + 16 + 'px';
+                document.querySelectorAll('.section, .card[id]').forEach(function(el) {
+                    el.style.scrollMarginTop = margin;
+                });
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+                updateScrollMargins();
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(updateScrollMargins, 100);
+                });
+            });
+        })();
+
         // ── Global exclusion state ──
         // Keys are compound: "dataset|contract|txName"
         const excludedTxKeys = new Set();
@@ -435,15 +455,24 @@ export function sectionCard(
 ): string {
     return `
     <section id="${id}" class="section">
-        <h2 class="section-title">${title}</h2>
+        <h2 class="section-title"><a href="#${id}">${title}</a></h2>
         ${content}
     </section>`
 }
 
+/** Convert a title string into a URL-friendly fragment identifier. */
+function slugify(text: string): string {
+    return text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+}
+
 export function card(title: string, content: string, className = ''): string {
+    const id = slugify(title)
     return `
-    <div class="card ${className}">
-        <h3 class="card-title">${title}</h3>
+    <div class="card ${className}" id="${id}">
+        <h3 class="card-title"><a href="#${id}">${title}</a></h3>
         ${content}
     </div>`
 }
