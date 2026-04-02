@@ -63,12 +63,13 @@ cd "$PROJECT_DIR"
 
 # ─── Build polkadot-sdk binaries ───
 if [ "$BUILD_NODES" = true ]; then
-    echo "── Building polkadot-sdk binaries (with debug features) ──"
-    cargo build --release \
-        --manifest-path "$POLKADOT_SDK/Cargo.toml" \
+    pushd "$POLKADOT_SDK" > /dev/null
+    echo "── Building polkadot-sdk binaries (with revive_debug) ──"
+    RUSTFLAGS="${RUSTFLAGS:-} --cfg revive_debug" cargo build --release \
         -p polkadot-omni-node \
         -p pallet-revive-eth-rpc \
-        --features asset-hub-westend-runtime/debug
+        -p polkadot-parachain-bin
+    popd > /dev/null
 fi
 
 # ─── Preflight checks ───
@@ -77,7 +78,7 @@ preflight_omni_node() {
         if [ ! -x "$bin" ]; then
             echo "ERROR: Binary not found: $bin"
             echo "Build with: $0 --build-nodes"
-            echo "Or manually: cargo build --release -p polkadot-omni-node -p pallet-revive-eth-rpc --features asset-hub-westend-runtime/debug"
+            echo "Or manually: cd \$POLKADOT_SDK && RUSTFLAGS=\"--cfg revive_debug\" cargo build --release -p polkadot-omni-node -p pallet-revive-eth-rpc -p polkadot-parachain-bin"
             exit 1
         fi
     done
