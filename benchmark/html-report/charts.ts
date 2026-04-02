@@ -42,7 +42,7 @@ const CATEGORY_COLORS = [
 ]
 
 interface ChartData {
-    labels: string[]
+    labels: (string | string[])[]
     datasets: Array<{
         label: string
         data: (number | null)[]
@@ -350,6 +350,142 @@ export function weightBreakdownChart(
                                     return lines.length > 0 ? '\\n' + lines.join('\\n') : '';
                                 }
                             }
+                        }
+                    }
+                }
+            });
+        })();
+    `
+}
+
+/**
+ * Paired stacked bar chart using Chart.js stack groups.
+ *
+ * `pairedDatasets` already carry a `stack` field ('PVM' | 'EVM').
+ * Chart.js groups bars with the same x-label but different stacks tightly together,
+ * with a larger gap between different x-labels — exactly the visual the user wants.
+ *
+ * A small afterDraw plugin renders "PVM" / "EVM" sub-labels beneath each bar group.
+ */
+export function pairedStackedBarChart(
+    canvasId: string,
+    labels: string[],
+    pairedDatasets: Array<{
+        label: string
+        data: number[]
+        color: string
+        stack: string
+    }>,
+    options: {
+        title?: string
+        xLabel?: string
+        yLabel?: string
+    } = {},
+): string {
+    const chartData = {
+        labels,
+        datasets: pairedDatasets.map((ds) => ({
+            label: ds.label,
+            data: ds.data,
+            backgroundColor: ds.color,
+            borderColor: ds.color.replace(/[\d.]+\)$/, '1)'),
+            borderWidth: 1,
+            stack: ds.stack,
+        })),
+    }
+
+    // Stacks present (e.g. ['PVM','EVM'])
+    const stacks = [...new Set(pairedDatasets.map((d) => d.stack))]
+
+    return `
+        (function() {
+            var stacks = ${jsonStringify(stacks)};
+
+            // Plugin: draw stack sub-labels ("PVM", "EVM") below the x-axis
+            var subLabelPlugin = {
+                id: 'stackSubLabels_${canvasId}',
+                afterDraw: function(chart) {
+                    var xScale = chart.scales.x;
+                    var yScale = chart.scales.y;
+                    var ctx = chart.ctx;
+                    ctx.save();
+                    ctx.font = '11px sans-serif';
+                    ctx.fillStyle = Chart.defaults.color;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+
+                    // y position: just below the x-axis line
+                    var yPos = xScale.top + 4;
+
+                    // For each x-label, find the bars of each stack to get their x-centers
+                    for (var li = 0; li < chart.data.labels.length; li++) {
+                        var stackCenters = {};
+                        chart.data.datasets.forEach(function(ds, di) {
+                            var meta = chart.getDatasetMeta(di);
+                            if (meta.hidden) return;
+                            var bar = meta.data[li];
+                            if (!bar) return;
+                            var s = ds.stack;
+                            if (!stackCenters[s]) stackCenters[s] = { sum: 0, count: 0 };
+                            stackCenters[s].sum += bar.x;
+                            stackCenters[s].count++;
+                        });
+                        for (var si = 0; si < stacks.length; si++) {
+                            var sc = stackCenters[stacks[si]];
+                            if (sc && sc.count > 0) {
+                                ctx.fillText(stacks[si], sc.sum / sc.count, yPos);
+                            }
+                        }
+                    }
+                    ctx.restore();
+                }
+            };
+
+            new Chart(document.getElementById('${canvasId}'), {
+                type: 'bar',
+                data: ${jsonStringify(chartData)},
+                plugins: [subLabelPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { bottom: 20 } },
+                    plugins: {
+                        title: ${
+        options.title
+            ? jsonStringify({ display: true, text: options.title })
+            : '{ display: false }'
+    },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                filter: function(item, data) {
+                                    // Show one legend entry per category (hide duplicates from the second stack)
+                                    var ds = data.datasets[item.datasetIndex];
+                                    return ds.stack === stacks[0];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: { display: ${!!options.xLabel}, text: ${
+        jsonStringify(options.xLabel || '')
+    } },
+                            ticks: { maxRotation: 45, minRotation: 45 },
+                            grid: {
+                                color: function(ctx) {
+                                    // Only draw grid lines between label groups, not between stacks within a group
+                                    return Chart.defaults.borderColor;
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            title: { display: ${!!options.yLabel}, text: ${
+        jsonStringify(options.yLabel || '')
+    } },
+                            beginAtZero: true
                         }
                     }
                 }

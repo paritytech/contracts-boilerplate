@@ -99,12 +99,17 @@ function datasetSortOrder(a: string, b: string): number {
     return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
 }
 
-import { getOpcodeCategory, OPCODE_CATEGORIES } from '../opcode-categories.ts'
-export { getOpcodeCategory, OPCODE_CATEGORIES }
+import {
+    getOpcodeCategory,
+    isEvmOpcode,
+    OPCODE_CATEGORIES,
+} from '../opcode-categories.ts'
+export { getOpcodeCategory, isEvmOpcode, OPCODE_CATEGORIES }
 import { getImplTypeLabel, sortImplTypes } from './charts.ts'
 
 // Category descriptions for tooltips
 export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+    'PVM Fuel': 'Base PolkaVM execution fuel: pvm_fuel',
     'Arithmetic': 'Basic math: ADD, SUB, MUL, DIV, MOD',
     'Bitwise': 'Bit manipulation: AND, OR, XOR, SHL, SHR',
     'Comparison': 'Value comparisons: LT, GT, EQ, ISZERO',
@@ -124,6 +129,7 @@ export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
     'Immutables': 'Immutable data: LOADIMMUTABLE, SETIMMUTABLE',
     'Stack': 'Stack operations: PUSH, POP, DUP, SWAP',
     'Control Flow': 'Execution flow: JUMP, JUMPI, JUMPDEST',
+    'Other': 'Remaining categories not shown individually',
 }
 
 export function getCategoryMappingHtml(): string {
@@ -1255,7 +1261,9 @@ export interface CategoryHierarchy {
     allCategories: string[]
 }
 
-export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
+export function getCategoryBreakdownHierarchy(
+    opcodeFilter?: 'evm' | 'pvm',
+): CategoryHierarchy & {
     categoryDescriptions: Record<string, string>
 } {
     // Query per-opcode data directly (before category aggregation) for eth-rpc only
@@ -1283,9 +1291,19 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
         total_weight_cost_proof_size: number | null
     }>
 
+    // Filter by opcode type if requested
+    const filteredData = opcodeFilter
+        ? rawData.filter((row) => {
+            if (!row.op) return false
+            return opcodeFilter === 'evm'
+                ? isEvmOpcode(row.op)
+                : !isEvmOpcode(row.op)
+        })
+        : rawData
+
     // Get all unique categories sorted by total usage
     const categoryTotals = new Map<string, number>()
-    for (const row of rawData) {
+    for (const row of filteredData) {
         const category = getOpcodeCategory(row.op)
         const cost = row.total_weight_cost_ref_time ?? 0
         categoryTotals.set(category, (categoryTotals.get(category) ?? 0) + cost)
@@ -1293,7 +1311,6 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
     const allCategories = [...categoryTotals.entries()]
         .sort((a, b) => b[1] - a[1])
         .map(([cat]) => cat)
-        .slice(0, 12) // Top 12 categories
 
     // Group by dataset -> contract -> transaction
     // Store actual costs and per-opcode data
@@ -1310,7 +1327,7 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
     }
     const datasetMap = new Map<string, Map<string, Map<string, TxAccum>>>()
 
-    for (const row of rawData) {
+    for (const row of filteredData) {
         const dataset = getDatasetCategory(row.contract_id)
         const category = getOpcodeCategory(row.op)
         const cost = row.total_weight_cost_ref_time ?? 0
