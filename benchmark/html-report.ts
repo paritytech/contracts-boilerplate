@@ -645,11 +645,14 @@ function combinedCategoryDrilldownScript(
                 });
                 if (pvmData.some(v => v > 0) || evmData.some(v => v > 0)) {
                     const color = _catColors[cat] || 'rgba(128,128,128,0.8)';
+                    const border = color.replace(/[\\d.]+\\)$/, '1)');
                     datasets.push({
-                        label: cat, data: pvmData, backgroundColor: color, stack: 'PVM'
+                        label: cat, data: pvmData, backgroundColor: color,
+                        borderColor: border, borderWidth: 1, stack: 'PVM'
                     });
                     datasets.push({
-                        label: cat, data: evmData, backgroundColor: color, stack: 'EVM'
+                        label: cat, data: evmData, backgroundColor: color,
+                        borderColor: border, borderWidth: 1, stack: 'EVM'
                     });
                 }
             }

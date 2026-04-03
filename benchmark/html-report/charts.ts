@@ -42,7 +42,7 @@ const CATEGORY_COLORS = [
 ]
 
 interface ChartData {
-    labels: (string | string[])[]
+    labels: string[]
     datasets: Array<{
         label: string
         data: (number | null)[]
@@ -463,6 +463,18 @@ export function pairedStackedBarChart(
                                     var ds = data.datasets[item.datasetIndex];
                                     return ds.stack === stacks[0];
                                 }
+                            },
+                            onClick: function(e, legendItem, legend) {
+                                // Toggle ALL datasets with the same label (both PVM and EVM stacks)
+                                var ci = legend.chart;
+                                var label = ci.data.datasets[legendItem.datasetIndex].label;
+                                ci.data.datasets.forEach(function(ds, i) {
+                                    if (ds.label === label) {
+                                        var meta = ci.getDatasetMeta(i);
+                                        meta.hidden = meta.hidden === null ? true : !meta.hidden;
+                                    }
+                                });
+                                ci.update();
                             }
                         }
                     },
@@ -472,13 +484,7 @@ export function pairedStackedBarChart(
                             title: { display: ${!!options.xLabel}, text: ${
         jsonStringify(options.xLabel || '')
     } },
-                            ticks: { maxRotation: 45, minRotation: 45 },
-                            grid: {
-                                color: function(ctx) {
-                                    // Only draw grid lines between label groups, not between stacks within a group
-                                    return Chart.defaults.borderColor;
-                                }
-                            }
+                            ticks: { maxRotation: 45, minRotation: 45 }
                         },
                         y: {
                             stacked: true,

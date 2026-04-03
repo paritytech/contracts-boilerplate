@@ -2373,7 +2373,11 @@ export function categoryFilterControls(
             proof_size
         </label>
     </div>
-    ${showRowHint ? '<p class="table-note">Click a transaction row to exclude it.</p>' : ''}
+    ${
+        showRowHint
+            ? '<p class="table-note">Click a transaction row to exclude it.</p>'
+            : ''
+    }
     `
 }
 
@@ -2383,9 +2387,7 @@ export function drilldownCategoryChartScript(
     prefix = '',
 ): string {
     const P = prefix // shorthand
-    const chartId = P
-        ? `categoryBreakdownChart_${P}`
-        : 'categoryBreakdownChart'
+    const chartId = P ? `categoryBreakdownChart_${P}` : 'categoryBreakdownChart'
     const checkboxId = P
         ? `hideCategoryDeployCheckbox_${P}`
         : 'hideCategoryDeployCheckbox'
@@ -2397,7 +2399,9 @@ export function drilldownCategoryChartScript(
     return `
         // Store category hierarchy data for drill-down
         const categoryColorMap${fnSuffix} = ${JSON.stringify(categoryColorMap)};
-        const categoryHierarchyOriginal${fnSuffix} = ${JSON.stringify(hierarchy)};
+        const categoryHierarchyOriginal${fnSuffix} = ${
+        JSON.stringify(hierarchy)
+    };
         let categoryHierarchy${fnSuffix} = JSON.parse(JSON.stringify(categoryHierarchyOriginal${fnSuffix}));
         let categoryCurrentLevel${fnSuffix} = 'datasets';
         let categoryCurrentParent${fnSuffix} = null;
