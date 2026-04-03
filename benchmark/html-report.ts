@@ -58,7 +58,6 @@ import {
     getImplTypeColor,
     groupedBarChart,
     pairedStackedBarChart,
-    stackedBarChart,
     weightBreakdownChart,
 } from './html-report/charts.ts'
 
