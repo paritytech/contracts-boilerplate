@@ -236,7 +236,7 @@ export function weightBreakdownChart(
             stack: 'evm',
         },
         {
-            label: 'EVM Overhead',
+            label: 'EVM Base',
             data: calcOverhead(evmData),
             backgroundColor: COLORS.primaryLight,
             borderColor: COLORS.primary.replace('0.8', '1'),
@@ -252,7 +252,7 @@ export function weightBreakdownChart(
             stack: 'pvm',
         },
         {
-            label: 'PVM (Solidity) Overhead',
+            label: 'PVM (Solidity) Base',
             data: calcOverhead(pvmData),
             backgroundColor: COLORS.successLight,
             borderColor: COLORS.success.replace('0.8', '1'),
@@ -276,7 +276,7 @@ export function weightBreakdownChart(
                 stack: stackId,
             },
             {
-                label: `${impl.label} Overhead`,
+                label: `${impl.label} Base`,
                 data: calcOverhead(impl.data),
                 backgroundColor: lightColor,
                 borderColor: color.border,

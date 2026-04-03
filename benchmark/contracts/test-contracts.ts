@@ -255,18 +255,19 @@ export const testContracts: Artifacts = [
                     })
                 },
             },
-            {
-                name: 'readWrite_100',
-                exec: (address) => {
-                    // @ts-ignore - run `deno task build` to generate ABI
-                    return env.wallet.writeContract({
-                        address,
-                        abi: abis.BenchStorage,
-                        functionName: 'readWrite',
-                        args: [env.wallet.account.address, 100],
-                    })
-                },
-            },
+            // TODO: readWrite_100 surpasses the weight limit of westend assethub runtime. Retry with new weights
+            // {
+            //     name: 'readWrite_100',
+            //     exec: (address) => {
+            //         // @ts-ignore - run `deno task build` to generate ABI
+            //         return env.wallet.writeContract({
+            //             address,
+            //             abi: abis.BenchStorage,
+            //             functionName: 'readWrite',
+            //             args: [env.wallet.account.address, 100],
+            //         })
+            //     },
+            // },
         ],
     },
     {

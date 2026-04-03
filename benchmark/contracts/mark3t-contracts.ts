@@ -507,12 +507,13 @@ export const mark3tContracts: Artifacts = [
                 )
             }
             // Set MockMobRule address on Marketplace
-            await env.wallet.writeContract({
+            const setTx = await env.wallet.writeContract({
                 address: marketplaceProxyAddress,
                 abi: abis.Marketplace,
                 functionName: 'setMockMobRule',
                 args: [mockMobRuleAddress],
             })
+            await env.wallet.waitForTransactionReceipt({ hash: setTx })
         },
         calls: [
             {
@@ -538,7 +539,7 @@ export const mark3tContracts: Artifacts = [
                 exec: async (address) => {
                     // Create a new dispute first, then add counter evidence
                     const uniquePurchaseId = uniqueDisputeId()
-                    await env.wallet.writeContract({
+                    const disputeTx = await env.wallet.writeContract({
                         address,
                         abi: abis.MockMobRule,
                         functionName: 'createDispute',
@@ -549,6 +550,9 @@ export const mark3tContracts: Artifacts = [
                             env.wallet2.account.address,
                             DISPUTE_METADATA_CID,
                         ],
+                    })
+                    await env.wallet.waitForTransactionReceipt({
+                        hash: disputeTx,
                     })
                     // Get the case ID
                     const caseId = await env.wallet.readContract({
@@ -570,7 +574,7 @@ export const mark3tContracts: Artifacts = [
                 exec: async (address) => {
                     // Create a new dispute and resolve it
                     const uniquePurchaseId = uniqueDisputeId()
-                    await env.wallet.writeContract({
+                    const disputeTx = await env.wallet.writeContract({
                         address,
                         abi: abis.MockMobRule,
                         functionName: 'createDispute',
@@ -581,6 +585,9 @@ export const mark3tContracts: Artifacts = [
                             env.wallet2.account.address,
                             DISPUTE_METADATA_CID,
                         ],
+                    })
+                    await env.wallet.waitForTransactionReceipt({
+                        hash: disputeTx,
                     })
                     const caseId = await env.wallet.readContract({
                         address,

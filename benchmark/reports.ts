@@ -8,17 +8,62 @@ import { getOpcodeCategory } from './opcode-categories.ts'
 
 const REPORTS_DIR = join(import.meta.dirname!, 'reports')
 
-function getResolcVersion(): string {
-    const result = new Deno.Command('resolc', {
-        args: ['--version'],
-        stdout: 'piped',
-    }).outputSync()
-    return new TextDecoder().decode(result.stdout).trim()
+function getBenchmarkMetadata(): string {
+    let rows: Array<{
+        chain_name: string
+        system_chain: string | null
+        system_name: string | null
+        system_version: string | null
+        runtime_spec_name: string | null
+        runtime_spec_version: number | null
+        resolc_version: string | null
+        solc_version: string | null
+        recorded_at: string
+    }>
+    try {
+        rows = db.prepare(`
+            SELECT chain_name, system_chain, system_name, system_version,
+                   runtime_spec_name, runtime_spec_version,
+                   resolc_version, solc_version, recorded_at
+            FROM benchmark_metadata
+            ORDER BY chain_name
+        `).all() as typeof rows
+    } catch {
+        return ''
+    }
+
+    if (rows.length === 0) return ''
+
+    let md = '### Benchmark Environment\n\n'
+    for (const row of rows) {
+        const chain = row.system_chain ?? row.chain_name
+        md += `- **Chain:** ${chain}`
+        if (row.runtime_spec_name) {
+            md +=
+                ` | **Runtime:** ${row.runtime_spec_name}@${row.runtime_spec_version}`
+        }
+        if (row.system_name) {
+            md += ` | **Node:** ${row.system_name} ${row.system_version ?? ''}`
+        }
+        if (row.resolc_version) {
+            md += ` | **resolc:** ${row.resolc_version}`
+        }
+        if (row.solc_version) {
+            md += ` | **solc:** ${row.solc_version}`
+        }
+        md += '\n'
+    }
+    md += '\n'
+    return md
 }
 
 function reportHeader(title: string): string {
     const date = new Date().toISOString().split('T')[0]
-    return `# ${title}\n\nGenerated on: ${date}\nresolc: ${getResolcVersion()}\n\n`
+
+    let header = `# ${title}\n\n`
+    header += `Generated on: ${date}\n\n`
+    header += getBenchmarkMetadata()
+    return header
 }
 
 function table(data: Record<string, unknown>[]) {
@@ -56,17 +101,18 @@ async function generateOpcodeAnalysis() {
             t.weight_consumed_proof_size,
             t.base_call_weight_ref_time,
             t.base_call_weight_proof_size,
+            t.post_dispatch_pov,
             s.op,
             SUM(s.gas_cost) as total_gas_cost,
             COUNT(*) as count,
             SUM(s.weight_cost_ref_time) as total_weight_cost_ref_time,
             SUM(s.weight_cost_proof_size) as total_weight_cost_proof_size
         FROM transactions AS t
-        JOIN 
+        JOIN
             transaction_steps AS s ON s.hash = t.hash AND s.chain_name = t.chain_name
-        GROUP BY 
+        GROUP BY
             t.hash, t.chain_name, s.op
-        ORDER BY 
+        ORDER BY
             t.chain_name, t.contract_id, t.contract_name, t.transaction_name, total_weight_cost_ref_time DESC, total_weight_cost_proof_size DESC, total_gas_cost DESC
     `).all() as Array<{
         chain_name: string
@@ -78,6 +124,7 @@ async function generateOpcodeAnalysis() {
         weight_consumed_proof_size: number | null
         base_call_weight_ref_time: number | null
         base_call_weight_proof_size: number | null
+        post_dispatch_pov: number | null
         op: string | null
         total_gas_cost: number | null
         count: number
@@ -127,24 +174,30 @@ async function generateOpcodeAnalysis() {
             ) {
                 const totalRefTime = tx.base_call_weight_ref_time +
                     tx.weight_consumed_ref_time
+                const meteredPov = (tx.base_call_weight_proof_size ?? 0) +
+                    (tx.weight_consumed_proof_size ?? 0)
                 const weightConsumedPercent =
                     ((tx.weight_consumed_ref_time / totalRefTime) * 100)
                         .toFixed(1)
 
-                markdown += [
+                const lines = [
                     `- **Base Call Weight:** ref_time=${tx.base_call_weight_ref_time.toLocaleString()}, proof_size=${
                         tx.base_call_weight_proof_size?.toLocaleString() ??
                             'N/A'
                     }`,
-                    `- **Total Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${
-                        ((tx.base_call_weight_proof_size ?? 0) +
-                            (tx.weight_consumed_proof_size ?? 0))
-                            .toLocaleString()
-                    }`,
+                    `- **Total Call Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${meteredPov.toLocaleString()}`,
                     `- **Weight Consumed:** ref_time=${tx.weight_consumed_ref_time.toLocaleString()} (${weightConsumedPercent}% of total), proof_size=${
                         (tx.weight_consumed_proof_size ?? 0).toLocaleString()
                     }`,
-                ].join('\n') + '\n'
+                ]
+
+                if (tx.post_dispatch_pov !== null) {
+                    lines.push(
+                        `- **Post-dispatch PoV:** ${tx.post_dispatch_pov.toLocaleString()}`,
+                    )
+                }
+
+                markdown += lines.join('\n') + '\n'
             }
 
             markdown += '\n'
@@ -269,6 +322,7 @@ async function generateCategoryAnalysis() {
             t.weight_consumed_proof_size,
             t.base_call_weight_ref_time,
             t.base_call_weight_proof_size,
+            t.post_dispatch_pov,
             s.op,
             SUM(s.gas_cost) as total_gas_cost,
             COUNT(*) as count,
@@ -291,6 +345,7 @@ async function generateCategoryAnalysis() {
         weight_consumed_proof_size: number | null
         base_call_weight_ref_time: number | null
         base_call_weight_proof_size: number | null
+        post_dispatch_pov: number | null
         op: string | null
         total_gas_cost: number | null
         count: number
@@ -336,24 +391,30 @@ async function generateCategoryAnalysis() {
             ) {
                 const totalRefTime = tx.base_call_weight_ref_time +
                     tx.weight_consumed_ref_time
+                const meteredPov = (tx.base_call_weight_proof_size ?? 0) +
+                    (tx.weight_consumed_proof_size ?? 0)
                 const weightConsumedPercent =
                     ((tx.weight_consumed_ref_time / totalRefTime) * 100)
                         .toFixed(1)
 
-                markdown += [
+                const lines = [
                     `- **Base Call Weight:** ref_time=${tx.base_call_weight_ref_time.toLocaleString()}, proof_size=${
                         tx.base_call_weight_proof_size?.toLocaleString() ??
                             'N/A'
                     }`,
-                    `- **Total Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${
-                        ((tx.base_call_weight_proof_size ?? 0) +
-                            (tx.weight_consumed_proof_size ?? 0))
-                            .toLocaleString()
-                    }`,
+                    `- **Total Call Weight:** ref_time=${totalRefTime.toLocaleString()}, proof_size=${meteredPov.toLocaleString()}`,
                     `- **Weight Consumed:** ref_time=${tx.weight_consumed_ref_time.toLocaleString()} (${weightConsumedPercent}% of total), proof_size=${
                         (tx.weight_consumed_proof_size ?? 0).toLocaleString()
                     }`,
-                ].join('\n') + '\n'
+                ]
+
+                if (tx.post_dispatch_pov !== null) {
+                    lines.push(
+                        `- **Post-dispatch PoV:** ${tx.post_dispatch_pov.toLocaleString()}`,
+                    )
+                }
+
+                markdown += lines.join('\n') + '\n'
             }
 
             markdown += '\n'
@@ -476,6 +537,7 @@ async function generateContractComparison() {
             t.weight_consumed_proof_size,
             t.base_call_weight_ref_time,
             t.base_call_weight_proof_size,
+            t.post_dispatch_pov,
             SUM(s.gas_cost) as total_opcode_gas
         FROM transactions t
         LEFT JOIN transaction_steps s ON s.hash = t.hash AND s.chain_name = t.chain_name
@@ -491,6 +553,7 @@ async function generateContractComparison() {
         weight_consumed_proof_size: number | null
         base_call_weight_ref_time: number | null
         base_call_weight_proof_size: number | null
+        post_dispatch_pov: number | null
         total_opcode_gas: number | null
     }>
 
@@ -596,7 +659,10 @@ async function generateContractComparison() {
                             .toLocaleString()
                         result['vs Best (metered)'] = vsBestMetered
                         result['% metered'] = `${meterPercent}%`
-                        result['pov'] = totalProofSize.toLocaleString()
+                        result['metered pov'] = totalProofSize.toLocaleString()
+
+                        result['post_dispatch pov'] =
+                            row.post_dispatch_pov?.toLocaleString() ?? '-'
                     }
 
                     return result
