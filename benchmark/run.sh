@@ -65,7 +65,9 @@ cd "$PROJECT_DIR"
 if [ "$BUILD_NODES" = true ]; then
     pushd "$POLKADOT_SDK" > /dev/null
     echo "── Building polkadot-sdk binaries (with revive_debug) ──"
-    RUSTFLAGS="${RUSTFLAGS:-} --cfg revive_debug" cargo build --release \
+    RUSTFLAGS="${RUSTFLAGS:-} --cfg revive_debug" \
+    WASM_BUILD_RUSTFLAGS="--cfg revive_debug" \
+    cargo build --release \
         -p polkadot-omni-node \
         -p pallet-revive-eth-rpc \
         -p polkadot-parachain-bin
@@ -78,7 +80,7 @@ preflight_omni_node() {
         if [ ! -x "$bin" ]; then
             echo "ERROR: Binary not found: $bin"
             echo "Build with: $0 --build-nodes"
-            echo "Or manually: cd \$POLKADOT_SDK && RUSTFLAGS=\"--cfg revive_debug\" cargo build --release -p polkadot-omni-node -p pallet-revive-eth-rpc -p polkadot-parachain-bin"
+            echo "Or manually: cd \$POLKADOT_SDK && RUSTFLAGS=\"--cfg revive_debug\" WASM_BUILD_RUSTFLAGS=\"--cfg revive_debug\" cargo build --release -p polkadot-omni-node -p pallet-revive-eth-rpc -p polkadot-parachain-bin"
             exit 1
         fi
     done
@@ -139,7 +141,7 @@ start_omni_node() {
 
     # ─── Start eth-rpc ───
     echo "── Starting eth-rpc ──"
-    RUST_LOG="info,eth-rpc=debug" "$ETH_RPC" \
+    RUST_LOG="info,eth-rpc=trace" "$ETH_RPC" \
         --dev \
         --node-rpc-url ws://127.0.0.1:9944 \
         > "$ETH_RPC_LOG" 2>&1 &
