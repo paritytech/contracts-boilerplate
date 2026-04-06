@@ -58,7 +58,7 @@ import {
     COLORS,
     getImplTypeColor,
     groupedBarChart,
-    stackedBarChart,
+    pairedStackedBarChart,
     weightBreakdownChart,
 } from './html-report/charts.ts'
 
@@ -454,10 +454,14 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
 }
 
 function generateCategoryProfiling(): { html: string; scripts: string } {
-    const hierarchy = getCategoryBreakdownHierarchy()
+    const evmHierarchy = getCategoryBreakdownHierarchy('evm')
+    const pvmHierarchy = getCategoryBreakdownHierarchy('pvm')
     const scripts: string[] = []
 
-    if (hierarchy.datasets.length === 0) {
+    if (
+        evmHierarchy.datasets.length === 0 &&
+        pvmHierarchy.datasets.length === 0
+    ) {
         return {
             html: sectionCard(
                 'categories',
@@ -468,50 +472,267 @@ function generateCategoryProfiling(): { html: string; scripts: string } {
         }
     }
 
-    // Build stacked bar chart from hierarchy (dataset level)
-    const labels = hierarchy.datasets.map((d) => d.name)
-    const categoryColorMap = buildCategoryColorMap(hierarchy.allCategories)
-    const stackedDatasets = hierarchy.allCategories.map((category) => {
-        const data = hierarchy.datasets.map((d) => d.categories[category] ?? 0)
-        return { label: category, data, color: categoryColorMap[category] }
-    })
+    // ── Combined chart: EVM bar next to PVM bar per dataset ──
 
-    const stackedChartScript = stackedBarChart(
+    // Collect all unique dataset names (union of both hierarchies)
+    const datasetNames = [
+        ...new Set([
+            ...pvmHierarchy.datasets.map((d) => d.name),
+            ...evmHierarchy.datasets.map((d) => d.name),
+        ]),
+    ]
+
+    // Build a unified category color map across both hierarchies
+    const allCats = [
+        ...new Set([
+            ...pvmHierarchy.allCategories,
+            ...evmHierarchy.allCategories,
+        ]),
+    ]
+    const categoryColorMap = buildCategoryColorMap(allCats)
+
+    // Build paired datasets with stack groups: each category → PVM + EVM dataset
+    const combinedDatasets: Array<{
+        label: string
+        data: number[]
+        color: string
+        stack: string
+    }> = []
+
+    for (const cat of allCats) {
+        const pvmData = datasetNames.map((name) => {
+            const ds = pvmHierarchy.datasets.find((d) => d.name === name)
+            return ds?.categories[cat] ?? 0
+        })
+        const evmData = datasetNames.map((name) => {
+            const ds = evmHierarchy.datasets.find((d) => d.name === name)
+            return ds?.categories[cat] ?? 0
+        })
+        if (pvmData.some((v) => v > 0) || evmData.some((v) => v > 0)) {
+            combinedDatasets.push({
+                label: cat,
+                data: pvmData,
+                color: categoryColorMap[cat],
+                stack: 'PVM',
+            })
+            combinedDatasets.push({
+                label: cat,
+                data: evmData,
+                color: categoryColorMap[cat],
+                stack: 'EVM',
+            })
+        }
+    }
+
+    scripts.push(pairedStackedBarChart(
         'categoryBreakdownChart',
-        labels,
-        stackedDatasets,
+        datasetNames,
+        combinedDatasets,
         {
             yLabel: '% of Total Cost',
             title: 'Category Breakdown by Dataset (click to drill down)',
         },
-    )
-    scripts.push(stackedChartScript)
+    ))
 
-    // Add drilldown script for category chart
-    scripts.push(drilldownCategoryChartScript(hierarchy, categoryColorMap))
+    // ── Combined drilldown script ──
+    scripts.push(combinedCategoryDrilldownScript(
+        pvmHierarchy,
+        evmHierarchy,
+        categoryColorMap,
+    ))
+
+    // ── Per-VM detailed tables ──
+    const pvmTableHtml = pvmHierarchy.datasets.length > 0
+        ? `
+        <h3 style="margin: 1.5rem 0 0.5rem;">PVM Execution</h3>
+        ${categoryFilterControls('pvm')}
+        ${
+            card(
+                'PVM Detailed Category Breakdown (click to expand)',
+                expandableCategoryTable(pvmHierarchy, 'pvm'),
+            )
+        }`
+        : ''
+
+    const evmTableHtml = evmHierarchy.datasets.length > 0
+        ? `
+        <h3 style="margin: 1.5rem 0 0.5rem;">EVM Execution</h3>
+        ${categoryFilterControls('evm')}
+        ${
+            card(
+                'EVM Detailed Category Breakdown (click to expand)',
+                expandableCategoryTable(evmHierarchy, 'evm'),
+            )
+        }`
+        : ''
+
+    // Add table-level drilldown scripts for each table
+    const pvmColorMap = buildCategoryColorMap(pvmHierarchy.allCategories)
+    const evmColorMap = buildCategoryColorMap(evmHierarchy.allCategories)
+    if (pvmHierarchy.datasets.length > 0) {
+        scripts.push(
+            drilldownCategoryChartScript(pvmHierarchy, pvmColorMap, 'pvm'),
+        )
+    }
+    if (evmHierarchy.datasets.length > 0) {
+        scripts.push(
+            drilldownCategoryChartScript(evmHierarchy, evmColorMap, 'evm'),
+        )
+    }
 
     const html = sectionCard(
         'categories',
         'Opcode/Category Profiling',
         `
         ${getCategoryMappingHtml()}
+        ${categoryFilterControls('', { showRowHint: false })}
         ${
             card(
                 'Category Breakdown (click bar to drill down, right-click to go back)',
                 chartCanvas('categoryBreakdownChart', 'wide'),
             )
         }
-        ${categoryFilterControls()}
-        ${
-            card(
-                'Detailed Category Breakdown (click to expand)',
-                expandableCategoryTable(hierarchy),
-            )
-        }
+        ${pvmTableHtml}
+        ${evmTableHtml}
     `,
     )
 
     return { html, scripts: scripts.join('\n') }
+}
+
+/** Drilldown script for the combined EVM+PVM chart */
+function combinedCategoryDrilldownScript(
+    pvmHierarchy: ReturnType<typeof getCategoryBreakdownHierarchy>,
+    evmHierarchy: ReturnType<typeof getCategoryBreakdownHierarchy>,
+    categoryColorMap: Record<string, string>,
+): string {
+    return `
+        const _pvmH = ${JSON.stringify(pvmHierarchy)};
+        const _evmH = ${JSON.stringify(evmHierarchy)};
+        const _catColors = ${JSON.stringify(categoryColorMap)};
+        let _comboLevel = 'datasets';
+        let _comboParent = null;
+        let _comboMetric = 'ref_time';
+
+        function _findItems(hierarchy, level, parent) {
+            if (level === 'datasets') return hierarchy.datasets;
+            if (level === 'contracts' && parent) {
+                const ds = hierarchy.datasets.find(d => d.name === parent);
+                return ds ? ds.contracts : [];
+            }
+            if (level === 'transactions' && parent) {
+                for (const ds of hierarchy.datasets) {
+                    const c = ds.contracts.find(c => c.name === parent);
+                    if (c) return c.transactions;
+                }
+            }
+            return [];
+        }
+
+        function _catField(item) {
+            return _comboMetric === 'proof_size'
+                ? (item.categories_proof_size || item.categories)
+                : item.categories;
+        }
+
+        function _comboChartData(level, parent) {
+            const pvmItems = _findItems(_pvmH, level, parent);
+            const evmItems = _findItems(_evmH, level, parent);
+
+            const metricLabel = _comboMetric === 'proof_size' ? ' [proof_size]' : ' [ref_time]';
+            const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
+            let title;
+            if (level === 'datasets') {
+                title = 'Category Breakdown by Dataset' + metricLabel + suffix + ' (click to drill down)';
+            } else if (level === 'contracts') {
+                title = 'Category Breakdown by Contract: ' + parent + metricLabel + suffix + ' (click to drill down, right-click to go back)';
+            } else {
+                title = 'Category Breakdown by Transaction: ' + parent + metricLabel + suffix + ' (right-click to go back)';
+            }
+
+            const names = [...new Set([...pvmItems.map(i => i.name), ...evmItems.map(i => i.name)])];
+            const allCats = [...new Set([..._pvmH.allCategories, ..._evmH.allCategories])];
+
+            const datasets = [];
+            for (const cat of allCats) {
+                const pvmData = names.map(name => {
+                    const item = pvmItems.find(i => i.name === name);
+                    return item ? (_catField(item)[cat] ?? 0) : 0;
+                });
+                const evmData = names.map(name => {
+                    const item = evmItems.find(i => i.name === name);
+                    return item ? (_catField(item)[cat] ?? 0) : 0;
+                });
+                if (pvmData.some(v => v > 0) || evmData.some(v => v > 0)) {
+                    const color = _catColors[cat] || 'rgba(128,128,128,0.8)';
+                    const border = color.replace(/[\\d.]+\\)$/, '1)');
+                    datasets.push({
+                        label: cat, data: pvmData, backgroundColor: color,
+                        borderColor: border, borderWidth: 1, stack: 'PVM'
+                    });
+                    datasets.push({
+                        label: cat, data: evmData, backgroundColor: color,
+                        borderColor: border, borderWidth: 1, stack: 'EVM'
+                    });
+                }
+            }
+
+            return { labels: names, datasets, title, canDrillDown: level !== 'transactions' };
+        }
+
+        function _updateComboChart(level, parent) {
+            _comboLevel = level;
+            _comboParent = parent;
+            const data = _comboChartData(level, parent);
+            const chart = Chart.getChart('categoryBreakdownChart');
+            chart.data.labels = data.labels;
+            chart.data.datasets = data.datasets;
+            chart.options.plugins.title.text = data.title;
+            chart.options.plugins.title.display = true;
+            chart.update();
+        }
+
+        document.getElementById('hideCategoryDeployCheckbox').onchange = function(evt) {
+            toggleDeployExclusion(evt.target.checked);
+        };
+
+        document.querySelectorAll('input[name="categoryMetric"]').forEach(function(radio) {
+            radio.onchange = function(evt) {
+                _comboMetric = evt.target.value;
+                _updateComboChart(_comboLevel, _comboParent);
+            };
+        });
+
+        function updateCategorySection() {
+            _updateComboChart(_comboLevel, _comboParent);
+        }
+        window.updateCategorySection = updateCategorySection;
+
+        document.getElementById('categoryBreakdownChart').onclick = function(evt) {
+            const chart = Chart.getChart('categoryBreakdownChart');
+            const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+            if (points.length > 0) {
+                const idx = points[0].index;
+                const name = chart.data.labels[idx];
+                if (_comboLevel === 'datasets') _updateComboChart('contracts', name);
+                else if (_comboLevel === 'contracts') _updateComboChart('transactions', name);
+            }
+        };
+
+        document.getElementById('categoryBreakdownChart').oncontextmenu = function(evt) {
+            evt.preventDefault();
+            if (_comboLevel === 'transactions') {
+                for (const ds of _pvmH.datasets.concat(_evmH.datasets)) {
+                    if (ds.contracts && ds.contracts.find(c => c.name === _comboParent)) {
+                        _updateComboChart('contracts', ds.name);
+                        return;
+                    }
+                }
+            } else if (_comboLevel === 'contracts') {
+                _updateComboChart('datasets', null);
+            }
+        };
+    `
 }
 
 function generateBytecodeSection(): {

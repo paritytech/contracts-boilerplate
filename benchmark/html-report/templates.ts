@@ -124,7 +124,7 @@ export function htmlDocument(
             deployRows.forEach(function(row) {
                 if (!excludedTxKeys.has(txKey(row.dataset.dataset, row.dataset.contract, 'deploy'))) allExcluded = false;
             });
-            ['hideDeployCheckbox','hideWeightDeployCheckbox','hideCategoryDeployCheckbox'].forEach(function(id) {
+            ['hideDeployCheckbox','hideWeightDeployCheckbox','hideCategoryDeployCheckbox','hideCategoryDeployCheckbox_evm','hideCategoryDeployCheckbox_pvm'].forEach(function(id) {
                 var cb = document.getElementById(id);
                 if (cb) cb.checked = allExcluded;
             });
@@ -139,6 +139,8 @@ export function htmlDocument(
             if (typeof window.updateGasSection === 'function') window.updateGasSection();
             if (typeof window.updateWeightSection === 'function') window.updateWeightSection();
             if (typeof window.updateCategorySection === 'function') window.updateCategorySection();
+            if (typeof window.updateCategorySection_evm === 'function') window.updateCategorySection_evm();
+            if (typeof window.updateCategorySection_pvm === 'function') window.updateCategorySection_pvm();
             updateExclusionIndicator();
         }
 
@@ -2534,8 +2536,12 @@ export interface CategoryHierarchyData {
     categoryDescriptions?: Record<string, string>
 }
 
-export function expandableCategoryTable(data: CategoryHierarchyData): string {
-    let rowId = 2000 // Start from 2000 to avoid conflicts with other table IDs
+export function expandableCategoryTable(
+    data: CategoryHierarchyData,
+    prefix = '',
+): string {
+    const baseId = prefix ? (prefix === 'evm' ? 3000 : 4000) : 2000
+    let rowId = baseId // Start from baseId to avoid conflicts with other table IDs
     const rows: string[] = []
     const { allCategories, datasets, categoryDescriptions = {} } = data
 
@@ -2637,9 +2643,12 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
         </tr>
     `)
 
+    const tableClass = prefix
+        ? `expandable-table expandable-category-table expandable-category-table-${prefix}`
+        : 'expandable-table expandable-category-table'
     return `
     <div style="overflow-x: auto;">
-    <table class="expandable-table expandable-category-table">
+    <table class="${tableClass}">
         <thead>
             <tr>
                 <th>Name</th>
@@ -2660,49 +2669,71 @@ export function expandableCategoryTable(data: CategoryHierarchyData): string {
     `
 }
 
-export function categoryFilterControls(): string {
+export function categoryFilterControls(
+    prefix = '',
+    { showRowHint = true }: { showRowHint?: boolean } = {},
+): string {
+    const suffix = prefix ? `_${prefix}` : ''
+    const radioName = prefix ? `categoryMetric_${prefix}` : 'categoryMetric'
     return `
     <div class="filter-controls">
         <label>
-            <input type="checkbox" id="hideCategoryDeployCheckbox">
+            <input type="checkbox" id="hideCategoryDeployCheckbox${suffix}">
             Exclude deploy transactions
         </label>
         <span class="excl-indicator" style="display:none"></span>
         <span style="margin-left: 1.5rem;">View:</span>
         <label>
-            <input type="radio" name="categoryMetric" value="ref_time" checked>
+            <input type="radio" name="${radioName}" value="ref_time" checked>
             ref_time
         </label>
         <label>
-            <input type="radio" name="categoryMetric" value="proof_size">
+            <input type="radio" name="${radioName}" value="proof_size">
             proof_size
         </label>
     </div>
-    <p class="table-note">Click a transaction row to exclude it.</p>
+    ${
+        showRowHint
+            ? '<p class="table-note">Click a transaction row to exclude it.</p>'
+            : ''
+    }
     `
 }
 
 export function drilldownCategoryChartScript(
     hierarchy: CategoryHierarchyData,
     categoryColorMap: Record<string, string>,
+    prefix = '',
 ): string {
+    const P = prefix // shorthand
+    const chartId = P ? `categoryBreakdownChart_${P}` : 'categoryBreakdownChart'
+    const checkboxId = P
+        ? `hideCategoryDeployCheckbox_${P}`
+        : 'hideCategoryDeployCheckbox'
+    const radioName = P ? `categoryMetric_${P}` : 'categoryMetric'
+    const tableSelector = P
+        ? `.expandable-category-table-${P}`
+        : '.expandable-category-table'
+    const fnSuffix = P ? `_${P}` : ''
     return `
         // Store category hierarchy data for drill-down
-        const categoryColorMap = ${JSON.stringify(categoryColorMap)};
-        const categoryHierarchyOriginal = ${JSON.stringify(hierarchy)};
-        let categoryHierarchy = JSON.parse(JSON.stringify(categoryHierarchyOriginal));
-        let categoryCurrentLevel = 'datasets';
-        let categoryCurrentParent = null;
-        let categoryMetric = 'ref_time'; // 'ref_time' or 'proof_size'
+        const categoryColorMap${fnSuffix} = ${JSON.stringify(categoryColorMap)};
+        const categoryHierarchyOriginal${fnSuffix} = ${
+        JSON.stringify(hierarchy)
+    };
+        let categoryHierarchy${fnSuffix} = JSON.parse(JSON.stringify(categoryHierarchyOriginal${fnSuffix}));
+        let categoryCurrentLevel${fnSuffix} = 'datasets';
+        let categoryCurrentParent${fnSuffix} = null;
+        let categoryMetric${fnSuffix} = 'ref_time'; // 'ref_time' or 'proof_size'
 
-        function catField(item) {
-            return categoryMetric === 'proof_size' ? (item.categories_proof_size || item.categories) : item.categories;
+        function catField${fnSuffix}(item) {
+            return categoryMetric${fnSuffix} === 'proof_size' ? (item.categories_proof_size || item.categories) : item.categories;
         }
-        function catCostField(item) {
-            return categoryMetric === 'proof_size' ? (item.total_cost_proof_size ?? item.total_cost) : item.total_cost;
+        function catCostField${fnSuffix}(item) {
+            return categoryMetric${fnSuffix} === 'proof_size' ? (item.total_cost_proof_size ?? item.total_cost) : item.total_cost;
         }
 
-        function recalculateCategoryPercentages(transactions, allCategories) {
+        function recalculateCategoryPercentages${fnSuffix}(transactions, allCategories) {
             const totals = {};
             const totalsPs = {};
             let totalCost = 0;
@@ -2728,20 +2759,20 @@ export function drilldownCategoryChartScript(
             return { categories: result, total_cost: totalCost, categories_proof_size: resultPs, total_cost_proof_size: totalCostPs };
         }
 
-        function filterCategoryHierarchy() {
+        function filterCategoryHierarchy${fnSuffix}() {
             if (excludedTxKeys.size === 0) {
-                categoryHierarchy = JSON.parse(JSON.stringify(categoryHierarchyOriginal));
+                categoryHierarchy${fnSuffix} = JSON.parse(JSON.stringify(categoryHierarchyOriginal${fnSuffix}));
                 return;
             }
 
-            const allCategories = categoryHierarchyOriginal.allCategories;
+            const allCategories = categoryHierarchyOriginal${fnSuffix}.allCategories;
 
-            categoryHierarchy = {
+            categoryHierarchy${fnSuffix} = {
                 allCategories,
-                datasets: categoryHierarchyOriginal.datasets.map(dataset => {
+                datasets: categoryHierarchyOriginal${fnSuffix}.datasets.map(dataset => {
                     const contracts = dataset.contracts.map(contract => {
                         const filteredTxs = contract.transactions.filter(tx => !excludedTxKeys.has(txKey(dataset.name, contract.name, tx.name)));
-                        const recalc = recalculateCategoryPercentages(filteredTxs, allCategories);
+                        const recalc = recalculateCategoryPercentages${fnSuffix}(filteredTxs, allCategories);
                         return {
                             name: contract.name,
                             categories: recalc.categories,
@@ -2753,7 +2784,7 @@ export function drilldownCategoryChartScript(
                     }).filter(c => c.transactions.length > 0);
 
                     const contractTxs = contracts.flatMap(c => c.transactions);
-                    const datasetRecalc = recalculateCategoryPercentages(contractTxs, allCategories);
+                    const datasetRecalc = recalculateCategoryPercentages${fnSuffix}(contractTxs, allCategories);
                     return {
                         name: dataset.name,
                         categories: datasetRecalc.categories,
@@ -2766,23 +2797,23 @@ export function drilldownCategoryChartScript(
             };
         }
 
-        function getCategoryChartData(level, parent) {
+        function getCategoryChartData${fnSuffix}(level, parent) {
             let items = [];
             let title = 'Category Breakdown by Dataset';
-            const metricLabel = categoryMetric === 'proof_size' ? ' [proof_size]' : ' [ref_time]';
+            const metricLabel = categoryMetric${fnSuffix} === 'proof_size' ? ' [proof_size]' : ' [ref_time]';
             const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
 
             if (level === 'datasets') {
-                items = categoryHierarchy.datasets;
+                items = categoryHierarchy${fnSuffix}.datasets;
                 title = 'Category Breakdown by Dataset' + metricLabel + suffix + ' (click to drill down)';
             } else if (level === 'contracts' && parent) {
-                const dataset = categoryHierarchy.datasets.find(d => d.name === parent);
+                const dataset = categoryHierarchy${fnSuffix}.datasets.find(d => d.name === parent);
                 if (dataset) {
                     items = dataset.contracts;
                     title = 'Category Breakdown by Contract: ' + parent + metricLabel + suffix + ' (click to drill down, right-click to go back)';
                 }
             } else if (level === 'transactions' && parent) {
-                for (const dataset of categoryHierarchy.datasets) {
+                for (const dataset of categoryHierarchy${fnSuffix}.datasets) {
                     const contract = dataset.contracts.find(c => c.name === parent);
                     if (contract) {
                         items = contract.transactions;
@@ -2792,11 +2823,11 @@ export function drilldownCategoryChartScript(
                 }
             }
 
-            const categories = categoryHierarchy.allCategories;
+            const categories = categoryHierarchy${fnSuffix}.allCategories;
             const datasets = categories.map(cat => ({
                 label: cat,
-                data: items.map(i => catField(i)[cat] ?? 0),
-                backgroundColor: categoryColorMap[cat] || 'rgba(128, 128, 128, 0.8)',
+                data: items.map(i => catField${fnSuffix}(i)[cat] ?? 0),
+                backgroundColor: categoryColorMap${fnSuffix}[cat] || 'rgba(128, 128, 128, 0.8)',
             }));
 
             return {
@@ -2807,12 +2838,15 @@ export function drilldownCategoryChartScript(
             };
         }
 
-        function updateCategoryChart(level, parent) {
-            categoryCurrentLevel = level;
-            categoryCurrentParent = parent;
+        function updateCategoryChart${fnSuffix}(level, parent) {
+            categoryCurrentLevel${fnSuffix} = level;
+            categoryCurrentParent${fnSuffix} = parent;
 
-            const data = getCategoryChartData(level, parent);
-            const chart = Chart.getChart('categoryBreakdownChart');
+            const chartEl = document.getElementById('${chartId}');
+            if (!chartEl) return;
+            const data = getCategoryChartData${fnSuffix}(level, parent);
+            const chart = Chart.getChart('${chartId}');
+            if (!chart) return;
 
             chart.data.labels = data.labels;
             chart.data.datasets = data.datasets;
@@ -2823,25 +2857,26 @@ export function drilldownCategoryChartScript(
         }
 
         // Deploy checkbox handler for category
-        document.getElementById('hideCategoryDeployCheckbox').onchange = function(evt) {
+        var _cb${fnSuffix} = document.getElementById('${checkboxId}');
+        if (_cb${fnSuffix}) _cb${fnSuffix}.onchange = function(evt) {
             toggleDeployExclusion(evt.target.checked);
         };
 
         // Metric radio button handler
-        document.querySelectorAll('input[name="categoryMetric"]').forEach(radio => {
+        document.querySelectorAll('input[name="${radioName}"]').forEach(radio => {
             radio.onchange = function(evt) {
-                categoryMetric = evt.target.value;
-                updateCategoryChart(categoryCurrentLevel, categoryCurrentParent);
-                updateCategoryTable();
+                categoryMetric${fnSuffix} = evt.target.value;
+                updateCategoryChart${fnSuffix}(categoryCurrentLevel${fnSuffix}, categoryCurrentParent${fnSuffix});
+                updateCategoryTable${fnSuffix}();
             };
         });
 
-        function updateCategoryTable() {
-            var table = document.querySelector('.expandable-category-table');
+        function updateCategoryTable${fnSuffix}() {
+            var table = document.querySelector('${tableSelector}');
             if (!table) return;
-            var allCats = categoryHierarchy.allCategories;
+            var allCats = categoryHierarchy${fnSuffix}.allCategories;
 
-            if (excludedTxKeys.size === 0 && categoryMetric === 'ref_time') {
+            if (excludedTxKeys.size === 0 && categoryMetric${fnSuffix} === 'ref_time') {
                 table.querySelectorAll('[data-orig]').forEach(function(cell) {
                     cell.innerHTML = cell.dataset.orig;
                     delete cell.dataset.orig;
@@ -2859,10 +2894,10 @@ export function drilldownCategoryChartScript(
                 var toggle = row.querySelector('.expand-toggle');
                 if (!toggle) return;
                 var name = toggle.textContent.trim();
-                var ds = categoryHierarchy.datasets.find(function(d){ return d.name === name; });
+                var ds = categoryHierarchy${fnSuffix}.datasets.find(function(d){ return d.name === name; });
                 var cells = row.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
-                    cells[i + 1].innerHTML = ds ? fmtCatPct(catField(ds)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
+                    cells[i + 1].innerHTML = ds ? fmtCatPct(catField${fnSuffix}(ds)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
                 }
             });
 
@@ -2872,13 +2907,13 @@ export function drilldownCategoryChartScript(
                 if (!toggle) return;
                 var cName = toggle.textContent.trim();
                 var contract = null;
-                for (var di = 0; di < categoryHierarchy.datasets.length; di++) {
-                    var found = categoryHierarchy.datasets[di].contracts.find(function(c){ return c.name === cName; });
+                for (var di = 0; di < categoryHierarchy${fnSuffix}.datasets.length; di++) {
+                    var found = categoryHierarchy${fnSuffix}.datasets[di].contracts.find(function(c){ return c.name === cName; });
                     if (found) { contract = found; break; }
                 }
                 var cells = row.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
-                    cells[i + 1].innerHTML = contract ? fmtCatPct(catField(contract)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
+                    cells[i + 1].innerHTML = contract ? fmtCatPct(catField${fnSuffix}(contract)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
                 }
             });
 
@@ -2888,21 +2923,21 @@ export function drilldownCategoryChartScript(
                 var dsName = row.dataset.dataset;
                 var cName = row.dataset.contract;
                 var tx = null;
-                var ds = categoryHierarchy.datasets.find(function(d){ return d.name === dsName; });
+                var ds = categoryHierarchy${fnSuffix}.datasets.find(function(d){ return d.name === dsName; });
                 if (ds) {
                     var c = ds.contracts.find(function(c){ return c.name === cName; });
                     if (c) tx = c.transactions.find(function(t){ return t.name === txName; });
                 }
                 var cells = row.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
-                    cells[i + 1].innerHTML = tx ? fmtCatPct(catField(tx)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
+                    cells[i + 1].innerHTML = tx ? fmtCatPct(catField${fnSuffix}(tx)[allCats[i]] ?? 0) : '<span class="number">N/A</span>';
                     // Update tooltip for metric switch
                     if (tx && tx.opcodes) {
                         var tip = '';
                         for (var j = 0; j < tx.opcodes.length; j++) {
                             var op = tx.opcodes[j];
                             if (op.category === allCats[i]) {
-                                var pv = categoryMetric === 'proof_size' ? op.pct_proof_size : op.pct;
+                                var pv = categoryMetric${fnSuffix} === 'proof_size' ? op.pct_proof_size : op.pct;
                                 tip += op.op + ': ' + pv.toFixed(1) + '%\\n';
                             }
                         }
@@ -2919,9 +2954,9 @@ export function drilldownCategoryChartScript(
                 });
                 // Recalculate overall totals
                 var allTxs = [];
-                categoryHierarchy.datasets.forEach(function(ds){ ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); }); });
-                var recalc = recalculateCategoryPercentages(allTxs, allCats);
-                var cats = categoryMetric === 'proof_size' ? recalc.categories_proof_size : recalc.categories;
+                categoryHierarchy${fnSuffix}.datasets.forEach(function(ds){ ds.contracts.forEach(function(c){ c.transactions.forEach(function(tx){ allTxs.push(tx); }); }); });
+                var recalc = recalculateCategoryPercentages${fnSuffix}(allTxs, allCats);
+                var cats = categoryMetric${fnSuffix} === 'proof_size' ? recalc.categories_proof_size : recalc.categories;
                 var cells = totalRow.querySelectorAll('td');
                 for (var i = 0; i < allCats.length; i++) {
                     cells[i + 1].innerHTML = fmtCatPct(cats[allCats[i]] ?? 0);
@@ -2929,45 +2964,49 @@ export function drilldownCategoryChartScript(
             }
         }
 
-        function updateCategorySection() {
-            filterCategoryHierarchy();
-            updateCategoryChart(categoryCurrentLevel, categoryCurrentParent);
-            updateCategoryTable();
+        function updateCategorySection${fnSuffix}() {
+            filterCategoryHierarchy${fnSuffix}();
+            updateCategoryChart${fnSuffix}(categoryCurrentLevel${fnSuffix}, categoryCurrentParent${fnSuffix});
+            updateCategoryTable${fnSuffix}();
         }
-        window.updateCategorySection = updateCategorySection;
+        window.updateCategorySection${fnSuffix} = updateCategorySection${fnSuffix};
 
         // Add click handler for category drill-down
-        document.getElementById('categoryBreakdownChart').onclick = function(evt) {
-            const chart = Chart.getChart('categoryBreakdownChart');
-            const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+        var _chartEl${fnSuffix} = document.getElementById('${chartId}');
+        if (_chartEl${fnSuffix}) {
+            _chartEl${fnSuffix}.onclick = function(evt) {
+                const chart = Chart.getChart('${chartId}');
+                if (!chart) return;
+                const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
 
-            if (points.length > 0) {
-                const index = points[0].index;
-                const label = chart.data.labels[index];
+                if (points.length > 0) {
+                    const index = points[0].index;
+                    const label = chart.data.labels[index];
 
-                if (categoryCurrentLevel === 'datasets') {
-                    updateCategoryChart('contracts', label);
-                } else if (categoryCurrentLevel === 'contracts') {
-                    updateCategoryChart('transactions', label);
-                }
-            }
-        };
-
-        // Add right-click handler to go back
-        document.getElementById('categoryBreakdownChart').oncontextmenu = function(evt) {
-            evt.preventDefault();
-
-            if (categoryCurrentLevel === 'transactions') {
-                for (const dataset of categoryHierarchy.datasets) {
-                    if (dataset.contracts.find(c => c.name === categoryCurrentParent)) {
-                        updateCategoryChart('contracts', dataset.name);
-                        return;
+                    if (categoryCurrentLevel${fnSuffix} === 'datasets') {
+                        updateCategoryChart${fnSuffix}('contracts', label);
+                    } else if (categoryCurrentLevel${fnSuffix} === 'contracts') {
+                        updateCategoryChart${fnSuffix}('transactions', label);
                     }
                 }
-            } else if (categoryCurrentLevel === 'contracts') {
-                updateCategoryChart('datasets', null);
-            }
-        };
+            };
+
+            // Add right-click handler to go back
+            _chartEl${fnSuffix}.oncontextmenu = function(evt) {
+                evt.preventDefault();
+
+                if (categoryCurrentLevel${fnSuffix} === 'transactions') {
+                    for (const dataset of categoryHierarchy${fnSuffix}.datasets) {
+                        if (dataset.contracts.find(c => c.name === categoryCurrentParent${fnSuffix})) {
+                            updateCategoryChart${fnSuffix}('contracts', dataset.name);
+                            return;
+                        }
+                    }
+                } else if (categoryCurrentLevel${fnSuffix} === 'contracts') {
+                    updateCategoryChart${fnSuffix}('datasets', null);
+                }
+            };
+        }
     `
 }
 

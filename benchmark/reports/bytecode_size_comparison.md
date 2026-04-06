@@ -1,11 +1,11 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-03-23
+Generated on: 2026-04-06
 
 ### Benchmark Environment
 
 - **Chain:** Geth --dev | **Node:** Geth v1.16.4-stable | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
-- **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1021004 | **Node:** polkadot-omni-node 1.21.2-5a82c9637e4 | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
+- **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1022002 | **Node:** polkadot-omni-node 1.22.0-32458d8f84d | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 
 ## Fibonacci Implementations
 
@@ -144,7 +144,7 @@ Generated on: 2026-03-23
 | Contract          | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | --------- | ------------ | ----------- |
 | FiatTokenV2_2_evm | EVM     | solidity  | 15,467       | -           |
-| FiatTokenV2_2_pvm | PVM     | solidity  | 411,352      | +2559.5%    |
+| FiatTokenV2_2_pvm | PVM     | solidity  | 103,535      | +569.4%     |
 
 
 ## FiatTokenProxy Implementations
@@ -160,7 +160,7 @@ Generated on: 2026-03-23
 | Contract      | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ------------- | ------- | --------- | ------------ | ----------- |
 | XENCrypto_evm | EVM     | solidity  | 10,489       | -           |
-| XENCrypto_pvm | PVM     | solidity  | 306,120      | +2818.5%    |
+| XENCrypto_pvm | PVM     | solidity  | 112,823      | +975.6%     |
 
 
 ## CoinTool_App Implementations
