@@ -296,7 +296,7 @@ export const ethereumContracts: Artifacts = [
                         abi: abis.CoinTool_App,
                         functionName: 't',
                         args: [
-                            50n,
+                            2n,
                             data,
                             '0x01',
                         ],

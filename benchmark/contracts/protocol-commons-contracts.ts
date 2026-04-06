@@ -476,12 +476,13 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'setAddress',
                 exec: async (address) => {
                     const name = uniqueName('addr')
-                    await env.wallet.writeContract({
+                    const regTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'register',
                         args: [name, 0n],
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: regTx })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
@@ -494,12 +495,13 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'setMetadata',
                 exec: async (address) => {
                     const name = uniqueName('meta')
-                    await env.wallet.writeContract({
+                    const regTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'register',
                         args: [name, 0n],
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: regTx })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
@@ -512,12 +514,13 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'transfer',
                 exec: async (address) => {
                     const name = uniqueName('xfer')
-                    await env.wallet.writeContract({
+                    const regTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'register',
                         args: [name, 0n],
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: regTx })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
@@ -530,12 +533,13 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'renew',
                 exec: async (address) => {
                     const name = uniqueName('renew')
-                    await env.wallet.writeContract({
+                    const regTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'register',
                         args: [name, ONE_YEAR],
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: regTx })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
@@ -548,12 +552,13 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'release',
                 exec: async (address) => {
                     const name = uniqueName('release')
-                    await env.wallet.writeContract({
+                    const regTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'register',
                         args: [name, 0n],
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: regTx })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
@@ -566,12 +571,13 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'createSubdomain',
                 exec: async (address) => {
                     const name = uniqueName('parent')
-                    await env.wallet.writeContract({
+                    const regTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'register',
                         args: [name, 0n],
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: regTx })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
@@ -589,13 +595,14 @@ export const protocolCommonsContracts: Artifacts = [
                 name: 'setSubdomainOwner',
                 exec: async (address) => {
                     const name = uniqueName('sub')
-                    await env.wallet.writeContract({
+                    const regTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'register',
                         args: [name, 0n],
                     })
-                    await env.wallet.writeContract({
+                    await env.wallet.waitForTransactionReceipt({ hash: regTx })
+                    const subTx = await env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,
                         functionName: 'createSubdomain',
@@ -606,6 +613,7 @@ export const protocolCommonsContracts: Artifacts = [
                             env.wallet2.account.address,
                         ],
                     })
+                    await env.wallet.waitForTransactionReceipt({ hash: subTx })
                     return env.wallet.writeContract({
                         address,
                         abi: abis.DotNS,

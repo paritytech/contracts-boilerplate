@@ -2,16 +2,33 @@ import { db } from '../lib.ts'
 import { join } from '@std/path'
 import { datasetCategories as contractCategories } from '../datasets.ts'
 
-// Dataset descriptions for the HTML report
-export const DATASET_DESCRIPTIONS: Record<string, string> = {
-    'test-contracts':
-        'Small test contracts used for basic benchmarking (e.g. Fibonacci, SimpleToken).',
-    'ethereum-contracts':
-        'The most actively used contracts on Ethereum in 2025 (e.g. USDT, WETH, USDC, XEN).',
-    'polkadot-contracts':
-        'Real-world contracts being built by teams at Parity for the Polkadot ecosystem.',
+export interface BenchmarkMetadataRow {
+    chain_name: string
+    system_chain: string | null
+    system_name: string | null
+    system_version: string | null
+    runtime_spec_name: string | null
+    runtime_spec_version: number | null
+    resolc_version: string | null
+    solc_version: string | null
+    recorded_at: string
 }
 
+export function getBenchmarkMetadata(): BenchmarkMetadataRow[] {
+    try {
+        return db.prepare(`
+            SELECT chain_name, system_chain, system_name, system_version,
+                   runtime_spec_name, runtime_spec_version,
+                   resolc_version, solc_version, recorded_at
+            FROM benchmark_metadata
+            ORDER BY chain_name
+        `).all() as unknown as BenchmarkMetadataRow[]
+    } catch {
+        return []
+    }
+}
+
+// Dataset descriptions for the HTML report
 // Dataset methodology HTML content keyed by dataset name.
 // Rendered inside a collapsible <details> in the summary section.
 export const DATASET_METHODOLOGY: Record<string, string> = {
@@ -248,8 +265,12 @@ export interface WeightHierarchy {
         pvm_proof_size: number | null
         evm_metered_pct: number | null
         pvm_metered_pct: number | null
+        evm_metered_pct_proof_size: number | null
+        pvm_metered_pct_proof_size: number | null
         evm_metered_ref_time: number | null
         pvm_metered_ref_time: number | null
+        evm_post_dispatch_pov: number | null
+        pvm_post_dispatch_pov: number | null
         contracts: Array<{
             name: string
             evm_ref_time: number | null
@@ -258,8 +279,12 @@ export interface WeightHierarchy {
             pvm_proof_size: number | null
             evm_metered_pct: number | null
             pvm_metered_pct: number | null
+            evm_metered_pct_proof_size: number | null
+            pvm_metered_pct_proof_size: number | null
             evm_metered_ref_time: number | null
             pvm_metered_ref_time: number | null
+            evm_post_dispatch_pov: number | null
+            pvm_post_dispatch_pov: number | null
             transactions: Array<{
                 name: string
                 evm_ref_time: number | null
@@ -268,8 +293,12 @@ export interface WeightHierarchy {
                 pvm_proof_size: number | null
                 evm_metered_pct: number | null
                 pvm_metered_pct: number | null
+                evm_metered_pct_proof_size: number | null
+                pvm_metered_pct_proof_size: number | null
                 evm_metered_ref_time: number | null
                 pvm_metered_ref_time: number | null
+                evm_post_dispatch_pov: number | null
+                pvm_post_dispatch_pov: number | null
             }>
             alt_implementations: AltWeightImplementation[]
         }>
@@ -281,13 +310,17 @@ export interface AltWeightImplementation {
     pvm_ref_time: number | null
     pvm_proof_size: number | null
     pvm_metered_pct: number | null
+    pvm_metered_pct_proof_size: number | null
     pvm_metered_ref_time: number | null
+    pvm_post_dispatch_pov: number | null
     transactions: Array<{
         name: string
         pvm_ref_time: number | null
         pvm_proof_size: number | null
         pvm_metered_pct: number | null
+        pvm_metered_pct_proof_size: number | null
         pvm_metered_ref_time: number | null
+        pvm_post_dispatch_pov: number | null
     }>
 }
 
@@ -726,8 +759,12 @@ interface WeightData {
     pvm_proof_size: number | null
     evm_metered_pct: number | null
     pvm_metered_pct: number | null
+    evm_metered_pct_proof_size: number | null
+    pvm_metered_pct_proof_size: number | null
     evm_metered_ref_time: number | null
     pvm_metered_ref_time: number | null
+    evm_post_dispatch_pov: number | null
+    pvm_post_dispatch_pov: number | null
 }
 
 interface RawWeightRow {
@@ -737,6 +774,9 @@ interface RawWeightRow {
     proof_size: number
     weight_consumed: number
     base_weight: number
+    weight_consumed_ps: number
+    base_weight_ps: number
+    post_dispatch_pov: number | null
 }
 
 export function getWeightAnalysisHierarchy(): WeightHierarchy {
@@ -748,7 +788,10 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
             (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
             weight_consumed_ref_time as weight_consumed,
-            COALESCE(base_call_weight_ref_time, 0) as base_weight
+            COALESCE(base_call_weight_ref_time, 0) as base_weight,
+            COALESCE(weight_consumed_proof_size, 0) as weight_consumed_ps,
+            COALESCE(base_call_weight_proof_size, 0) as base_weight_ps,
+            post_dispatch_pov
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_evm'
@@ -763,7 +806,10 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
             (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
             weight_consumed_ref_time as weight_consumed,
-            COALESCE(base_call_weight_ref_time, 0) as base_weight
+            COALESCE(base_call_weight_ref_time, 0) as base_weight,
+            COALESCE(weight_consumed_proof_size, 0) as weight_consumed_ps,
+            COALESCE(base_call_weight_proof_size, 0) as base_weight_ps,
+            post_dispatch_pov
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_pvm'
@@ -779,7 +825,10 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
             (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
             weight_consumed_ref_time as weight_consumed,
-            COALESCE(base_call_weight_ref_time, 0) as base_weight
+            COALESCE(base_call_weight_ref_time, 0) as base_weight,
+            COALESCE(weight_consumed_proof_size, 0) as weight_consumed_ps,
+            COALESCE(base_call_weight_proof_size, 0) as base_weight_ps,
+            post_dispatch_pov
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name NOT LIKE '%_evm'
@@ -798,7 +847,9 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     ref_time: number
                     proof_size: number
                     metered_pct: number
+                    metered_pct_proof_size: number
                     metered_ref_time: number
+                    post_dispatch_pov: number | null
                 }
             >
         >
@@ -812,12 +863,17 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
         const metered_pct = row.ref_time > 0
             ? (row.weight_consumed / row.ref_time) * 100
             : 0
+        const metered_pct_proof_size = row.proof_size > 0
+            ? (row.weight_consumed_ps / row.proof_size) * 100
+            : 0
         implMap.get(row.contract_name)!.push({
             name: row.transaction_name,
             ref_time: row.ref_time,
             proof_size: row.proof_size,
             metered_pct,
+            metered_pct_proof_size,
             metered_ref_time: row.weight_consumed,
+            post_dispatch_pov: row.post_dispatch_pov,
         })
     }
 
@@ -828,18 +884,25 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             ref_time: number
             proof_size: number
             metered_pct: number
+            metered_pct_proof_size: number
             metered_ref_time: number
+            post_dispatch_pov: number | null
         }
     >()
     for (const row of evmData) {
         const metered_pct = row.ref_time > 0
             ? (row.weight_consumed / row.ref_time) * 100
             : 0
+        const metered_pct_proof_size = row.proof_size > 0
+            ? (row.weight_consumed_ps / row.proof_size) * 100
+            : 0
         evmMap.set(`${row.contract_id}:${row.transaction_name}`, {
             ref_time: row.ref_time,
             proof_size: row.proof_size,
             metered_pct,
+            metered_pct_proof_size,
             metered_ref_time: row.weight_consumed,
+            post_dispatch_pov: row.post_dispatch_pov,
         })
     }
 
@@ -849,18 +912,25 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             ref_time: number
             proof_size: number
             metered_pct: number
+            metered_pct_proof_size: number
             metered_ref_time: number
+            post_dispatch_pov: number | null
         }
     >()
     for (const row of pvmData) {
         const metered_pct = row.ref_time > 0
             ? (row.weight_consumed / row.ref_time) * 100
             : 0
+        const metered_pct_proof_size = row.proof_size > 0
+            ? (row.weight_consumed_ps / row.proof_size) * 100
+            : 0
         pvmMap.set(`${row.contract_id}:${row.transaction_name}`, {
             ref_time: row.ref_time,
             proof_size: row.proof_size,
             metered_pct,
+            metered_pct_proof_size,
             metered_ref_time: row.weight_consumed,
+            post_dispatch_pov: row.post_dispatch_pov,
         })
     }
 
@@ -882,8 +952,12 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             pvm_proof_size: pvm?.proof_size ?? null,
             evm_metered_pct: evm?.metered_pct ?? null,
             pvm_metered_pct: pvm?.metered_pct ?? null,
+            evm_metered_pct_proof_size: evm?.metered_pct_proof_size ?? null,
+            pvm_metered_pct_proof_size: pvm?.metered_pct_proof_size ?? null,
             evm_metered_ref_time: evm?.metered_ref_time ?? null,
             pvm_metered_ref_time: pvm?.metered_ref_time ?? null,
+            evm_post_dispatch_pov: evm?.post_dispatch_pov ?? null,
+            pvm_post_dispatch_pov: pvm?.post_dispatch_pov ?? null,
         })
     }
 
@@ -912,7 +986,11 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
         let datasetEvmRefTime = 0, datasetPvmRefTime = 0
         let datasetEvmProofSize = 0, datasetPvmProofSize = 0
         let datasetEvmMeteredSum = 0, datasetPvmMeteredSum = 0
+        let datasetEvmMeteredSumPs = 0, datasetPvmMeteredSumPs = 0
         let datasetEvmMeteredRefTime = 0, datasetPvmMeteredRefTime = 0
+        let datasetEvmPostDispatchPovSum = 0, datasetPvmPostDispatchPovSum = 0
+        let datasetEvmPostDispatchPovCount = 0,
+            datasetPvmPostDispatchPovCount = 0
         let datasetEvmCount = 0, datasetPvmCount = 0
         let hasEvm = false, hasPvm = false
 
@@ -922,7 +1000,12 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             let contractEvmRefTime = 0, contractPvmRefTime = 0
             let contractEvmProofSize = 0, contractPvmProofSize = 0
             let contractEvmMeteredSum = 0, contractPvmMeteredSum = 0
+            let contractEvmMeteredSumPs = 0, contractPvmMeteredSumPs = 0
             let contractEvmMeteredRefTime = 0, contractPvmMeteredRefTime = 0
+            let contractEvmPostDispatchPovSum = 0,
+                contractPvmPostDispatchPovSum = 0
+            let contractEvmPostDispatchPovCount = 0,
+                contractPvmPostDispatchPovCount = 0
             let contractEvmCount = 0, contractPvmCount = 0
             let cHasEvm = false, cHasPvm = false
 
@@ -931,7 +1014,14 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     contractEvmRefTime += tx.evm_ref_time
                     contractEvmProofSize += tx.evm_proof_size ?? 0
                     contractEvmMeteredSum += tx.evm_metered_pct ?? 0
+                    contractEvmMeteredSumPs += tx.evm_metered_pct_proof_size ??
+                        0
                     contractEvmMeteredRefTime += tx.evm_metered_ref_time ?? 0
+                    if (tx.evm_post_dispatch_pov !== null) {
+                        contractEvmPostDispatchPovSum +=
+                            tx.evm_post_dispatch_pov
+                        contractEvmPostDispatchPovCount++
+                    }
                     contractEvmCount++
                     cHasEvm = true
                 }
@@ -939,7 +1029,14 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     contractPvmRefTime += tx.pvm_ref_time
                     contractPvmProofSize += tx.pvm_proof_size ?? 0
                     contractPvmMeteredSum += tx.pvm_metered_pct ?? 0
+                    contractPvmMeteredSumPs += tx.pvm_metered_pct_proof_size ??
+                        0
                     contractPvmMeteredRefTime += tx.pvm_metered_ref_time ?? 0
+                    if (tx.pvm_post_dispatch_pov !== null) {
+                        contractPvmPostDispatchPovSum +=
+                            tx.pvm_post_dispatch_pov
+                        contractPvmPostDispatchPovCount++
+                    }
                     contractPvmCount++
                     cHasPvm = true
                 }
@@ -952,8 +1049,12 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     pvm_proof_size: tx.pvm_proof_size,
                     evm_metered_pct: tx.evm_metered_pct,
                     pvm_metered_pct: tx.pvm_metered_pct,
+                    evm_metered_pct_proof_size: tx.evm_metered_pct_proof_size,
+                    pvm_metered_pct_proof_size: tx.pvm_metered_pct_proof_size,
                     evm_metered_ref_time: tx.evm_metered_ref_time,
                     pvm_metered_ref_time: tx.pvm_metered_ref_time,
+                    evm_post_dispatch_pov: tx.evm_post_dispatch_pov,
+                    pvm_post_dispatch_pov: tx.pvm_post_dispatch_pov,
                 }
             })
 
@@ -961,7 +1062,11 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                 datasetEvmRefTime += contractEvmRefTime
                 datasetEvmProofSize += contractEvmProofSize
                 datasetEvmMeteredSum += contractEvmMeteredSum
+                datasetEvmMeteredSumPs += contractEvmMeteredSumPs
                 datasetEvmMeteredRefTime += contractEvmMeteredRefTime
+                datasetEvmPostDispatchPovSum += contractEvmPostDispatchPovSum
+                datasetEvmPostDispatchPovCount +=
+                    contractEvmPostDispatchPovCount
                 datasetEvmCount += contractEvmCount
                 hasEvm = true
             }
@@ -969,7 +1074,11 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                 datasetPvmRefTime += contractPvmRefTime
                 datasetPvmProofSize += contractPvmProofSize
                 datasetPvmMeteredSum += contractPvmMeteredSum
+                datasetPvmMeteredSumPs += contractPvmMeteredSumPs
                 datasetPvmMeteredRefTime += contractPvmMeteredRefTime
+                datasetPvmPostDispatchPovSum += contractPvmPostDispatchPovSum
+                datasetPvmPostDispatchPovCount +=
+                    contractPvmPostDispatchPovCount
                 datasetPvmCount += contractPvmCount
                 hasPvm = true
             }
@@ -980,6 +1089,8 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             if (altWMap) {
                 for (const [implName, implTxs] of altWMap) {
                     const count = implTxs.length
+                    const altPovVals = implTxs.map((t) => t.post_dispatch_pov)
+                        .filter((v): v is number => v !== null)
                     alt_implementations.push({
                         name: implName,
                         pvm_ref_time: count > 0
@@ -998,6 +1109,13 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                             ? implTxs.reduce((s, t) => s + t.metered_pct, 0) /
                                 count
                             : null,
+                        pvm_metered_pct_proof_size: count > 0
+                            ? implTxs.reduce(
+                                (s, t) => s + t.metered_pct_proof_size,
+                                0,
+                            ) /
+                                count
+                            : null,
                         pvm_metered_ref_time: count > 0
                             ? Math.round(
                                 implTxs.reduce(
@@ -1006,12 +1124,21 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                                 ) / count,
                             )
                             : null,
+                        pvm_post_dispatch_pov: altPovVals.length > 0
+                            ? Math.round(
+                                altPovVals.reduce((s, v) => s + v, 0) /
+                                    altPovVals.length,
+                            )
+                            : null,
                         transactions: implTxs.map((t) => ({
                             name: t.name,
                             pvm_ref_time: t.ref_time,
                             pvm_proof_size: t.proof_size,
                             pvm_metered_pct: t.metered_pct,
+                            pvm_metered_pct_proof_size:
+                                t.metered_pct_proof_size,
                             pvm_metered_ref_time: t.metered_ref_time,
+                            pvm_post_dispatch_pov: t.post_dispatch_pov,
                         })),
                     })
                 }
@@ -1038,11 +1165,29 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                 pvm_metered_pct: cHasPvm && contractPvmCount > 0
                     ? contractPvmMeteredSum / contractPvmCount
                     : null,
+                evm_metered_pct_proof_size: cHasEvm && contractEvmCount > 0
+                    ? contractEvmMeteredSumPs / contractEvmCount
+                    : null,
+                pvm_metered_pct_proof_size: cHasPvm && contractPvmCount > 0
+                    ? contractPvmMeteredSumPs / contractPvmCount
+                    : null,
                 evm_metered_ref_time: cHasEvm && contractEvmCount > 0
                     ? Math.round(contractEvmMeteredRefTime / contractEvmCount)
                     : null,
                 pvm_metered_ref_time: cHasPvm && contractPvmCount > 0
                     ? Math.round(contractPvmMeteredRefTime / contractPvmCount)
+                    : null,
+                evm_post_dispatch_pov: contractEvmPostDispatchPovCount > 0
+                    ? Math.round(
+                        contractEvmPostDispatchPovSum /
+                            contractEvmPostDispatchPovCount,
+                    )
+                    : null,
+                pvm_post_dispatch_pov: contractPvmPostDispatchPovCount > 0
+                    ? Math.round(
+                        contractPvmPostDispatchPovSum /
+                            contractPvmPostDispatchPovCount,
+                    )
                     : null,
                 transactions,
                 alt_implementations,
@@ -1069,11 +1214,29 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             pvm_metered_pct: hasPvm && datasetPvmCount > 0
                 ? datasetPvmMeteredSum / datasetPvmCount
                 : null,
+            evm_metered_pct_proof_size: hasEvm && datasetEvmCount > 0
+                ? datasetEvmMeteredSumPs / datasetEvmCount
+                : null,
+            pvm_metered_pct_proof_size: hasPvm && datasetPvmCount > 0
+                ? datasetPvmMeteredSumPs / datasetPvmCount
+                : null,
             evm_metered_ref_time: hasEvm && datasetEvmCount > 0
                 ? Math.round(datasetEvmMeteredRefTime / datasetEvmCount)
                 : null,
             pvm_metered_ref_time: hasPvm && datasetPvmCount > 0
                 ? Math.round(datasetPvmMeteredRefTime / datasetPvmCount)
+                : null,
+            evm_post_dispatch_pov: datasetEvmPostDispatchPovCount > 0
+                ? Math.round(
+                    datasetEvmPostDispatchPovSum /
+                        datasetEvmPostDispatchPovCount,
+                )
+                : null,
+            pvm_post_dispatch_pov: datasetPvmPostDispatchPovCount > 0
+                ? Math.round(
+                    datasetPvmPostDispatchPovSum /
+                        datasetPvmPostDispatchPovCount,
+                )
                 : null,
             contracts: contracts.sort((a, b) => a.name.localeCompare(b.name)),
         })
@@ -1790,7 +1953,9 @@ export function getExecTotals(): ExecTotalsRow[] {
             SUM(e.weight_consumed_ref_time) as evm_rt,
             SUM(p.weight_consumed_ref_time) as pvm_rt,
             SUM(e.weight_consumed_proof_size) as evm_pov,
-            SUM(p.weight_consumed_proof_size) as pvm_pov
+            SUM(p.weight_consumed_proof_size) as pvm_pov,
+            SUM(COALESCE(e.post_dispatch_pov, 0)) as evm_consumed,
+            SUM(COALESCE(p.post_dispatch_pov, 0)) as pvm_consumed
         FROM transactions e
         JOIN transactions p
             ON REPLACE(e.contract_name, '_evm', '_pvm') = p.contract_name
@@ -1808,6 +1973,8 @@ export function getExecTotals(): ExecTotalsRow[] {
         pvm_rt: number
         evm_pov: number
         pvm_pov: number
+        evm_consumed: number
+        pvm_consumed: number
     }
 
     const fmtPctDiff = (a: number, b: number) =>
@@ -1829,6 +1996,12 @@ export function getExecTotals(): ExecTotalsRow[] {
             evm: Math.round(allRow.evm_pov),
             pvm_sol: Math.round(allRow.pvm_pov),
             diff: fmtPctDiff(allRow.pvm_pov, allRow.evm_pov),
+        },
+        {
+            metric: 'Consumed proof_size',
+            evm: Math.round(allRow.evm_consumed),
+            pvm_sol: Math.round(allRow.pvm_consumed),
+            diff: fmtPctDiff(allRow.pvm_consumed, allRow.evm_consumed),
         },
     ]
 }
@@ -1874,7 +2047,10 @@ export function getThreeWayTotals(): {
             SUM(r.weight_consumed_ref_time) as rust_rt,
             SUM(e.weight_consumed_proof_size) as evm_pov,
             SUM(p.weight_consumed_proof_size) as pvm_pov,
-            SUM(r.weight_consumed_proof_size) as rust_pov
+            SUM(r.weight_consumed_proof_size) as rust_pov,
+            SUM(COALESCE(e.post_dispatch_pov, 0)) as evm_consumed,
+            SUM(COALESCE(p.post_dispatch_pov, 0)) as pvm_consumed,
+            SUM(COALESCE(r.post_dispatch_pov, 0)) as rust_consumed
         FROM name_map nm
         JOIN transactions e ON e.contract_name = nm.evm_name AND e.chain_name = 'eth-rpc'
             AND e.transaction_name <> 'deploy' AND e.weight_consumed_ref_time IS NOT NULL
@@ -1890,6 +2066,9 @@ export function getThreeWayTotals(): {
         evm_pov: number
         pvm_pov: number
         rust_pov: number
+        evm_consumed: number
+        pvm_consumed: number
+        rust_consumed: number
     }
 
     const fmtPctDiff = (a: number, b: number) =>
@@ -1918,6 +2097,14 @@ export function getThreeWayTotals(): {
                 pvm_rust: Math.round(row7.rust_pov),
                 vs_evm_rust: fmtPctDiff(row7.rust_pov, row7.evm_pov),
             },
+            {
+                metric: 'Consumed proof_size',
+                evm: Math.round(row7.evm_consumed),
+                pvm_sol: Math.round(row7.pvm_consumed),
+                vs_evm_sol: fmtPctDiff(row7.pvm_consumed, row7.evm_consumed),
+                pvm_rust: Math.round(row7.rust_consumed),
+                vs_evm_rust: fmtPctDiff(row7.rust_consumed, row7.evm_consumed),
+            },
         ],
     }
 }
@@ -1929,6 +2116,8 @@ export interface MedianRow {
     txs_cheaper_rt: string
     median_proof_size: string
     txs_cheaper_pov: string
+    median_consumed: string
+    txs_cheaper_consumed: string
 }
 
 export function getPerTxMedians(): MedianRow[] {
@@ -1944,7 +2133,9 @@ export function getPerTxMedians(): MedianRow[] {
             ROUND((p.weight_consumed_ref_time - e.weight_consumed_ref_time) * 100.0
                 / e.weight_consumed_ref_time, 1) as rt_pct,
             ROUND((p.weight_consumed_proof_size - e.weight_consumed_proof_size) * 100.0
-                / e.weight_consumed_proof_size, 1) as pov_pct
+                / e.weight_consumed_proof_size, 1) as pov_pct,
+            ROUND((p.post_dispatch_pov - e.post_dispatch_pov) * 100.0
+                / NULLIF(e.post_dispatch_pov, 0), 1) as consumed_pct
         FROM transactions e
         JOIN transactions p ON p.contract_name = REPLACE(e.contract_name, '_evm', '_pvm')
             AND p.chain_name = e.chain_name AND p.transaction_name = e.transaction_name
@@ -1954,7 +2145,11 @@ export function getPerTxMedians(): MedianRow[] {
             AND e.contract_name <> 'CoinTool_App_evm'
             AND e.transaction_name <> 'deploy'
             AND e.weight_consumed_ref_time IS NOT NULL
-    `).all() as { rt_pct: number; pov_pct: number }[]
+    `).all() as {
+        rt_pct: number
+        pov_pct: number
+        consumed_pct: number | null
+    }[]
 
     const rustPairPcts = db.prepare(`
         WITH name_map(evm_name, pvm_name, rust_name) AS (VALUES ${NAME_MAP_VALUES})
@@ -1962,13 +2157,19 @@ export function getPerTxMedians(): MedianRow[] {
             ROUND((r.weight_consumed_ref_time - e.weight_consumed_ref_time) * 100.0
                 / e.weight_consumed_ref_time, 1) as rt_pct,
             ROUND((r.weight_consumed_proof_size - e.weight_consumed_proof_size) * 100.0
-                / e.weight_consumed_proof_size, 1) as pov_pct
+                / e.weight_consumed_proof_size, 1) as pov_pct,
+            ROUND((r.post_dispatch_pov - e.post_dispatch_pov) * 100.0
+                / NULLIF(e.post_dispatch_pov, 0), 1) as consumed_pct
         FROM name_map nm
         JOIN transactions e ON e.contract_name = nm.evm_name AND e.chain_name = 'eth-rpc'
             AND e.transaction_name <> 'deploy' AND e.weight_consumed_ref_time IS NOT NULL
         JOIN transactions r ON r.contract_name = nm.rust_name AND r.chain_name = e.chain_name
             AND r.transaction_name = e.transaction_name AND r.weight_consumed_ref_time IS NOT NULL
-    `).all() as { rt_pct: number; pov_pct: number }[]
+    `).all() as {
+        rt_pct: number
+        pov_pct: number
+        consumed_pct: number | null
+    }[]
 
     const rustVsSolPcts = db.prepare(`
         WITH name_map(evm_name, pvm_name, rust_name) AS (VALUES ${NAME_MAP_VALUES})
@@ -1976,7 +2177,9 @@ export function getPerTxMedians(): MedianRow[] {
             ROUND((r.weight_consumed_ref_time - p.weight_consumed_ref_time) * 100.0
                 / p.weight_consumed_ref_time, 1) as rt_pct,
             ROUND((COALESCE(r.weight_consumed_proof_size,0) - COALESCE(p.weight_consumed_proof_size,0)) * 100.0
-                / NULLIF(COALESCE(p.weight_consumed_proof_size,0), 0), 1) as pov_pct
+                / NULLIF(COALESCE(p.weight_consumed_proof_size,0), 0), 1) as pov_pct,
+            ROUND((r.post_dispatch_pov - p.post_dispatch_pov) * 100.0
+                / NULLIF(p.post_dispatch_pov, 0), 1) as consumed_pct
         FROM name_map nm
         JOIN transactions e ON e.contract_name = nm.evm_name AND e.chain_name = 'eth-rpc'
             AND e.transaction_name <> 'deploy' AND e.weight_consumed_ref_time IS NOT NULL
@@ -1984,16 +2187,36 @@ export function getPerTxMedians(): MedianRow[] {
             AND p.transaction_name = e.transaction_name AND p.weight_consumed_ref_time IS NOT NULL
         JOIN transactions r ON r.contract_name = nm.rust_name AND r.chain_name = e.chain_name
             AND r.transaction_name = e.transaction_name AND r.weight_consumed_ref_time IS NOT NULL
-    `).all() as { rt_pct: number; pov_pct: number | null }[]
+    `).all() as {
+        rt_pct: number
+        pov_pct: number | null
+        consumed_pct: number | null
+    }[]
 
     const solRts = solPairPcts.map((r) => r.rt_pct).sort((a, b) => a - b)
     const solPovs = solPairPcts.map((r) => r.pov_pct).sort((a, b) => a - b)
+    const solConsumed = solPairPcts.filter((r) => r.consumed_pct != null).map((
+        r,
+    ) => r.consumed_pct!).sort((a, b) => a - b)
     const rustRts = rustPairPcts.map((r) => r.rt_pct).sort((a, b) => a - b)
     const rustPovs = rustPairPcts.map((r) => r.pov_pct).sort((a, b) => a - b)
+    const rustConsumed = rustPairPcts.filter((r) => r.consumed_pct != null).map(
+        (r) => r.consumed_pct!,
+    ).sort((a, b) => a - b)
     const rvsRts = rustVsSolPcts.map((r) => r.rt_pct).sort((a, b) => a - b)
     const rvsPovs = rustVsSolPcts.filter((r) => r.pov_pct != null).map((r) =>
         r.pov_pct!
     ).sort((a, b) => a - b)
+    const rvsConsumed = rustVsSolPcts.filter((r) => r.consumed_pct != null).map(
+        (r) => r.consumed_pct!,
+    ).sort((a, b) => a - b)
+
+    const fmtConsumed = (arr: number[]) =>
+        arr.length > 0 ? pct(median(arr)) : '—'
+    const fmtCheaper = (arr: number[]) =>
+        arr.length > 0
+            ? `${arr.filter((p) => p < 0).length}/${arr.length}`
+            : '—'
 
     return [
         {
@@ -2006,6 +2229,8 @@ export function getPerTxMedians(): MedianRow[] {
             txs_cheaper_pov: `${
                 solPovs.filter((p) => p < 0).length
             }/${solPovs.length}`,
+            median_consumed: fmtConsumed(solConsumed),
+            txs_cheaper_consumed: fmtCheaper(solConsumed),
         },
         {
             comparison: `PVM/Rust vs EVM (${rustRts.length} txs)`,
@@ -2017,6 +2242,8 @@ export function getPerTxMedians(): MedianRow[] {
             txs_cheaper_pov: `${
                 rustPovs.filter((p) => p < 0).length
             }/${rustPovs.length}`,
+            median_consumed: fmtConsumed(rustConsumed),
+            txs_cheaper_consumed: fmtCheaper(rustConsumed),
         },
         {
             comparison: `PVM/Rust vs PVM/Sol (${rvsRts.length} txs)`,
@@ -2028,6 +2255,8 @@ export function getPerTxMedians(): MedianRow[] {
             txs_cheaper_pov: rvsPovs.length > 0
                 ? `${rvsPovs.filter((p) => p < 0).length}/${rvsPovs.length}`
                 : '—',
+            median_consumed: fmtConsumed(rvsConsumed),
+            txs_cheaper_consumed: fmtCheaper(rvsConsumed),
         },
     ]
 }
@@ -2055,6 +2284,7 @@ interface DeployRow {
     metered_rt: number
     base_pov: number
     metered_pov: number
+    consumed: number
 }
 
 export function getDeployTotals(): {
@@ -2066,7 +2296,8 @@ export function getDeployTotals(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_evm'
@@ -2082,7 +2313,8 @@ export function getDeployTotals(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_pvm'
@@ -2127,6 +2359,15 @@ export function getDeployTotals(): {
                     sumField(solPairs, (r) => r.metered_rt),
                 ),
             },
+            {
+                metric: 'Consumed proof_size',
+                evm: Math.round(sumField(solPairs, (r) => r.consumed)),
+                pvm_sol: Math.round(sumPvm(solPairs, (r) => r.consumed)),
+                vs_evm: fmtPctDiff(
+                    sumPvm(solPairs, (r) => r.consumed),
+                    sumField(solPairs, (r) => r.consumed),
+                ),
+            },
         ],
     }
 }
@@ -2140,7 +2381,8 @@ export function getDeployThreeWay(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_evm'
@@ -2156,7 +2398,8 @@ export function getDeployThreeWay(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_pvm'
@@ -2184,7 +2427,8 @@ export function getDeployThreeWay(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_rust'
@@ -2251,6 +2495,12 @@ export function getDeployThreeWay(): {
                 sumField(rustPairs, (r) => r.metered_pov),
                 sumPvm(rustPairs, (r) => r.metered_pov),
                 sumRust(rustPairs, (r) => r.metered_pov),
+            ),
+            makeRow(
+                'Consumed proof_size',
+                sumField(rustPairs, (r) => r.consumed),
+                sumPvm(rustPairs, (r) => r.consumed),
+                sumRust(rustPairs, (r) => r.consumed),
             ),
         ],
     }
@@ -2528,8 +2778,11 @@ export function getCostGapDecomposition(): {
         pvm_rt: number
         evm_pov: number
         pvm_pov: number
+        evm_consumed: number
+        pvm_consumed: number
         rt_diff: string
         pov_diff: string
+        consumed_diff: string
     }
     sources: CostGapRow[]
 } {
@@ -2540,7 +2793,9 @@ export function getCostGapDecomposition(): {
                 e.weight_consumed_ref_time as e_rt,
                 p.weight_consumed_ref_time as p_rt,
                 e.weight_consumed_proof_size as e_pov,
-                p.weight_consumed_proof_size as p_pov
+                p.weight_consumed_proof_size as p_pov,
+                COALESCE(e.post_dispatch_pov, 0) as e_consumed,
+                COALESCE(p.post_dispatch_pov, 0) as p_consumed
             FROM transactions e
             JOIN transactions p
                 ON REPLACE(e.contract_name, '_evm', '_pvm') = p.contract_name
@@ -2595,8 +2850,11 @@ export function getCostGapDecomposition(): {
             SUM(p_rt) as sum_pvm_rt,
             SUM(e_pov) as sum_evm_pov,
             SUM(p_pov) as sum_pvm_pov,
+            SUM(e_consumed) as sum_evm_consumed,
+            SUM(p_consumed) as sum_pvm_consumed,
             SUM(p_rt - e_rt) as rt_gap,
             SUM(p_pov - e_pov) as pov_gap,
+            SUM(p_consumed - e_consumed) as consumed_gap,
             SUM((p_rt - p_attr_rt) - (e_rt - e_attr_rt)) as unattr_rt,
             SUM((p_pov - p_attr_pov) - (e_pov - e_attr_pov)) as unattr_pov,
             SUM(p_call_rt - e_call_rt) as call_rt,
@@ -2614,6 +2872,7 @@ export function getCostGapDecomposition(): {
 
     const rtGap = raw.rt_gap
     const povGap = raw.pov_gap
+    const consumedGap = raw.consumed_gap
     const otherRt = rtGap - raw.unattr_rt - raw.call_rt - raw.immut_rt
     const otherPov = povGap - raw.unattr_pov - raw.call_pov - raw.immut_pov
 
@@ -2624,8 +2883,13 @@ export function getCostGapDecomposition(): {
             pvm_rt: Math.round(raw.sum_pvm_rt),
             evm_pov: Math.round(raw.sum_evm_pov),
             pvm_pov: Math.round(raw.sum_pvm_pov),
+            evm_consumed: Math.round(raw.sum_evm_consumed),
+            pvm_consumed: Math.round(raw.sum_pvm_consumed),
             rt_diff: pctFmt(rtGap / raw.sum_evm_rt * 100),
             pov_diff: pctFmt(povGap / raw.sum_evm_pov * 100),
+            consumed_diff: raw.sum_evm_consumed
+                ? pctFmt(consumedGap / raw.sum_evm_consumed * 100)
+                : '—',
         },
         sources: [
             {

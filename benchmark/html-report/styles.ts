@@ -414,27 +414,7 @@ footer {
     border-bottom: 1px solid var(--border-color);
 }
 
-.expandable-weight-table thead tr:first-child th:nth-child(2) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table thead tr:first-child th:nth-child(3) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table thead tr:first-child th:nth-child(4) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table thead tr:last-child th:nth-child(1),
-.expandable-weight-table thead tr:last-child th:nth-child(4),
-.expandable-weight-table thead tr:last-child th:nth-child(7) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table tbody td:nth-child(2),
-.expandable-weight-table tbody td:nth-child(5),
-.expandable-weight-table tbody td:nth-child(8) {
+.expandable-weight-table .group-start {
     border-left: 2px solid var(--border-color);
 }
 
@@ -552,6 +532,10 @@ details.methodology a {
 details.methodology a:hover {
     text-decoration: underline;
 }
+
+.bottleneck-rt { background: rgba(220, 53, 69, 0.15); }
+.bottleneck-pov { background: rgba(13, 110, 253, 0.15); }
+.methodology-note { padding: 1rem; border-left: 3px solid var(--accent-color); background: var(--bg-secondary); border-radius: 0 0.25rem 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
 
 @media (max-width: 768px) {
     .container {
