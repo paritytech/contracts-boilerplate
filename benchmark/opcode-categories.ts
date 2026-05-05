@@ -1,5 +1,6 @@
 // Opcode category mapping for EVM opcodes and PVM syscalls
 export const OPCODE_CATEGORIES: Record<string, string[]> = {
+    'PVM Fuel': ['pvm_fuel'],
     'Arithmetic': ['ADD', 'SUB', 'MUL', 'DIV', 'MOD', 'SDIV', 'SMOD'],
     'Bitwise': ['OR', 'XOR', 'AND', 'SHL', 'SHR', 'SAR', 'BYTE', 'NOT'],
     'Comparison': ['LT', 'GT', 'EQ', 'ISZERO', 'SLT', 'SGT'],
@@ -86,6 +87,7 @@ export const OPCODE_CATEGORIES: Record<string, string[]> = {
         'CALLCODE',
         // PVM syscalls
         'call_evm',
+        'delegate_call',
         'delegate_call_evm',
     ],
     'Creation': [
@@ -211,4 +213,9 @@ for (const [category, opcodes] of Object.entries(OPCODE_CATEGORIES)) {
 export function getOpcodeCategory(opcode: string | null): string {
     if (!opcode) return 'Unknown'
     return OPCODE_TO_CATEGORY[opcode.toLowerCase()] ?? 'Other'
+}
+
+/** EVM opcodes are ALL_CAPS, PVM syscalls are lower_snake_case */
+export function isEvmOpcode(op: string): boolean {
+    return op === op.toUpperCase()
 }

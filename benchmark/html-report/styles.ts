@@ -131,6 +131,7 @@ nav a.active {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow);
+    scroll-margin-top: 80px;
 }
 
 .card-title {
@@ -138,6 +139,29 @@ nav a.active {
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text-primary);
+}
+
+.section-title a,
+.card-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.section-title a:hover,
+.card-title a:hover {
+    text-decoration: underline;
+}
+
+.section-title a::after,
+.card-title a::after {
+    content: ' #';
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.section-title a:hover::after,
+.card-title a:hover::after {
+    opacity: 0.4;
 }
 
 .chart-container {
@@ -344,13 +368,9 @@ footer {
     vertical-align: middle;
     letter-spacing: 0.02em;
 }
-.impl-tag-solidity { background: rgba(25, 135, 84, 0.15); color: #198754; }
-.impl-tag-rust { background: rgba(253, 126, 20, 0.15); color: #d56a10; }
-.impl-tag-ink { background: rgba(111, 66, 193, 0.15); color: #6f42c1; }
-
 /* Alt implementation rows: subtle left accent */
 .expandable-table tr.alt-impl-row td:first-child {
-    border-left: 3px solid rgba(253, 126, 20, 0.5);
+    border-left: 3px solid rgba(108, 117, 125, 0.4);
     padding-left: calc(3.5rem - 3px);
 }
 
@@ -394,27 +414,7 @@ footer {
     border-bottom: 1px solid var(--border-color);
 }
 
-.expandable-weight-table thead tr:first-child th:nth-child(2) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table thead tr:first-child th:nth-child(3) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table thead tr:first-child th:nth-child(4) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table thead tr:last-child th:nth-child(1),
-.expandable-weight-table thead tr:last-child th:nth-child(4),
-.expandable-weight-table thead tr:last-child th:nth-child(7) {
-    border-left: 2px solid var(--border-color);
-}
-
-.expandable-weight-table tbody td:nth-child(2),
-.expandable-weight-table tbody td:nth-child(5),
-.expandable-weight-table tbody td:nth-child(8) {
+.expandable-weight-table .group-start {
     border-left: 2px solid var(--border-color);
 }
 
@@ -532,6 +532,10 @@ details.methodology a {
 details.methodology a:hover {
     text-decoration: underline;
 }
+
+.bottleneck-rt { background: rgba(220, 53, 69, 0.15); }
+.bottleneck-pov { background: rgba(13, 110, 253, 0.15); }
+.methodology-note { padding: 1rem; border-left: 3px solid var(--accent-color); background: var(--bg-secondary); border-radius: 0 0.25rem 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
 
 @media (max-width: 768px) {
     .container {

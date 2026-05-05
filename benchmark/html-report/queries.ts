@@ -1,16 +1,34 @@
 import { db } from '../lib.ts'
 import { join } from '@std/path'
+import { datasetCategories as contractCategories } from '../datasets.ts'
 
-// Dataset descriptions for the HTML report
-export const DATASET_DESCRIPTIONS: Record<string, string> = {
-    'test-contracts':
-        'Small test contracts used for basic benchmarking (e.g. Fibonacci, SimpleToken).',
-    'ethereum-contracts':
-        'The most actively used contracts on Ethereum in 2025 (e.g. USDT, WETH, USDC, XEN).',
-    'polkadot-contracts':
-        'Real-world contracts being built by teams at Parity for the Polkadot ecosystem.',
+export interface BenchmarkMetadataRow {
+    chain_name: string
+    system_chain: string | null
+    system_name: string | null
+    system_version: string | null
+    runtime_spec_name: string | null
+    runtime_spec_version: number | null
+    resolc_version: string | null
+    solc_version: string | null
+    recorded_at: string
 }
 
+export function getBenchmarkMetadata(): BenchmarkMetadataRow[] {
+    try {
+        return db.prepare(`
+            SELECT chain_name, system_chain, system_name, system_version,
+                   runtime_spec_name, runtime_spec_version,
+                   resolc_version, solc_version, recorded_at
+            FROM benchmark_metadata
+            ORDER BY chain_name
+        `).all() as unknown as BenchmarkMetadataRow[]
+    } catch {
+        return []
+    }
+}
+
+// Dataset descriptions for the HTML report
 // Dataset methodology HTML content keyed by dataset name.
 // Rendered inside a collapsible <details> in the summary section.
 export const DATASET_METHODOLOGY: Record<string, string> = {
@@ -85,12 +103,12 @@ combination of both VMs.</p>
 <p>Contracts have been slightly modified from their original source code to adapt to PVM or the test node configuration.</p>`,
 }
 
-// Canonical dataset ordering used across all charts and tables
-export const DATASET_ORDER = [
-    'test-contracts',
-    'ethereum-contracts',
-    'polkadot-contracts',
-]
+// Dataset categorization for contracts.
+// Imported directly from datasets.ts (no RPC needed thanks to lazy env).
+export const DATASET_CATEGORIES: Record<string, string[]> = {
+    ...contractCategories,
+}
+export const DATASET_ORDER: string[] = Object.keys(DATASET_CATEGORIES)
 
 function datasetSortOrder(a: string, b: string): number {
     const ai = DATASET_ORDER.indexOf(a)
@@ -98,38 +116,17 @@ function datasetSortOrder(a: string, b: string): number {
     return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
 }
 
-// Dataset categorization for contracts
-export const DATASET_CATEGORIES: Record<string, string[]> = {
-    'test-contracts': ['Fibonacci', 'Fibonacci_u256', 'SimpleToken'],
-    'ethereum-contracts': [
-        'TetherToken',
-        'WETH9',
-        'FiatTokenV2_2',
-        'FiatTokenProxy',
-        'XENCrypto',
-        'CoinTool_App',
-    ],
-    'polkadot-contracts': [
-        'Store',
-        'Log',
-        'NonFungibleCredential',
-        'FungibleCredential',
-        'Escrow',
-        'DotNS',
-        'KeyRegistry',
-        'DocumentAccessManagement',
-        'W3S',
-        'Marketplace',
-        'MarketplaceProxy',
-        'MockMobRule',
-    ],
-}
-
-import { getOpcodeCategory, OPCODE_CATEGORIES } from '../opcode-categories.ts'
-export { getOpcodeCategory, OPCODE_CATEGORIES }
+import {
+    getOpcodeCategory,
+    isEvmOpcode,
+    OPCODE_CATEGORIES,
+} from '../opcode-categories.ts'
+export { getOpcodeCategory, isEvmOpcode, OPCODE_CATEGORIES }
+import { getImplTypeLabel, sortImplTypes } from './charts.ts'
 
 // Category descriptions for tooltips
 export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+    'PVM Fuel': 'Base PolkaVM execution fuel: pvm_fuel',
     'Arithmetic': 'Basic math: ADD, SUB, MUL, DIV, MOD',
     'Bitwise': 'Bit manipulation: AND, OR, XOR, SHL, SHR',
     'Comparison': 'Value comparisons: LT, GT, EQ, ISZERO',
@@ -149,6 +146,7 @@ export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
     'Immutables': 'Immutable data: LOADIMMUTABLE, SETIMMUTABLE',
     'Stack': 'Stack operations: PUSH, POP, DUP, SWAP',
     'Control Flow': 'Execution flow: JUMP, JUMPI, JUMPDEST',
+    'Other': 'Remaining categories not shown individually',
 }
 
 export function getCategoryMappingHtml(): string {
@@ -267,8 +265,12 @@ export interface WeightHierarchy {
         pvm_proof_size: number | null
         evm_metered_pct: number | null
         pvm_metered_pct: number | null
+        evm_metered_pct_proof_size: number | null
+        pvm_metered_pct_proof_size: number | null
         evm_metered_ref_time: number | null
         pvm_metered_ref_time: number | null
+        evm_post_dispatch_pov: number | null
+        pvm_post_dispatch_pov: number | null
         contracts: Array<{
             name: string
             evm_ref_time: number | null
@@ -277,8 +279,12 @@ export interface WeightHierarchy {
             pvm_proof_size: number | null
             evm_metered_pct: number | null
             pvm_metered_pct: number | null
+            evm_metered_pct_proof_size: number | null
+            pvm_metered_pct_proof_size: number | null
             evm_metered_ref_time: number | null
             pvm_metered_ref_time: number | null
+            evm_post_dispatch_pov: number | null
+            pvm_post_dispatch_pov: number | null
             transactions: Array<{
                 name: string
                 evm_ref_time: number | null
@@ -287,8 +293,12 @@ export interface WeightHierarchy {
                 pvm_proof_size: number | null
                 evm_metered_pct: number | null
                 pvm_metered_pct: number | null
+                evm_metered_pct_proof_size: number | null
+                pvm_metered_pct_proof_size: number | null
                 evm_metered_ref_time: number | null
                 pvm_metered_ref_time: number | null
+                evm_post_dispatch_pov: number | null
+                pvm_post_dispatch_pov: number | null
             }>
             alt_implementations: AltWeightImplementation[]
         }>
@@ -300,13 +310,17 @@ export interface AltWeightImplementation {
     pvm_ref_time: number | null
     pvm_proof_size: number | null
     pvm_metered_pct: number | null
+    pvm_metered_pct_proof_size: number | null
     pvm_metered_ref_time: number | null
+    pvm_post_dispatch_pov: number | null
     transactions: Array<{
         name: string
         pvm_ref_time: number | null
         pvm_proof_size: number | null
         pvm_metered_pct: number | null
+        pvm_metered_pct_proof_size: number | null
         pvm_metered_ref_time: number | null
+        pvm_post_dispatch_pov: number | null
     }>
 }
 
@@ -353,13 +367,34 @@ export function getExecutiveSummary(): ExecutiveSummary {
     }
 
     // Split eth-rpc by VM/language based on contract_name suffix
+    // Discover all distinct suffixes dynamically from the database
+    const suffixRows = db.prepare(`
+        SELECT DISTINCT contract_name FROM transactions WHERE chain_name = 'eth-rpc'
+    `).all() as { contract_name: string }[]
+    const knownSuffixes = [
+        ...new Set(
+            suffixRows
+                .map((r) => r.contract_name.split('_').pop()!)
+                .filter((s) => s.length > 0 && /^[a-z]+$/.test(s)),
+        ),
+    ]
+
+    // Build CASE WHEN clauses dynamically
+    const caseClauses = knownSuffixes.map((suffix) => {
+        const implType = suffix === 'evm' || suffix === 'pvm'
+            ? 'solidity'
+            : suffix
+        const vmType = suffix === 'evm' ? 'EVM' : 'PVM'
+        const label = getImplTypeLabel(implType, vmType)
+        const safeSuffix = suffix.replace(/'/g, "''")
+        const safeLabel = label.replace(/'/g, "''")
+        return `WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_${safeSuffix}' THEN 'eth-rpc (${safeLabel})'`
+    }).join('\n                ')
+
     const chains = db.prepare(`
         SELECT
             CASE
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_evm' THEN 'eth-rpc (EVM)'
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_pvm' THEN 'eth-rpc (PVM/Solidity)'
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_rust' THEN 'eth-rpc (PVM/Rust)'
-                WHEN chain_name = 'eth-rpc' AND contract_name LIKE '%_ink' THEN 'eth-rpc (PVM/Ink)'
+                ${caseClauses}
                 ELSE chain_name
             END as chain_name,
             COUNT(DISTINCT contract_name) as contract_count,
@@ -724,8 +759,12 @@ interface WeightData {
     pvm_proof_size: number | null
     evm_metered_pct: number | null
     pvm_metered_pct: number | null
+    evm_metered_pct_proof_size: number | null
+    pvm_metered_pct_proof_size: number | null
     evm_metered_ref_time: number | null
     pvm_metered_ref_time: number | null
+    evm_post_dispatch_pov: number | null
+    pvm_post_dispatch_pov: number | null
 }
 
 interface RawWeightRow {
@@ -735,6 +774,9 @@ interface RawWeightRow {
     proof_size: number
     weight_consumed: number
     base_weight: number
+    weight_consumed_ps: number
+    base_weight_ps: number
+    post_dispatch_pov: number | null
 }
 
 export function getWeightAnalysisHierarchy(): WeightHierarchy {
@@ -746,12 +788,15 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
             (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
             weight_consumed_ref_time as weight_consumed,
-            COALESCE(base_call_weight_ref_time, 0) as base_weight
+            COALESCE(base_call_weight_ref_time, 0) as base_weight,
+            COALESCE(weight_consumed_proof_size, 0) as weight_consumed_ps,
+            COALESCE(base_call_weight_proof_size, 0) as base_weight_ps,
+            post_dispatch_pov
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_evm'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as RawWeightRow[]
+    `).all() as unknown as RawWeightRow[]
 
     // Get PVM weight data (contracts ending with _pvm)
     const pvmData = db.prepare(`
@@ -761,12 +806,15 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
             (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
             weight_consumed_ref_time as weight_consumed,
-            COALESCE(base_call_weight_ref_time, 0) as base_weight
+            COALESCE(base_call_weight_ref_time, 0) as base_weight,
+            COALESCE(weight_consumed_proof_size, 0) as weight_consumed_ps,
+            COALESCE(base_call_weight_proof_size, 0) as base_weight_ps,
+            post_dispatch_pov
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_pvm'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as RawWeightRow[]
+    `).all() as unknown as RawWeightRow[]
 
     // Get alt PVM weight data (Rust, Ink, etc.)
     const altPvmWeightData = db.prepare(`
@@ -777,13 +825,16 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
             (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
             weight_consumed_ref_time as weight_consumed,
-            COALESCE(base_call_weight_ref_time, 0) as base_weight
+            COALESCE(base_call_weight_ref_time, 0) as base_weight,
+            COALESCE(weight_consumed_proof_size, 0) as weight_consumed_ps,
+            COALESCE(base_call_weight_proof_size, 0) as base_weight_ps,
+            post_dispatch_pov
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name NOT LIKE '%_evm'
             AND contract_name NOT LIKE '%_pvm'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as (RawWeightRow & { contract_name: string })[]
+    `).all() as unknown as (RawWeightRow & { contract_name: string })[]
 
     // Group alt weight implementations by contract_id -> contract_name -> transactions
     const altWeightMap = new Map<
@@ -796,7 +847,9 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     ref_time: number
                     proof_size: number
                     metered_pct: number
+                    metered_pct_proof_size: number
                     metered_ref_time: number
+                    post_dispatch_pov: number | null
                 }
             >
         >
@@ -810,12 +863,17 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
         const metered_pct = row.ref_time > 0
             ? (row.weight_consumed / row.ref_time) * 100
             : 0
+        const metered_pct_proof_size = row.proof_size > 0
+            ? (row.weight_consumed_ps / row.proof_size) * 100
+            : 0
         implMap.get(row.contract_name)!.push({
             name: row.transaction_name,
             ref_time: row.ref_time,
             proof_size: row.proof_size,
             metered_pct,
+            metered_pct_proof_size,
             metered_ref_time: row.weight_consumed,
+            post_dispatch_pov: row.post_dispatch_pov,
         })
     }
 
@@ -826,18 +884,25 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             ref_time: number
             proof_size: number
             metered_pct: number
+            metered_pct_proof_size: number
             metered_ref_time: number
+            post_dispatch_pov: number | null
         }
     >()
     for (const row of evmData) {
         const metered_pct = row.ref_time > 0
             ? (row.weight_consumed / row.ref_time) * 100
             : 0
+        const metered_pct_proof_size = row.proof_size > 0
+            ? (row.weight_consumed_ps / row.proof_size) * 100
+            : 0
         evmMap.set(`${row.contract_id}:${row.transaction_name}`, {
             ref_time: row.ref_time,
             proof_size: row.proof_size,
             metered_pct,
+            metered_pct_proof_size,
             metered_ref_time: row.weight_consumed,
+            post_dispatch_pov: row.post_dispatch_pov,
         })
     }
 
@@ -847,18 +912,25 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             ref_time: number
             proof_size: number
             metered_pct: number
+            metered_pct_proof_size: number
             metered_ref_time: number
+            post_dispatch_pov: number | null
         }
     >()
     for (const row of pvmData) {
         const metered_pct = row.ref_time > 0
             ? (row.weight_consumed / row.ref_time) * 100
             : 0
+        const metered_pct_proof_size = row.proof_size > 0
+            ? (row.weight_consumed_ps / row.proof_size) * 100
+            : 0
         pvmMap.set(`${row.contract_id}:${row.transaction_name}`, {
             ref_time: row.ref_time,
             proof_size: row.proof_size,
             metered_pct,
+            metered_pct_proof_size,
             metered_ref_time: row.weight_consumed,
+            post_dispatch_pov: row.post_dispatch_pov,
         })
     }
 
@@ -880,8 +952,12 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             pvm_proof_size: pvm?.proof_size ?? null,
             evm_metered_pct: evm?.metered_pct ?? null,
             pvm_metered_pct: pvm?.metered_pct ?? null,
+            evm_metered_pct_proof_size: evm?.metered_pct_proof_size ?? null,
+            pvm_metered_pct_proof_size: pvm?.metered_pct_proof_size ?? null,
             evm_metered_ref_time: evm?.metered_ref_time ?? null,
             pvm_metered_ref_time: pvm?.metered_ref_time ?? null,
+            evm_post_dispatch_pov: evm?.post_dispatch_pov ?? null,
+            pvm_post_dispatch_pov: pvm?.post_dispatch_pov ?? null,
         })
     }
 
@@ -910,7 +986,11 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
         let datasetEvmRefTime = 0, datasetPvmRefTime = 0
         let datasetEvmProofSize = 0, datasetPvmProofSize = 0
         let datasetEvmMeteredSum = 0, datasetPvmMeteredSum = 0
+        let datasetEvmMeteredSumPs = 0, datasetPvmMeteredSumPs = 0
         let datasetEvmMeteredRefTime = 0, datasetPvmMeteredRefTime = 0
+        let datasetEvmPostDispatchPovSum = 0, datasetPvmPostDispatchPovSum = 0
+        let datasetEvmPostDispatchPovCount = 0,
+            datasetPvmPostDispatchPovCount = 0
         let datasetEvmCount = 0, datasetPvmCount = 0
         let hasEvm = false, hasPvm = false
 
@@ -920,7 +1000,12 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             let contractEvmRefTime = 0, contractPvmRefTime = 0
             let contractEvmProofSize = 0, contractPvmProofSize = 0
             let contractEvmMeteredSum = 0, contractPvmMeteredSum = 0
+            let contractEvmMeteredSumPs = 0, contractPvmMeteredSumPs = 0
             let contractEvmMeteredRefTime = 0, contractPvmMeteredRefTime = 0
+            let contractEvmPostDispatchPovSum = 0,
+                contractPvmPostDispatchPovSum = 0
+            let contractEvmPostDispatchPovCount = 0,
+                contractPvmPostDispatchPovCount = 0
             let contractEvmCount = 0, contractPvmCount = 0
             let cHasEvm = false, cHasPvm = false
 
@@ -929,7 +1014,14 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     contractEvmRefTime += tx.evm_ref_time
                     contractEvmProofSize += tx.evm_proof_size ?? 0
                     contractEvmMeteredSum += tx.evm_metered_pct ?? 0
+                    contractEvmMeteredSumPs += tx.evm_metered_pct_proof_size ??
+                        0
                     contractEvmMeteredRefTime += tx.evm_metered_ref_time ?? 0
+                    if (tx.evm_post_dispatch_pov !== null) {
+                        contractEvmPostDispatchPovSum +=
+                            tx.evm_post_dispatch_pov
+                        contractEvmPostDispatchPovCount++
+                    }
                     contractEvmCount++
                     cHasEvm = true
                 }
@@ -937,7 +1029,14 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     contractPvmRefTime += tx.pvm_ref_time
                     contractPvmProofSize += tx.pvm_proof_size ?? 0
                     contractPvmMeteredSum += tx.pvm_metered_pct ?? 0
+                    contractPvmMeteredSumPs += tx.pvm_metered_pct_proof_size ??
+                        0
                     contractPvmMeteredRefTime += tx.pvm_metered_ref_time ?? 0
+                    if (tx.pvm_post_dispatch_pov !== null) {
+                        contractPvmPostDispatchPovSum +=
+                            tx.pvm_post_dispatch_pov
+                        contractPvmPostDispatchPovCount++
+                    }
                     contractPvmCount++
                     cHasPvm = true
                 }
@@ -950,8 +1049,12 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                     pvm_proof_size: tx.pvm_proof_size,
                     evm_metered_pct: tx.evm_metered_pct,
                     pvm_metered_pct: tx.pvm_metered_pct,
+                    evm_metered_pct_proof_size: tx.evm_metered_pct_proof_size,
+                    pvm_metered_pct_proof_size: tx.pvm_metered_pct_proof_size,
                     evm_metered_ref_time: tx.evm_metered_ref_time,
                     pvm_metered_ref_time: tx.pvm_metered_ref_time,
+                    evm_post_dispatch_pov: tx.evm_post_dispatch_pov,
+                    pvm_post_dispatch_pov: tx.pvm_post_dispatch_pov,
                 }
             })
 
@@ -959,7 +1062,11 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                 datasetEvmRefTime += contractEvmRefTime
                 datasetEvmProofSize += contractEvmProofSize
                 datasetEvmMeteredSum += contractEvmMeteredSum
+                datasetEvmMeteredSumPs += contractEvmMeteredSumPs
                 datasetEvmMeteredRefTime += contractEvmMeteredRefTime
+                datasetEvmPostDispatchPovSum += contractEvmPostDispatchPovSum
+                datasetEvmPostDispatchPovCount +=
+                    contractEvmPostDispatchPovCount
                 datasetEvmCount += contractEvmCount
                 hasEvm = true
             }
@@ -967,7 +1074,11 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                 datasetPvmRefTime += contractPvmRefTime
                 datasetPvmProofSize += contractPvmProofSize
                 datasetPvmMeteredSum += contractPvmMeteredSum
+                datasetPvmMeteredSumPs += contractPvmMeteredSumPs
                 datasetPvmMeteredRefTime += contractPvmMeteredRefTime
+                datasetPvmPostDispatchPovSum += contractPvmPostDispatchPovSum
+                datasetPvmPostDispatchPovCount +=
+                    contractPvmPostDispatchPovCount
                 datasetPvmCount += contractPvmCount
                 hasPvm = true
             }
@@ -978,6 +1089,8 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             if (altWMap) {
                 for (const [implName, implTxs] of altWMap) {
                     const count = implTxs.length
+                    const altPovVals = implTxs.map((t) => t.post_dispatch_pov)
+                        .filter((v): v is number => v !== null)
                     alt_implementations.push({
                         name: implName,
                         pvm_ref_time: count > 0
@@ -996,6 +1109,13 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                             ? implTxs.reduce((s, t) => s + t.metered_pct, 0) /
                                 count
                             : null,
+                        pvm_metered_pct_proof_size: count > 0
+                            ? implTxs.reduce(
+                                (s, t) => s + t.metered_pct_proof_size,
+                                0,
+                            ) /
+                                count
+                            : null,
                         pvm_metered_ref_time: count > 0
                             ? Math.round(
                                 implTxs.reduce(
@@ -1004,12 +1124,21 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                                 ) / count,
                             )
                             : null,
+                        pvm_post_dispatch_pov: altPovVals.length > 0
+                            ? Math.round(
+                                altPovVals.reduce((s, v) => s + v, 0) /
+                                    altPovVals.length,
+                            )
+                            : null,
                         transactions: implTxs.map((t) => ({
                             name: t.name,
                             pvm_ref_time: t.ref_time,
                             pvm_proof_size: t.proof_size,
                             pvm_metered_pct: t.metered_pct,
+                            pvm_metered_pct_proof_size:
+                                t.metered_pct_proof_size,
                             pvm_metered_ref_time: t.metered_ref_time,
+                            pvm_post_dispatch_pov: t.post_dispatch_pov,
                         })),
                     })
                 }
@@ -1036,11 +1165,29 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
                 pvm_metered_pct: cHasPvm && contractPvmCount > 0
                     ? contractPvmMeteredSum / contractPvmCount
                     : null,
+                evm_metered_pct_proof_size: cHasEvm && contractEvmCount > 0
+                    ? contractEvmMeteredSumPs / contractEvmCount
+                    : null,
+                pvm_metered_pct_proof_size: cHasPvm && contractPvmCount > 0
+                    ? contractPvmMeteredSumPs / contractPvmCount
+                    : null,
                 evm_metered_ref_time: cHasEvm && contractEvmCount > 0
                     ? Math.round(contractEvmMeteredRefTime / contractEvmCount)
                     : null,
                 pvm_metered_ref_time: cHasPvm && contractPvmCount > 0
                     ? Math.round(contractPvmMeteredRefTime / contractPvmCount)
+                    : null,
+                evm_post_dispatch_pov: contractEvmPostDispatchPovCount > 0
+                    ? Math.round(
+                        contractEvmPostDispatchPovSum /
+                            contractEvmPostDispatchPovCount,
+                    )
+                    : null,
+                pvm_post_dispatch_pov: contractPvmPostDispatchPovCount > 0
+                    ? Math.round(
+                        contractPvmPostDispatchPovSum /
+                            contractPvmPostDispatchPovCount,
+                    )
                     : null,
                 transactions,
                 alt_implementations,
@@ -1067,11 +1214,29 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
             pvm_metered_pct: hasPvm && datasetPvmCount > 0
                 ? datasetPvmMeteredSum / datasetPvmCount
                 : null,
+            evm_metered_pct_proof_size: hasEvm && datasetEvmCount > 0
+                ? datasetEvmMeteredSumPs / datasetEvmCount
+                : null,
+            pvm_metered_pct_proof_size: hasPvm && datasetPvmCount > 0
+                ? datasetPvmMeteredSumPs / datasetPvmCount
+                : null,
             evm_metered_ref_time: hasEvm && datasetEvmCount > 0
                 ? Math.round(datasetEvmMeteredRefTime / datasetEvmCount)
                 : null,
             pvm_metered_ref_time: hasPvm && datasetPvmCount > 0
                 ? Math.round(datasetPvmMeteredRefTime / datasetPvmCount)
+                : null,
+            evm_post_dispatch_pov: datasetEvmPostDispatchPovCount > 0
+                ? Math.round(
+                    datasetEvmPostDispatchPovSum /
+                        datasetEvmPostDispatchPovCount,
+                )
+                : null,
+            pvm_post_dispatch_pov: datasetPvmPostDispatchPovCount > 0
+                ? Math.round(
+                    datasetPvmPostDispatchPovSum /
+                        datasetPvmPostDispatchPovCount,
+                )
                 : null,
             contracts: contracts.sort((a, b) => a.name.localeCompare(b.name)),
         })
@@ -1080,76 +1245,6 @@ export function getWeightAnalysisHierarchy(): WeightHierarchy {
     return {
         datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
     }
-}
-
-// Fibonacci implementations comparison
-export interface FibonacciImplementation {
-    variant: string
-    label: string
-    transaction_name: string
-    ref_time: number | null
-    metered_ref_time: number | null
-    metered_pct: number | null
-    proof_size: number | null
-}
-
-const FIBONACCI_VARIANTS = [
-    { pattern: 'Fibonacci_evm', label: 'EVM (Solidity)' },
-    { pattern: 'Fibonacci_pvm', label: 'PVM (Solidity)' },
-    { pattern: 'fibonacci_u32_ink', label: 'PVM (ink! u32)' },
-    { pattern: 'fibonacci_u32_rust', label: 'PVM (Rust u32)' },
-    {
-        pattern: 'fibonacci_u32_macro_no_alloc_rust',
-        label: 'PVM (Rust u32 macro no_alloc)',
-    },
-    {
-        pattern: 'fibonacci_u32_macro_bump_alloc_rust',
-        label: 'PVM (Rust u32 macro bump_alloc)',
-    },
-    { pattern: 'fibonacci_u128_rust', label: 'PVM (Rust u128)' },
-]
-
-export function getFibonacciComparison(): FibonacciImplementation[] {
-    const results: FibonacciImplementation[] = []
-
-    for (const { pattern, label } of FIBONACCI_VARIANTS) {
-        const data = db.prepare(`
-            SELECT
-                transaction_name,
-                (weight_consumed_ref_time + COALESCE(base_call_weight_ref_time, 0)) as ref_time,
-                (weight_consumed_proof_size + COALESCE(base_call_weight_proof_size, 0)) as proof_size,
-                weight_consumed_ref_time as weight_consumed
-            FROM transactions
-            WHERE chain_name = 'eth-rpc'
-                AND contract_name = ?
-                AND weight_consumed_ref_time IS NOT NULL
-            ORDER BY transaction_name
-        `).all(pattern) as Array<
-            {
-                transaction_name: string
-                ref_time: number
-                proof_size: number
-                weight_consumed: number
-            }
-        >
-
-        for (const row of data) {
-            const metered_pct = row.ref_time > 0
-                ? (row.weight_consumed / row.ref_time) * 100
-                : 0
-            results.push({
-                variant: pattern,
-                label,
-                transaction_name: row.transaction_name,
-                ref_time: row.ref_time,
-                metered_ref_time: row.weight_consumed,
-                metered_pct,
-                proof_size: row.proof_size,
-            })
-        }
-    }
-
-    return results
 }
 
 export function getCategoryBreakdown(): CategoryBreakdown[] {
@@ -1329,7 +1424,9 @@ export interface CategoryHierarchy {
     allCategories: string[]
 }
 
-export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
+export function getCategoryBreakdownHierarchy(
+    opcodeFilter?: 'evm' | 'pvm',
+): CategoryHierarchy & {
     categoryDescriptions: Record<string, string>
 } {
     // Query per-opcode data directly (before category aggregation) for eth-rpc only
@@ -1357,9 +1454,19 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
         total_weight_cost_proof_size: number | null
     }>
 
+    // Filter by opcode type if requested
+    const filteredData = opcodeFilter
+        ? rawData.filter((row) => {
+            if (!row.op) return false
+            return opcodeFilter === 'evm'
+                ? isEvmOpcode(row.op)
+                : !isEvmOpcode(row.op)
+        })
+        : rawData
+
     // Get all unique categories sorted by total usage
     const categoryTotals = new Map<string, number>()
-    for (const row of rawData) {
+    for (const row of filteredData) {
         const category = getOpcodeCategory(row.op)
         const cost = row.total_weight_cost_ref_time ?? 0
         categoryTotals.set(category, (categoryTotals.get(category) ?? 0) + cost)
@@ -1367,7 +1474,6 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
     const allCategories = [...categoryTotals.entries()]
         .sort((a, b) => b[1] - a[1])
         .map(([cat]) => cat)
-        .slice(0, 12) // Top 12 categories
 
     // Group by dataset -> contract -> transaction
     // Store actual costs and per-opcode data
@@ -1384,7 +1490,7 @@ export function getCategoryBreakdownHierarchy(): CategoryHierarchy & {
     }
     const datasetMap = new Map<string, Map<string, Map<string, TxAccum>>>()
 
-    for (const row of rawData) {
+    for (const row of filteredData) {
         const dataset = getDatasetCategory(row.contract_id)
         const category = getOpcodeCategory(row.op)
         const cost = row.total_weight_cost_ref_time ?? 0
@@ -1570,6 +1676,7 @@ export interface BytecodeSizeEntry {
     contract_id: string
     contract_name: string
     vm_type: string
+    impl_type: string
     size_bytes: number
     vs_smallest: string
 }
@@ -1585,22 +1692,29 @@ export interface BytecodeImplementation {
     name: string
     vm_type: string
     size_bytes: number
+    implType: string
 }
 
 export interface BytecodeSizeHierarchy {
+    implTypes: string[]
     datasets: Array<{
         name: string
-        evm_size: number | null
-        pvm_size: number | null
+        sizes: Record<string, number | null>
         contracts: Array<{
             name: string
-            evm_size: number | null
-            pvm_size: number | null
-            evm_name: string | null
-            pvm_name: string | null
+            sizes: Record<string, number | null>
             implementations: BytecodeImplementation[]
         }>
     }>
+}
+
+/** Infer impl type from contract name suffix (fallback for legacy markdown without Impl Type column). */
+function inferImplType(contractName: string, vmType: string): string {
+    if (vmType === 'EVM') return 'solidity'
+    const lastUnderscore = contractName.lastIndexOf('_')
+    if (lastUnderscore === -1) return 'unknown'
+    const suffix = contractName.slice(lastUnderscore + 1)
+    return suffix === 'pvm' ? 'solidity' : suffix
 }
 
 export function getBytecodeComparison(): BytecodeSizeData {
@@ -1630,11 +1744,23 @@ export function getBytecodeComparison(): BytecodeSizeData {
                 const cells = row.split('|').map((c) => c.trim()).filter((c) =>
                     c
                 )
-                if (cells.length >= 4) {
+                if (cells.length >= 5) {
+                    // New format: Contract | VM Type | Impl Type | Size | vs Smallest
                     entries.push({
                         contract_id: contractId,
                         contract_name: cells[0],
                         vm_type: cells[1],
+                        impl_type: cells[2],
+                        size_bytes: parseInt(cells[3].replace(/,/g, ''), 10),
+                        vs_smallest: cells[4],
+                    })
+                } else if (cells.length >= 4) {
+                    // Legacy format without Impl Type — infer from name suffix
+                    entries.push({
+                        contract_id: contractId,
+                        contract_name: cells[0],
+                        vm_type: cells[1],
+                        impl_type: inferImplType(cells[0], cells[1]),
                         size_bytes: parseInt(cells[2].replace(/,/g, ''), 10),
                         vs_smallest: cells[3],
                     })
@@ -1662,42 +1788,6 @@ const EVM_TO_RUST: Record<string, string> = {
     Log: 'log_rust',
     NonFungibleCredential: 'non_fungible_credential_rust',
     Store: 'store_rust',
-}
-
-const EVM_TO_INK: Record<string, string> = {
-    Fibonacci: 'fibonacci',
-    Fibonacci_u256: 'fibonacci_u256',
-    Fibonacci_u256_iter: 'fibonacci_u256_iter',
-    SimpleToken: 'simple_token',
-}
-
-const CODEGEN_DIR = join(import.meta.dirname!, '..', '..', 'codegen')
-const RUST_DIR = join(import.meta.dirname!, '..', '..', 'rust')
-const INK_DIR = join(import.meta.dirname!, '..', '..', 'ink')
-
-function fileSize(path: string): number | null {
-    try {
-        return Deno.statSync(path).size
-    } catch {
-        return null
-    }
-}
-
-function rustBytecodeSizeFn(dbName: string): number | null {
-    const base = dbName.replace(/_rust$/, '')
-    return fileSize(
-        join(RUST_DIR, 'protocol-commons', base, `${base}.polkavm`),
-    ) ??
-        fileSize(
-            join(RUST_DIR, 'contracts', 'target', `${base}.release.polkavm`),
-        ) ??
-        fileSize(join(RUST_DIR, 'contracts', `${base}.polkavm`))
-}
-
-function inkBytecodeSizeFn(inkName: string): number | null {
-    return fileSize(
-        join(INK_DIR, inkName, 'target', 'ink', `${inkName}.polkavm`),
-    )
 }
 
 const NAME_MAP_VALUES = Object.entries(EVM_TO_RUST)
@@ -1863,7 +1953,9 @@ export function getExecTotals(): ExecTotalsRow[] {
             SUM(e.weight_consumed_ref_time) as evm_rt,
             SUM(p.weight_consumed_ref_time) as pvm_rt,
             SUM(e.weight_consumed_proof_size) as evm_pov,
-            SUM(p.weight_consumed_proof_size) as pvm_pov
+            SUM(p.weight_consumed_proof_size) as pvm_pov,
+            SUM(COALESCE(e.post_dispatch_pov, 0)) as evm_consumed,
+            SUM(COALESCE(p.post_dispatch_pov, 0)) as pvm_consumed
         FROM transactions e
         JOIN transactions p
             ON REPLACE(e.contract_name, '_evm', '_pvm') = p.contract_name
@@ -1881,6 +1973,8 @@ export function getExecTotals(): ExecTotalsRow[] {
         pvm_rt: number
         evm_pov: number
         pvm_pov: number
+        evm_consumed: number
+        pvm_consumed: number
     }
 
     const fmtPctDiff = (a: number, b: number) =>
@@ -1902,6 +1996,12 @@ export function getExecTotals(): ExecTotalsRow[] {
             evm: Math.round(allRow.evm_pov),
             pvm_sol: Math.round(allRow.pvm_pov),
             diff: fmtPctDiff(allRow.pvm_pov, allRow.evm_pov),
+        },
+        {
+            metric: 'Consumed proof_size',
+            evm: Math.round(allRow.evm_consumed),
+            pvm_sol: Math.round(allRow.pvm_consumed),
+            diff: fmtPctDiff(allRow.pvm_consumed, allRow.evm_consumed),
         },
     ]
 }
@@ -1947,7 +2047,10 @@ export function getThreeWayTotals(): {
             SUM(r.weight_consumed_ref_time) as rust_rt,
             SUM(e.weight_consumed_proof_size) as evm_pov,
             SUM(p.weight_consumed_proof_size) as pvm_pov,
-            SUM(r.weight_consumed_proof_size) as rust_pov
+            SUM(r.weight_consumed_proof_size) as rust_pov,
+            SUM(COALESCE(e.post_dispatch_pov, 0)) as evm_consumed,
+            SUM(COALESCE(p.post_dispatch_pov, 0)) as pvm_consumed,
+            SUM(COALESCE(r.post_dispatch_pov, 0)) as rust_consumed
         FROM name_map nm
         JOIN transactions e ON e.contract_name = nm.evm_name AND e.chain_name = 'eth-rpc'
             AND e.transaction_name <> 'deploy' AND e.weight_consumed_ref_time IS NOT NULL
@@ -1963,6 +2066,9 @@ export function getThreeWayTotals(): {
         evm_pov: number
         pvm_pov: number
         rust_pov: number
+        evm_consumed: number
+        pvm_consumed: number
+        rust_consumed: number
     }
 
     const fmtPctDiff = (a: number, b: number) =>
@@ -1991,6 +2097,14 @@ export function getThreeWayTotals(): {
                 pvm_rust: Math.round(row7.rust_pov),
                 vs_evm_rust: fmtPctDiff(row7.rust_pov, row7.evm_pov),
             },
+            {
+                metric: 'Consumed proof_size',
+                evm: Math.round(row7.evm_consumed),
+                pvm_sol: Math.round(row7.pvm_consumed),
+                vs_evm_sol: fmtPctDiff(row7.pvm_consumed, row7.evm_consumed),
+                pvm_rust: Math.round(row7.rust_consumed),
+                vs_evm_rust: fmtPctDiff(row7.rust_consumed, row7.evm_consumed),
+            },
         ],
     }
 }
@@ -2002,6 +2116,8 @@ export interface MedianRow {
     txs_cheaper_rt: string
     median_proof_size: string
     txs_cheaper_pov: string
+    median_consumed: string
+    txs_cheaper_consumed: string
 }
 
 export function getPerTxMedians(): MedianRow[] {
@@ -2017,7 +2133,9 @@ export function getPerTxMedians(): MedianRow[] {
             ROUND((p.weight_consumed_ref_time - e.weight_consumed_ref_time) * 100.0
                 / e.weight_consumed_ref_time, 1) as rt_pct,
             ROUND((p.weight_consumed_proof_size - e.weight_consumed_proof_size) * 100.0
-                / e.weight_consumed_proof_size, 1) as pov_pct
+                / e.weight_consumed_proof_size, 1) as pov_pct,
+            ROUND((p.post_dispatch_pov - e.post_dispatch_pov) * 100.0
+                / NULLIF(e.post_dispatch_pov, 0), 1) as consumed_pct
         FROM transactions e
         JOIN transactions p ON p.contract_name = REPLACE(e.contract_name, '_evm', '_pvm')
             AND p.chain_name = e.chain_name AND p.transaction_name = e.transaction_name
@@ -2027,7 +2145,11 @@ export function getPerTxMedians(): MedianRow[] {
             AND e.contract_name <> 'CoinTool_App_evm'
             AND e.transaction_name <> 'deploy'
             AND e.weight_consumed_ref_time IS NOT NULL
-    `).all() as { rt_pct: number; pov_pct: number }[]
+    `).all() as {
+        rt_pct: number
+        pov_pct: number
+        consumed_pct: number | null
+    }[]
 
     const rustPairPcts = db.prepare(`
         WITH name_map(evm_name, pvm_name, rust_name) AS (VALUES ${NAME_MAP_VALUES})
@@ -2035,13 +2157,19 @@ export function getPerTxMedians(): MedianRow[] {
             ROUND((r.weight_consumed_ref_time - e.weight_consumed_ref_time) * 100.0
                 / e.weight_consumed_ref_time, 1) as rt_pct,
             ROUND((r.weight_consumed_proof_size - e.weight_consumed_proof_size) * 100.0
-                / e.weight_consumed_proof_size, 1) as pov_pct
+                / e.weight_consumed_proof_size, 1) as pov_pct,
+            ROUND((r.post_dispatch_pov - e.post_dispatch_pov) * 100.0
+                / NULLIF(e.post_dispatch_pov, 0), 1) as consumed_pct
         FROM name_map nm
         JOIN transactions e ON e.contract_name = nm.evm_name AND e.chain_name = 'eth-rpc'
             AND e.transaction_name <> 'deploy' AND e.weight_consumed_ref_time IS NOT NULL
         JOIN transactions r ON r.contract_name = nm.rust_name AND r.chain_name = e.chain_name
             AND r.transaction_name = e.transaction_name AND r.weight_consumed_ref_time IS NOT NULL
-    `).all() as { rt_pct: number; pov_pct: number }[]
+    `).all() as {
+        rt_pct: number
+        pov_pct: number
+        consumed_pct: number | null
+    }[]
 
     const rustVsSolPcts = db.prepare(`
         WITH name_map(evm_name, pvm_name, rust_name) AS (VALUES ${NAME_MAP_VALUES})
@@ -2049,7 +2177,9 @@ export function getPerTxMedians(): MedianRow[] {
             ROUND((r.weight_consumed_ref_time - p.weight_consumed_ref_time) * 100.0
                 / p.weight_consumed_ref_time, 1) as rt_pct,
             ROUND((COALESCE(r.weight_consumed_proof_size,0) - COALESCE(p.weight_consumed_proof_size,0)) * 100.0
-                / NULLIF(COALESCE(p.weight_consumed_proof_size,0), 0), 1) as pov_pct
+                / NULLIF(COALESCE(p.weight_consumed_proof_size,0), 0), 1) as pov_pct,
+            ROUND((r.post_dispatch_pov - p.post_dispatch_pov) * 100.0
+                / NULLIF(p.post_dispatch_pov, 0), 1) as consumed_pct
         FROM name_map nm
         JOIN transactions e ON e.contract_name = nm.evm_name AND e.chain_name = 'eth-rpc'
             AND e.transaction_name <> 'deploy' AND e.weight_consumed_ref_time IS NOT NULL
@@ -2057,16 +2187,36 @@ export function getPerTxMedians(): MedianRow[] {
             AND p.transaction_name = e.transaction_name AND p.weight_consumed_ref_time IS NOT NULL
         JOIN transactions r ON r.contract_name = nm.rust_name AND r.chain_name = e.chain_name
             AND r.transaction_name = e.transaction_name AND r.weight_consumed_ref_time IS NOT NULL
-    `).all() as { rt_pct: number; pov_pct: number | null }[]
+    `).all() as {
+        rt_pct: number
+        pov_pct: number | null
+        consumed_pct: number | null
+    }[]
 
     const solRts = solPairPcts.map((r) => r.rt_pct).sort((a, b) => a - b)
     const solPovs = solPairPcts.map((r) => r.pov_pct).sort((a, b) => a - b)
+    const solConsumed = solPairPcts.filter((r) => r.consumed_pct != null).map((
+        r,
+    ) => r.consumed_pct!).sort((a, b) => a - b)
     const rustRts = rustPairPcts.map((r) => r.rt_pct).sort((a, b) => a - b)
     const rustPovs = rustPairPcts.map((r) => r.pov_pct).sort((a, b) => a - b)
+    const rustConsumed = rustPairPcts.filter((r) => r.consumed_pct != null).map(
+        (r) => r.consumed_pct!,
+    ).sort((a, b) => a - b)
     const rvsRts = rustVsSolPcts.map((r) => r.rt_pct).sort((a, b) => a - b)
     const rvsPovs = rustVsSolPcts.filter((r) => r.pov_pct != null).map((r) =>
         r.pov_pct!
     ).sort((a, b) => a - b)
+    const rvsConsumed = rustVsSolPcts.filter((r) => r.consumed_pct != null).map(
+        (r) => r.consumed_pct!,
+    ).sort((a, b) => a - b)
+
+    const fmtConsumed = (arr: number[]) =>
+        arr.length > 0 ? pct(median(arr)) : '—'
+    const fmtCheaper = (arr: number[]) =>
+        arr.length > 0
+            ? `${arr.filter((p) => p < 0).length}/${arr.length}`
+            : '—'
 
     return [
         {
@@ -2079,6 +2229,8 @@ export function getPerTxMedians(): MedianRow[] {
             txs_cheaper_pov: `${
                 solPovs.filter((p) => p < 0).length
             }/${solPovs.length}`,
+            median_consumed: fmtConsumed(solConsumed),
+            txs_cheaper_consumed: fmtCheaper(solConsumed),
         },
         {
             comparison: `PVM/Rust vs EVM (${rustRts.length} txs)`,
@@ -2090,6 +2242,8 @@ export function getPerTxMedians(): MedianRow[] {
             txs_cheaper_pov: `${
                 rustPovs.filter((p) => p < 0).length
             }/${rustPovs.length}`,
+            median_consumed: fmtConsumed(rustConsumed),
+            txs_cheaper_consumed: fmtCheaper(rustConsumed),
         },
         {
             comparison: `PVM/Rust vs PVM/Sol (${rvsRts.length} txs)`,
@@ -2101,6 +2255,8 @@ export function getPerTxMedians(): MedianRow[] {
             txs_cheaper_pov: rvsPovs.length > 0
                 ? `${rvsPovs.filter((p) => p < 0).length}/${rvsPovs.length}`
                 : '—',
+            median_consumed: fmtConsumed(rvsConsumed),
+            txs_cheaper_consumed: fmtCheaper(rvsConsumed),
         },
     ]
 }
@@ -2128,6 +2284,7 @@ interface DeployRow {
     metered_rt: number
     base_pov: number
     metered_pov: number
+    consumed: number
 }
 
 export function getDeployTotals(): {
@@ -2139,14 +2296,15 @@ export function getDeployTotals(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_evm'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
             AND base_call_weight_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
 
     const pvmMap = new Map<string, DeployRow>()
     for (
@@ -2155,13 +2313,14 @@ export function getDeployTotals(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_pvm'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
     ) {
         pvmMap.set(r.contract, r)
     }
@@ -2200,6 +2359,15 @@ export function getDeployTotals(): {
                     sumField(solPairs, (r) => r.metered_rt),
                 ),
             },
+            {
+                metric: 'Consumed proof_size',
+                evm: Math.round(sumField(solPairs, (r) => r.consumed)),
+                pvm_sol: Math.round(sumPvm(solPairs, (r) => r.consumed)),
+                vs_evm: fmtPctDiff(
+                    sumPvm(solPairs, (r) => r.consumed),
+                    sumField(solPairs, (r) => r.consumed),
+                ),
+            },
         ],
     }
 }
@@ -2213,14 +2381,15 @@ export function getDeployThreeWay(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_evm'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
             AND base_call_weight_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
 
     const pvmMap = new Map<string, DeployRow>()
     for (
@@ -2229,13 +2398,14 @@ export function getDeployThreeWay(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_pvm'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
     ) {
         pvmMap.set(r.contract, r)
     }
@@ -2257,13 +2427,14 @@ export function getDeployThreeWay(): {
             base_call_weight_ref_time as base_rt,
             weight_consumed_ref_time as metered_rt,
             COALESCE(base_call_weight_proof_size, 0) as base_pov,
-            COALESCE(weight_consumed_proof_size, 0) as metered_pov
+            COALESCE(weight_consumed_proof_size, 0) as metered_pov,
+            COALESCE(post_dispatch_pov, 0) as consumed
         FROM transactions
         WHERE chain_name = 'eth-rpc'
             AND contract_name LIKE '%_rust'
             AND transaction_name = 'deploy'
             AND weight_consumed_ref_time IS NOT NULL
-    `).all() as DeployRow[]
+    `).all() as unknown as DeployRow[]
     ) {
         const evmBase = allRustToEvm[r.contract]
         if (evmBase && !rustMap.has(evmBase)) rustMap.set(evmBase, r)
@@ -2324,6 +2495,12 @@ export function getDeployThreeWay(): {
                 sumField(rustPairs, (r) => r.metered_pov),
                 sumPvm(rustPairs, (r) => r.metered_pov),
                 sumRust(rustPairs, (r) => r.metered_pov),
+            ),
+            makeRow(
+                'Consumed proof_size',
+                sumField(rustPairs, (r) => r.consumed),
+                sumPvm(rustPairs, (r) => r.consumed),
+                sumRust(rustPairs, (r) => r.consumed),
             ),
         ],
     }
@@ -2601,8 +2778,11 @@ export function getCostGapDecomposition(): {
         pvm_rt: number
         evm_pov: number
         pvm_pov: number
+        evm_consumed: number
+        pvm_consumed: number
         rt_diff: string
         pov_diff: string
+        consumed_diff: string
     }
     sources: CostGapRow[]
 } {
@@ -2613,7 +2793,9 @@ export function getCostGapDecomposition(): {
                 e.weight_consumed_ref_time as e_rt,
                 p.weight_consumed_ref_time as p_rt,
                 e.weight_consumed_proof_size as e_pov,
-                p.weight_consumed_proof_size as p_pov
+                p.weight_consumed_proof_size as p_pov,
+                COALESCE(e.post_dispatch_pov, 0) as e_consumed,
+                COALESCE(p.post_dispatch_pov, 0) as p_consumed
             FROM transactions e
             JOIN transactions p
                 ON REPLACE(e.contract_name, '_evm', '_pvm') = p.contract_name
@@ -2668,8 +2850,11 @@ export function getCostGapDecomposition(): {
             SUM(p_rt) as sum_pvm_rt,
             SUM(e_pov) as sum_evm_pov,
             SUM(p_pov) as sum_pvm_pov,
+            SUM(e_consumed) as sum_evm_consumed,
+            SUM(p_consumed) as sum_pvm_consumed,
             SUM(p_rt - e_rt) as rt_gap,
             SUM(p_pov - e_pov) as pov_gap,
+            SUM(p_consumed - e_consumed) as consumed_gap,
             SUM((p_rt - p_attr_rt) - (e_rt - e_attr_rt)) as unattr_rt,
             SUM((p_pov - p_attr_pov) - (e_pov - e_attr_pov)) as unattr_pov,
             SUM(p_call_rt - e_call_rt) as call_rt,
@@ -2687,6 +2872,7 @@ export function getCostGapDecomposition(): {
 
     const rtGap = raw.rt_gap
     const povGap = raw.pov_gap
+    const consumedGap = raw.consumed_gap
     const otherRt = rtGap - raw.unattr_rt - raw.call_rt - raw.immut_rt
     const otherPov = povGap - raw.unattr_pov - raw.call_pov - raw.immut_pov
 
@@ -2697,8 +2883,13 @@ export function getCostGapDecomposition(): {
             pvm_rt: Math.round(raw.sum_pvm_rt),
             evm_pov: Math.round(raw.sum_evm_pov),
             pvm_pov: Math.round(raw.sum_pvm_pov),
+            evm_consumed: Math.round(raw.sum_evm_consumed),
+            pvm_consumed: Math.round(raw.sum_pvm_consumed),
             rt_diff: pctFmt(rtGap / raw.sum_evm_rt * 100),
             pov_diff: pctFmt(povGap / raw.sum_evm_pov * 100),
+            consumed_diff: raw.sum_evm_consumed
+                ? pctFmt(consumedGap / raw.sum_evm_consumed * 100)
+                : '—',
         },
         sources: [
             {
@@ -2740,172 +2931,91 @@ export function getCostGapDecomposition(): {
     }
 }
 
-// RQ2: Bytecode size comparison
-export interface BytecodeSizeCompRow {
-    contract: string
-    evm_bytes: number
-    pvm_sol_bytes: number
-    ratio: string
-    pvm_rust_bytes: string
-    rust_ratio: string
-    ink_bytes: string
-    ink_ratio: string
-}
-
-export function getBytecodeSizeComparison(): BytecodeSizeCompRow[] {
-    const deploys = db.prepare(`
-        SELECT REPLACE(contract_name, '_evm', '') as contract
-        FROM transactions
-        WHERE chain_name = 'eth-rpc'
-            AND contract_name LIKE '%_evm'
-            AND transaction_name = 'deploy'
-            AND weight_consumed_ref_time IS NOT NULL
-            AND base_call_weight_ref_time IS NOT NULL
-        ORDER BY contract
-    `).all() as { contract: string }[]
-
-    return deploys.map((r) => {
-        const evmSize = fileSize(join(CODEGEN_DIR, 'evm', `${r.contract}.bin`))
-        const pvmSize = fileSize(
-            join(CODEGEN_DIR, 'pvm', `${r.contract}.polkavm`),
-        )
-        const rustBytecodeNames: Record<string, string> = {
-            Fibonacci: 'fibonacci_rust',
-            Fibonacci_u256: 'fibonacci_u256_rust',
-            Fibonacci_u256_iter: 'fibonacci_u256_iter_rust',
-            SimpleToken: 'simple_token_with_alloc_rust',
-        }
-        const rustName = EVM_TO_RUST[r.contract] ??
-            rustBytecodeNames[r.contract]
-        const rustSize = rustName ? rustBytecodeSizeFn(rustName) : null
-        const inkName = EVM_TO_INK[r.contract]
-        const inkSize = inkName ? inkBytecodeSizeFn(inkName) : null
-        if (evmSize == null || pvmSize == null) return null
-        return {
-            contract: r.contract,
-            evm_bytes: evmSize,
-            pvm_sol_bytes: pvmSize,
-            ratio: `${(pvmSize / evmSize).toFixed(1)}x`,
-            pvm_rust_bytes: rustSize != null ? rustSize.toLocaleString() : '—',
-            rust_ratio: rustSize != null
-                ? `${(rustSize / evmSize).toFixed(1)}x`
-                : '—',
-            ink_bytes: inkSize != null ? inkSize.toLocaleString() : '—',
-            ink_ratio: inkSize != null
-                ? `${(inkSize / evmSize).toFixed(1)}x`
-                : '—',
-        }
-    }).filter((r): r is BytecodeSizeCompRow => r !== null).sort((a, b) =>
-        a.evm_bytes - b.evm_bytes
-    )
-}
-
 export function getBytecodeHierarchy(): BytecodeSizeHierarchy {
     const bytecodeData = getBytecodeComparison()
+    const allImplTypes = new Set<string>()
 
     // Group by dataset -> contract
     const datasetMap = new Map<
         string,
-        Map<
-            string,
-            {
-                evm_size: number | null
-                pvm_size: number | null
-                evm_name: string | null
-                pvm_name: string | null
-            }
-        >
+        Map<string, BytecodeImplementation[]>
     >()
 
     for (const group of bytecodeData.groups) {
         const dataset = getDatasetCategory(group.contract_id)
-
-        if (!datasetMap.has(dataset)) {
-            datasetMap.set(dataset, new Map())
-        }
-
+        if (!datasetMap.has(dataset)) datasetMap.set(dataset, new Map())
         const contractMap = datasetMap.get(dataset)!
 
-        // Find EVM and PVM sizes for this contract
-        let evmSize: number | null = null
-        let pvmSize: number | null = null
-        let evmName: string | null = null
-        let pvmName: string | null = null
         const implementations: BytecodeImplementation[] = []
-
         for (const entry of group.entries) {
+            const implType = getImplTypeLabel(entry.impl_type, entry.vm_type)
+            allImplTypes.add(implType)
             implementations.push({
                 name: entry.contract_name,
                 vm_type: entry.vm_type,
                 size_bytes: entry.size_bytes,
+                implType,
             })
-            if (entry.vm_type === 'EVM') {
-                evmSize = entry.size_bytes
-                evmName = entry.contract_name
-            } else if (entry.vm_type === 'PVM') {
-                // Prefer the Solidity-compiled PVM (_pvm suffix) for apples-to-apples comparison
-                const isSolidityPvm = entry.contract_name.endsWith('_pvm')
-                const currentIsSolidityPvm = pvmName?.endsWith('_pvm') ?? false
-                if (
-                    pvmSize === null || (isSolidityPvm && !currentIsSolidityPvm)
-                ) {
-                    pvmSize = entry.size_bytes
-                    pvmName = entry.contract_name
-                }
-            }
         }
+        contractMap.set(group.contract_id, implementations)
+    }
 
-        contractMap.set(group.contract_id, {
-            evm_size: evmSize,
-            pvm_size: pvmSize,
-            evm_name: evmName,
-            pvm_name: pvmName,
-            implementations,
-        })
+    const implTypes = sortImplTypes([...allImplTypes])
+
+    // Helper: pick representative size per impl type for a contract
+    // For each impl type, average across all implementations of that type
+    function sizesPerImplType(
+        impls: BytecodeImplementation[],
+    ): Record<string, number | null> {
+        const sizes: Record<string, number | null> = {}
+        for (const t of implTypes) {
+            const matching = impls.filter((i) => i.implType === t)
+            sizes[t] = matching.length > 0
+                ? Math.round(
+                    matching.reduce((s, i) => s + i.size_bytes, 0) /
+                        matching.length,
+                )
+                : null
+        }
+        return sizes
     }
 
     // Build hierarchy
     const datasets: BytecodeSizeHierarchy['datasets'] = []
 
     for (const [datasetName, contractMap] of datasetMap) {
-        let datasetEvmSize = 0
-        let datasetPvmSize = 0
-        let hasEvm = false
-        let hasPvm = false
-
         const contracts: BytecodeSizeHierarchy['datasets'][0]['contracts'] = []
 
-        for (const [contractName, sizes] of contractMap) {
-            if (sizes.evm_size !== null) {
-                datasetEvmSize += sizes.evm_size
-                hasEvm = true
-            }
-            if (sizes.pvm_size !== null) {
-                datasetPvmSize += sizes.pvm_size
-                hasPvm = true
-            }
-
+        for (const [contractName, impls] of contractMap) {
             contracts.push({
                 name: contractName,
-                evm_size: sizes.evm_size,
-                pvm_size: sizes.pvm_size,
-                evm_name: sizes.evm_name,
-                pvm_name: sizes.pvm_name,
-                implementations: sizes.implementations.sort((a, b) =>
+                sizes: sizesPerImplType(impls),
+                implementations: impls.sort((a, b) =>
                     a.size_bytes - b.size_bytes
                 ),
             })
         }
 
+        // Dataset-level sizes: sum of contract sizes per impl type
+        const datasetSizes: Record<string, number | null> = {}
+        for (const t of implTypes) {
+            const vals = contracts.map((c) => c.sizes[t]).filter(
+                (v): v is number => v !== null,
+            )
+            datasetSizes[t] = vals.length > 0
+                ? vals.reduce((s, v) => s + v, 0)
+                : null
+        }
+
         datasets.push({
             name: datasetName,
-            evm_size: hasEvm ? datasetEvmSize : null,
-            pvm_size: hasPvm ? datasetPvmSize : null,
+            sizes: datasetSizes,
             contracts: contracts.sort((a, b) => a.name.localeCompare(b.name)),
         })
     }
 
     return {
+        implTypes,
         datasets: datasets.sort((a, b) => datasetSortOrder(a.name, b.name)),
     }
 }

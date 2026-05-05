@@ -1,62 +1,51 @@
 #!/usr/bin/env -S deno run --env-file --allow-all
-import { env } from '../tools/lib/index.ts'
+import { env, initEnv } from '../tools/lib/index.ts'
 import { logger } from '../utils/logger.ts'
 import { build, deleteChainData, deploy, execute } from './lib.ts'
 import { parseArgs } from '@std/cli'
+import { datasetCategories, datasets, mark3tContracts } from './datasets.ts'
 
-// Import contract definitions
-import { testContracts } from './contracts/test-contracts.ts'
-import { ethereumContracts } from './contracts/ethereum-contracts.ts'
-import { protocolCommonsContracts } from './contracts/protocol-commons-contracts.ts'
-import { hackm3Contracts } from './contracts/hackm3-contracts.ts'
-import { w3sContracts } from './contracts/w3s-contracts.ts'
-import { mark3tContracts } from './contracts/mark3t-contracts.ts'
+export { datasetCategories, datasets }
 
-/**
- * Combined contracts array for benchmarking
- * - testContracts: Simple test contracts (Fibonacci, SimpleToken)
- * - ethereumContracts: Real Ethereum contracts (USDT, WETH, USDC, XEN)
- * - protocolCommonsContracts: Protocol Commons contracts (Store, Log, NFC, FC, Escrow, DotNS, KeyRegistry)
- * - hackm3Contracts: HackM3 contracts (DocumentAccessManagement)
- * - w3sContracts: W3S Ticketing contracts
- * - mark3tContracts: mark3t Marketplace contracts (Marketplace, MockMobRule)
- */
-export const contracts = [
-    ...testContracts,
-    ...ethereumContracts,
-    ...protocolCommonsContracts,
-    ...hackm3Contracts,
-    ...w3sContracts,
-    ...(env.chain.name !== 'Geth' ? mark3tContracts : []), // mark3t contracts are too big to be tested w/ geth
-]
+// CLI entry point — only runs when executed directly, not when imported as a module.
+if (import.meta.main) {
+    const cli = parseArgs(Deno.args, {
+        boolean: ['build', 'execute', 'report', 'html-report', 'clean'],
+    })
 
-const cli = parseArgs(Deno.args, {
-    boolean: ['build', 'execute', 'report', 'html-report', 'clean'],
-})
+    const allContracts = Object.values(datasets).flat()
 
-if (cli.build) {
-    logger.info(`Building contracts...`)
-    await build(contracts)
-}
-if (cli.execute) {
-    logger.info(`Deleting existing data for chain: ${env.chain.name}`)
-    deleteChainData(env.chain.name)
+    if (cli.build) {
+        logger.info(`Building contracts...`)
+        await build(allContracts)
+    }
+    if (cli.execute) {
+        await initEnv()
 
-    logger.info(`Deploying contracts...`)
-    await deploy(contracts)
+        const mark3tIds = new Set(mark3tContracts.map((c) => c.id))
+        const contracts = env.chain.name === 'Geth'
+            ? allContracts.filter((a) => !mark3tIds.has(a.id))
+            : allContracts
 
-    logger.info(`Executing contracts...`)
-    await execute(contracts)
-}
+        logger.info(`Deleting existing data for chain: ${env.chain.name}`)
+        deleteChainData(env.chain.name)
 
-if (cli.report) {
-    logger.info(`Generating reports...`)
-    const { report } = await import('./reports.ts')
-    await report(contracts)
-}
+        logger.info(`Deploying contracts...`)
+        await deploy(contracts)
 
-if (cli['html-report']) {
-    logger.info(`Generating HTML report...`)
-    const { generateHtmlReport } = await import('./html-report.ts')
-    await generateHtmlReport()
+        logger.info(`Executing contracts...`)
+        await execute(contracts)
+    }
+
+    if (cli.report) {
+        logger.info(`Generating reports...`)
+        const { report } = await import('./reports.ts')
+        await report(allContracts)
+    }
+
+    if (cli['html-report']) {
+        logger.info(`Generating HTML report...`)
+        const { generateHtmlReport } = await import('./html-report.ts')
+        await generateHtmlReport()
+    }
 }

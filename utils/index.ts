@@ -130,11 +130,13 @@ export async function createEnv({
         chain,
     }).getAddresses()
 
-    const serverWallet = createWalletClient({
-        account,
-        transport,
-        chain,
-    }).extend(publicActions)
+    const serverWallet = account
+        ? createWalletClient({
+            account,
+            transport,
+            chain,
+        }).extend(publicActions)
+        : undefined
 
     const wallet = createWalletClient({
         account: privateKeyToAccount(primaryPrivateKey, { nonceManager }),
@@ -148,17 +150,19 @@ export async function createEnv({
         chain,
     }).extend(publicActions)
 
-    const endowment = parseEther('1000')
-    for (const targetWallet of [wallet, wallet2]) {
-        const address = targetWallet.account.address
-        const balance = await serverWallet.getBalance(targetWallet.account)
-        if (balance < endowment / 2n) {
-            const hash = await serverWallet.sendTransaction({
-                account: serverWallet.account,
-                to: address,
-                value: endowment,
-            })
-            await serverWallet.waitForTransactionReceipt({ hash })
+    if (serverWallet) {
+        const endowment = parseEther('1000')
+        for (const targetWallet of [wallet, wallet2]) {
+            const address = targetWallet.account.address
+            const balance = await serverWallet.getBalance(targetWallet.account)
+            if (balance < endowment / 2n) {
+                const hash = await serverWallet.sendTransaction({
+                    account: serverWallet.account,
+                    to: address,
+                    value: endowment,
+                })
+                await serverWallet.waitForTransactionReceipt({ hash })
+            }
         }
     }
 

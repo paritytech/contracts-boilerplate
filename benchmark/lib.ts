@@ -11,12 +11,27 @@ import { DatabaseSync } from 'node:sqlite'
 export const db = new DatabaseSync('stats.db')
 db.exec(
     `
+CREATE TABLE IF NOT EXISTS benchmark_metadata (
+    chain_name TEXT PRIMARY KEY,
+    system_chain TEXT,
+    system_name TEXT,
+    system_version TEXT,
+    runtime_spec_name TEXT,
+    runtime_spec_version INTEGER,
+    runtime_impl_name TEXT,
+    runtime_impl_version INTEGER,
+    resolc_version TEXT,
+    solc_version TEXT,
+    recorded_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS transactions (
     hash BLOB NOT NULL,
     chain_name TEXT NOT NULL,
     contract_id TEXT NOT NULL,
     contract_name TEXT NOT NULL,
     transaction_name TEXT NOT NULL,
+    block_number INTEGER,
     gas_used INTEGER NOT NULL,
     status INTEGER NOT NULL,
     post_dispatch_ref_time INTEGER,
@@ -44,7 +59,11 @@ CREATE INDEX IF NOT EXISTS idx_transaction_steps_hash_chain
 `,
 )
 
+// deno-lint-ignore ban-types
+export type ImplType = 'solidity' | 'ink' | 'rust' | 'stylus' | (string & {})
+
 export interface ContractInfo {
+    readonly implType: ImplType
     supportEvm(): boolean
     getName(): string
     getBytecode(): Hex
@@ -59,6 +78,7 @@ export function ink(name: string): ContractInfo {
     const pkgName =
         cargoToml.match(/^name\s*=\s*"(.+)"/m)?.[1]?.replace(/-/g, '_') ?? dir
     return {
+        implType: 'ink',
         supportEvm() {
             return false
         },
@@ -102,6 +122,7 @@ export function solidity(
         const compiler = isEvm ? 'solc' : 'resolc'
 
         const contract = {
+            implType: 'solidity' as ImplType,
             supportEvm() {
                 return isEvm
             },
@@ -144,6 +165,7 @@ export function solidity(
 
 export function rust(name: string): ContractInfo {
     return {
+        implType: 'rust',
         supportEvm() {
             return false
         },
@@ -217,6 +239,7 @@ export function stylus(name: string): ContractInfo {
     }
     const libName = pkgName.replace(/-/g, '_')
     return {
+        implType: 'stylus',
         supportEvm() {
             return false
         },
@@ -252,6 +275,7 @@ export function stylus(name: string): ContractInfo {
 export function pcRust(name: string): ContractInfo {
     const pcRoot = join(import.meta.dirname!, '..', 'rust', 'protocol-commons')
     return {
+        implType: 'rust',
         supportEvm() {
             return false
         },
@@ -382,7 +406,142 @@ async function resolveLibraryLinks(
     await src.build()
 }
 
+async function jsonRpc(url: string, method: string): Promise<unknown> {
+    const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', method, id: 1 }),
+    })
+    const json = await resp.json()
+    if (json.error) {
+        throw new Error(
+            `RPC ${method}: ${
+                json.error.message ?? JSON.stringify(json.error)
+            }`,
+        )
+    }
+    return json.result
+}
+
+function getToolVersion(cmd: string, args: string[]): string | null {
+    try {
+        const result = new Deno.Command(cmd, {
+            args,
+            stdout: 'piped',
+            stderr: 'piped',
+        }).outputSync()
+        return new TextDecoder().decode(result.stdout).trim() || null
+    } catch {
+        return null
+    }
+}
+
+async function recordMetadata() {
+    // Migrate old schema if needed
+    try {
+        db.prepare('SELECT system_chain FROM benchmark_metadata LIMIT 1').get()
+    } catch {
+        db.exec('DROP TABLE IF EXISTS benchmark_metadata')
+        db.exec(`CREATE TABLE benchmark_metadata (
+            chain_name TEXT PRIMARY KEY,
+            system_chain TEXT, system_name TEXT, system_version TEXT,
+            runtime_spec_name TEXT, runtime_spec_version INTEGER,
+            runtime_impl_name TEXT, runtime_impl_version INTEGER,
+            resolc_version TEXT, solc_version TEXT,
+            recorded_at TEXT NOT NULL
+        )`)
+    }
+
+    const chainName = env.chain.name
+    const rpcUrl = env.chain.rpcUrls.default.http[0]
+    const isGeth = chainName === 'Geth'
+
+    let systemChain: string | null = null
+    let systemName: string | null = null
+    let systemVersion: string | null = null
+    let specName: string | null = null
+    let specVersion: number | null = null
+    let implName: string | null = null
+    let implVersion: number | null = null
+
+    if (isGeth) {
+        // Geth: get version from web3_clientVersion
+        try {
+            const clientVersion =
+                (await jsonRpc(rpcUrl, 'web3_clientVersion')) as string
+            // e.g. "Geth/v1.14.3-stable-ab48ba42/darwin-arm64/go1.22.3"
+            systemName = 'Geth'
+            systemVersion = clientVersion?.match(/v[\d.]+[^ /]*/)?.[0] ??
+                clientVersion
+            systemChain = 'Geth --dev'
+        } catch {
+            logger.debug('Could not query geth web3_clientVersion')
+        }
+    } else {
+        // Substrate node: query via substrate RPC on port 9944
+        const parsed = new URL(rpcUrl)
+        parsed.port = '9944'
+        const nodeUrl = parsed.toString().replace(/\/$/, '')
+        try {
+            const [chain, name, version, runtimeVersion] = await Promise.all([
+                jsonRpc(nodeUrl, 'system_chain'),
+                jsonRpc(nodeUrl, 'system_name'),
+                jsonRpc(nodeUrl, 'system_version'),
+                jsonRpc(nodeUrl, 'state_getRuntimeVersion'),
+            ])
+
+            systemChain = (chain as string) ?? null
+            systemName = (name as string) ?? null
+            systemVersion = (version as string) ?? null
+
+            const rv = runtimeVersion as Record<string, unknown> | null
+            if (rv) {
+                specName = (rv.specName as string) ?? null
+                specVersion = (rv.specVersion as number) ?? null
+                implName = (rv.implName as string) ?? null
+                implVersion = (rv.implVersion as number) ?? null
+            }
+        } catch {
+            logger.debug('Could not query substrate node RPCs')
+        }
+    }
+
+    const resolcVersion = getToolVersion('resolc', ['--version'])
+        ?.match(/version\s+([\d.]+\+commit\.\w+)/)?.[1] ?? null
+    const solcVersion = getToolVersion('solc', ['--version'])
+        ?.match(/([\d.]+\+commit\.\w+)/)?.[1] ?? null
+
+    db.prepare(`
+        INSERT OR REPLACE INTO benchmark_metadata (
+            chain_name, system_chain, system_name, system_version,
+            runtime_spec_name, runtime_spec_version,
+            runtime_impl_name, runtime_impl_version,
+            resolc_version, solc_version, recorded_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+        chainName,
+        systemChain,
+        systemName,
+        systemVersion,
+        specName,
+        specVersion,
+        implName,
+        implVersion,
+        resolcVersion,
+        solcVersion,
+        new Date().toISOString(),
+    )
+
+    logger.debug(
+        `Recorded metadata: chain=${systemChain}, runtime=${
+            specName ?? 'EVM'
+        }@${specVersion ?? ''}, node=${systemName} ${systemVersion}`,
+    )
+}
+
 export async function deploy(contracts: Artifacts) {
+    await recordMetadata()
+
     // Track deployed libraries to avoid redeployment within this session
     const deployedAddresses: Record<string, string> = {}
 
@@ -519,6 +678,7 @@ INSERT OR REPLACE INTO transactions (
     contract_id,
     contract_name,
     transaction_name,
+    block_number,
     gas_used,
     status,
     post_dispatch_ref_time,
@@ -527,7 +687,7 @@ INSERT OR REPLACE INTO transactions (
     weight_consumed_proof_size,
     base_call_weight_ref_time,
     base_call_weight_proof_size
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `,
         ).run(
             hashBytes,
@@ -535,6 +695,7 @@ INSERT OR REPLACE INTO transactions (
             contractId,
             contract,
             action,
+            receipt.blockNumber ? Number(receipt.blockNumber) : null,
             Number(receipt.gasUsed),
             statusValue,
             weight ? Number(weight.ref_time) : null,

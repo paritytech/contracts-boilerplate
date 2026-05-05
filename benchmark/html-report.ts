@@ -6,12 +6,13 @@
 import { ensureDir } from '@std/fs'
 import { join } from '@std/path'
 
+import { datasetDescriptions } from './datasets.ts'
 import {
-    DATASET_DESCRIPTIONS,
+    type BytecodeSizeHierarchy,
     DATASET_METHODOLOGY,
     getBaseVsMetered,
+    getBenchmarkMetadata,
     getBytecodeHierarchy,
-    getBytecodeSizeComparison,
     getCategoryBreakdownHierarchy,
     getCategoryMappingHtml,
     getCostDecomposition7,
@@ -21,7 +22,6 @@ import {
     getExecTotals,
     getExecTotalsPairCount,
     getExecutiveSummary,
-    getFibonacciComparison,
     getGasAnalysisHierarchy,
     getPerTxMedians,
     getSyscallCosts,
@@ -44,7 +44,6 @@ import {
     expandableGasTable,
     expandableTableScript,
     expandableWeightTable,
-    fibonacciComparisonTable,
     gasAnalysisFilterControls,
     htmlDocument,
     metricGrid,
@@ -53,10 +52,13 @@ import {
 } from './html-report/templates.ts'
 
 import {
+    altImplLabel,
+    type AltWeightSeries,
     buildCategoryColorMap,
     COLORS,
+    getImplTypeColor,
     groupedBarChart,
-    stackedBarChart,
+    pairedStackedBarChart,
     weightBreakdownChart,
 } from './html-report/charts.ts'
 
@@ -92,10 +94,14 @@ export async function generateHtmlReport(): Promise<void> {
     scripts.push(bytecodeSection.scripts)
 
     // Section 6: EVM vs PVM Analysis
-    content += generateEvmPvmAnalysis()
+    content += generateEvmPvmAnalysis(bytecodeSection.hierarchy)
 
     // Generate final HTML
-    const html = htmlDocument(content, scripts.join('\n'))
+    const html = htmlDocument(
+        content,
+        scripts.join('\n'),
+        getBenchmarkMetadata(),
+    )
 
     const outputPath = join(REPORTS_DIR, 'benchmark_report.html')
     await Deno.writeTextFile(outputPath, html)
@@ -119,7 +125,7 @@ function generateExecutiveSummary(): string {
         chain.avg_proof_size ? Math.round(chain.avg_proof_size) : 'N/A',
     ])
 
-    const datasetDescriptions = Object.entries(DATASET_DESCRIPTIONS).map(
+    const datasetList = Object.entries(datasetDescriptions).map(
         ([name, desc]) => {
             const methodology = DATASET_METHODOLOGY[name]
             const details = methodology
@@ -131,11 +137,15 @@ function generateExecutiveSummary(): string {
 
     const summaryContent = `
         ${metricGrid(metrics)}
+        <div class="methodology-note" style="margin-top: 1.5rem; padding: 1rem; border-left: 3px solid var(--accent-color); background: var(--bg-secondary); border-radius: 0 0.25rem 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+            Single-run on omni-node with Westend Asset Hub runtime. Gas is deterministic per EVM spec; ref_time and proof_size are deterministic per pallet-revive weight metering; post_dispatch is actual PoV reported by the runtime.
+            Ratio comparisons use geometric mean.
+        </div>
         <div style="margin-top: 1.5rem;">
             ${
         card(
             'Datasets',
-            `<ul style="margin: 0; padding-left: 1.25rem; line-height: 1.8;">${datasetDescriptions}</ul>`,
+            `<ul style="margin: 0; padding-left: 1.25rem; line-height: 1.8;">${datasetList}</ul>`,
         )
     }
         </div>
@@ -184,79 +194,101 @@ function generateGasAnalysis(): { html: string; scripts: string } {
     // Average per-transaction % difference at dataset level
     const labels = hierarchy.datasets.map((d) => d.name)
 
-    const toPctDiff = (val: number | null, base: number | null) =>
-        val !== null && base !== null && base > 0
-            ? Math.round((val / base - 1) * 10000) / 100
-            : null
-
-    const avgTxPctDiff = (
+    const geoMeanPctDiff = (
         contracts: typeof hierarchy.datasets[0]['contracts'],
         valKey: 'eth_rpc_evm_gas' | 'eth_rpc_pvm_gas',
     ) => {
-        const diffs = contracts
+        const ratios = contracts
             .flatMap((c) =>
-                c.transactions.map((tx) => toPctDiff(tx[valKey], tx.geth_gas))
+                c.transactions
+                    .filter((tx) =>
+                        tx[valKey] !== null && tx.geth_gas !== null &&
+                        tx.geth_gas > 0
+                    )
+                    .map((tx) => tx[valKey]! / tx.geth_gas!)
             )
-            .filter((d): d is number => d !== null)
-        return diffs.length > 0
-            ? Math.round(
-                diffs.reduce((s, d) => s + d, 0) / diffs.length * 100,
-            ) / 100
-            : null
+        if (ratios.length === 0) return null
+        const logSum = ratios.reduce((s, r) => s + Math.log(r), 0)
+        const geoMean = Math.exp(logSum / ratios.length)
+        return Math.round((geoMean - 1) * 10000) / 100
     }
 
-    const avgRustTxPctDiff = (
+    const geoMeanAltPctDiff = (
         contracts: typeof hierarchy.datasets[0]['contracts'],
+        implLabel: string,
     ) => {
-        const diffs: number[] = []
+        const ratios: number[] = []
         for (const c of contracts) {
-            const rustAlts = c.alt_implementations.filter((a) =>
-                a.name.includes('rust')
+            const matchingAlts = c.alt_implementations.filter((a) =>
+                altImplLabel(a.name) === implLabel
             )
-            for (const alt of rustAlts) {
+            for (const alt of matchingAlts) {
                 for (const altTx of alt.transactions) {
                     const baseTx = c.transactions.find((t) =>
                         t.name === altTx.name
                     )
-                    const d = toPctDiff(altTx.pvm_gas, baseTx?.geth_gas ?? null)
-                    if (d !== null) diffs.push(d)
+                    if (
+                        altTx.pvm_gas !== null && baseTx?.geth_gas != null &&
+                        baseTx.geth_gas > 0
+                    ) {
+                        ratios.push(altTx.pvm_gas / baseTx.geth_gas)
+                    }
                 }
             }
         }
-        return diffs.length > 0
-            ? Math.round(
-                diffs.reduce((s, d) => s + d, 0) / diffs.length * 100,
-            ) / 100
-            : null
+        if (ratios.length === 0) return null
+        const logSum = ratios.reduce((s, r) => s + Math.log(r), 0)
+        const geoMean = Math.exp(logSum / ratios.length)
+        return Math.round((geoMean - 1) * 10000) / 100
+    }
+
+    // Collect all unique alt impl labels
+    const altImplLabels = new Set<string>()
+    for (const ds of hierarchy.datasets) {
+        for (const c of ds.contracts) {
+            for (const alt of c.alt_implementations) {
+                altImplLabels.add(altImplLabel(alt.name))
+            }
+        }
+    }
+
+    const chartSeries: Array<{
+        label: string
+        data: (number | null)[]
+        color: string
+    }> = [
+        {
+            label: 'EVM',
+            data: hierarchy.datasets.map((d) =>
+                geoMeanPctDiff(d.contracts, 'eth_rpc_evm_gas')
+            ),
+            color: COLORS.primary,
+        },
+        {
+            label: 'PVM (Solidity)',
+            data: hierarchy.datasets.map((d) =>
+                geoMeanPctDiff(d.contracts, 'eth_rpc_pvm_gas')
+            ),
+            color: COLORS.success,
+        },
+    ]
+
+    for (const implLabel of altImplLabels) {
+        const color = getImplTypeColor(implLabel)
+        chartSeries.push({
+            label: implLabel,
+            data: hierarchy.datasets.map((d) =>
+                geoMeanAltPctDiff(d.contracts, implLabel)
+            ),
+            color: color.bg,
+        })
     }
 
     const chartScript = groupedBarChart(
         'gasAnalysisChart',
         labels,
-        [
-            {
-                label: 'EVM',
-                data: hierarchy.datasets.map((d) =>
-                    avgTxPctDiff(d.contracts, 'eth_rpc_evm_gas')
-                ),
-                color: COLORS.primary,
-            },
-            {
-                label: 'PVM (Solidity)',
-                data: hierarchy.datasets.map((d) =>
-                    avgTxPctDiff(d.contracts, 'eth_rpc_pvm_gas')
-                ),
-                color: COLORS.success,
-            },
-            {
-                label: 'PVM (Rust)',
-                data: hierarchy.datasets.map((d) =>
-                    avgRustTxPctDiff(d.contracts)
-                ),
-                color: COLORS.orange,
-            },
-        ],
-        { yLabel: 'Avg % difference vs Geth' },
+        chartSeries,
+        { yLabel: 'Geometric mean % difference vs Geth' },
     )
     scripts.push(chartScript)
 
@@ -291,7 +323,6 @@ function generateGasAnalysis(): { html: string; scripts: string } {
 
 function generateWeightAnalysis(): { html: string; scripts: string } {
     const hierarchy = getWeightAnalysisHierarchy()
-    const fibonacciData = getFibonacciComparison()
     const scripts: string[] = []
 
     if (hierarchy.datasets.length === 0) {
@@ -311,14 +342,25 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
     // Stacked bar chart showing metered vs overhead breakdown
     const labels = hierarchy.datasets.map((d) => d.name)
 
-    // Compute Rust averages from alt_implementations at dataset level
-    const rustWeightData = {
-        refTime: hierarchy.datasets.map((d) => {
+    // Discover all alt implementation types from weight data
+    const altWeightLabels = new Set<string>()
+    for (const ds of hierarchy.datasets) {
+        for (const c of ds.contracts) {
+            for (const alt of c.alt_implementations) {
+                altWeightLabels.add(altImplLabel(alt.name))
+            }
+        }
+    }
+
+    // Build weight data for each alt implementation type
+    const altWeightSeries: AltWeightSeries[] = []
+    for (const implLabel of altWeightLabels) {
+        const refTime = hierarchy.datasets.map((d) => {
             let sum = 0, count = 0
             for (const c of d.contracts) {
                 for (
                     const alt of c.alt_implementations.filter((a) =>
-                        a.name.includes('rust')
+                        altImplLabel(a.name) === implLabel
                     )
                 ) {
                     for (const tx of alt.transactions) {
@@ -330,13 +372,13 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
                 }
             }
             return count > 0 ? Math.round(sum / count) : null
-        }),
-        meteredPct: hierarchy.datasets.map((d) => {
+        })
+        const meteredPct = hierarchy.datasets.map((d) => {
             let sum = 0, count = 0
             for (const c of d.contracts) {
                 for (
                     const alt of c.alt_implementations.filter((a) =>
-                        a.name.includes('rust')
+                        altImplLabel(a.name) === implLabel
                     )
                 ) {
                     for (const tx of alt.transactions) {
@@ -348,9 +390,14 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
                 }
             }
             return count > 0 ? sum / count : null
-        }),
+        })
+        if (refTime.some((v) => v !== null)) {
+            altWeightSeries.push({
+                label: implLabel,
+                data: { refTime, meteredPct },
+            })
+        }
     }
-    const hasRustWeight = rustWeightData.refTime.some((v) => v !== null)
 
     const chartScript = weightBreakdownChart(
         'weightAnalysisChart',
@@ -363,22 +410,13 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
             refTime: hierarchy.datasets.map((d) => d.pvm_ref_time),
             meteredPct: hierarchy.datasets.map((d) => d.pvm_metered_pct),
         },
-        hasRustWeight ? rustWeightData : null,
+        altWeightSeries,
         { yLabel: 'Avg ref_time per Transaction' },
     )
     scripts.push(chartScript)
 
     // Add drilldown chart script
     scripts.push(drilldownWeightChartScript(hierarchy))
-
-    // Fibonacci implementations comparison table
-    let fibonacciSection = ''
-    if (fibonacciData.length > 0) {
-        fibonacciSection = card(
-            'Fibonacci Implementations Comparison',
-            fibonacciComparisonTable(fibonacciData),
-        )
-    }
 
     const html = sectionCard(
         'weight',
@@ -392,12 +430,23 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
         }
         ${weightAnalysisFilterControls()}
         ${
-            card(
-                'Detailed Weight Comparison (click to expand)',
-                expandableWeightTable(hierarchy),
-            )
+            (() => {
+                const { refTimeTable, proofSizeTable } = expandableWeightTable(
+                    hierarchy,
+                )
+                return card(
+                    'ref_time Comparison (click to expand)',
+                    refTimeTable,
+                ) + card(
+                    'proof_size Comparison (click to expand)',
+                    `<p class="table-note" style="margin-bottom: 0.75rem;">
+                    <strong>base_call</strong>: fixed overhead charged per contract call (independent of what the contract does).
+                    <strong>metered</strong>: proof_size consumed by the contract's own execution (storage reads/writes, code access).
+                    <strong>post_dispatch</strong>: actual proof_size recorded after the extrinsic executes — the real on-chain PoV cost reported by the runtime.
+                </p>` + proofSizeTable,
+                )
+            })()
         }
-        ${fibonacciSection}
     `,
     )
 
@@ -405,10 +454,14 @@ function generateWeightAnalysis(): { html: string; scripts: string } {
 }
 
 function generateCategoryProfiling(): { html: string; scripts: string } {
-    const hierarchy = getCategoryBreakdownHierarchy()
+    const evmHierarchy = getCategoryBreakdownHierarchy('evm')
+    const pvmHierarchy = getCategoryBreakdownHierarchy('pvm')
     const scripts: string[] = []
 
-    if (hierarchy.datasets.length === 0) {
+    if (
+        evmHierarchy.datasets.length === 0 &&
+        pvmHierarchy.datasets.length === 0
+    ) {
         return {
             html: sectionCard(
                 'categories',
@@ -419,53 +472,274 @@ function generateCategoryProfiling(): { html: string; scripts: string } {
         }
     }
 
-    // Build stacked bar chart from hierarchy (dataset level)
-    const labels = hierarchy.datasets.map((d) => d.name)
-    const categoryColorMap = buildCategoryColorMap(hierarchy.allCategories)
-    const stackedDatasets = hierarchy.allCategories.map((category) => {
-        const data = hierarchy.datasets.map((d) => d.categories[category] ?? 0)
-        return { label: category, data, color: categoryColorMap[category] }
-    })
+    // ── Combined chart: EVM bar next to PVM bar per dataset ──
 
-    const stackedChartScript = stackedBarChart(
+    // Collect all unique dataset names (union of both hierarchies)
+    const datasetNames = [
+        ...new Set([
+            ...pvmHierarchy.datasets.map((d) => d.name),
+            ...evmHierarchy.datasets.map((d) => d.name),
+        ]),
+    ]
+
+    // Build a unified category color map across both hierarchies
+    const allCats = [
+        ...new Set([
+            ...pvmHierarchy.allCategories,
+            ...evmHierarchy.allCategories,
+        ]),
+    ]
+    const categoryColorMap = buildCategoryColorMap(allCats)
+
+    // Build paired datasets with stack groups: each category → PVM + EVM dataset
+    const combinedDatasets: Array<{
+        label: string
+        data: number[]
+        color: string
+        stack: string
+    }> = []
+
+    for (const cat of allCats) {
+        const pvmData = datasetNames.map((name) => {
+            const ds = pvmHierarchy.datasets.find((d) => d.name === name)
+            return ds?.categories[cat] ?? 0
+        })
+        const evmData = datasetNames.map((name) => {
+            const ds = evmHierarchy.datasets.find((d) => d.name === name)
+            return ds?.categories[cat] ?? 0
+        })
+        if (pvmData.some((v) => v > 0) || evmData.some((v) => v > 0)) {
+            combinedDatasets.push({
+                label: cat,
+                data: pvmData,
+                color: categoryColorMap[cat],
+                stack: 'PVM',
+            })
+            combinedDatasets.push({
+                label: cat,
+                data: evmData,
+                color: categoryColorMap[cat],
+                stack: 'EVM',
+            })
+        }
+    }
+
+    scripts.push(pairedStackedBarChart(
         'categoryBreakdownChart',
-        labels,
-        stackedDatasets,
+        datasetNames,
+        combinedDatasets,
         {
             yLabel: '% of Total Cost',
             title: 'Category Breakdown by Dataset (click to drill down)',
         },
-    )
-    scripts.push(stackedChartScript)
+    ))
 
-    // Add drilldown script for category chart
-    scripts.push(drilldownCategoryChartScript(hierarchy, categoryColorMap))
+    // ── Combined drilldown script ──
+    scripts.push(combinedCategoryDrilldownScript(
+        pvmHierarchy,
+        evmHierarchy,
+        categoryColorMap,
+    ))
+
+    // ── Per-VM detailed tables ──
+    const pvmTableHtml = pvmHierarchy.datasets.length > 0
+        ? `
+        <h3 style="margin: 1.5rem 0 0.5rem;">PVM Execution</h3>
+        ${categoryFilterControls('pvm')}
+        ${
+            card(
+                'PVM Detailed Category Breakdown (click to expand)',
+                expandableCategoryTable(pvmHierarchy, 'pvm'),
+            )
+        }`
+        : ''
+
+    const evmTableHtml = evmHierarchy.datasets.length > 0
+        ? `
+        <h3 style="margin: 1.5rem 0 0.5rem;">EVM Execution</h3>
+        ${categoryFilterControls('evm')}
+        ${
+            card(
+                'EVM Detailed Category Breakdown (click to expand)',
+                expandableCategoryTable(evmHierarchy, 'evm'),
+            )
+        }`
+        : ''
+
+    // Add table-level drilldown scripts for each table
+    const pvmColorMap = buildCategoryColorMap(pvmHierarchy.allCategories)
+    const evmColorMap = buildCategoryColorMap(evmHierarchy.allCategories)
+    if (pvmHierarchy.datasets.length > 0) {
+        scripts.push(
+            drilldownCategoryChartScript(pvmHierarchy, pvmColorMap, 'pvm'),
+        )
+    }
+    if (evmHierarchy.datasets.length > 0) {
+        scripts.push(
+            drilldownCategoryChartScript(evmHierarchy, evmColorMap, 'evm'),
+        )
+    }
 
     const html = sectionCard(
         'categories',
         'Opcode/Category Profiling',
         `
         ${getCategoryMappingHtml()}
+        ${categoryFilterControls('', { showRowHint: false })}
         ${
             card(
                 'Category Breakdown (click bar to drill down, right-click to go back)',
                 chartCanvas('categoryBreakdownChart', 'wide'),
             )
         }
-        ${categoryFilterControls()}
-        ${
-            card(
-                'Detailed Category Breakdown (click to expand)',
-                expandableCategoryTable(hierarchy),
-            )
-        }
+        ${pvmTableHtml}
+        ${evmTableHtml}
     `,
     )
 
     return { html, scripts: scripts.join('\n') }
 }
 
-function generateBytecodeSection(): { html: string; scripts: string } {
+/** Drilldown script for the combined EVM+PVM chart */
+function combinedCategoryDrilldownScript(
+    pvmHierarchy: ReturnType<typeof getCategoryBreakdownHierarchy>,
+    evmHierarchy: ReturnType<typeof getCategoryBreakdownHierarchy>,
+    categoryColorMap: Record<string, string>,
+): string {
+    return `
+        const _pvmH = ${JSON.stringify(pvmHierarchy)};
+        const _evmH = ${JSON.stringify(evmHierarchy)};
+        const _catColors = ${JSON.stringify(categoryColorMap)};
+        let _comboLevel = 'datasets';
+        let _comboParent = null;
+        let _comboMetric = 'ref_time';
+
+        function _findItems(hierarchy, level, parent) {
+            if (level === 'datasets') return hierarchy.datasets;
+            if (level === 'contracts' && parent) {
+                const ds = hierarchy.datasets.find(d => d.name === parent);
+                return ds ? ds.contracts : [];
+            }
+            if (level === 'transactions' && parent) {
+                for (const ds of hierarchy.datasets) {
+                    const c = ds.contracts.find(c => c.name === parent);
+                    if (c) return c.transactions;
+                }
+            }
+            return [];
+        }
+
+        function _catField(item) {
+            return _comboMetric === 'proof_size'
+                ? (item.categories_proof_size || item.categories)
+                : item.categories;
+        }
+
+        function _comboChartData(level, parent) {
+            const pvmItems = _findItems(_pvmH, level, parent);
+            const evmItems = _findItems(_evmH, level, parent);
+
+            const metricLabel = _comboMetric === 'proof_size' ? ' [proof_size]' : ' [ref_time]';
+            const suffix = excludedTxKeys.size > 0 ? ' (excl. ' + excludedTxKeys.size + ')' : '';
+            let title;
+            if (level === 'datasets') {
+                title = 'Category Breakdown by Dataset' + metricLabel + suffix + ' (click to drill down)';
+            } else if (level === 'contracts') {
+                title = 'Category Breakdown by Contract: ' + parent + metricLabel + suffix + ' (click to drill down, right-click to go back)';
+            } else {
+                title = 'Category Breakdown by Transaction: ' + parent + metricLabel + suffix + ' (right-click to go back)';
+            }
+
+            const names = [...new Set([...pvmItems.map(i => i.name), ...evmItems.map(i => i.name)])];
+            const allCats = [...new Set([..._pvmH.allCategories, ..._evmH.allCategories])];
+
+            const datasets = [];
+            for (const cat of allCats) {
+                const pvmData = names.map(name => {
+                    const item = pvmItems.find(i => i.name === name);
+                    return item ? (_catField(item)[cat] ?? 0) : 0;
+                });
+                const evmData = names.map(name => {
+                    const item = evmItems.find(i => i.name === name);
+                    return item ? (_catField(item)[cat] ?? 0) : 0;
+                });
+                if (pvmData.some(v => v > 0) || evmData.some(v => v > 0)) {
+                    const color = _catColors[cat] || 'rgba(128,128,128,0.8)';
+                    const border = color.replace(/[\\d.]+\\)$/, '1)');
+                    datasets.push({
+                        label: cat, data: pvmData, backgroundColor: color,
+                        borderColor: border, borderWidth: 1, stack: 'PVM'
+                    });
+                    datasets.push({
+                        label: cat, data: evmData, backgroundColor: color,
+                        borderColor: border, borderWidth: 1, stack: 'EVM'
+                    });
+                }
+            }
+
+            return { labels: names, datasets, title, canDrillDown: level !== 'transactions' };
+        }
+
+        function _updateComboChart(level, parent) {
+            _comboLevel = level;
+            _comboParent = parent;
+            const data = _comboChartData(level, parent);
+            const chart = Chart.getChart('categoryBreakdownChart');
+            chart.data.labels = data.labels;
+            chart.data.datasets = data.datasets;
+            chart.options.plugins.title.text = data.title;
+            chart.options.plugins.title.display = true;
+            chart.update();
+        }
+
+        document.getElementById('hideCategoryDeployCheckbox').onchange = function(evt) {
+            toggleDeployExclusion(evt.target.checked);
+        };
+
+        document.querySelectorAll('input[name="categoryMetric"]').forEach(function(radio) {
+            radio.onchange = function(evt) {
+                _comboMetric = evt.target.value;
+                _updateComboChart(_comboLevel, _comboParent);
+            };
+        });
+
+        function updateCategorySection() {
+            _updateComboChart(_comboLevel, _comboParent);
+        }
+        window.updateCategorySection = updateCategorySection;
+
+        document.getElementById('categoryBreakdownChart').onclick = function(evt) {
+            const chart = Chart.getChart('categoryBreakdownChart');
+            const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+            if (points.length > 0) {
+                const idx = points[0].index;
+                const name = chart.data.labels[idx];
+                if (_comboLevel === 'datasets') _updateComboChart('contracts', name);
+                else if (_comboLevel === 'contracts') _updateComboChart('transactions', name);
+            }
+        };
+
+        document.getElementById('categoryBreakdownChart').oncontextmenu = function(evt) {
+            evt.preventDefault();
+            if (_comboLevel === 'transactions') {
+                for (const ds of _pvmH.datasets.concat(_evmH.datasets)) {
+                    if (ds.contracts && ds.contracts.find(c => c.name === _comboParent)) {
+                        _updateComboChart('contracts', ds.name);
+                        return;
+                    }
+                }
+            } else if (_comboLevel === 'contracts') {
+                _updateComboChart('datasets', null);
+            }
+        };
+    `
+}
+
+function generateBytecodeSection(): {
+    html: string
+    scripts: string
+    hierarchy: BytecodeSizeHierarchy | null
+} {
     const hierarchy = getBytecodeHierarchy()
 
     if (hierarchy.datasets.length === 0) {
@@ -479,54 +753,32 @@ function generateBytecodeSection(): { html: string; scripts: string } {
                 ),
             ),
             scripts: '',
+            hierarchy: null,
         }
     }
 
     const scripts: string[] = []
-
-    // Show average bytecode size per contract at dataset level
+    const { implTypes } = hierarchy
     const labels = hierarchy.datasets.map((d) => d.name)
 
-    const avg = (
-        total: number | null,
-        contracts: typeof hierarchy.datasets[0]['contracts'],
-        vm: 'evm' | 'pvm',
-    ) => {
-        if (total === null) return null
-        const count =
-            contracts.filter((c) =>
-                vm === 'evm' ? c.evm_size !== null : c.pvm_size !== null
-            ).length
-        return count > 0 ? Math.round(total / count) : null
-    }
-
-    const evmData = hierarchy.datasets.map((d) =>
-        avg(d.evm_size, d.contracts, 'evm')
-    )
-    const pvmData = hierarchy.datasets.map((d) =>
-        avg(d.pvm_size, d.contracts, 'pvm')
-    )
-
-    // Compute average Rust PVM bytecode size per dataset
-    const rustBytecodeData = hierarchy.datasets.map((d) => {
-        const rustSizes: number[] = []
-        for (const c of d.contracts) {
-            const rustImpls = c.implementations.filter((i) =>
-                i.name.includes('rust') && i.vm_type === 'PVM'
-            )
-            if (rustImpls.length > 0) {
-                const avgRust = Math.round(
-                    rustImpls.reduce((s, i) => s + i.size_bytes, 0) /
-                        rustImpls.length,
-                )
-                rustSizes.push(avgRust)
-            }
+    // Build one Chart.js dataset per discovered impl type
+    const chartDatasets = implTypes.map((implType) => {
+        const color = getImplTypeColor(implType)
+        const data = hierarchy.datasets.map((d) => {
+            const vals = d.contracts
+                .map((c) => c.sizes[implType])
+                .filter((v): v is number => v !== null)
+            return vals.length > 0
+                ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length)
+                : null
+        })
+        return {
+            label: implType,
+            data,
+            backgroundColor: color.bg,
+            borderColor: color.border,
+            borderWidth: 1,
         }
-        return rustSizes.length > 0
-            ? Math.round(
-                rustSizes.reduce((s, v) => s + v, 0) / rustSizes.length,
-            )
-            : null
     })
 
     const chartScript = `
@@ -534,29 +786,7 @@ function generateBytecodeSection(): { html: string; scripts: string } {
             type: 'bar',
             data: {
                 labels: ${JSON.stringify(labels)},
-                datasets: [
-                    {
-                        label: 'EVM',
-                        data: ${JSON.stringify(evmData)},
-                        backgroundColor: 'rgba(13, 110, 253, 0.8)',
-                        borderColor: 'rgba(13, 110, 253, 1)',
-                        borderWidth: 1,
-                    },
-                    {
-                        label: 'PVM (Solidity)',
-                        data: ${JSON.stringify(pvmData)},
-                        backgroundColor: 'rgba(25, 135, 84, 0.8)',
-                        borderColor: 'rgba(25, 135, 84, 1)',
-                        borderWidth: 1,
-                    },
-                    {
-                        label: 'PVM (Rust)',
-                        data: ${JSON.stringify(rustBytecodeData)},
-                        backgroundColor: 'rgba(253, 126, 20, 0.8)',
-                        borderColor: 'rgba(253, 126, 20, 1)',
-                        borderWidth: 1,
-                    }
-                ]
+                datasets: ${JSON.stringify(chartDatasets)}
             },
             options: {
                 responsive: true,
@@ -608,10 +838,12 @@ function generateBytecodeSection(): { html: string; scripts: string } {
     `,
     )
 
-    return { html, scripts: scripts.join('\n') }
+    return { html, scripts: scripts.join('\n'), hierarchy }
 }
 
-function generateEvmPvmAnalysis(): string {
+function generateEvmPvmAnalysis(
+    bytecodeHierarchy: BytecodeSizeHierarchy | null,
+): string {
     const fmt = (n: number) => n.toLocaleString()
     let content = ''
 
@@ -671,10 +903,8 @@ function generateEvmPvmAnalysis(): string {
         )
     }
 
-    // ── RQ2: What are the cost differences? ──
     content += card('RQ2: What are the cost differences?', '')
 
-    // 93 EVM↔PVM/Sol execution cost totals
     const execTotals = getExecTotals()
     const execPairCount = getExecTotalsPairCount()
     if (execTotals.length > 0) {
@@ -721,9 +951,11 @@ function generateEvmPvmAnalysis(): string {
                 [
                     'Comparison',
                     'Median ref_time',
-                    'Txs cheaper',
+                    'Lower observed cost',
                     'Median proof_size',
-                    'Txs cheaper',
+                    'Lower observed cost',
+                    'Median consumed',
+                    'Lower observed cost',
                 ],
                 medians.map(
                     (r) => [
@@ -732,6 +964,8 @@ function generateEvmPvmAnalysis(): string {
                         r.txs_cheaper_rt,
                         r.median_proof_size,
                         r.txs_cheaper_pov,
+                        r.median_consumed,
+                        r.txs_cheaper_consumed,
                     ],
                 ),
             ),
@@ -775,37 +1009,45 @@ function generateEvmPvmAnalysis(): string {
         )
     }
 
-    // Bytecode size comparison
-    const bytecodeComp = getBytecodeSizeComparison()
-    if (bytecodeComp.length > 0) {
-        content += card(
-            'Bytecode size comparison',
-            dataTable(
-                [
-                    'Contract',
-                    'EVM bytes',
-                    'PVM/Sol bytes',
-                    'Ratio',
-                    'PVM/Rust bytes',
-                    'Ratio',
-                    'ink! bytes',
-                    'Ratio',
-                ],
-                bytecodeComp.map(
-                    (r) => [
-                        r.contract,
-                        fmt(r.evm_bytes),
-                        fmt(r.pvm_sol_bytes),
-                        r.ratio,
-                        r.pvm_rust_bytes,
-                        r.rust_ratio,
-                        r.ink_bytes,
-                        r.ink_ratio,
-                    ],
-                ),
-                { numberColumns: [1, 2] },
-            ),
+    // Bytecode size comparison (derived from hierarchy)
+    if (bytecodeHierarchy && bytecodeHierarchy.datasets.length > 0) {
+        const allContracts = bytecodeHierarchy.datasets.flatMap((d) =>
+            d.contracts
         )
+        const bTypes = bytecodeHierarchy.implTypes
+        const evmType = bTypes.find((t) => t === 'EVM')
+
+        // Only show contracts that have an EVM implementation for ratio comparison
+        const rows = allContracts
+            .filter((c) => evmType && c.sizes[evmType] != null)
+            .sort((a, b) => (a.sizes[evmType!] ?? 0) - (b.sizes[evmType!] ?? 0))
+            .map((c) => {
+                const evmBytes = c.sizes[evmType!]!
+                const cells: (string | number)[] = [c.name]
+                for (const t of bTypes) {
+                    const sz = c.sizes[t]
+                    cells.push(sz != null ? fmt(sz) : '—')
+                    if (t === evmType) continue // no ratio for EVM vs itself
+                    cells.push(
+                        sz != null ? `${(sz / evmBytes).toFixed(1)}x` : '—',
+                    )
+                }
+                return cells
+            })
+
+        if (rows.length > 0) {
+            const headers: string[] = ['Contract']
+            const numberCols: number[] = []
+            for (const t of bTypes) {
+                numberCols.push(headers.length)
+                headers.push(`${t} bytes`)
+                if (t !== evmType) headers.push('Ratio')
+            }
+            content += card(
+                'Bytecode size comparison',
+                dataTable(headers, rows, { numberColumns: numberCols }),
+            )
+        }
     }
 
     // ── RQ3: What are the sources? ──
@@ -891,6 +1133,16 @@ function generateEvmPvmAnalysis(): string {
                         fmt(costGap.totals.pvm_pov),
                         fmt(costGap.totals.pvm_pov - costGap.totals.evm_pov),
                         costGap.totals.pov_diff,
+                    ],
+                    [
+                        'Consumed proof_size',
+                        fmt(costGap.totals.evm_consumed),
+                        fmt(costGap.totals.pvm_consumed),
+                        fmt(
+                            costGap.totals.pvm_consumed -
+                                costGap.totals.evm_consumed,
+                        ),
+                        costGap.totals.consumed_diff,
                     ],
                 ],
                 { numberColumns: [1, 2, 3] },
