@@ -193,6 +193,78 @@ export function rust(name: string): ContractInfo {
     }
 }
 
+export function rustPvm(name: string): ContractInfo {
+    return {
+        supportEvm() {
+            return false
+        },
+        getName() {
+            return `${name}_rust`
+        },
+        getBytecode() {
+            return readBytecode(
+                `./rust/pvm-macro-contracts/target/release/${name}.polkavm`,
+            )
+        },
+        async build() {
+            const cwd = join(
+                import.meta.dirname!,
+                '..',
+                'rust',
+                'pvm-macro-contracts',
+            )
+            const cmd = new Deno.Command('cargo', {
+                args: ['build', '--release', '--bin', name],
+                cwd,
+                stdout: 'inherit',
+                stderr: 'inherit',
+            })
+            const result = await cmd.output()
+            if (!result.success) {
+                throw new Error(
+                    `Failed to build pvm-macro contract: ${name}`,
+                )
+            }
+        },
+    }
+}
+
+export function rustPvmDsl(name: string): ContractInfo {
+    return {
+        supportEvm() {
+            return false
+        },
+        getName() {
+            return `${name}_rust`
+        },
+        getBytecode() {
+            return readBytecode(
+                `./rust/pvm-dsl-contracts/target/release/${name}.polkavm`,
+            )
+        },
+        async build() {
+            const cwd = join(
+                import.meta.dirname!,
+                '..',
+                'rust',
+                'pvm-dsl-contracts',
+            )
+            const cmd = new Deno.Command('cargo', {
+                args: ['build', '--release', '--bin', name],
+                cwd,
+                stdout: 'inherit',
+                stderr: 'inherit',
+            })
+            const result = await cmd.output()
+            if (!result.success) {
+                throw new Error(
+                    `Failed to build pvm-dsl contract: ${name}`,
+                )
+            }
+        },
+    }
+}
+
 export function stylus(name: string): ContractInfo {
     const dir = join(import.meta.dirname!, '..', 'stylus', name)
     // Derive lib name from Cargo.toml package name (dashes become underscores)

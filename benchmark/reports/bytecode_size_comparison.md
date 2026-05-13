@@ -1,11 +1,10 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-04-06
+Generated on: 2026-05-07
 
 ### Benchmark Environment
 
-- **Chain:** Geth --dev | **Node:** Geth v1.16.4-stable | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
-- **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1022002 | **Node:** polkadot-omni-node 1.22.0-32458d8f84d | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
+- **Chain:** Development | **Runtime:** revive-dev-runtime@0 | **Node:** Substrate Node 0.0.0-20311a9465b | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 
 ## Fibonacci Implementations
 
@@ -16,9 +15,11 @@ Generated on: 2026-04-06
 | fibonacci_u128_rust                 | PVM     | rust      | 315          | +37.6%      |
 | fibonacci_u32_macro_bump_alloc_rust | PVM     | rust      | 431          | +88.2%      |
 | fibonacci_u32_macro_no_alloc_rust   | PVM     | rust      | 477          | +108.3%     |
-| fibonacci_u32_ink                   | PVM     | ink       | 824          | +259.8%     |
+| fibonacci_u32_macro_rust            | PVM     |           | 605          | +164.2%     |
+| fibonacci_u32_dsl_rust              | PVM     |           | 665          | +190.4%     |
 | fibonacci_u256_rust                 | PVM     | rust      | 980          | +327.9%     |
 | Fibonacci_pvm                       | PVM     | solidity  | 1,152        | +403.1%     |
+| fibonacci_u32_ink                   | PVM     | ink       | 1,363        | +495.2%     |
 | fibonacci_u32_stylus                | PVM     | stylus    | 1,520        | +563.8%     |
 
 
@@ -34,8 +35,8 @@ Generated on: 2026-04-06
 | fibonacci_u256_rust                      | PVM     | rust      | 980          | +441.4%     |
 | Fibonacci_u256_iter_pvm                  | PVM     | solidity  | 1,224        | +576.2%     |
 | Fibonacci_u256_pvm                       | PVM     | solidity  | 1,322        | +630.4%     |
-| fibonacci_u256_ink                       | PVM     | ink       | 1,838        | +915.5%     |
-| fibonacci_u256_iter_ink                  | PVM     | ink       | 1,845        | +919.3%     |
+| fibonacci_u256_iter_ink                  | PVM     | ink       | 2,029        | +1021.0%    |
+| fibonacci_u256_ink                       | PVM     | ink       | 2,102        | +1061.3%    |
 
 
 ## SimpleToken Implementations
@@ -46,81 +47,97 @@ Generated on: 2026-04-06
 | simple_token_u32_no_alloc_rust          | PVM     | rust      | 2,211        | +298.4%     |
 | simple_token_u128_no_alloc_rust         | PVM     | rust      | 2,940        | +429.7%     |
 | simple_token_u256_no_alloc_rust         | PVM     | rust      | 2,997        | +440.0%     |
+| simple_token_u256_dsl_rust              | PVM     |           | 3,364        | +506.1%     |
 | simple_token_u256_macro_no_alloc_rust   | PVM     | rust      | 3,765        | +578.4%     |
 | simple_token_u256_macro_bump_alloc_rust | PVM     | rust      | 4,430        | +698.2%     |
+| simple_token_u256_macro_rust            | PVM     |           | 4,560        | +721.6%     |
 | SimpleToken_pvm                         | PVM     | solidity  | 5,357        | +865.2%     |
-| simple_token_u256_ink                   | PVM     | ink       | 8,479        | +1427.7%    |
+| simple_token_u256_ink                   | PVM     | ink       | 11,308       | +1937.5%    |
 | simple_token_u256_stylus                | PVM     | stylus    | 12,028       | +2067.2%    |
 
 
 ## flipper Implementations
 
-| Contract       | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| -------------- | ------- | --------- | ------------ | ----------- |
-| flipper_evm    | EVM     | solidity  | 284          | -           |
-| flipper_ink    | PVM     | ink       | 1,999        | +603.9%     |
-| flipper_pvm    | PVM     | solidity  | 2,328        | +719.7%     |
-| flipper_stylus | PVM     | stylus    | 3,611        | +1171.5%    |
+| Contract           | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ------------------ | ------- | --------- | ------------ | ----------- |
+| flipper_evm        | EVM     | solidity  | 284          | -           |
+| flipper_macro_rust | PVM     |           | 1,529        | +438.4%     |
+| flipper_dsl_rust   | PVM     |           | 1,598        | +462.7%     |
+| flipper_ink        | PVM     | ink       | 2,244        | +690.1%     |
+| flipper_pvm        | PVM     | solidity  | 2,328        | +719.7%     |
+| flipper_stylus     | PVM     | stylus    | 3,611        | +1171.5%    |
 
 
 ## incrementer Implementations
 
-| Contract           | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| ------------------ | ------- | --------- | ------------ | ----------- |
-| incrementer_evm    | EVM     | solidity  | 350          | -           |
-| incrementer_ink    | PVM     | ink       | 1,566        | +347.4%     |
-| incrementer_pvm    | PVM     | solidity  | 2,791        | +697.4%     |
-| incrementer_stylus | PVM     | stylus    | 5,186        | +1381.7%    |
+| Contract               | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ---------------------- | ------- | --------- | ------------ | ----------- |
+| incrementer_evm        | EVM     | solidity  | 350          | -           |
+| incrementer_macro_rust | PVM     |           | 1,604        | +358.3%     |
+| incrementer_dsl_rust   | PVM     |           | 1,695        | +384.3%     |
+| incrementer_ink        | PVM     | ink       | 2,647        | +656.3%     |
+| incrementer_pvm        | PVM     | solidity  | 2,791        | +697.4%     |
+| incrementer_stylus     | PVM     | stylus    | 5,186        | +1381.7%    |
 
 
 ## BenchStorage Implementations
 
-| Contract             | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| -------------------- | ------- | --------- | ------------ | ----------- |
-| BenchStorage_evm     | EVM     | solidity  | 521          | -           |
-| BenchStorage_pvm     | PVM     | solidity  | 3,060        | +487.3%     |
-| bench_storage_ink    | PVM     | ink       | 3,643        | +599.2%     |
-| bench_storage_stylus | PVM     | stylus    | 10,392       | +1894.6%    |
+| Contract                 | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ------------------------ | ------- | --------- | ------------ | ----------- |
+| BenchStorage_evm         | EVM     | solidity  | 521          | -           |
+| bench_storage_dsl_rust   | PVM     |           | 1,840        | +253.2%     |
+| bench_storage_macro_rust | PVM     |           | 2,556        | +390.6%     |
+| BenchStorage_pvm         | PVM     | solidity  | 3,060        | +487.3%     |
+| bench_storage_ink        | PVM     | ink       | 4,250        | +715.7%     |
+| bench_storage_stylus     | PVM     | stylus    | 10,392       | +1894.6%    |
 
 
 ## Computation Implementations
 
-| Contract           | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| ------------------ | ------- | --------- | ------------ | ----------- |
-| Computation_evm    | EVM     | solidity  | 331          | -           |
-| computation_ink    | PVM     | ink       | 1,538        | +364.7%     |
-| computation_stylus | PVM     | stylus    | 2,487        | +651.4%     |
-| Computation_pvm    | PVM     | solidity  | 2,594        | +683.7%     |
+| Contract               | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ---------------------- | ------- | --------- | ------------ | ----------- |
+| Computation_evm        | EVM     | solidity  | 331          | -           |
+| computation_macro_rust | PVM     |           | 950          | +187.0%     |
+| computation_dsl_rust   | PVM     |           | 1,573        | +375.2%     |
+| computation_ink        | PVM     | ink       | 2,444        | +638.4%     |
+| computation_stylus     | PVM     | stylus    | 2,487        | +651.4%     |
+| Computation_pvm        | PVM     | solidity  | 2,594        | +683.7%     |
 
 
 ## BenchERC20 Implementations
 
-| Contract           | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| ------------------ | ------- | --------- | ------------ | ----------- |
-| BenchERC20_evm     | EVM     | solidity  | 1,093        | -           |
-| BenchERC20_pvm     | PVM     | solidity  | 9,826        | +799.0%     |
-| bench_erc20_ink    | PVM     | ink       | 14,276       | +1206.1%    |
-| bench_erc20_stylus | PVM     | stylus    | 20,565       | +1781.5%    |
+| Contract               | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ---------------------- | ------- | --------- | ------------ | ----------- |
+| BenchERC20_evm         | EVM     | solidity  | 1,093        | -           |
+| bench_erc20_dsl_rust   | PVM     |           | 4,669        | +327.2%     |
+| bench_erc20_macro_rust | PVM     |           | 7,125        | +551.9%     |
+| BenchERC20_pvm         | PVM     | solidity  | 9,826        | +799.0%     |
+| bench_erc20_stylus     | PVM     | stylus    | 20,565       | +1781.5%    |
+| bench_erc20_ink        | PVM     | ink       | 21,197       | +1839.3%    |
 
 
 ## BenchERC721 Implementations
 
-| Contract            | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| ------------------- | ------- | --------- | ------------ | ----------- |
-| BenchERC721_evm     | EVM     | solidity  | 1,121        | -           |
-| BenchERC721_pvm     | PVM     | solidity  | 8,318        | +642.0%     |
-| bench_erc721_stylus | PVM     | stylus    | 12,700       | +1032.9%    |
-| bench_erc721_ink    | PVM     | ink       | 13,058       | +1064.9%    |
+| Contract                | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ----------------------- | ------- | --------- | ------------ | ----------- |
+| BenchERC721_evm         | EVM     | solidity  | 1,121        | -           |
+| bench_erc721_dsl_rust   | PVM     |           | 4,270        | +280.9%     |
+| bench_erc721_macro_rust | PVM     |           | 6,261        | +458.5%     |
+| BenchERC721_pvm         | PVM     | solidity  | 8,318        | +642.0%     |
+| bench_erc721_stylus     | PVM     | stylus    | 12,700       | +1032.9%    |
+| bench_erc721_ink        | PVM     | ink       | 15,109       | +1247.8%    |
 
 
 ## BenchERC1155 Implementations
 
-| Contract             | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| -------------------- | ------- | --------- | ------------ | ----------- |
-| BenchERC1155_evm     | EVM     | solidity  | 1,173        | -           |
-| BenchERC1155_pvm     | PVM     | solidity  | 11,068       | +843.6%     |
-| bench_erc1155_ink    | PVM     | ink       | 18,516       | +1478.5%    |
-| bench_erc1155_stylus | PVM     | stylus    | 21,232       | +1710.1%    |
+| Contract                 | VM Type | Impl Type | Size (bytes) | vs Smallest |
+| ------------------------ | ------- | --------- | ------------ | ----------- |
+| BenchERC1155_evm         | EVM     | solidity  | 1,173        | -           |
+| bench_erc1155_dsl_rust   | PVM     |           | 6,336        | +440.2%     |
+| bench_erc1155_macro_rust | PVM     |           | 8,424        | +618.2%     |
+| BenchERC1155_pvm         | PVM     | solidity  | 11,068       | +843.6%     |
+| bench_erc1155_stylus     | PVM     | stylus    | 21,232       | +1710.1%    |
+| bench_erc1155_ink        | PVM     | ink       | 22,858       | +1848.7%    |
 
 
 ## TetherToken Implementations
