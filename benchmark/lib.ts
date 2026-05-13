@@ -203,7 +203,7 @@ export function rustPvm(name: string): ContractInfo {
         },
         getBytecode() {
             return readBytecode(
-                `./rust/pvm-macro-contracts/target/${name}.release.polkavm`,
+                `./rust/pvm-macro-contracts/target/release/${name}.polkavm`,
             )
         },
         async build() {
@@ -223,6 +223,42 @@ export function rustPvm(name: string): ContractInfo {
             if (!result.success) {
                 throw new Error(
                     `Failed to build pvm-macro contract: ${name}`,
+                )
+            }
+        },
+    }
+}
+
+export function rustPvmDsl(name: string): ContractInfo {
+    return {
+        supportEvm() {
+            return false
+        },
+        getName() {
+            return `${name}_rust`
+        },
+        getBytecode() {
+            return readBytecode(
+                `./rust/pvm-dsl-contracts/target/release/${name}.polkavm`,
+            )
+        },
+        async build() {
+            const cwd = join(
+                import.meta.dirname!,
+                '..',
+                'rust',
+                'pvm-dsl-contracts',
+            )
+            const cmd = new Deno.Command('cargo', {
+                args: ['build', '--release', '--bin', name],
+                cwd,
+                stdout: 'inherit',
+                stderr: 'inherit',
+            })
+            const result = await cmd.output()
+            if (!result.success) {
+                throw new Error(
+                    `Failed to build pvm-dsl contract: ${name}`,
                 )
             }
         },

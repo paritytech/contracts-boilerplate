@@ -1,21 +1,38 @@
-#![no_main]
-#![no_std]
+#![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
-use pvm_contract as pvm;
-
-#[global_allocator]
-static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> = pvm_bump_allocator::BumpAllocator::new();
-
-#[pvm::contract("Fibonacci.sol")]
+#[pvm_contract_sdk::contract("Fibonacci.sol", allocator = "bump", allocator_size = 1048576)]
 mod fibonacci {
-    #[pvm::method]
-    pub fn fibonacci(n: u32) -> u32 {
+    pub struct Fibonacci;
+
+    impl Fibonacci {
+        #[pvm_contract_sdk::constructor]
+        pub fn new(&mut self) -> Result<(), pvm_contract_sdk::EmptyError> {
+            Ok(())
+        }
+
+        #[pvm_contract_sdk::method]
+        #[pvm_contract_sdk::payable]
+        pub fn fibonacci(&mut self, n: u32) {
+            let result = fib(n);
+            if result == 0 {
+                // Match Sol's `revert()` — trap to abort with empty revert data.
+                panic!();
+            }
+        }
+
+        #[pvm_contract_sdk::fallback]
+        pub fn fallback(&mut self) -> Result<(), pvm_contract_sdk::EmptyError> {
+            Ok(())
+        }
+    }
+
+    fn fib(n: u32) -> u32 {
         if n == 0 {
             0
         } else if n == 1 {
             1
         } else {
-            fibonacci(n - 1).wrapping_add(fibonacci(n - 2))
+            fib(n - 1) + fib(n - 2)
         }
     }
 }

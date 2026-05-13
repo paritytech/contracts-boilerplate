@@ -1,40 +1,47 @@
-#![no_main]
-#![no_std]
+#![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
-use pvm_contract as pvm;
-use pvm_contract::{storage::Mapping, Address};
-
-#[global_allocator]
-static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> = pvm_bump_allocator::BumpAllocator::new();
-
-#[pvm::storage]
-struct Storage {
-    balances: Mapping<Address, u128>,
-}
-
-#[pvm::contract("BenchStorage.sol")]
+#[pvm_contract_sdk::contract("BenchStorage.sol", allocator = "bump", allocator_size = 1048576)]
 mod bench_storage {
-    use super::*;
+    use pvm_contract_sdk::{Address, Mapping};
 
-    #[pvm::method]
-    pub fn read(account: Address, count: u32) {
-        for _ in 0..count {
-            Storage::balances().get(&account);
-        }
+    pub struct BenchStorage {
+        #[slot(0)]
+        balances: Mapping<Address, u128>,
     }
 
-    #[pvm::method]
-    pub fn write(account: Address, count: u32) {
-        for _ in 0..count {
-            Storage::balances().insert(&account, &1_000_000u128);
+    impl BenchStorage {
+        #[pvm_contract_sdk::constructor]
+        pub fn new(&mut self) -> Result<(), pvm_contract_sdk::EmptyError> {
+            Ok(())
         }
-    }
 
-    #[pvm::method]
-    pub fn read_write(account: Address, count: u32) {
-        for _ in 0..count {
-            let val = Storage::balances().get(&account).unwrap_or(0);
-            Storage::balances().insert(&account, &(val + 1));
+        #[pvm_contract_sdk::method]
+        pub fn read(&self, account: Address, count: u32) {
+            for _ in 0..count {
+                let _ = self.balances.get(&account);
+            }
+        }
+
+        #[pvm_contract_sdk::method]
+        #[pvm_contract_sdk::payable]
+        pub fn write(&mut self, account: Address, count: u32) {
+            for _ in 0..count {
+                self.balances.insert(&account, &1_000_000u128);
+            }
+        }
+
+        #[pvm_contract_sdk::method]
+        #[pvm_contract_sdk::payable]
+        pub fn read_write(&mut self, account: Address, count: u32) {
+            for _ in 0..count {
+                let val = self.balances.get(&account);
+                self.balances.insert(&account, &(val + 1));
+            }
+        }
+
+        #[pvm_contract_sdk::fallback]
+        pub fn fallback(&mut self) -> Result<(), pvm_contract_sdk::EmptyError> {
+            Ok(())
         }
     }
 }

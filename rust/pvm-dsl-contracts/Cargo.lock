@@ -1364,6 +1364,17 @@ version = "0.3.0"
 source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#1a17b1519d8494f9e4d2a81a83681dfa45a903c3"
 
 [[package]]
+name = "pvm-contract-builder-dsl"
+version = "0.3.0"
+source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#1a17b1519d8494f9e4d2a81a83681dfa45a903c3"
+dependencies = [
+ "pallet-revive-uapi",
+ "polkavm-derive 0.31.0",
+ "pvm-contract-types",
+ "ruint",
+]
+
+[[package]]
 name = "pvm-contract-core"
 version = "0.3.0"
 source = "git+https://github.com/paritytech/cargo-pvm-contract.git?branch=main#1a17b1519d8494f9e4d2a81a83681dfa45a903c3"
@@ -1417,12 +1428,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "pvm-macro-contracts"
+name = "pvm-dsl-contracts"
 version = "0.1.0"
 dependencies = [
  "cargo-pvm-contract-builder",
  "polkavm-derive 0.31.0",
  "pvm-bump-allocator",
+ "pvm-contract-builder-dsl",
  "pvm-contract-sdk",
 ]
 

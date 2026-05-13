@@ -49,7 +49,7 @@ panic = "abort"
 overflow-checks = false
 
 [dependencies]
-pvm_contract = { package = "pvm_contract", git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "charles/improve-macros-and-typegen" }
+pvm-contract-sdk = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main", features = ["alloc"] }
 polkavm-derive = "0.31.0"
 pvm-bump-allocator = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
 

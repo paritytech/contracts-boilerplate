@@ -1,6 +1,10 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-04-22
+Generated on: 2026-05-07
+
+### Benchmark Environment
+
+- **Chain:** Development | **Runtime:** revive-dev-runtime@0 | **Node:** Substrate Node 0.0.0-20311a9465b | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 
 ## Fibonacci Implementations
 
@@ -11,9 +15,10 @@ Generated on: 2026-04-22
 | fibonacci_u128_rust                 | PVM     | rust      | 315          | +37.6%      |
 | fibonacci_u32_macro_bump_alloc_rust | PVM     | rust      | 431          | +88.2%      |
 | fibonacci_u32_macro_no_alloc_rust   | PVM     | rust      | 477          | +108.3%     |
+| fibonacci_u32_macro_rust            | PVM     |           | 605          | +164.2%     |
+| fibonacci_u32_dsl_rust              | PVM     |           | 665          | +190.4%     |
 | fibonacci_u256_rust                 | PVM     | rust      | 980          | +327.9%     |
 | Fibonacci_pvm                       | PVM     | solidity  | 1,152        | +403.1%     |
-| fibonacci_u32_macro_rust            | PVM     |           | 1,235        | +439.3%     |
 | fibonacci_u32_ink                   | PVM     | ink       | 1,363        | +495.2%     |
 | fibonacci_u32_stylus                | PVM     | stylus    | 1,520        | +563.8%     |
 
@@ -42,10 +47,11 @@ Generated on: 2026-04-22
 | simple_token_u32_no_alloc_rust          | PVM     | rust      | 2,211        | +298.4%     |
 | simple_token_u128_no_alloc_rust         | PVM     | rust      | 2,940        | +429.7%     |
 | simple_token_u256_no_alloc_rust         | PVM     | rust      | 2,997        | +440.0%     |
+| simple_token_u256_dsl_rust              | PVM     |           | 3,364        | +506.1%     |
 | simple_token_u256_macro_no_alloc_rust   | PVM     | rust      | 3,765        | +578.4%     |
 | simple_token_u256_macro_bump_alloc_rust | PVM     | rust      | 4,430        | +698.2%     |
+| simple_token_u256_macro_rust            | PVM     |           | 4,560        | +721.6%     |
 | SimpleToken_pvm                         | PVM     | solidity  | 5,357        | +865.2%     |
-| simple_token_u256_macro_rust            | PVM     |           | 5,780        | +941.4%     |
 | simple_token_u256_ink                   | PVM     | ink       | 11,308       | +1937.5%    |
 | simple_token_u256_stylus                | PVM     | stylus    | 12,028       | +2067.2%    |
 
@@ -55,7 +61,8 @@ Generated on: 2026-04-22
 | Contract           | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ------------------ | ------- | --------- | ------------ | ----------- |
 | flipper_evm        | EVM     | solidity  | 284          | -           |
-| flipper_macro_rust | PVM     |           | 2,239        | +688.4%     |
+| flipper_macro_rust | PVM     |           | 1,529        | +438.4%     |
+| flipper_dsl_rust   | PVM     |           | 1,598        | +462.7%     |
 | flipper_ink        | PVM     | ink       | 2,244        | +690.1%     |
 | flipper_pvm        | PVM     | solidity  | 2,328        | +719.7%     |
 | flipper_stylus     | PVM     | stylus    | 3,611        | +1171.5%    |
@@ -66,7 +73,8 @@ Generated on: 2026-04-22
 | Contract               | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ---------------------- | ------- | --------- | ------------ | ----------- |
 | incrementer_evm        | EVM     | solidity  | 350          | -           |
-| incrementer_macro_rust | PVM     |           | 2,508        | +616.6%     |
+| incrementer_macro_rust | PVM     |           | 1,604        | +358.3%     |
+| incrementer_dsl_rust   | PVM     |           | 1,695        | +384.3%     |
 | incrementer_ink        | PVM     | ink       | 2,647        | +656.3%     |
 | incrementer_pvm        | PVM     | solidity  | 2,791        | +697.4%     |
 | incrementer_stylus     | PVM     | stylus    | 5,186        | +1381.7%    |
@@ -77,8 +85,9 @@ Generated on: 2026-04-22
 | Contract                 | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ------------------------ | ------- | --------- | ------------ | ----------- |
 | BenchStorage_evm         | EVM     | solidity  | 521          | -           |
+| bench_storage_dsl_rust   | PVM     |           | 1,840        | +253.2%     |
+| bench_storage_macro_rust | PVM     |           | 2,556        | +390.6%     |
 | BenchStorage_pvm         | PVM     | solidity  | 3,060        | +487.3%     |
-| bench_storage_macro_rust | PVM     |           | 3,610        | +592.9%     |
 | bench_storage_ink        | PVM     | ink       | 4,250        | +715.7%     |
 | bench_storage_stylus     | PVM     | stylus    | 10,392       | +1894.6%    |
 
@@ -88,7 +97,8 @@ Generated on: 2026-04-22
 | Contract               | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ---------------------- | ------- | --------- | ------------ | ----------- |
 | Computation_evm        | EVM     | solidity  | 331          | -           |
-| computation_macro_rust | PVM     |           | 1,501        | +353.5%     |
+| computation_macro_rust | PVM     |           | 950          | +187.0%     |
+| computation_dsl_rust   | PVM     |           | 1,573        | +375.2%     |
 | computation_ink        | PVM     | ink       | 2,444        | +638.4%     |
 | computation_stylus     | PVM     | stylus    | 2,487        | +651.4%     |
 | Computation_pvm        | PVM     | solidity  | 2,594        | +683.7%     |
@@ -99,7 +109,8 @@ Generated on: 2026-04-22
 | Contract               | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ---------------------- | ------- | --------- | ------------ | ----------- |
 | BenchERC20_evm         | EVM     | solidity  | 1,093        | -           |
-| bench_erc20_macro_rust | PVM     |           | 9,238        | +745.2%     |
+| bench_erc20_dsl_rust   | PVM     |           | 4,669        | +327.2%     |
+| bench_erc20_macro_rust | PVM     |           | 7,125        | +551.9%     |
 | BenchERC20_pvm         | PVM     | solidity  | 9,826        | +799.0%     |
 | bench_erc20_stylus     | PVM     | stylus    | 20,565       | +1781.5%    |
 | bench_erc20_ink        | PVM     | ink       | 21,197       | +1839.3%    |
@@ -110,7 +121,8 @@ Generated on: 2026-04-22
 | Contract                | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ----------------------- | ------- | --------- | ------------ | ----------- |
 | BenchERC721_evm         | EVM     | solidity  | 1,121        | -           |
-| bench_erc721_macro_rust | PVM     |           | 7,331        | +554.0%     |
+| bench_erc721_dsl_rust   | PVM     |           | 4,270        | +280.9%     |
+| bench_erc721_macro_rust | PVM     |           | 6,261        | +458.5%     |
 | BenchERC721_pvm         | PVM     | solidity  | 8,318        | +642.0%     |
 | bench_erc721_stylus     | PVM     | stylus    | 12,700       | +1032.9%    |
 | bench_erc721_ink        | PVM     | ink       | 15,109       | +1247.8%    |
@@ -121,7 +133,8 @@ Generated on: 2026-04-22
 | Contract                 | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ------------------------ | ------- | --------- | ------------ | ----------- |
 | BenchERC1155_evm         | EVM     | solidity  | 1,173        | -           |
-| bench_erc1155_macro_rust | PVM     |           | 8,582        | +631.6%     |
+| bench_erc1155_dsl_rust   | PVM     |           | 6,336        | +440.2%     |
+| bench_erc1155_macro_rust | PVM     |           | 8,424        | +618.2%     |
 | BenchERC1155_pvm         | PVM     | solidity  | 11,068       | +843.6%     |
 | bench_erc1155_stylus     | PVM     | stylus    | 21,232       | +1710.1%    |
 | bench_erc1155_ink        | PVM     | ink       | 22,858       | +1848.7%    |
@@ -148,7 +161,7 @@ Generated on: 2026-04-22
 | Contract          | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ----------------- | ------- | --------- | ------------ | ----------- |
 | FiatTokenV2_2_evm | EVM     | solidity  | 15,467       | -           |
-| FiatTokenV2_2_pvm | PVM     | solidity  | 411,352      | +2559.5%    |
+| FiatTokenV2_2_pvm | PVM     | solidity  | 103,535      | +569.4%     |
 
 
 ## FiatTokenProxy Implementations
@@ -164,7 +177,7 @@ Generated on: 2026-04-22
 | Contract      | VM Type | Impl Type | Size (bytes) | vs Smallest |
 | ------------- | ------- | --------- | ------------ | ----------- |
 | XENCrypto_evm | EVM     | solidity  | 10,489       | -           |
-| XENCrypto_pvm | PVM     | solidity  | 306,120      | +2818.5%    |
+| XENCrypto_pvm | PVM     | solidity  | 112,823      | +975.6%     |
 
 
 ## CoinTool_App Implementations

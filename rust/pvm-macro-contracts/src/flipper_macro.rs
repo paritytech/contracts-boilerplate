@@ -1,41 +1,36 @@
-#![no_main]
-#![no_std]
+#![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
-use pvm_contract as pvm;
-
-#[global_allocator]
-static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> = pvm_bump_allocator::BumpAllocator::new();
-
-#[pvm::storage]
-struct Storage {
-    value: bool,
-}
-
-#[pvm::contract("flipper.sol")]
+#[pvm_contract_sdk::contract("flipper.sol", allocator = "bump", allocator_size = 1048576)]
 mod flipper {
-    use super::*;
+    use pvm_contract_sdk::{Lazy};
 
-    #[pvm::constructor]
-    pub fn new() -> Result<(), Error> {
-        // Read init_value from calldata (ABI-encoded bool, 32 bytes, last byte is 0 or 1)
-        let size = pvm_contract::api::call_data_size() as usize;
-        if size >= 32 {
-            let mut buf = [0u8; 32];
-            pvm_contract::api::call_data_copy(&mut buf, 0);
-            let init_value = buf[31] != 0;
-            Storage::value().set(&init_value);
+    pub struct Flipper {
+        #[slot(0)]
+        value: Lazy<bool>,
+    }
+
+    impl Flipper {
+        #[pvm_contract_sdk::constructor]
+        pub fn new(&mut self, init: bool) -> Result<(), pvm_contract_sdk::EmptyError> {
+            self.value.set(&init);
+            Ok(())
         }
-        Ok(())
-    }
 
-    #[pvm::method]
-    pub fn flip() {
-        let current = Storage::value().get().unwrap_or(false);
-        Storage::value().set(&!current);
-    }
+        #[pvm_contract_sdk::method]
+        #[pvm_contract_sdk::payable]
+        pub fn flip(&mut self) {
+            let current = self.value.get();
+            self.value.set(&!current);
+        }
 
-    #[pvm::method]
-    pub fn get() -> bool {
-        Storage::value().get().unwrap_or(false)
+        #[pvm_contract_sdk::method]
+        pub fn get(&self) -> bool {
+            self.value.get()
+        }
+
+        #[pvm_contract_sdk::fallback]
+        pub fn fallback(&mut self) -> Result<(), pvm_contract_sdk::EmptyError> {
+            Ok(())
+        }
     }
 }
