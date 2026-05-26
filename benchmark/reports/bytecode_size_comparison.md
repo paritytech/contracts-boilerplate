@@ -1,11 +1,11 @@
 # Bytecode Size Comparison
 
-Generated on: 2026-04-06
+Generated on: 2026-05-25
 
 ### Benchmark Environment
 
 - **Chain:** Geth --dev | **Node:** Geth v1.16.4-stable | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
-- **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1022002 | **Node:** polkadot-omni-node 1.22.0-32458d8f84d | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
+- **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1022006 | **Node:** polkadot-omni-node 1.22.1-5f453ce6599 | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
 
 ## Fibonacci Implementations
 
@@ -248,30 +248,6 @@ Generated on: 2026-04-06
 | -------- | ------- | --------- | ------------ | ----------- |
 | W3S_evm  | EVM     | solidity  | 12,501       | -           |
 | W3S_pvm  | PVM     | solidity  | 104,881      | +739.0%     |
-
-
-## Marketplace Implementations
-
-| Contract        | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| --------------- | ------- | --------- | ------------ | ----------- |
-| Marketplace_evm | EVM     | solidity  | 28,848       | -           |
-| Marketplace_pvm | PVM     | solidity  | 272,134      | +843.3%     |
-
-
-## MarketplaceProxy Implementations
-
-| Contract             | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| -------------------- | ------- | --------- | ------------ | ----------- |
-| MarketplaceProxy_evm | EVM     | solidity  | 2,732        | -           |
-| MarketplaceProxy_pvm | PVM     | solidity  | 11,916       | +336.2%     |
-
-
-## MockMobRule Implementations
-
-| Contract        | VM Type | Impl Type | Size (bytes) | vs Smallest |
-| --------------- | ------- | --------- | ------------ | ----------- |
-| MockMobRule_evm | EVM     | solidity  | 5,892        | -           |
-| MockMobRule_pvm | PVM     | solidity  | 47,111       | +699.6%     |
 
 
 ## MixedERC20 Implementations
