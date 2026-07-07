@@ -5,7 +5,6 @@ mod incrementer {
     use pvm_contract_sdk::Lazy;
 
     pub struct Incrementer {
-        #[slot(0)]
         value: Lazy<i32>,
     }
 

@@ -5,7 +5,6 @@ mod flipper {
     use pvm_contract_sdk::{Lazy};
 
     pub struct Flipper {
-        #[slot(0)]
         value: Lazy<bool>,
     }
 

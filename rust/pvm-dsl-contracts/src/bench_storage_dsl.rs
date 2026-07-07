@@ -1,7 +1,7 @@
 #![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
 use pvm_contract_builder_dsl::{ContractBuilder, HandlerResult, solidity_selector};
-use pvm_contract_sdk::{Address, HostApi, PolkaVmHost, SolDecode, StaticEncodedLen, StorageFlags};
+use pvm_contract_sdk::{Address, Host, HostApi, StaticDecode, StaticEncodedLen, StorageFlags};
 
 #[global_allocator]
 static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> =
@@ -29,11 +29,11 @@ pub extern "C" fn deploy() {}
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    let host = PolkaVmHost;
-    ContractBuilder::<PolkaVmHost>::new()
-        .method(READ_SELECTOR, read_handler::<PolkaVmHost>)
-        .method(WRITE_SELECTOR, write_handler::<PolkaVmHost>)
-        .method(READ_WRITE_SELECTOR, read_write_handler::<PolkaVmHost>)
+    let host = Host::new();
+    ContractBuilder::new()
+        .method(READ_SELECTOR, read_handler)
+        .method(WRITE_SELECTOR, write_handler)
+        .method(READ_WRITE_SELECTOR, read_write_handler)
         .dispatch_impl::<256>(&host);
 }
 
@@ -50,7 +50,7 @@ fn read_balance<H: HostApi>(host: &H, key: &[u8; 32]) -> u128 {
     let mut buf = [0u8; 32];
     let mut out = &mut buf[..];
     match host.get_storage(StorageFlags::empty(), key, &mut out) {
-        Ok(_) => u128::decode_at(&buf, 0),
+        Ok(_) => unsafe { u128::decode_unchecked(&buf, 0) },
         Err(_) => 0,
     }
 }
@@ -61,9 +61,9 @@ fn write_balance<H: HostApi>(host: &H, key: &[u8; 32], value: u128) {
     host.set_storage(StorageFlags::empty(), key, &buf);
 }
 
-fn read_handler<H: HostApi>(host: &H, input: &[u8], _output: &mut [u8]) -> HandlerResult {
-    let account = Address::decode_at(input, 0);
-    let count = u32::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
+fn read_handler(host: &Host, input: &[u8], _output: &mut [u8]) -> HandlerResult {
+    let account = unsafe { Address::decode_unchecked(input, 0) };
+    let count = unsafe { u32::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
     let key = balance_key(host, &account);
     for _ in 0..count {
         let _ = read_balance(host, &key);
@@ -71,9 +71,9 @@ fn read_handler<H: HostApi>(host: &H, input: &[u8], _output: &mut [u8]) -> Handl
     HandlerResult::Ok(0)
 }
 
-fn write_handler<H: HostApi>(host: &H, input: &[u8], _output: &mut [u8]) -> HandlerResult {
-    let account = Address::decode_at(input, 0);
-    let count = u32::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
+fn write_handler(host: &Host, input: &[u8], _output: &mut [u8]) -> HandlerResult {
+    let account = unsafe { Address::decode_unchecked(input, 0) };
+    let count = unsafe { u32::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
     let key = balance_key(host, &account);
     for _ in 0..count {
         write_balance(host, &key, 1_000_000u128);
@@ -81,9 +81,9 @@ fn write_handler<H: HostApi>(host: &H, input: &[u8], _output: &mut [u8]) -> Hand
     HandlerResult::Ok(0)
 }
 
-fn read_write_handler<H: HostApi>(host: &H, input: &[u8], _output: &mut [u8]) -> HandlerResult {
-    let account = Address::decode_at(input, 0);
-    let count = u32::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
+fn read_write_handler(host: &Host, input: &[u8], _output: &mut [u8]) -> HandlerResult {
+    let account = unsafe { Address::decode_unchecked(input, 0) };
+    let count = unsafe { u32::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
     let key = balance_key(host, &account);
     for _ in 0..count {
         let val = read_balance(host, &key);

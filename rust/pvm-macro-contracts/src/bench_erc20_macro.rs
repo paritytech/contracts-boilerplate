@@ -13,32 +13,33 @@ mod bench_erc20 {
     #[derive(Debug, pvm_contract_sdk::SolError)]
     pub struct InsufficientAllowance;
 
-    pvm_contract_sdk::sol_revert_enum! {
-        pub enum Erc20Error {
-            InsufficientBalance(InsufficientBalance),
-            InsufficientAllowance(InsufficientAllowance),
-        }
+    #[derive(pvm_contract_sdk::SolError, Debug)]
+    pub enum Erc20Error {
+        InsufficientBalance(InsufficientBalance),
+        InsufficientAllowance(InsufficientAllowance),
     }
 
-    // keccak256("Transfer(address,address,uint256)")
-    const TRANSFER_SIG: [u8; 32] = [
-        0xdd, 0xf2, 0x52, 0xad, 0x1b, 0xe2, 0xc8, 0x9b, 0x69, 0xc2, 0xb0, 0x68, 0xfc, 0x37, 0x8d,
-        0xaa, 0x95, 0x2b, 0xa7, 0xf1, 0x63, 0xc4, 0xa1, 0x16, 0x28, 0xf5, 0x5a, 0x4d, 0xf5, 0x23,
-        0xb3, 0xef,
-    ];
-    // keccak256("Approval(address,address,uint256)")
-    const APPROVAL_SIG: [u8; 32] = [
-        0x8c, 0x5b, 0xe1, 0xe5, 0xeb, 0xec, 0x7d, 0x5b, 0xd1, 0x4f, 0x71, 0x42, 0x7d, 0x1e, 0x84,
-        0xf3, 0xdd, 0x03, 0x14, 0xc0, 0xf7, 0xb2, 0x29, 0x1e, 0x5b, 0x20, 0x0a, 0xc8, 0xc7, 0xc3,
-        0xb9, 0x25,
-    ];
+    #[derive(pvm_contract_sdk::SolEvent)]
+    pub struct Transfer {
+        #[indexed]
+        pub from: Address,
+        #[indexed]
+        pub to: Address,
+        pub value: U256,
+    }
+
+    #[derive(pvm_contract_sdk::SolEvent)]
+    pub struct Approval {
+        #[indexed]
+        pub owner: Address,
+        #[indexed]
+        pub spender: Address,
+        pub value: U256,
+    }
 
     pub struct BenchErc20 {
-        #[slot(0)]
         total_supply: Lazy<U256>,
-        #[slot(1)]
         balances: Mapping<Address, U256>,
-        #[slot(2)]
         allowances: Mapping<(Address, Address), U256>,
     }
 
@@ -144,19 +145,11 @@ mod bench_erc20 {
         }
 
         fn emit_transfer(&self, from: Address, to: Address, value: U256) {
-            let topics = [TRANSFER_SIG, addr_topic(from), addr_topic(to)];
-            self.host().deposit_event(&topics, &value.to_be_bytes::<32>());
+            Transfer { from, to, value }.emit(self.host());
         }
 
         fn emit_approval(&self, owner: Address, spender: Address, value: U256) {
-            let topics = [APPROVAL_SIG, addr_topic(owner), addr_topic(spender)];
-            self.host().deposit_event(&topics, &value.to_be_bytes::<32>());
+            Approval { owner, spender, value }.emit(self.host());
         }
-    }
-
-    fn addr_topic(addr: Address) -> [u8; 32] {
-        let mut t = [0u8; 32];
-        t[12..].copy_from_slice(&addr.0);
-        t
     }
 }

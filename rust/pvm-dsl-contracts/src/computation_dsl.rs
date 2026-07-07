@@ -1,7 +1,7 @@
 #![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
 use pvm_contract_builder_dsl::{ContractBuilder, HandlerResult, solidity_selector};
-use pvm_contract_sdk::{HostApi, PolkaVmHost, SolDecode, SolEncode};
+use pvm_contract_sdk::{Host, HostApi, SolEncode, StaticDecode};
 
 #[global_allocator]
 static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> =
@@ -25,15 +25,15 @@ pub extern "C" fn deploy() {}
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    let host = PolkaVmHost;
-    ContractBuilder::<PolkaVmHost>::new()
-        .method(ODD_PRODUCT_SELECTOR, odd_product_handler::<PolkaVmHost>)
-        .method(TRIANGLE_NUMBER_SELECTOR, triangle_number_handler::<PolkaVmHost>)
+    let host = Host::new();
+    ContractBuilder::new()
+        .method(ODD_PRODUCT_SELECTOR, odd_product_handler)
+        .method(TRIANGLE_NUMBER_SELECTOR, triangle_number_handler)
         .dispatch_impl::<256>(&host);
 }
 
-fn odd_product_handler<H: HostApi>(_host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let x = i32::decode_at(input, 0);
+fn odd_product_handler(_host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let x = unsafe { i32::decode_unchecked(input, 0) };
     let mut prod: i64 = 1;
     for i in 1..=(x as i64) {
         prod = prod.wrapping_mul(2 * i - 1);
@@ -42,8 +42,8 @@ fn odd_product_handler<H: HostApi>(_host: &H, input: &[u8], output: &mut [u8]) -
     HandlerResult::Ok(32)
 }
 
-fn triangle_number_handler<H: HostApi>(_host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let x = i32::decode_at(input, 0);
+fn triangle_number_handler(_host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let x = unsafe { i32::decode_unchecked(input, 0) };
     let mut sum: i64 = 0;
     for i in 1..=(x as i64) {
         sum = sum.wrapping_add(i);

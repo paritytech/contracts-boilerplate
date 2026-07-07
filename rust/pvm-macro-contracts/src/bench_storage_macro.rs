@@ -5,7 +5,6 @@ mod bench_storage {
     use pvm_contract_sdk::{Address, Mapping};
 
     pub struct BenchStorage {
-        #[slot(0)]
         balances: Mapping<Address, u128>,
     }
 

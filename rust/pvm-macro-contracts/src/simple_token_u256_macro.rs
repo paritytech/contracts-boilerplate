@@ -10,23 +10,22 @@ mod simple_token {
     #[derive(Debug, pvm_contract_sdk::SolError)]
     pub struct InsufficientBalance;
 
-    pvm_contract_sdk::sol_revert_enum! {
-        pub enum TokenError {
-            InsufficientBalance(InsufficientBalance),
-        }
+    #[derive(pvm_contract_sdk::SolError, Debug)]
+    pub enum TokenError {
+        InsufficientBalance(InsufficientBalance),
     }
 
-    // keccak256("Transfer(address,address,uint256)")
-    const TRANSFER_SIG: [u8; 32] = [
-        0xdd, 0xf2, 0x52, 0xad, 0x1b, 0xe2, 0xc8, 0x9b, 0x69, 0xc2, 0xb0, 0x68, 0xfc, 0x37, 0x8d,
-        0xaa, 0x95, 0x2b, 0xa7, 0xf1, 0x63, 0xc4, 0xa1, 0x16, 0x28, 0xf5, 0x5a, 0x4d, 0xf5, 0x23,
-        0xb3, 0xef,
-    ];
+    #[derive(pvm_contract_sdk::SolEvent)]
+    pub struct Transfer {
+        #[indexed]
+        pub from: Address,
+        #[indexed]
+        pub to: Address,
+        pub value: U256,
+    }
 
     pub struct SimpleToken {
-        #[slot(0)]
         total_supply: Lazy<U256>,
-        #[slot(1)]
         balances: Mapping<Address, U256>,
     }
 
@@ -90,14 +89,7 @@ mod simple_token {
         }
 
         fn emit_transfer(&self, from: Address, to: Address, value: U256) {
-            let topics = [TRANSFER_SIG, addr_topic(from), addr_topic(to)];
-            self.host().deposit_event(&topics, &value.to_be_bytes::<32>());
+            Transfer { from, to, value }.emit(self.host());
         }
-    }
-
-    fn addr_topic(addr: Address) -> [u8; 32] {
-        let mut t = [0u8; 32];
-        t[12..].copy_from_slice(&addr.0);
-        t
     }
 }

@@ -1,7 +1,7 @@
 #![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
 use pvm_contract_builder_dsl::{ContractBuilder, HandlerResult, solidity_selector};
-use pvm_contract_sdk::{HostApi, PolkaVmHost, SolDecode};
+use pvm_contract_sdk::{Host, HostApi, StaticDecode};
 
 #[global_allocator]
 static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> =
@@ -24,15 +24,15 @@ pub extern "C" fn deploy() {}
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    let host = PolkaVmHost;
-    ContractBuilder::<PolkaVmHost>::new()
-        .method(FIBONACCI_SELECTOR, fibonacci_handler::<PolkaVmHost>)
+    let host = Host::new();
+    ContractBuilder::new()
+        .method(FIBONACCI_SELECTOR, fibonacci_handler)
         .dispatch_impl::<256>(&host);
 }
 
 #[inline(never)]
-fn fibonacci_handler<H: HostApi>(_host: &H, input: &[u8], _output: &mut [u8]) -> HandlerResult {
-    let n = u32::decode_at(input, 0);
+fn fibonacci_handler(_host: &Host, input: &[u8], _output: &mut [u8]) -> HandlerResult {
+    let n = unsafe { u32::decode_unchecked(input, 0) };
     let result = fib(n);
     if result == 0 {
         // Match Sol's `revert()` — empty revert data.

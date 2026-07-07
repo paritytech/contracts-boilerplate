@@ -4,6 +4,16 @@
 mod bench_erc721 {
     use pvm_contract_sdk::{Address, HostApi, Mapping};
 
+    #[derive(pvm_contract_sdk::SolEvent)]
+    pub struct Transfer {
+        #[indexed]
+        pub from: Address,
+        #[indexed]
+        pub to: Address,
+        #[indexed]
+        pub id: u32,
+    }
+
     #[derive(Debug, pvm_contract_sdk::SolError)]
     pub struct TokenExists;
 
@@ -19,24 +29,19 @@ mod bench_erc721 {
     #[derive(Debug, pvm_contract_sdk::SolError)]
     pub struct NotAllowed;
 
-    pvm_contract_sdk::sol_revert_enum! {
-        pub enum Erc721Error {
-            TokenExists(TokenExists),
-            TokenNotFound(TokenNotFound),
-            NotApproved(NotApproved),
-            NotOwner(NotOwner),
-            NotAllowed(NotAllowed),
-        }
+    #[derive(pvm_contract_sdk::SolError, Debug)]
+    pub enum Erc721Error {
+        TokenExists(TokenExists),
+        TokenNotFound(TokenNotFound),
+        NotApproved(NotApproved),
+        NotOwner(NotOwner),
+        NotAllowed(NotAllowed),
     }
 
     pub struct BenchErc721 {
-        #[slot(0)]
         token_owner: Mapping<u32, Address>,
-        #[slot(1)]
         token_approvals: Mapping<u32, Address>,
-        #[slot(2)]
         owned_tokens_count: Mapping<Address, u32>,
-        #[slot(3)]
         operator_approvals: Mapping<(Address, Address), bool>,
     }
 
@@ -148,22 +153,7 @@ mod bench_erc721 {
         }
 
         fn emit_transfer(&self, from: Address, to: Address, id: u32) {
-            let mut id_topic = [0u8; 32];
-            id_topic[28..].copy_from_slice(&id.to_be_bytes());
-            let topics = [transfer_sig(self), addr_topic(from), addr_topic(to), id_topic];
-            self.host().deposit_event(&topics, &[]);
+            Transfer { from, to, id }.emit(self.host());
         }
-    }
-
-    fn addr_topic(addr: Address) -> [u8; 32] {
-        let mut t = [0u8; 32];
-        t[12..].copy_from_slice(&addr.0);
-        t
-    }
-
-    fn transfer_sig(c: &BenchErc721) -> [u8; 32] {
-        let mut out = [0u8; 32];
-        c.host().hash_keccak_256(b"Transfer(address,address,uint32)", &mut out);
-        out
     }
 }

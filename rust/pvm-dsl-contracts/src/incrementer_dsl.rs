@@ -1,7 +1,7 @@
 #![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
 use pvm_contract_builder_dsl::{ContractBuilder, HandlerResult, solidity_selector};
-use pvm_contract_sdk::{HostApi, PolkaVmHost, SolDecode, SolEncode, StorageFlags};
+use pvm_contract_sdk::{Host, HostApi, SolEncode, StaticDecode, StorageFlags};
 
 #[global_allocator]
 static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> =
@@ -23,7 +23,7 @@ const VALUE_KEY: [u8; 32] = [0u8; 32];
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {
-    let host = PolkaVmHost;
+    let host = Host::new();
     let size = host.call_data_size() as usize;
     if size >= 32 {
         let mut buf = [0u8; 32];
@@ -35,10 +35,10 @@ pub extern "C" fn deploy() {
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    let host = PolkaVmHost;
-    ContractBuilder::<PolkaVmHost>::new()
-        .method(INC_SELECTOR, inc_handler::<PolkaVmHost>)
-        .method(GET_SELECTOR, get_handler::<PolkaVmHost>)
+    let host = Host::new();
+    ContractBuilder::new()
+        .method(INC_SELECTOR, inc_handler)
+        .method(GET_SELECTOR, get_handler)
         .dispatch_impl::<256>(&host);
 }
 
@@ -46,13 +46,13 @@ fn read_value<H: HostApi>(host: &H) -> i32 {
     let mut buf = [0u8; 32];
     let mut out = &mut buf[..];
     match host.get_storage(StorageFlags::empty(), &VALUE_KEY, &mut out) {
-        Ok(_) => i32::decode_at(&buf, 0),
+        Ok(_) => unsafe { i32::decode_unchecked(&buf, 0) },
         Err(_) => 0,
     }
 }
 
-fn inc_handler<H: HostApi>(host: &H, input: &[u8], _output: &mut [u8]) -> HandlerResult {
-    let by = i32::decode_at(input, 0);
+fn inc_handler(host: &Host, input: &[u8], _output: &mut [u8]) -> HandlerResult {
+    let by = unsafe { i32::decode_unchecked(input, 0) };
     let current = read_value(host);
     let new_val = current.checked_add(by).unwrap();
     let mut buf = [0u8; 32];
@@ -61,7 +61,7 @@ fn inc_handler<H: HostApi>(host: &H, input: &[u8], _output: &mut [u8]) -> Handle
     HandlerResult::Ok(0)
 }
 
-fn get_handler<H: HostApi>(host: &H, _input: &[u8], output: &mut [u8]) -> HandlerResult {
+fn get_handler(host: &Host, _input: &[u8], output: &mut [u8]) -> HandlerResult {
     let v = read_value(host);
     v.encode_to(&mut output[..32]);
     HandlerResult::Ok(32)

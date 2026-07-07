@@ -11,7 +11,7 @@ mod computation {
         }
 
         #[pvm_contract_sdk::method]
-        pub fn odd_product(&self, x: i32) -> i64 {
+        pub fn odd_product(x: i32) -> i64 {
             let mut prod: i64 = 1;
             for i in 1..=(x as i64) {
                 prod = prod.wrapping_mul(2 * i - 1);
@@ -20,7 +20,7 @@ mod computation {
         }
 
         #[pvm_contract_sdk::method]
-        pub fn triangle_number(&self, x: i32) -> i64 {
+        pub fn triangle_number(x: i32) -> i64 {
             let mut sum: i64 = 0;
             for i in 1..=(x as i64) {
                 sum = sum.wrapping_add(i);

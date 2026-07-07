@@ -2,7 +2,7 @@
 
 use pvm_contract_builder_dsl::{ContractBuilder, HandlerResult, solidity_selector};
 use pvm_contract_sdk::{
-    Address, HostApi, PolkaVmHost, SolDecode, SolEncode, SolRevert, StaticEncodedLen, StorageFlags,
+    Address, Host, HostApi, SolEncode, SolError, StaticDecode, StaticEncodedLen, StorageFlags,
 };
 
 #[global_allocator]
@@ -49,14 +49,13 @@ pub struct NotOwner;
 #[derive(Debug, pvm_contract_sdk::SolError)]
 pub struct NotAllowed;
 
-pvm_contract_sdk::sol_revert_enum! {
-    pub enum Erc721Error {
-        TokenExists(TokenExists),
-        TokenNotFound(TokenNotFound),
-        NotApproved(NotApproved),
-        NotOwner(NotOwner),
-        NotAllowed(NotAllowed),
-    }
+#[derive(pvm_contract_sdk::SolError, Debug)]
+pub enum Erc721Error {
+    TokenExists(TokenExists),
+    TokenNotFound(TokenNotFound),
+    NotApproved(NotApproved),
+    NotOwner(NotOwner),
+    NotAllowed(NotAllowed),
 }
 
 #[unsafe(no_mangle)]
@@ -66,13 +65,13 @@ pub extern "C" fn deploy() {}
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    let host = PolkaVmHost;
-    ContractBuilder::<PolkaVmHost>::new()
-        .method(BALANCE_OF_SELECTOR, balance_of_handler::<PolkaVmHost>)
-        .method(OWNER_OF_SELECTOR, owner_of_handler::<PolkaVmHost>)
-        .method(MINT_SELECTOR, mint_handler::<PolkaVmHost>)
-        .method(TRANSFER_SELECTOR, transfer_handler::<PolkaVmHost>)
-        .method(TRANSFER_FROM_SELECTOR, transfer_from_handler::<PolkaVmHost>)
+    let host = Host::new();
+    ContractBuilder::new()
+        .method(BALANCE_OF_SELECTOR, balance_of_handler)
+        .method(OWNER_OF_SELECTOR, owner_of_handler)
+        .method(MINT_SELECTOR, mint_handler)
+        .method(TRANSFER_SELECTOR, transfer_handler)
+        .method(TRANSFER_FROM_SELECTOR, transfer_from_handler)
         .dispatch_impl::<256>(&host);
 }
 
@@ -132,7 +131,7 @@ fn read_u32<H: HostApi>(host: &H, key: &[u8; 32]) -> u32 {
     let mut buf = [0u8; 32];
     let mut out = &mut buf[..];
     match host.get_storage(StorageFlags::empty(), key, &mut out) {
-        Ok(_) => u32::decode_at(&buf, 0),
+        Ok(_) => unsafe { u32::decode_unchecked(&buf, 0) },
         Err(_) => 0,
     }
 }
@@ -158,41 +157,38 @@ fn caller_addr<H: HostApi>(host: &H) -> [u8; 20] {
     c
 }
 
-fn transfer_sig<H: HostApi>(host: &H) -> [u8; 32] {
-    let mut out = [0u8; 32];
-    host.hash_keccak_256(b"Transfer(address,address,uint32)", &mut out);
-    out
+#[derive(pvm_contract_sdk::SolEvent)]
+struct Transfer {
+    #[indexed]
+    from: Address,
+    #[indexed]
+    to: Address,
+    #[indexed]
+    id: u32,
 }
 
-fn emit_transfer<H: HostApi>(host: &H, from: &[u8; 20], to: &[u8; 20], id: u32) {
-    let mut from_topic = [0u8; 32];
-    from_topic[12..32].copy_from_slice(from);
-    let mut to_topic = [0u8; 32];
-    to_topic[12..32].copy_from_slice(to);
-    let mut id_topic = [0u8; 32];
-    id_topic[28..32].copy_from_slice(&id.to_be_bytes());
-    let topics = [transfer_sig(host), from_topic, to_topic, id_topic];
-    host.deposit_event(&topics, &[]);
+fn emit_transfer(host: &Host, from: &[u8; 20], to: &[u8; 20], id: u32) {
+    Transfer { from: Address(*from), to: Address(*to), id }.emit(host);
 }
 
-fn balance_of_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let owner = Address::decode_at(input, 0);
+fn balance_of_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let owner = unsafe { Address::decode_unchecked(input, 0) };
     let key = key_for_addr(host, &OWNED_COUNT_ROOT, &owner.0);
     let v = read_u32(host, &key);
     v.encode_to(&mut output[..32]);
     HandlerResult::Ok(32)
 }
 
-fn owner_of_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let id = u32::decode_at(input, 0);
+fn owner_of_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let id = unsafe { u32::decode_unchecked(input, 0) };
     let key = key_for_u32(host, &TOKEN_OWNER_ROOT, id);
     let owner_bytes = read_addr(host, &key);
     Address(owner_bytes).encode_to(&mut output[..32]);
     HandlerResult::Ok(32)
 }
 
-fn transfer_token_from<H: HostApi>(
-    host: &H,
+fn transfer_token_from(
+    host: &Host,
     from: &[u8; 20],
     to: &[u8; 20],
     id: u32,
@@ -201,7 +197,7 @@ fn transfer_token_from<H: HostApi>(
     let owner_key = key_for_u32(host, &TOKEN_OWNER_ROOT, id);
     let owner = read_addr(host, &owner_key);
     if owner == [0u8; 20] {
-        let n = SolRevert::revert_data(&TokenNotFound, output);
+        let n = SolError::encode_to(&TokenNotFound, output);
         return HandlerResult::Revert(n);
     }
     let caller = caller_addr(host);
@@ -210,11 +206,11 @@ fn transfer_token_from<H: HostApi>(
     let operator_key = key_for_addr_addr(host, &OPERATOR_APPROVALS_ROOT, &owner, &caller);
     let is_operator = read_bool(host, &operator_key);
     if caller != owner && caller != approved && !is_operator {
-        let n = SolRevert::revert_data(&NotApproved, output);
+        let n = SolError::encode_to(&NotApproved, output);
         return HandlerResult::Revert(n);
     }
     if owner != *from {
-        let n = SolRevert::revert_data(&NotOwner, output);
+        let n = SolError::encode_to(&NotOwner, output);
         return HandlerResult::Revert(n);
     }
     host.set_storage(StorageFlags::empty(), &approval_key, &[0u8; 32]);
@@ -226,7 +222,7 @@ fn transfer_token_from<H: HostApi>(
     host.set_storage(StorageFlags::empty(), &owner_key, &[0u8; 32]);
 
     if *to == [0u8; 20] {
-        let n = SolRevert::revert_data(&NotAllowed, output);
+        let n = SolError::encode_to(&NotAllowed, output);
         return HandlerResult::Revert(n);
     }
 
@@ -239,17 +235,17 @@ fn transfer_token_from<H: HostApi>(
     HandlerResult::Ok(0)
 }
 
-fn mint_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let id = u32::decode_at(input, 0);
+fn mint_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let id = unsafe { u32::decode_unchecked(input, 0) };
     let owner_key = key_for_u32(host, &TOKEN_OWNER_ROOT, id);
     let existing = read_addr(host, &owner_key);
     if existing != [0u8; 20] {
-        let n = SolRevert::revert_data(&TokenExists, output);
+        let n = SolError::encode_to(&TokenExists, output);
         return HandlerResult::Revert(n);
     }
     let caller = caller_addr(host);
     if caller == [0u8; 20] {
-        let n = SolRevert::revert_data(&NotAllowed, output);
+        let n = SolError::encode_to(&NotAllowed, output);
         return HandlerResult::Revert(n);
     }
     write_addr(host, &owner_key, &caller);
@@ -262,16 +258,17 @@ fn mint_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> Handle
     HandlerResult::Ok(0)
 }
 
-fn transfer_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let to = Address::decode_at(input, 0);
-    let id = u32::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
+fn transfer_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let to = unsafe { Address::decode_unchecked(input, 0) };
+    let id = unsafe { u32::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
     let from = caller_addr(host);
     transfer_token_from(host, &from, &to.0, id, output)
 }
 
-fn transfer_from_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let from = Address::decode_at(input, 0);
-    let to = Address::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
-    let id = u32::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE * 2);
+fn transfer_from_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let from = unsafe { Address::decode_unchecked(input, 0) };
+    let to = unsafe { Address::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
+    let id =
+        unsafe { u32::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE * 2) };
     transfer_token_from(host, &from.0, &to.0, id, output)
 }

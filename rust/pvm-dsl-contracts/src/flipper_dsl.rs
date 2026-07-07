@@ -1,7 +1,7 @@
 #![cfg_attr(not(feature = "abi-gen"), no_main, no_std)]
 
 use pvm_contract_builder_dsl::{ContractBuilder, HandlerResult, solidity_selector};
-use pvm_contract_sdk::{HostApi, PolkaVmHost, SolDecode, SolEncode, StorageFlags};
+use pvm_contract_sdk::{Host, HostApi, SolEncode, StorageFlags};
 
 #[global_allocator]
 static ALLOC: pvm_bump_allocator::BumpAllocator<{ 1024 * 1024 }> =
@@ -23,7 +23,7 @@ const VALUE_KEY: [u8; 32] = [0u8; 32];
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {
-    let host = PolkaVmHost;
+    let host = Host::new();
     let size = host.call_data_size() as usize;
     if size >= 32 {
         let mut buf = [0u8; 32];
@@ -35,10 +35,10 @@ pub extern "C" fn deploy() {
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    let host = PolkaVmHost;
-    ContractBuilder::<PolkaVmHost>::new()
-        .method(FLIP_SELECTOR, flip_handler::<PolkaVmHost>)
-        .method(GET_SELECTOR, get_handler::<PolkaVmHost>)
+    let host = Host::new();
+    ContractBuilder::new()
+        .method(FLIP_SELECTOR, flip_handler)
+        .method(GET_SELECTOR, get_handler)
         .dispatch_impl::<256>(&host);
 }
 
@@ -51,7 +51,7 @@ fn read_value<H: HostApi>(host: &H) -> bool {
     }
 }
 
-fn flip_handler<H: HostApi>(host: &H, _input: &[u8], _output: &mut [u8]) -> HandlerResult {
+fn flip_handler(host: &Host, _input: &[u8], _output: &mut [u8]) -> HandlerResult {
     let current = read_value(host);
     let mut buf = [0u8; 32];
     buf[31] = if current { 0 } else { 1 };
@@ -59,7 +59,7 @@ fn flip_handler<H: HostApi>(host: &H, _input: &[u8], _output: &mut [u8]) -> Hand
     HandlerResult::Ok(0)
 }
 
-fn get_handler<H: HostApi>(host: &H, _input: &[u8], output: &mut [u8]) -> HandlerResult {
+fn get_handler(host: &Host, _input: &[u8], output: &mut [u8]) -> HandlerResult {
     let v = read_value(host);
     v.encode_to(&mut output[..32]);
     HandlerResult::Ok(32)

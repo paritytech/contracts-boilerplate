@@ -2,7 +2,7 @@
 
 use pvm_contract_builder_dsl::{ContractBuilder, HandlerResult, solidity_selector};
 use pvm_contract_sdk::{
-    Address, HostApi, PolkaVmHost, SolDecode, SolEncode, SolRevert, StaticEncodedLen, StorageFlags,
+    Address, Host, HostApi, SolEncode, SolError, StaticDecode, StaticEncodedLen, StorageFlags,
     U256,
 };
 
@@ -26,10 +26,26 @@ const SET_APPROVAL_FOR_ALL_SELECTOR: [u8; 4] = solidity_selector("setApprovalFor
 const IS_APPROVED_FOR_ALL_SELECTOR: [u8; 4] =
     solidity_selector("isApprovedForAll(address,address)");
 
-const APPROVAL_FOR_ALL_SIG: [u8; 32] = [
-    0x17, 0x30, 0x7e, 0xab, 0x39, 0xab, 0x61, 0x07, 0xe8, 0x89, 0x98, 0x45, 0xad, 0x3d, 0x59, 0xbd,
-    0x96, 0x53, 0xf2, 0x00, 0xf2, 0x20, 0x92, 0x04, 0x89, 0xca, 0x2b, 0x59, 0x37, 0x69, 0x6c, 0x31,
-];
+#[derive(pvm_contract_sdk::SolEvent)]
+struct TransferSingle {
+    #[indexed]
+    operator: Address,
+    #[indexed]
+    from: Address,
+    #[indexed]
+    to: Address,
+    id: u128,
+    value: U256,
+}
+
+#[derive(pvm_contract_sdk::SolEvent)]
+struct ApprovalForAll {
+    #[indexed]
+    owner: Address,
+    #[indexed]
+    operator: Address,
+    approved: bool,
+}
 
 const BALANCES_ROOT: [u8; 32] = const_slot(0);
 const APPROVALS_ROOT: [u8; 32] = const_slot(1);
@@ -53,13 +69,12 @@ pub struct SelfApproval;
 #[derive(Debug, pvm_contract_sdk::SolError)]
 pub struct ZeroAddressTransfer;
 
-pvm_contract_sdk::sol_revert_enum! {
-    pub enum Erc1155Error {
-        NotApproved(NotApproved),
-        InsufficientBalance(InsufficientBalance),
-        SelfApproval(SelfApproval),
-        ZeroAddressTransfer(ZeroAddressTransfer),
-    }
+#[derive(pvm_contract_sdk::SolError, Debug)]
+pub enum Erc1155Error {
+    NotApproved(NotApproved),
+    InsufficientBalance(InsufficientBalance),
+    SelfApproval(SelfApproval),
+    ZeroAddressTransfer(ZeroAddressTransfer),
 }
 
 #[unsafe(no_mangle)]
@@ -69,22 +84,13 @@ pub extern "C" fn deploy() {}
 #[unsafe(no_mangle)]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-    let host = PolkaVmHost;
-    ContractBuilder::<PolkaVmHost>::new()
-        .method(CREATE_SELECTOR, create_handler::<PolkaVmHost>)
-        .method(BALANCE_OF_SELECTOR, balance_of_handler::<PolkaVmHost>)
-        .method(
-            SAFE_TRANSFER_FROM_SELECTOR,
-            safe_transfer_from_handler::<PolkaVmHost>,
-        )
-        .method(
-            SET_APPROVAL_FOR_ALL_SELECTOR,
-            set_approval_for_all_handler::<PolkaVmHost>,
-        )
-        .method(
-            IS_APPROVED_FOR_ALL_SELECTOR,
-            is_approved_for_all_handler::<PolkaVmHost>,
-        )
+    let host = Host::new();
+    ContractBuilder::new()
+        .method(CREATE_SELECTOR, create_handler)
+        .method(BALANCE_OF_SELECTOR, balance_of_handler)
+        .method(SAFE_TRANSFER_FROM_SELECTOR, safe_transfer_from_handler)
+        .method(SET_APPROVAL_FOR_ALL_SELECTOR, set_approval_for_all_handler)
+        .method(IS_APPROVED_FOR_ALL_SELECTOR, is_approved_for_all_handler)
         .dispatch_impl::<256>(&host);
 }
 
@@ -136,7 +142,7 @@ fn read_u128<H: HostApi>(host: &H, key: &[u8; 32]) -> u128 {
     let mut buf = [0u8; 32];
     let mut out = &mut buf[..];
     match host.get_storage(StorageFlags::empty(), key, &mut out) {
-        Ok(_) => u128::decode_at(&buf, 0),
+        Ok(_) => unsafe { u128::decode_unchecked(&buf, 0) },
         Err(_) => 0,
     }
 }
@@ -168,49 +174,30 @@ fn caller_addr<H: HostApi>(host: &H) -> [u8; 20] {
     c
 }
 
-fn transfer_single_sig<H: HostApi>(host: &H) -> [u8; 32] {
-    let mut out = [0u8; 32];
-    host.hash_keccak_256(
-        b"TransferSingle(address,address,address,uint128,uint256)",
-        &mut out,
-    );
-    out
-}
-
-fn emit_transfer_single<H: HostApi>(
-    host: &H,
+fn emit_transfer_single(
+    host: &Host,
     operator: &[u8; 20],
     from: &[u8; 20],
     to: &[u8; 20],
     token_id: u128,
     value: U256,
 ) {
-    let mut op_topic = [0u8; 32];
-    op_topic[12..32].copy_from_slice(operator);
-    let mut from_topic = [0u8; 32];
-    from_topic[12..32].copy_from_slice(from);
-    let mut to_topic = [0u8; 32];
-    to_topic[12..32].copy_from_slice(to);
-    let topics = [transfer_single_sig(host), op_topic, from_topic, to_topic];
-    let mut data = [0u8; 64];
-    data[16..32].copy_from_slice(&token_id.to_be_bytes());
-    data[32..64].copy_from_slice(&value.to_be_bytes::<32>());
-    host.deposit_event(&topics, &data);
+    TransferSingle {
+        operator: Address(*operator),
+        from: Address(*from),
+        to: Address(*to),
+        id: token_id,
+        value,
+    }
+    .emit(host);
 }
 
-fn emit_approval_for_all<H: HostApi>(host: &H, owner: &[u8; 20], operator: &[u8; 20], approved: bool) {
-    let mut owner_topic = [0u8; 32];
-    owner_topic[12..32].copy_from_slice(owner);
-    let mut op_topic = [0u8; 32];
-    op_topic[12..32].copy_from_slice(operator);
-    let topics = [APPROVAL_FOR_ALL_SIG, owner_topic, op_topic];
-    let mut data = [0u8; 32];
-    data[31] = if approved { 1 } else { 0 };
-    host.deposit_event(&topics, &data);
+fn emit_approval_for_all(host: &Host, owner: &[u8; 20], operator: &[u8; 20], approved: bool) {
+    ApprovalForAll { owner: Address(*owner), operator: Address(*operator), approved }.emit(host);
 }
 
-fn create_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let value = U256::decode_at(input, 0);
+fn create_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let value = unsafe { U256::decode_unchecked(input, 0) };
     let nonce = read_u128(host, &NONCE_KEY).checked_add(1).unwrap();
     write_u128(host, &NONCE_KEY, nonce);
     let caller = caller_addr(host);
@@ -222,40 +209,43 @@ fn create_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> Hand
     HandlerResult::Ok(32)
 }
 
-fn balance_of_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let owner = Address::decode_at(input, 0);
-    let token_id = u128::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
+fn balance_of_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let owner = unsafe { Address::decode_unchecked(input, 0) };
+    let token_id =
+        unsafe { u128::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
     let key = balance_key(host, &owner.0, token_id);
     let v = read_u256(host, &key);
     v.encode_to(&mut output[..32]);
     HandlerResult::Ok(32)
 }
 
-fn safe_transfer_from_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
+fn safe_transfer_from_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
     // Selector args are 4 static (address, address, uint128, uint256) + 1 dynamic (bytes).
     // We don't read the bytes payload (matches Sol's `bytes calldata /*_data*/`),
     // but the 4 leading static args sit at offsets 0, 32, 64, 96.
-    let from = Address::decode_at(input, 0);
-    let to = Address::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
-    let token_id = u128::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE * 2);
-    let value = U256::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE * 3);
+    let from = unsafe { Address::decode_unchecked(input, 0) };
+    let to = unsafe { Address::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
+    let token_id =
+        unsafe { u128::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE * 2) };
+    let value =
+        unsafe { U256::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE * 3) };
 
     let caller = caller_addr(host);
     if caller != from.0 {
         let approved = read_bool(host, &approval_key(host, &from.0, &caller));
         if !approved {
-            let n = SolRevert::revert_data(&NotApproved, output);
+            let n = SolError::encode_to(&NotApproved, output);
             return HandlerResult::Revert(n);
         }
     }
     if to.0 == [0u8; 20] {
-        let n = SolRevert::revert_data(&ZeroAddressTransfer, output);
+        let n = SolError::encode_to(&ZeroAddressTransfer, output);
         return HandlerResult::Revert(n);
     }
     let from_key = balance_key(host, &from.0, token_id);
     let from_bal = read_u256(host, &from_key);
     if from_bal < value {
-        let n = SolRevert::revert_data(&InsufficientBalance, output);
+        let n = SolError::encode_to(&InsufficientBalance, output);
         return HandlerResult::Revert(n);
     }
     write_u256(host, &from_key, from_bal - value);
@@ -268,12 +258,13 @@ fn safe_transfer_from_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [
     HandlerResult::Ok(0)
 }
 
-fn set_approval_for_all_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let operator = Address::decode_at(input, 0);
-    let approved = bool::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
+fn set_approval_for_all_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let operator = unsafe { Address::decode_unchecked(input, 0) };
+    let approved =
+        unsafe { bool::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
     let owner = caller_addr(host);
     if owner == operator.0 {
-        let n = SolRevert::revert_data(&SelfApproval, output);
+        let n = SolError::encode_to(&SelfApproval, output);
         return HandlerResult::Revert(n);
     }
     write_bool(host, &approval_key(host, &owner, &operator.0), approved);
@@ -281,9 +272,10 @@ fn set_approval_for_all_handler<H: HostApi>(host: &H, input: &[u8], output: &mut
     HandlerResult::Ok(0)
 }
 
-fn is_approved_for_all_handler<H: HostApi>(host: &H, input: &[u8], output: &mut [u8]) -> HandlerResult {
-    let owner = Address::decode_at(input, 0);
-    let operator = Address::decode_at(input, <Address as StaticEncodedLen>::ENCODED_SIZE);
+fn is_approved_for_all_handler(host: &Host, input: &[u8], output: &mut [u8]) -> HandlerResult {
+    let owner = unsafe { Address::decode_unchecked(input, 0) };
+    let operator =
+        unsafe { Address::decode_unchecked(input, <Address as StaticEncodedLen>::ENCODED_SIZE) };
     let v = read_bool(host, &approval_key(host, &owner.0, &operator.0));
     v.encode_to(&mut output[..32]);
     HandlerResult::Ok(32)

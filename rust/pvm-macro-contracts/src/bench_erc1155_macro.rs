@@ -19,28 +19,38 @@ mod bench_erc1155 {
     #[derive(Debug, pvm_contract_sdk::SolError)]
     pub struct ZeroAddressTransfer;
 
-    pvm_contract_sdk::sol_revert_enum! {
-        pub enum Erc1155Error {
-            NotApproved(NotApproved),
-            InsufficientBalance(InsufficientBalance),
-            SelfApproval(SelfApproval),
-            ZeroAddressTransfer(ZeroAddressTransfer),
-        }
+    #[derive(pvm_contract_sdk::SolError, Debug)]
+    pub enum Erc1155Error {
+        NotApproved(NotApproved),
+        InsufficientBalance(InsufficientBalance),
+        SelfApproval(SelfApproval),
+        ZeroAddressTransfer(ZeroAddressTransfer),
     }
 
-    // keccak256("ApprovalForAll(address,address,bool)")
-    const APPROVAL_FOR_ALL_SIG: [u8; 32] = [
-        0x17, 0x30, 0x7e, 0xab, 0x39, 0xab, 0x61, 0x07, 0xe8, 0x89, 0x98, 0x45, 0xad, 0x3d, 0x59,
-        0xbd, 0x96, 0x53, 0xf2, 0x00, 0xf2, 0x20, 0x92, 0x04, 0x89, 0xca, 0x2b, 0x59, 0x37, 0x69,
-        0x6c, 0x31,
-    ];
+    #[derive(pvm_contract_sdk::SolEvent)]
+    pub struct TransferSingle {
+        #[indexed]
+        pub operator: Address,
+        #[indexed]
+        pub from: Address,
+        #[indexed]
+        pub to: Address,
+        pub id: u128,
+        pub value: U256,
+    }
+
+    #[derive(pvm_contract_sdk::SolEvent)]
+    pub struct ApprovalForAll {
+        #[indexed]
+        pub owner: Address,
+        #[indexed]
+        pub operator: Address,
+        pub approved: bool,
+    }
 
     pub struct BenchErc1155 {
-        #[slot(0)]
         balances: Mapping<(Address, u128), U256>,
-        #[slot(1)]
         approvals: Mapping<(Address, Address), bool>,
-        #[slot(2)]
         token_id_nonce: Lazy<u128>,
     }
 
@@ -146,29 +156,11 @@ mod bench_erc1155 {
             token_id: u128,
             value: U256,
         ) {
-            let mut sig = [0u8; 32];
-            self.host().hash_keccak_256(
-                b"TransferSingle(address,address,address,uint128,uint256)",
-                &mut sig,
-            );
-            let topics = [sig, addr_topic(operator), addr_topic(from), addr_topic(to)];
-            let mut data = [0u8; 64];
-            data[16..32].copy_from_slice(&token_id.to_be_bytes());
-            data[32..64].copy_from_slice(&value.to_be_bytes::<32>());
-            self.host().deposit_event(&topics, &data);
+            TransferSingle { operator, from, to, id: token_id, value }.emit(self.host());
         }
 
         fn emit_approval_for_all(&self, owner: Address, operator: Address, approved: bool) {
-            let topics = [APPROVAL_FOR_ALL_SIG, addr_topic(owner), addr_topic(operator)];
-            let mut data = [0u8; 32];
-            data[31] = approved as u8;
-            self.host().deposit_event(&topics, &data);
+            ApprovalForAll { owner, operator, approved }.emit(self.host());
         }
-    }
-
-    fn addr_topic(addr: Address) -> [u8; 32] {
-        let mut t = [0u8; 32];
-        t[12..].copy_from_slice(&addr.0);
-        t
     }
 }
