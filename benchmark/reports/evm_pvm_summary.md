@@ -1,6 +1,6 @@
 # EVM vs PVM Cost Summary
 
-Generated on: 2026-06-16
+Generated on: 2026-07-07
 
 ### Benchmark Environment
 
@@ -85,8 +85,8 @@ Generated on: 2026-06-16
 | ---------------------------- | -------------------- | -------------------- |
 | SimpleToken_evm              | 504,818,478          | 530,839,689          |
 | SimpleToken_pvm              | 592,259,178 (+17.3%) | 653,783,407 (+23.2%) |
-| simple_token_u256_macro_rust | 676,135,038 (+33.9%) | 714,644,008 (+34.6%) |
-| simple_token_u256_dsl_rust   | 711,034,822 (+40.8%) | 751,867,504 (+41.6%) |
+| simple_token_u256_macro_rust | 722,906,387 (+43.2%) | 761,482,537 (+43.4%) |
+| simple_token_u256_dsl_rust   | 755,290,164 (+49.6%) | 796,122,846 (+50.0%) |
 
 
 ## Fibonacci integer-width variants

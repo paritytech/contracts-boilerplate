@@ -1,6 +1,6 @@
 # Opcode Category Analysis
 
-Generated on: 2026-06-16
+Generated on: 2026-07-07
 
 ### Benchmark Environment
 
