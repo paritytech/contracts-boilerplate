@@ -195,6 +195,7 @@ export function rust(name: string): ContractInfo {
 
 export function rustPvm(name: string): ContractInfo {
     return {
+        implType: 'rust',
         supportEvm() {
             return false
         },
@@ -231,6 +232,7 @@ export function rustPvm(name: string): ContractInfo {
 
 export function rustPvmDsl(name: string): ContractInfo {
     return {
+        implType: 'rust',
         supportEvm() {
             return false
         },
