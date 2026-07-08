@@ -50,7 +50,7 @@ overflow-checks = false
 
 [dependencies]
 pvm-contract-sdk = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main", features = ["alloc"] }
-polkavm-derive = "0.31.0"
+polkavm-derive = "0.34.0"
 pvm-bump-allocator = { git = "https://github.com/paritytech/cargo-pvm-contract.git", branch = "main" }
 
 [build-dependencies]

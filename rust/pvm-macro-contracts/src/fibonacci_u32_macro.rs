@@ -26,6 +26,7 @@ mod fibonacci {
         }
     }
 
+    #[inline(never)]
     fn fib(n: u32) -> u32 {
         if n == 0 {
             0
