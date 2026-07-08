@@ -1,6 +1,14 @@
 import { env } from '../../tools/lib/index.ts'
 import { abis } from '../../codegen/abis.ts'
-import { Artifacts, ink, rust, rustPvm, rustPvmDsl, solidity, stylus } from '../lib.ts'
+import {
+    Artifacts,
+    ink,
+    rust,
+    rustPvm,
+    rustPvmDsl,
+    solidity,
+    stylus,
+} from '../lib.ts'
 import { deploy as deployContract } from '../../tools/lib/index.ts'
 import { parseEther } from 'viem'
 
