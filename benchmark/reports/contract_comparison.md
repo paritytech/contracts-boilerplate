@@ -1,2099 +1,1363 @@
 # Revive Contract Comparison
 
-Generated on: 2026-05-25
+Generated on: 2026-07-09
 
 ### Benchmark Environment
 
-- **Chain:** Geth --dev | **Node:** Geth v1.16.4-stable | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
-- **Chain:** Westend Asset Hub Development | **Runtime:** westmint@1022006 | **Node:** polkadot-omni-node 1.22.1-5f453ce6599 | **resolc:** 1.0.0+commit.b080c1d | **solc:** 0.8.30+commit.73712a01
+- **Chain:** Development | **Runtime:** revive-dev-runtime@0 | **Node:** Substrate Node 0.0.0-bbbb695f456 | **resolc:** 1.3.0+commit.fb0e9e6 | **solc:** 0.8.30+commit.73712a01
 
 Comparison of gas usage across different contract implementations.
-
-## Chain: Geth
-
-### BenchERC1155 - create
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| BenchERC1155_evm | 68,472   | -       | 69.0%     |
-
-
-### BenchERC1155 - deploy
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| BenchERC1155_evm | 301,170  | -       | 0.1%      |
-
-
-### BenchERC20 - deploy
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| BenchERC20_evm | 303,090  | -       | 15.3%     |
-
-
-### BenchERC20 - transfer
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| BenchERC20_evm | 51,185   | -       | 57.7%     |
-
-
-### BenchERC721 - deploy
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| BenchERC721_evm | 290,145  | -       | 0.1%      |
-
-
-### BenchERC721 - mint
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| BenchERC721_evm | 68,153   | -       | 68.9%     |
-
-
-### BenchStorage - deploy
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| BenchStorage_evm | 160,319  | -       | 0.1%      |
-
-
-### BenchStorage - read_100
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| BenchStorage_evm | 34,275   | -       | 37.1%     |
-
-
-### BenchStorage - write_100
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| BenchStorage_evm | 84,201   | -       | 74.4%     |
-
-
-### CoinTool_App - deploy
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| CoinTool_App_evm | 756,015  | -       | 3.0%      |
-
-
-### CoinTool_App - t
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| CoinTool_App_evm | 539,469  | -       | -55.4%    |
-
-
-### Computation - deploy
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| Computation_evm | 119,399  | -       | 0.1%      |
-
-
-### Computation - odd_product_10
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| Computation_evm | 23,162   | -       | 8.5%      |
-
-
-### Computation - triangle_10
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| Computation_evm | 22,756   | -       | 6.8%      |
-
-
-### DocumentAccessManagement - configurePublicAccess
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 53,551   | -       | 58.8%     |
-
-
-### DocumentAccessManagement - createDocument
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 253,901  | -       | 90.8%     |
-
-
-### DocumentAccessManagement - createDocument2
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 236,801  | -       | 90.2%     |
-
-
-### DocumentAccessManagement - deploy
-
-| Implementation               | gas_used  | vs Best | % metered |
-| ---------------------------- | --------- | ------- | --------- |
-| DocumentAccessManagement_evm | 2,093,513 | -       | 0.1%      |
-
-
-### DocumentAccessManagement - grantAccessWithShare
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 200,142  | -       | 88.5%     |
-
-
-### DocumentAccessManagement - registerKeys
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 92,093   | -       | 75.9%     |
-
-
-### DocumentAccessManagement - revokeAccess
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 60,496   | -       | 88.5%     |
-
-
-### DocumentAccessManagement - transferOwnership
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 129,468  | -       | 86.7%     |
-
-
-### DocumentAccessManagement - updateDocument
-
-| Implementation               | gas_used | vs Best | % metered |
-| ---------------------------- | -------- | ------- | --------- |
-| DocumentAccessManagement_evm | 44,119   | -       | 47.4%     |
-
-
-### DotNS - createSubdomain
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 314,157  | -       | 92.7%     |
-
-
-### DotNS - deploy
-
-| Implementation | gas_used  | vs Best | % metered |
-| -------------- | --------- | ------- | --------- |
-| DotNS_evm      | 1,813,886 | -       | 0.1%      |
-
-
-### DotNS - register
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 273,146  | -       | 92.0%     |
-
-
-### DotNS - register_with_duration
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 275,143  | -       | 92.1%     |
-
-
-### DotNS - release
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 78,940   | -       | 97.5%     |
-
-
-### DotNS - renew
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 45,725   | -       | 52.2%     |
-
-
-### DotNS - setAddress
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 49,710   | -       | 55.7%     |
-
-
-### DotNS - setMetadata
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 66,607   | -       | 66.7%     |
-
-
-### DotNS - setSubdomainOwner
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 153,052  | -       | 94.7%     |
-
-
-### DotNS - transfer
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| DotNS_evm      | 124,441  | -       | 93.9%     |
-
-
-### Escrow - create_simple
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Escrow_evm     | 213,536  | -       | 89.8%     |
-
-
-### Escrow - create_with_arbiter
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Escrow_evm     | 165,048  | -       | 86.8%     |
-
-
-### Escrow - create_with_expiry
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Escrow_evm     | 145,184  | -       | 84.9%     |
-
-
-### Escrow - create_with_releaseTime
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Escrow_evm     | 145,184  | -       | 84.9%     |
-
-
-### Escrow - deploy
-
-| Implementation | gas_used  | vs Best | % metered |
-| -------------- | --------- | ------- | --------- |
-| Escrow_evm     | 1,001,052 | -       | 4.5%      |
-
-
-### Escrow - refund
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Escrow_evm     | 66,729   | -       | 78.9%     |
-
-
-### Escrow - release
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Escrow_evm     | 70,987   | -       | 80.2%     |
-
-
-### FiatTokenProxy - approve
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 55,331   | -       | 61.0%     |
-
-
-### FiatTokenProxy - changeAdmin
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 28,326   | -       | 24.3%     |
-
-
-### FiatTokenProxy - configureMinter
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 79,482   | -       | 72.8%     |
-
-
-### FiatTokenProxy - deploy
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 394,702  | -       | 12.0%     |
-
-
-### FiatTokenProxy - initialize
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 212,439  | -       | 88.7%     |
-
-
-### FiatTokenProxy - mint
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 83,152   | -       | 79.8%     |
-
-
-### FiatTokenProxy - transfer
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 62,765   | -       | 65.6%     |
-
-
-### FiatTokenProxy - transferFrom
-
-| Implementation     | gas_used | vs Best | % metered |
-| ------------------ | -------- | ------- | --------- |
-| FiatTokenProxy_evm | 51,389   | -       | 57.3%     |
-
-
-### FiatTokenV2_2 - deploy
-
-| Implementation    | gas_used  | vs Best | % metered |
-| ----------------- | --------- | ------- | --------- |
-| FiatTokenV2_2_evm | 3,412,399 | -       | 0.9%      |
-
-
-### Fibonacci - deploy
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Fibonacci_evm  | 97,731   | -       | 0.1%      |
-
-
-### Fibonacci - fib_10
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Fibonacci_evm  | 38,116   | -       | 44.4%     |
-
-
-### Fibonacci_u256 - deploy
-
-| Implementation          | gas_used | vs Best | % metered |
-| ----------------------- | -------- | ------- | --------- |
-| Fibonacci_u256_iter_evm | 87,359   | -       | 0.1%      |
-| Fibonacci_u256_evm      | 88,229   | +1.0%   | 0.1%      |
-
-
-### Fibonacci_u256 - fib_10
-
-| Implementation          | gas_used | vs Best | % metered |
-| ----------------------- | -------- | ------- | --------- |
-| Fibonacci_u256_iter_evm | 21,959   | -       | 3.4%      |
-| Fibonacci_u256_evm      | 35,263   | +60.6%  | 39.9%     |
-
-
-### Fibonacci_u256 - fib_15
-
-| Implementation          | gas_used | vs Best | % metered |
-| ----------------------- | -------- | ------- | --------- |
-| Fibonacci_u256_iter_evm | 22,269   | -       | 4.8%      |
-| Fibonacci_u256_evm      | 176,997  | +694.8% | 88.0%     |
-
-
-### Fibonacci_u256 - fib_5
-
-| Implementation          | gas_used | vs Best | % metered |
-| ----------------------- | -------- | ------- | --------- |
-| Fibonacci_u256_iter_evm | 21,649   | -       | 2.1%      |
-| Fibonacci_u256_evm      | 22,480   | +3.8%   | 5.7%      |
-
-
-### FungibleCredential - burn
-
-| Implementation         | gas_used | vs Best | % metered |
-| ---------------------- | -------- | ------- | --------- |
-| FungibleCredential_evm | 36,706   | -       | 41.9%     |
-
-
-### FungibleCredential - createClass_nontransferable
-
-| Implementation         | gas_used | vs Best | % metered |
-| ---------------------- | -------- | ------- | --------- |
-| FungibleCredential_evm | 142,667  | -       | 84.3%     |
-
-
-### FungibleCredential - createClass_transferable
-
-| Implementation         | gas_used | vs Best | % metered |
-| ---------------------- | -------- | ------- | --------- |
-| FungibleCredential_evm | 122,767  | -       | 81.7%     |
-
-
-### FungibleCredential - deploy
-
-| Implementation         | gas_used  | vs Best | % metered |
-| ---------------------- | --------- | ------- | --------- |
-| FungibleCredential_evm | 1,630,242 | -       | 1.5%      |
-
-
-### FungibleCredential - issue
-
-| Implementation         | gas_used | vs Best | % metered |
-| ---------------------- | -------- | ------- | --------- |
-| FungibleCredential_evm | 205,604  | -       | 89.4%     |
-
-
-### FungibleCredential - issue_more
-
-| Implementation         | gas_used | vs Best | % metered |
-| ---------------------- | -------- | ------- | --------- |
-| FungibleCredential_evm | 41,644   | -       | 47.9%     |
-
-
-### FungibleCredential - revoke
-
-| Implementation         | gas_used | vs Best | % metered |
-| ---------------------- | -------- | ------- | --------- |
-| FungibleCredential_evm | 37,346   | -       | 41.9%     |
-
-
-### FungibleCredential - transfer
-
-| Implementation         | gas_used | vs Best | % metered |
-| ---------------------- | -------- | ------- | --------- |
-| FungibleCredential_evm | 174,324  | -       | 87.5%     |
-
-
-### KeyRegistry - deploy
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| KeyRegistry_evm | 976,448  | -       | 0.1%      |
-
-
-### KeyRegistry - fetchPrekeyBundle
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| KeyRegistry_evm | 70,228   | -       | 94.5%     |
-
-
-### KeyRegistry - registerIdentity
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| KeyRegistry_evm | 226,938  | -       | 89.5%     |
-
-
-### KeyRegistry - updateSignedPrekey
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| KeyRegistry_evm | 50,528   | -       | 54.7%     |
-
-
-### KeyRegistry - uploadOneTimePrekeys
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| KeyRegistry_evm | 119,885  | -       | 80.9%     |
-
-
-### Log - addWriter
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Log_evm        | 93,068   | -       | 76.8%     |
-
-
-### Log - append
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Log_evm        | 121,167  | -       | 82.1%     |
-
-
-### Log - append_2
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Log_evm        | 121,167  | -       | 82.1%     |
-
-
-### Log - create_nonpermissioned
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Log_evm        | 118,096  | -       | 82.1%     |
-
-
-### Log - create_permissioned
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Log_evm        | 83,908   | -       | 74.7%     |
-
-
-### Log - deploy
-
-| Implementation | gas_used  | vs Best | % metered |
-| -------------- | --------- | ------- | --------- |
-| Log_evm        | 1,427,724 | -       | 1.6%      |
-
-
-### Log - removeWriter
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Log_evm        | 34,350   | -       | 62.2%     |
-
-
-### Log - transfer
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Log_evm        | 85,898   | -       | 74.9%     |
-
-
-### MixedERC20 - deploy
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| MixedERC20_evm | 533,270  | -       | 8.7%      |
-
-
-### MixedERC20 - mint
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| MixedERC20_evm | 68,210   | -       | 68.3%     |
-
-
-### MixedERC20 - transfer
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| MixedERC20_evm | 51,242   | -       | 57.8%     |
-
-
-### MixedERC20Factory - deploy
-
-| Implementation        | gas_used | vs Best | % metered |
-| --------------------- | -------- | ------- | --------- |
-| MixedERC20Factory_evm | 511,834  | -       | -65.7%    |
-| MixedERC20Factory_evm | 750,628  | +46.7%  | 0.1%      |
-
-
-### MixedFactory - deploy
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| MixedFactory_evm | 222,396  | -       | 0.1%      |
-
-
-### MixedFactory - deployCreate
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| MixedFactory_evm | 106,594  | -       | 23.0%     |
-
-
-### MixedFactory - deployCreate2
-
-| Implementation   | gas_used | vs Best | % metered |
-| ---------------- | -------- | ------- | --------- |
-| MixedFactory_evm | 89,568   | -       | 8.5%      |
-
-
-### MixedPool - deploy
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| MixedPool_evm  | 487,758  | -       | 9.2%      |
-
-
-### MixedSwapRouter - deploy
-
-| Implementation      | gas_used | vs Best | % metered |
-| ------------------- | -------- | ------- | --------- |
-| MixedSwapRouter_evm | 275,876  | -       | 18.1%     |
-
-
-### MixedSwapRouter - swap
-
-| Implementation      | gas_used | vs Best | % metered |
-| ------------------- | -------- | ------- | --------- |
-| MixedSwapRouter_evm | 116,562  | -       | 106.4%    |
-
-
-### MixedSwapToken0 - deploy
-
-| Implementation      | gas_used | vs Best | % metered |
-| ------------------- | -------- | ------- | --------- |
-| MixedSwapToken0_evm | 533,162  | -       | 8.7%      |
-
-
-### MixedSwapToken1 - deploy
-
-| Implementation      | gas_used | vs Best | % metered |
-| ------------------- | -------- | ------- | --------- |
-| MixedSwapToken1_evm | 533,162  | -       | 8.7%      |
-
-
-### NonFungibleCredential - deploy
-
-| Implementation            | gas_used  | vs Best | % metered |
-| ------------------------- | --------- | ------- | --------- |
-| NonFungibleCredential_evm | 1,511,673 | -       | 1.6%      |
-
-
-### NonFungibleCredential - issue_nontransferable
-
-| Implementation            | gas_used | vs Best | % metered |
-| ------------------------- | -------- | ------- | --------- |
-| NonFungibleCredential_evm | 234,542  | -       | 90.3%     |
-
-
-### NonFungibleCredential - issue_transferable
-
-| Implementation            | gas_used | vs Best | % metered |
-| ------------------------- | -------- | ------- | --------- |
-| NonFungibleCredential_evm | 283,066  | -       | 91.9%     |
-
-
-### NonFungibleCredential - issue_with_expiry
-
-| Implementation            | gas_used | vs Best | % metered |
-| ------------------------- | -------- | ------- | --------- |
-| NonFungibleCredential_evm | 220,314  | -       | 89.6%     |
-
-
-### NonFungibleCredential - revoke
-
-| Implementation            | gas_used | vs Best | % metered |
-| ------------------------- | -------- | ------- | --------- |
-| NonFungibleCredential_evm | 30,343   | -       | 30.1%     |
-
-
-### NonFungibleCredential - transfer
-
-| Implementation            | gas_used | vs Best | % metered |
-| ------------------------- | -------- | ------- | --------- |
-| NonFungibleCredential_evm | 159,598  | -       | 92.5%     |
-
-
-### NonFungibleCredential - updateMetadata
-
-| Implementation            | gas_used | vs Best | % metered |
-| ------------------------- | -------- | ------- | --------- |
-| NonFungibleCredential_evm | 30,684   | -       | 29.2%     |
-
-
-### SimpleToken - deploy
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| SimpleToken_evm | 167,671  | -       | 0.1%      |
-
-
-### SimpleToken - mint
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| SimpleToken_evm | 68,081   | -       | 68.2%     |
-
-
-### SimpleToken - transfer
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| SimpleToken_evm | 46,258   | -       | 63.6%     |
-
-
-### Store - delegate
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Store_evm      | 137,452  | -       | 84.0%     |
-
-
-### Store - deleteFor
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Store_evm      | 47,889   | -       | 79.1%     |
-
-
-### Store - delete_
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Store_evm      | 38,316   | -       | 68.8%     |
-
-
-### Store - deploy
-
-| Implementation | gas_used  | vs Best | % metered |
-| -------------- | --------- | ------- | --------- |
-| Store_evm      | 1,742,046 | -       | 0.1%      |
-
-
-### Store - revokeDelegation
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Store_evm      | 42,645   | -       | 73.6%     |
-
-
-### Store - set
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Store_evm      | 117,087  | -       | 81.2%     |
-
-
-### Store - setFor
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Store_evm      | 129,666  | -       | 82.6%     |
-
-
-### Store - set_update
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| Store_evm      | 32,968   | -       | 33.2%     |
-
-
-### TetherToken - approve
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| TetherToken_evm | 48,276   | -       | 55.3%     |
-
-
-### TetherToken - deploy
-
-| Implementation  | gas_used  | vs Best | % metered |
-| --------------- | --------- | ------- | --------- |
-| TetherToken_evm | 1,208,745 | -       | 11.8%     |
-
-
-### TetherToken - transfer
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| TetherToken_evm | 62,454   | -       | 65.5%     |
-
-
-### TetherToken - transferFrom
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| TetherToken_evm | 50,890   | -       | 56.9%     |
-
-
-### W3S - buyTicket
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 220,332  | -       | 91.5%     |
-
-
-### W3S - checkIn
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 71,612   | -       | 81.0%     |
-
-
-### W3S - configurePaymentToken
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 98,869   | -       | 78.2%     |
-
-
-### W3S - deploy
-
-| Implementation | gas_used  | vs Best | % metered |
-| -------------- | --------- | ------- | --------- |
-| W3S_evm        | 2,636,207 | -       | 4.5%      |
-
-
-### W3S - grantVolunteerRole
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 48,223   | -       | 56.0%     |
-
-
-### W3S - pauseSales
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 47,282   | -       | 55.5%     |
-
-
-### W3S - redeemTicketStaff
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 203,140  | -       | 89.5%     |
-
-
-### W3S - revokeVolunteerRole
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 26,848   | -       | 38.9%     |
-
-
-### W3S - setMerkleRoot
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 31,384   | -       | 30.8%     |
-
-
-### W3S - unpauseSales
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| W3S_evm        | 25,580   | -       | 36.4%     |
-
-
-### WETH9 - deploy
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| WETH9_evm      | 487,741  | -       | 13.7%     |
-
-
-### WETH9 - deposit
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| WETH9_evm      | 44,978   | -       | 53.2%     |
-
-
-### WETH9 - transfer
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| WETH9_evm      | 51,313   | -       | 58.0%     |
-
-
-### WETH9 - withdraw
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| WETH9_evm      | 34,953   | -       | 45.9%     |
-
-
-### XENCrypto - deploy
-
-| Implementation | gas_used  | vs Best | % metered |
-| -------------- | --------- | ------- | --------- |
-| XENCrypto_evm  | 2,221,205 | -       | 3.1%      |
-
-
-### flipper - deploy
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| flipper_evm    | 92,953   | -       | 2.7%      |
-
-
-### flipper - flip
-
-| Implementation | gas_used | vs Best | % metered |
-| -------------- | -------- | ------- | --------- |
-| flipper_evm    | 43,339   | -       | 51.4%     |
-
-
-### incrementer - deploy
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| incrementer_evm | 105,806  | -       | 2.4%      |
-
-
-### incrementer - inc
-
-| Implementation  | gas_used | vs Best | % metered |
-| --------------- | -------- | ------- | --------- |
-| incrementer_evm | 43,561   | -       | 51.3%     |
-
 
 ## Chain: eth-rpc
 
 ### BenchERC1155 - create
 
-| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchERC1155_evm     | 811,856,681   | -       | 348,235,450      | -                 | 42.9%     | 50,399      | 14,373            |
-| BenchERC1155_pvm     | 897,296,350   | +10.5%  | 433,675,119      | +24.5%            | 48.3%     | 60,288      | 24,337            |
-| bench_erc1155_stylus | 1,046,086,082 | +28.9%  | 582,464,851      | +67.3%            | 55.7%     | 70,420      | 33,094            |
-| bench_erc1155_ink    | 1,109,356,357 | +36.6%  | 645,735,126      | +85.4%            | 58.2%     | 57,479      | 31,941            |
+| Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchERC1155_evm         | 1,232,614,107 | -       | 317,200,837      | -                 | 25.7%     | 29,850      | 38,525            |
+| BenchERC1155_pvm         | 1,326,804,655 | +7.6%   | 411,391,385      | +29.7%            | 31.0%     | 39,907      | 48,582            |
+| bench_erc1155_macro_rust | 1,397,266,707 | +13.4%  | 481,853,437      | +51.9%            | 34.5%     | 37,982      | 46,657            |
+| bench_erc1155_dsl_rust   | 1,407,967,487 | +14.2%  | 492,554,217      | +55.3%            | 35.0%     | 34,569      | 43,244            |
+| bench_erc1155_stylus     | 1,484,241,751 | +20.4%  | 568,828,481      | +79.3%            | 38.3%     | 49,935      | 58,610            |
+| bench_erc1155_ink        | 1,690,611,205 | +37.2%  | 775,197,935      | +144.4%           | 45.9%     | 51,577      | 60,252            |
 
 
 ### BenchERC1155 - deploy
 
-| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchERC1155_evm     | 786,657,275   | -       | 1,456,520        | -                 | 0.2%      | 10,826      | 11,707            |
-| BenchERC1155_pvm     | 1,066,193,934 | +35.5%  | 8,000,024        | +449.3%           | 0.8%      | 40,511      | 12,334            |
-| bench_erc1155_stylus | 1,348,697,757 | +71.4%  | 10,089,251       | +592.7%           | 0.7%      | 71,003      | 10,664            |
-| bench_erc1155_ink    | 1,365,310,715 | +73.6%  | 101,633,933      | +6877.9%          | 7.4%      | 73,112      | 12,346            |
+| Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchERC1155_evm         | 1,613,497,764 | -       | 1,498,080        | +3514.7%          | 0.1%      | 10,832      | 19,507            |
+| bench_erc1155_dsl_rust   | 1,740,382,238 | +7.9%   | 41,444           | -                 | 0.0%      | 24,914      | 33,589            |
+| bench_erc1155_macro_rust | 1,863,647,085 | +15.5%  | 29,977,806       | +72233.3%         | 1.6%      | 35,153      | 43,828            |
+| BenchERC1155_pvm         | 1,895,062,189 | +17.5%  | 8,753,785        | +21022.0%         | 0.5%      | 40,928      | 49,603            |
+| bench_erc1155_stylus     | 2,171,533,475 | +34.6%  | 11,009,411       | +26464.5%         | 0.5%      | 71,012      | 79,687            |
+| bench_erc1155_ink        | 2,393,829,539 | +48.4%  | 188,842,505      | +455557.0%        | 7.9%      | 86,147      | 94,822            |
 
 
 ### BenchERC20 - deploy
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchERC20_evm     | 993,637,426   | -       | 209,760,943      | -                 | 21.1%     | 31,196      | 11,659            |
-| BenchERC20_pvm     | 1,280,855,782 | +28.9%  | 256,546,418      | +22.3%            | 20.0%     | 57,395      | 11,826            |
-| bench_erc20_ink    | 1,591,620,270 | +60.2%  | 444,539,856      | +111.9%           | 27.9%     | 70,745      | 11,354            |
-| bench_erc20_stylus | 1,880,765,378 | +89.3%  | 560,177,743      | +167.1%           | 29.8%     | 120,383     | 12,177            |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchERC20_evm         | 1,987,980,955 | -       | 377,293,831      | -                 | 19.0%     | 31,202      | 39,877            |
+| bench_erc20_dsl_rust   | 2,158,963,182 | +8.6%   | 444,629,513      | +17.8%            | 20.6%     | 42,629      | 51,304            |
+| bench_erc20_macro_rust | 2,268,042,906 | +14.1%  | 492,511,127      | +30.5%            | 21.7%     | 49,343      | 58,018            |
+| BenchERC20_pvm         | 2,279,075,196 | +14.6%  | 431,926,862      | +14.5%            | 19.0%     | 57,200      | 65,875            |
+| bench_erc20_stylus     | 2,774,666,892 | +39.6%  | 632,001,143      | +67.5%            | 22.8%     | 99,878      | 108,553           |
+| bench_erc20_ink        | 2,845,302,325 | +43.1%  | 685,354,536      | +81.7%            | 24.1%     | 91,517      | 100,192           |
 
 
 ### BenchERC20 - transfer
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchERC20_evm     | 823,119,179   | -       | 359,128,876      | -                 | 43.6%     | 50,314      | 14,133            |
-| BenchERC20_pvm     | 901,081,589   | +9.5%   | 437,091,286      | +21.7%            | 48.5%     | 59,177      | 22,820            |
-| bench_erc20_stylus | 1,137,107,475 | +38.1%  | 673,117,172      | +87.4%            | 59.2%     | 69,916      | 33,926            |
-| bench_erc20_ink    | 1,337,456,196 | +62.5%  | 873,454,709      | +143.2%           | 65.3%     | 84,208      | 26,277            |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchERC20_evm         | 1,139,744,219 | -       | 223,967,124      | -                 | 19.7%     | 29,765      | 38,440            |
+| BenchERC20_pvm         | 1,223,323,929 | +7.3%   | 307,546,834      | +37.3%            | 25.1%     | 38,592      | 47,267            |
+| bench_erc20_macro_rust | 1,294,789,633 | +13.6%  | 379,012,538      | +69.2%            | 29.3%     | 35,973      | 44,648            |
+| bench_erc20_dsl_rust   | 1,329,991,137 | +16.7%  | 414,214,042      | +84.9%            | 31.1%     | 33,735      | 42,410            |
+| bench_erc20_stylus     | 1,472,779,341 | +29.2%  | 557,002,246      | +148.7%           | 37.8%     | 49,399      | 58,074            |
+| bench_erc20_ink        | 1,740,947,894 | +52.7%  | 825,170,799      | +268.4%           | 47.4%     | 60,320      | 68,995            |
 
 
 ### BenchERC721 - deploy
 
-| Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchERC721_evm     | 785,210,167   | -       | 1,444,040        | -                 | 0.2%      | 10,670      | 10,932            |
-| BenchERC721_pvm     | 990,324,184   | +26.1%  | 8,000,024        | +454.0%           | 0.8%      | 32,261      | 10,366            |
-| bench_erc721_stylus | 1,113,651,975 | +41.8%  | 10,432,817       | +622.5%           | 0.9%      | 45,407      | 11,488            |
-| bench_erc721_ink    | 1,206,745,539 | +53.7%  | 93,649,519       | +6385.2%          | 7.8%      | 56,738      | 11,820            |
+| Implementation          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ----------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchERC721_evm         | 1,612,063,344 | -       | 1,485,600        | +3484.6%          | 0.1%      | 10,676      | 19,351            |
+| bench_erc721_dsl_rust   | 1,697,904,428 | +5.3%   | 41,444           | -                 | 0.0%      | 20,252      | 28,927            |
+| bench_erc721_macro_rust | 1,771,247,624 | +9.9%   | 21,937,670       | +52833.3%         | 1.2%      | 25,898      | 34,573            |
+| BenchERC721_pvm         | 1,816,445,314 | +12.7%  | 8,753,785        | +21022.0%         | 0.5%      | 32,303      | 40,978            |
+| bench_erc721_stylus     | 1,938,598,931 | +20.3%  | 11,382,407       | +27364.5%         | 0.6%      | 45,416      | 54,091            |
+| bench_erc721_ink        | 2,172,974,846 | +34.8%  | 179,884,217      | +433941.6%        | 8.3%      | 62,900      | 71,575            |
 
 
 ### BenchERC721 - mint
 
-| Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchERC721_evm     | 922,755,794   | -       | 459,134,563      | -                 | 49.8%     | 70,925      | 13,671            |
-| BenchERC721_pvm     | 988,841,891   | +7.2%   | 525,220,660      | +14.4%            | 53.1%     | 78,020      | 20,605            |
-| bench_erc721_stylus | 1,202,365,144 | +30.3%  | 738,743,913      | +60.9%            | 61.4%     | 82,402      | 25,776            |
-| bench_erc721_ink    | 1,227,241,277 | +33.0%  | 763,620,046      | +66.3%            | 62.2%     | 84,579      | 26,148            |
+| Implementation          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ----------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchERC721_evm         | 1,144,907,740 | -       | 229,494,470      | -                 | 20.0%     | 29,798      | 38,473            |
+| BenchERC721_pvm         | 1,216,241,600 | +6.2%   | 300,828,330      | +31.1%            | 24.7%     | 37,032      | 45,707            |
+| bench_erc721_macro_rust | 1,247,005,840 | +8.9%   | 331,592,570      | +44.5%            | 26.6%     | 34,897      | 43,572            |
+| bench_erc721_dsl_rust   | 1,282,611,356 | +12.0%  | 367,198,086      | +60.0%            | 28.6%     | 33,016      | 41,691            |
+| bench_erc721_stylus     | 1,441,734,296 | +25.9%  | 526,321,026      | +129.3%           | 36.5%     | 41,403      | 50,078            |
+| bench_erc721_ink        | 1,541,708,779 | +34.7%  | 626,295,509      | +172.9%           | 40.6%     | 55,888      | 64,563            |
 
 
 ### BenchStorage - deploy
 
-| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchStorage_evm     | 768,512,767   | -       | 1,300,040        | -                 | 0.2%      | 8,870       | 11,353            |
-| BenchStorage_pvm     | 845,032,178   | +10.0%  | 7,770,980        | +497.7%           | 0.9%      | 16,487      | 10,422            |
-| bench_storage_ink    | 946,956,930   | +23.2%  | 93,611,345       | +7100.7%          | 9.9%      | 28,493      | 11,318            |
-| bench_storage_stylus | 1,045,319,335 | +36.0%  | 5,775,589        | +344.3%           | 0.6%      | 38,483      | 10,736            |
+| Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchStorage_evm         | 1,595,512,344 | -       | 1,341,600        | +3137.1%          | 0.1%      | 8,876       | 17,551            |
+| bench_storage_dsl_rust   | 1,629,733,343 | +2.1%   | 41,444           | -                 | 0.0%      | 12,773      | 21,448            |
+| bench_storage_macro_rust | 1,656,628,429 | +3.8%   | 6,810,610        | +16333.3%         | 0.4%      | 14,981      | 23,656            |
+| BenchStorage_pvm         | 1,669,903,121 | +4.7%   | 8,463,677        | +20322.0%         | 0.5%      | 16,256      | 24,931            |
+| bench_storage_stylus     | 1,870,430,503 | +17.2%  | 6,326,239        | +15164.5%         | 0.3%      | 38,492      | 47,167            |
+| bench_storage_ink        | 1,876,024,466 | +17.6%  | 179,884,217      | +433941.6%        | 9.6%      | 30,320      | 38,995            |
 
 
 ### BenchStorage - read_100
 
-| Implementation       | ref_time       | vs Best  | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------------- | -------------- | -------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| BenchStorage_evm     | 562,691,920    | -        | 98,701,617       | -                 | 17.5%     | 8,754       | 8,091             |
-| BenchStorage_pvm     | 1,394,895,164  | +147.9%  | 930,904,861      | +843.2%           | 66.7%     | 11,319      | 10,537            |
-| bench_storage_ink    | 7,656,951,707  | +1260.8% | 7,192,950,220    | +7187.6%          | 93.9%     | 1,047,862   | 11,801            |
-| bench_storage_stylus | 11,880,507,347 | +2011.4% | 11,416,505,860   | +11466.7%         | 96.1%     | 1,044,354   | 18,498            |
+| Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| BenchStorage_evm         | 1,014,390,190 | -       | 98,613,095       | -                 | 9.7%      | 8,783       | 17,458            |
+| bench_storage_dsl_rust   | 1,877,003,547 | +85.0%  | 961,226,452      | +874.7%           | 51.2%     | 20,365      | 29,040            |
+| BenchStorage_pvm         | 1,941,410,612 | +91.4%  | 1,025,633,517    | +940.1%           | 52.8%     | 11,269      | 19,944            |
+| bench_storage_ink        | 3,695,162,376 | +264.3% | 2,779,385,281    | +2718.5%          | 75.2%     | 33,052      | 41,727            |
+| bench_storage_macro_rust | 4,476,998,113 | +341.3% | 3,561,221,018    | +3511.3%          | 79.5%     | 21,101      | 29,776            |
+| bench_storage_stylus     | 7,657,299,251 | +654.9% | 6,741,522,156    | +6736.3%          | 88.0%     | 28,937      | 37,612            |
 
 
 ### CoinTool_App - deploy
 
 | Implementation   | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| CoinTool_App_evm | 984,817,975   | -       | 142,783,880      | -                 | 14.5%     | 37,552      | 12,182            |
-| CoinTool_App_pvm | 1,759,364,137 | +78.6%  | 196,622,595      | +37.7%            | 11.2%     | 115,889     | 12,446            |
+| CoinTool_App_evm | 1,749,080,438 | -       | 80,739,029       | -                 | 4.6%      | 27,272      | 35,947            |
+| CoinTool_App_pvm | 2,566,828,736 | +46.8%  | 206,440,067      | +155.7%           | 8.0%      | 103,196     | 111,871           |
 
 
 ### CoinTool_App - t
 
 | Implementation   | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| CoinTool_App_evm | 5,132,559,489 | -       | 4,664,945,570    | -                 | 90.9%     | 426,630     | 44,094            |
-| CoinTool_App_pvm | 6,142,444,328 | +19.7%  | 5,674,830,409    | +21.6%            | 92.4%     | 744,974     | 179,449           |
+| CoinTool_App_evm | 6,878,237,539 | -       | 5,958,899,369    | -                 | 86.6%     | 241,610     | 250,285           |
+| CoinTool_App_pvm | 7,787,540,650 | +13.2%  | 6,868,202,480    | +15.3%            | 88.2%     | 531,717     | 540,392           |
 
 
 ### Computation - deploy
 
-| Implementation     | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Computation_evm    | 763,225,257 | -       | 1,254,440        | -                 | 0.2%      | 8,300       | 10,805            |
-| computation_stylus | 827,533,682 | +8.4%   | 6,080,981        | +384.8%           | 0.7%      | 14,768      | 10,831            |
-| Computation_pvm    | 832,366,574 | +9.1%   | 7,961,850        | +534.7%           | 1.0%      | 15,089      | 11,421            |
-| computation_ink    | 886,629,819 | +16.2%  | 91,359,079       | +7182.9%          | 10.3%     | 22,178      | 11,694            |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| Computation_evm        | 1,590,271,194 | -       | 1,296,000        | +3027.1%          | 0.1%      | 8,306       | 16,981            |
+| computation_macro_rust | 1,607,573,303 | +1.1%   | 1,671,554        | +3933.3%          | 0.1%      | 10,163      | 18,838            |
+| computation_dsl_rust   | 1,622,979,128 | +2.1%   | 41,444           | -                 | 0.0%      | 12,032      | 20,707            |
+| computation_stylus     | 1,654,588,805 | +4.0%   | 6,657,791        | +15964.5%         | 0.4%      | 14,774      | 23,449            |
+| Computation_pvm        | 1,660,143,515 | +4.4%   | 8,712,341        | +20922.0%         | 0.5%      | 15,158      | 23,833            |
+| computation_ink        | 1,825,976,292 | +14.8%  | 179,221,113      | +432341.6%        | 9.8%      | 24,902      | 33,577            |
 
 
 ### Computation - odd_product_10
 
-| Implementation     | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Computation_evm    | 479,397,287 | -       | 15,776,056       | -                 | 3.3%      | 8,465       | 7,711             |
-| computation_stylus | 501,100,618 | +4.5%   | 37,479,387       | +137.6%           | 7.5%      | 10,647      | 9,487             |
-| Computation_pvm    | 518,005,145 | +8.1%   | 54,383,914       | +244.7%           | 10.5%     | 10,754      | 10,076            |
-| computation_ink    | 541,074,336 | +12.9%  | 77,453,105       | +391.0%           | 14.3%     | 19,955      | 9,736             |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| Computation_evm        | 931,222,485   | -       | 15,809,215       | -                 | 1.7%      | 8,494       | 17,169            |
+| computation_macro_rust | 931,945,615   | +0.1%   | 16,532,345       | +4.6%             | 1.8%      | 9,139       | 17,814            |
+| computation_stylus     | 955,475,472   | +2.6%   | 40,073,227       | +153.5%           | 4.2%      | 10,673      | 19,348            |
+| Computation_pvm        | 974,299,265   | +4.6%   | 58,885,995       | +272.5%           | 6.0%      | 10,804      | 19,479            |
+| computation_dsl_rust   | 979,269,983   | +5.2%   | 63,856,713       | +303.9%           | 6.5%      | 9,762       | 18,437            |
+| computation_ink        | 1,026,278,642 | +10.2%  | 110,865,372      | +601.3%           | 10.8%     | 20,890      | 29,565            |
 
 
 ### Computation - triangle_10
 
-| Implementation     | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Computation_evm    | 476,278,801 | -       | 12,657,570       | -                 | 2.7%      | 8,465       | 7,536             |
-| computation_stylus | 499,955,398 | +5.0%   | 36,334,167       | +187.1%           | 7.3%      | 10,647      | 9,662             |
-| Computation_pvm    | 513,042,525 | +7.7%   | 49,421,294       | +290.4%           | 9.6%      | 10,754      | 10,076            |
-| computation_ink    | 539,661,898 | +13.3%  | 76,040,667       | +500.8%           | 14.1%     | 19,955      | 9,561             |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| Computation_evm        | 928,108,465   | -       | 12,695,195       | -                 | 1.4%      | 8,494       | 17,169            |
+| computation_macro_rust | 931,033,847   | +0.3%   | 15,620,577       | +23.0%            | 1.7%      | 9,139       | 17,814            |
+| computation_stylus     | 954,243,177   | +2.8%   | 38,829,907       | +205.9%           | 4.1%      | 10,676      | 19,351            |
+| Computation_pvm        | 968,414,217   | +4.3%   | 53,000,947       | +317.5%           | 5.5%      | 10,804      | 19,479            |
+| computation_dsl_rust   | 978,731,211   | +5.5%   | 63,317,941       | +398.8%           | 6.5%      | 9,762       | 18,437            |
+| computation_ink        | 1,024,910,990 | +10.4%  | 109,497,720      | +762.5%           | 10.7%     | 20,890      | 29,565            |
 
 
 ### DocumentAccessManagement - configurePublicAccess
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 888,195,688   | -       | 423,836,313      | -                 | 47.7%     | 69,205      | 23,956            |
-| DocumentAccessManagement_pvm | 1,104,804,557 | +24.4%  | 640,433,998      | +51.1%            | 58.0%     | 149,769     | 103,893           |
+| DocumentAccessManagement_evm | 1,312,009,444 | -       | 395,879,549      | -                 | 30.2%     | 58,942      | 67,617            |
+| DocumentAccessManagement_pvm | 1,541,101,025 | +17.5%  | 624,971,130      | +57.9%            | 40.6%     | 140,451     | 149,126           |
 
 
 ### DocumentAccessManagement - createDocument
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 2,586,148,494 | -       | 2,119,250,351    | -                 | 81.9%     | 295,924     | 22,628            |
-| DocumentAccessManagement_pvm | 3,225,845,391 | +24.7%  | 2,758,947,248    | +30.2%            | 85.5%     | 396,711     | 102,740           |
+| DocumentAccessManagement_evm | 2,154,411,414 | -       | 1,235,789,869    | -                 | 57.4%     | 131,323     | 139,998           |
+| DocumentAccessManagement_pvm | 2,720,309,388 | +26.3%  | 1,801,687,843    | +45.8%            | 66.2%     | 212,832     | 221,507           |
 
 
 ### DocumentAccessManagement - createDocument2
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 2,586,163,662 | -       | 2,119,265,519    | -                 | 81.9%     | 295,956     | 23,660            |
-| DocumentAccessManagement_pvm | 3,225,897,039 | +24.7%  | 2,758,998,896    | +30.2%            | 85.5%     | 396,775     | 103,422           |
+| DocumentAccessManagement_evm | 2,154,460,662 | -       | 1,235,839,117    | -                 | 57.4%     | 131,355     | 140,030           |
+| DocumentAccessManagement_pvm | 2,720,358,636 | +26.3%  | 1,801,737,091    | +45.8%            | 66.2%     | 212,864     | 221,539           |
 
 
 ### DocumentAccessManagement - deploy
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 1,017,276,198 | -       | 3,445,400        | -                 | 0.3%      | 35,687      | 12,827            |
-| DocumentAccessManagement_pvm | 3,244,616,153 | +219.0% | 8,000,024        | +132.2%           | 0.2%      | 277,394     | 11,827            |
+| DocumentAccessManagement_evm | 1,842,105,684 | -       | 3,486,960        | -                 | 0.2%      | 35,696      | 44,371            |
+| DocumentAccessManagement_pvm | 4,075,547,194 | +121.2% | 8,753,785        | +151.0%           | 0.2%      | 280,151     | 288,826           |
 
 
 ### DocumentAccessManagement - grantAccessWithShare
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 2,537,451,866 | -       | 2,070,911,611    | -                 | 81.6%     | 285,635     | 23,551            |
-| DocumentAccessManagement_pvm | 2,991,085,119 | +17.9%  | 2,524,544,864    | +21.9%            | 84.4%     | 366,036     | 103,663           |
+| DocumentAccessManagement_evm | 2,425,032,107 | -       | 1,506,763,362    | -                 | 62.1%     | 151,901     | 160,576           |
+| DocumentAccessManagement_pvm | 2,916,906,207 | +20.3%  | 1,998,637,462    | +32.6%            | 68.5%     | 233,410     | 242,085           |
 
 
 ### DocumentAccessManagement - registerKeys
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 863,802,720   | -       | 399,443,345      | -                 | 46.2%     | 58,852      | 23,281            |
-| DocumentAccessManagement_pvm | 1,232,562,521 | +42.7%  | 768,191,962      | +92.3%            | 62.3%     | 159,930     | 103,043           |
+| DocumentAccessManagement_evm | 1,420,843,733 | -       | 504,713,838      | -                 | 35.5%     | 48,589      | 57,264            |
+| DocumentAccessManagement_pvm | 1,682,013,327 | +18.4%  | 765,883,432      | +51.7%            | 45.5%     | 130,098     | 138,773           |
 
 
 ### DocumentAccessManagement - revokeAccess
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 3,355,191,106 | -       | 2,890,820,547    | -                 | 86.2%     | 419,034     | 23,330            |
-| DocumentAccessManagement_pvm | 3,851,987,998 | +14.8%  | 3,387,617,439    | +17.2%            | 87.9%     | 499,627     | 103,267           |
+| DocumentAccessManagement_evm | 2,540,035,628 | -       | 1,623,905,733    | -                 | 63.9%     | 141,254     | 149,929           |
+| DocumentAccessManagement_pvm | 3,071,177,929 | +20.9%  | 2,155,048,034    | +32.7%            | 70.2%     | 222,763     | 231,438           |
 
 
 ### DocumentAccessManagement - transferOwnership
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 2,794,915,972 | -       | 2,330,545,413    | -                 | 83.4%     | 346,915     | 24,064            |
-| DocumentAccessManagement_pvm | 3,292,093,042 | +17.8%  | 2,827,722,483    | +21.3%            | 85.9%     | 437,637     | 104,176           |
+| DocumentAccessManagement_evm | 1,911,837,862 | -       | 995,707,967      | -                 | 52.1%     | 100,002     | 108,677           |
+| DocumentAccessManagement_pvm | 2,390,084,286 | +25.0%  | 1,473,954,391    | +48.0%            | 61.7%     | 181,511     | 190,186           |
 
 
 ### DocumentAccessManagement - updateDocument
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DocumentAccessManagement_evm | 1,168,495,058 | -       | 701,596,915      | -                 | 60.0%     | 100,785     | 18,806            |
-| DocumentAccessManagement_pvm | 1,470,909,447 | +25.9%  | 1,004,011,304    | +43.1%            | 68.3%     | 181,378     | 99,144            |
+| DocumentAccessManagement_evm | 1,612,138,847 | -       | 693,517,302      | -                 | 43.0%     | 80,230      | 88,905            |
+| DocumentAccessManagement_pvm | 1,928,395,104 | +19.6%  | 1,009,773,559    | +45.6%            | 52.4%     | 161,739     | 170,414           |
 
 
 ### DotNS - createSubdomain
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| dotns_rust     | 2,158,487,963 | -       | 1,692,305,596    | -                 | 78.4%     | 83,574      | 37,157            |
-| DotNS_evm      | 3,196,661,137 | +48.1%  | 2,730,478,770    | +61.3%            | 85.4%     | 294,440     | 23,552            |
-| DotNS_pvm      | 8,362,813,104 | +287.4% | 7,896,630,737    | +366.6%           | 94.4%     | 381,757     | 90,809            |
+| dotns_rust     | 2,752,896,370 | -       | 1,834,980,425    | -                 | 66.7%     | 73,340      | 82,015            |
+| DotNS_evm      | 3,172,532,808 | +15.2%  | 2,254,616,863    | +22.9%            | 71.1%     | 170,995     | 179,670           |
+| DotNS_pvm      | 9,335,250,859 | +239.1% | 8,417,334,914    | +358.7%           | 90.2%     | 238,936     | 247,611           |
 
 
 ### DotNS - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DotNS_evm      | 981,321,130   | -       | 3,135,320        | +168.6%           | 0.3%      | 31,811      | 11,889            |
-| dotns_rust     | 1,389,904,872 | +41.6%  | 1,167,153        | -                 | 0.1%      | 76,454      | 11,972            |
-| DotNS_pvm      | 2,836,464,487 | +189.0% | 8,000,024        | +585.4%           | 0.3%      | 233,012     | 12,399            |
+| DotNS_evm      | 1,806,465,864 | -       | 3,176,880        | +158.9%           | 0.2%      | 31,820      | 40,495            |
+| dotns_rust     | 2,211,436,968 | +22.4%  | 1,227,039        | -                 | 0.1%      | 76,463      | 85,138            |
+| DotNS_pvm      | 3,669,200,494 | +103.1% | 8,753,785        | +613.4%           | 0.2%      | 235,571     | 244,246           |
 
 
 ### DotNS - register
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| dotns_rust     | 1,696,909,390 | -       | 1,232,192,127    | -                 | 72.6%     | 72,531      | 36,243            |
-| DotNS_evm      | 2,700,022,671 | +59.1%  | 2,235,294,224    | +81.4%            | 82.8%     | 263,151     | 20,759            |
-| DotNS_pvm      | 5,041,449,868 | +197.1% | 4,576,721,421    | +271.4%           | 90.8%     | 350,404     | 88,229            |
+| dotns_rust     | 2,261,751,726 | -       | 1,345,269,031    | -                 | 59.5%     | 62,300      | 70,975            |
+| DotNS_evm      | 2,645,387,753 | +17.0%  | 1,728,905,058    | +28.5%            | 65.4%     | 139,706     | 148,381           |
+| DotNS_pvm      | 5,321,613,263 | +135.3% | 4,405,130,568    | +227.5%           | 82.8%     | 207,647     | 216,322           |
 
 
 ### DotNS - register_with_duration
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| dotns_rust     | 1,695,855,875 | -       | 1,231,138,612    | -                 | 72.6%     | 72,571      | 36,417            |
-| DotNS_evm      | 2,693,288,773 | +58.8%  | 2,228,560,326    | +81.0%            | 82.7%     | 263,183     | 21,477            |
-| DotNS_pvm      | 4,952,410,338 | +192.0% | 4,487,681,891    | +264.5%           | 90.6%     | 350,564     | 88,909            |
+| dotns_rust     | 2,260,439,273 | -       | 1,343,956,578    | -                 | 59.5%     | 62,340      | 71,015            |
+| DotNS_evm      | 2,639,089,684 | +16.8%  | 1,722,606,989    | +28.2%            | 65.3%     | 139,738     | 148,413           |
+| DotNS_pvm      | 5,212,405,266 | +130.6% | 4,295,922,571    | +219.6%           | 82.4%     | 207,679     | 216,354           |
 
 
 ### DotNS - release
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| dotns_rust     | 1,238,297,428 | -       | 773,938,053      | -                 | 62.5%     | 52,627      | 35,973            |
-| DotNS_evm      | 2,779,849,642 | +124.5% | 2,315,479,083    | +199.2%           | 83.3%     | 283,985     | 22,644            |
-| DotNS_pvm      | 4,471,135,549 | +261.1% | 4,006,764,990    | +417.7%           | 89.6%     | 351,076     | 89,990            |
+| dotns_rust     | 1,638,842,530 | -       | 722,712,635      | -                 | 44.1%     | 42,043      | 50,718            |
+| DotNS_evm      | 2,627,631,532 | +60.3%  | 1,711,501,637    | +136.8%           | 65.1%     | 139,962     | 148,637           |
+| DotNS_pvm      | 4,661,105,578 | +184.4% | 3,744,975,683    | +418.2%           | 80.3%     | 207,903     | 216,578           |
 
 
 ### DotNS - renew
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DotNS_evm      | 976,958,581   | -       | 512,241,318      | -                 | 52.4%     | 57,752      | 17,411            |
-| dotns_rust     | 1,290,850,778 | +32.1%  | 826,133,515      | +61.3%            | 64.0%     | 52,723      | 32,298            |
-| DotNS_pvm      | 2,354,657,121 | +141.0% | 1,889,928,674    | +269.0%           | 80.3%     | 124,846     | 84,546            |
+| DotNS_evm      | 1,317,290,327 | -       | 400,807,632      | -                 | 30.4%     | 37,200      | 45,875            |
+| dotns_rust     | 1,695,139,867 | +28.7%  | 778,668,197      | +94.3%            | 45.9%     | 42,136      | 50,811            |
+| DotNS_pvm      | 2,988,236,162 | +126.8% | 2,071,753,467    | +416.9%           | 69.3%     | 105,141     | 113,816           |
 
 
 ### DotNS - setAddress
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DotNS_evm      | 1,034,982,647 | -       | 570,265,384      | -                 | 55.1%     | 68,041      | 17,524            |
-| dotns_rust     | 1,340,114,629 | +29.5%  | 875,397,366      | +53.5%            | 65.3%     | 52,723      | 32,166            |
-| DotNS_pvm      | 2,413,990,120 | +133.2% | 1,949,261,673    | +241.8%           | 80.7%     | 145,424     | 84,682            |
+| DotNS_evm      | 1,455,047,496 | -       | 538,564,801      | -                 | 37.0%     | 57,778      | 66,453            |
+| dotns_rust     | 1,747,880,479 | +20.1%  | 831,397,784      | +54.4%            | 47.6%     | 42,139      | 50,814            |
+| DotNS_pvm      | 3,056,662,607 | +110.1% | 2,140,179,912    | +297.4%           | 70.0%     | 125,719     | 134,394           |
 
 
 ### DotNS - setMetadata
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| DotNS_evm      | 972,066,128   | -       | 507,348,865      | -                 | 52.2%     | 57,720      | 22,186            |
-| dotns_rust     | 1,302,031,824 | +33.9%  | 837,314,561      | +65.0%            | 64.3%     | 52,723      | 32,129            |
-| DotNS_pvm      | 2,285,868,328 | +135.2% | 1,821,139,881    | +259.0%           | 79.7%     | 124,814     | 89,470            |
+| DotNS_evm      | 1,539,826,707 | -       | 623,344,012      | -                 | 40.5%     | 57,746      | 66,421            |
+| dotns_rust     | 1,707,261,516 | +10.9%  | 790,778,821      | +26.9%            | 46.3%     | 42,139      | 50,814            |
+| DotNS_pvm      | 3,131,689,874 | +103.4% | 2,215,207,179    | +255.4%           | 70.7%     | 125,687     | 134,362           |
 
 
 ### DotNS - setSubdomainOwner
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| dotns_rust     | 2,268,064,583 | -       | 1,802,251,288    | -                 | 79.5%     | 84,181      | 32,802            |
-| DotNS_evm      | 3,164,152,446 | +39.5%  | 2,698,339,151    | +49.7%            | 85.3%     | 294,597     | 19,246            |
-| DotNS_pvm      | 6,728,274,516 | +196.7% | 6,262,461,221    | +247.5%           | 93.1%     | 371,881     | 86,811            |
+| DotNS_evm      | 2,870,083,735 | -       | 1,952,531,615    | -                 | 68.0%     | 150,574     | 159,249           |
+| dotns_rust     | 2,871,789,283 | +0.1%   | 1,954,237,163    | +0.1%             | 68.0%     | 73,594      | 82,269            |
+| DotNS_pvm      | 7,125,359,147 | +148.3% | 6,207,807,027    | +217.9%           | 87.1%     | 218,515     | 227,190           |
 
 
 ### DotNS - transfer
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| dotns_rust     | 1,750,476,397 | -       | 1,285,759,134    | -                 | 73.5%     | 73,237      | 36,810            |
-| DotNS_evm      | 2,807,862,951 | +60.4%  | 2,343,134,504    | +82.2%            | 83.4%     | 283,985     | 18,543            |
-| DotNS_pvm      | 4,429,087,207 | +153.0% | 3,964,358,760    | +208.3%           | 89.5%     | 361,205     | 85,328            |
+| dotns_rust     | 2,335,327,947 | -       | 1,418,845,252    | -                 | 60.8%     | 62,653      | 71,328            |
+| DotNS_evm      | 2,459,453,052 | +5.3%   | 1,542,970,357    | +8.7%             | 62.7%     | 129,673     | 138,348           |
+| DotNS_pvm      | 4,323,024,607 | +85.1%  | 3,406,541,912    | +140.1%           | 78.8%     | 197,614     | 206,289           |
 
 
 ### Escrow - create_simple
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| escrow_rust    | 1,982,953,211 | -       | 1,518,146,476    | -                 | 76.6%     | 93,248      | 25,625            |
-| Escrow_evm     | 2,621,155,361 | +32.2%  | 2,156,348,626    | +42.0%            | 82.3%     | 310,653     | 16,606            |
-| Escrow_pvm     | 3,075,567,059 | +55.1%  | 2,610,760,324    | +72.0%            | 84.9%     | 360,457     | 47,115            |
+| Escrow_evm     | 2,047,436,353 | -       | 1,130,876,483    | -                 | 55.2%     | 125,538     | 134,213           |
+| Escrow_pvm     | 2,414,016,743 | +17.9%  | 1,497,456,873    | +32.4%            | 62.0%     | 155,507     | 164,182           |
+| escrow_rust    | 2,824,448,651 | +38.0%  | 1,907,888,781    | +68.7%            | 67.5%     | 83,006      | 91,681            |
 
 
 ### Escrow - create_with_arbiter
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| escrow_rust    | 1,982,968,379 | -       | 1,518,161,644    | -                 | 76.6%     | 93,280      | 26,104            |
-| Escrow_evm     | 2,621,228,129 | +32.2%  | 2,156,421,394    | +42.0%            | 82.3%     | 310,781     | 17,255            |
-| Escrow_pvm     | 3,073,376,536 | +55.0%  | 2,608,569,801    | +71.8%            | 84.9%     | 360,713     | 47,764            |
+| Escrow_evm     | 2,047,645,313 | -       | 1,131,085,443    | -                 | 55.2%     | 125,666     | 134,341           |
+| Escrow_pvm     | 2,411,743,320 | +17.8%  | 1,495,183,450    | +32.2%            | 62.0%     | 155,635     | 164,310           |
+| escrow_rust    | 2,824,462,539 | +37.9%  | 1,907,902,669    | +68.7%            | 67.5%     | 83,038      | 91,713            |
 
 
 ### Escrow - create_with_expiry
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| escrow_rust    | 1,982,968,379 | -       | 1,518,161,644    | -                 | 76.6%     | 93,280      | 26,207            |
-| Escrow_evm     | 2,621,243,297 | +32.2%  | 2,156,436,562    | +42.0%            | 82.3%     | 310,813     | 17,697            |
-| Escrow_pvm     | 3,071,693,501 | +54.9%  | 2,606,886,766    | +71.7%            | 84.9%     | 360,841     | 48,206            |
+| Escrow_evm     | 2,047,670,145 | -       | 1,131,110,275    | -                 | 55.2%     | 125,666     | 134,341           |
+| Escrow_pvm     | 2,409,985,673 | +17.7%  | 1,493,425,803    | +32.0%            | 62.0%     | 155,635     | 164,310           |
+| escrow_rust    | 2,824,462,539 | +37.9%  | 1,907,902,669    | +68.7%            | 67.5%     | 83,038      | 91,713            |
 
 
 ### Escrow - create_with_releaseTime
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| escrow_rust    | 1,982,968,379 | -       | 1,518,161,644    | -                 | 76.6%     | 93,280      | 25,999            |
-| Escrow_evm     | 2,621,270,561 | +32.2%  | 2,156,463,826    | +42.0%            | 82.3%     | 310,845     | 17,145            |
-| Escrow_pvm     | 3,069,806,122 | +54.8%  | 2,604,999,387    | +71.6%            | 84.9%     | 360,905     | 47,654            |
+| Escrow_evm     | 2,047,706,945 | -       | 1,131,147,075    | -                 | 55.2%     | 125,666     | 134,341           |
+| Escrow_pvm     | 2,408,037,418 | +17.6%  | 1,491,477,548    | +31.9%            | 61.9%     | 155,635     | 164,310           |
+| escrow_rust    | 2,824,462,539 | +37.9%  | 1,907,902,669    | +68.7%            | 67.5%     | 83,038      | 91,713            |
 
 
 ### Escrow - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Escrow_evm     | 1,097,501,380 | -       | 228,071,408      | +58.5%            | 20.8%     | 50,788      | 12,250            |
-| escrow_rust    | 1,254,162,700 | +14.3%  | 143,908,347      | -                 | 11.5%     | 56,429      | 12,651            |
-| Escrow_pvm     | 1,926,205,739 | +75.5%  | 240,306,901      | +67.0%            | 12.5%     | 139,538     | 13,217            |
+| Escrow_evm     | 1,946,955,440 | -       | 251,471,471      | +9.8%             | 12.9%     | 40,505      | 49,180            |
+| escrow_rust    | 2,163,279,031 | +11.1%  | 229,089,532      | -                 | 10.6%     | 56,438      | 65,113            |
+| Escrow_pvm     | 2,777,986,961 | +42.7%  | 264,302,222      | +15.4%            | 9.5%      | 130,271     | 138,946           |
 
 
 ### Escrow - refund
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Escrow_evm     | 1,607,718,059 | -       | 1,144,074,460    | -                 | 71.2%     | 161,020     | 18,476            |
-| escrow_rust    | 1,640,192,544 | +2.0%   | 1,176,560,129    | +2.8%             | 71.7%     | 77,302      | 23,964            |
-| Escrow_pvm     | 1,708,357,095 | +6.3%   | 1,244,713,496    | +8.8%             | 72.9%     | 190,598     | 48,985            |
+| Escrow_evm     | 1,850,842,746 | -       | 935,429,476      | -                 | 50.5%     | 78,738      | 87,413            |
+| Escrow_pvm     | 1,955,829,704 | +5.7%   | 1,040,416,434    | +11.2%            | 53.2%     | 108,707     | 117,382           |
+| escrow_rust    | 2,105,539,885 | +13.8%  | 1,190,126,615    | +27.2%            | 56.5%     | 46,477      | 55,152            |
 
 
 ### Escrow - release
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Escrow_evm     | 1,605,859,257 | -       | 1,142,215,658    | -                 | 71.1%     | 161,020     | 20,582            |
-| escrow_rust    | 1,636,297,182 | +1.9%   | 1,172,664,767    | +2.7%             | 71.7%     | 77,300      | 28,999            |
-| Escrow_pvm     | 1,709,731,359 | +6.5%   | 1,246,087,760    | +9.1%             | 72.9%     | 190,598     | 51,091            |
+| Escrow_evm     | 1,912,487,603 | -       | 997,074,333      | -                 | 52.1%     | 89,027      | 97,702            |
+| Escrow_pvm     | 2,020,408,245 | +5.6%   | 1,104,994,975    | +10.8%            | 54.7%     | 118,996     | 127,671           |
+| escrow_rust    | 2,101,311,058 | +9.9%   | 1,185,897,788    | +18.9%            | 56.4%     | 46,476      | 55,151            |
 
 
 ### FiatTokenProxy - approve
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 877,546,977   | -       | 413,545,490      | -                 | 47.1%     | 70,349      | 30,229            |
-| FiatTokenProxy_pvm | 1,098,481,927 | +25.2%  | 634,469,256      | +53.4%            | 57.8%     | 167,003     | 128,475           |
+| FiatTokenProxy_evm | 1,501,777,081 | -       | 585,999,986      | -                 | 39.0%     | 70,375      | 79,050            |
+| FiatTokenProxy_pvm | 1,724,108,728 | +14.8%  | 808,331,633      | +37.9%            | 46.9%     | 161,992     | 170,667           |
 
 
 ### FiatTokenProxy - changeAdmin
 
-| Implementation     | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 688,202,402 | -       | 224,569,987      | -                 | 32.6%     | 40,371      | 9,484             |
-| FiatTokenProxy_pvm | 731,829,959 | +6.3%   | 268,208,728      | +19.4%            | 36.6%     | 48,892      | 18,277            |
+| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| FiatTokenProxy_evm | 1,030,510,232 | -       | 115,107,987      | -                 | 11.2%     | 19,816      | 28,491            |
+| FiatTokenProxy_pvm | 1,076,959,741 | +4.5%   | 161,546,471      | +40.3%            | 15.0%     | 27,936      | 36,611            |
 
 
 ### FiatTokenProxy - configureMinter
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 1,073,350,381 | -       | 609,337,710      | -                 | 56.8%     | 101,187     | 30,365            |
-| FiatTokenProxy_pvm | 1,295,913,992 | +20.7%  | 831,912,505      | +36.5%            | 64.2%     | 197,803     | 128,611           |
+| FiatTokenProxy_evm | 1,661,189,113 | -       | 745,412,018      | -                 | 44.9%     | 90,921      | 99,596            |
+| FiatTokenProxy_pvm | 1,881,462,010 | +13.3%  | 965,684,915      | +29.6%            | 51.3%     | 182,538     | 191,213           |
 
 
 ### FiatTokenProxy - deploy
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 1,009,478,057 | -       | 210,427,624      | -                 | 20.8%     | 36,507      | 12,237            |
-| FiatTokenProxy_pvm | 1,259,758,688 | +24.8%  | 234,373,353      | +11.4%            | 18.6%     | 61,173      | 13,642            |
+| FiatTokenProxy_evm | 2,031,056,278 | -       | 405,329,404      | -                 | 20.0%     | 36,513      | 45,188            |
+| FiatTokenProxy_pvm | 2,272,532,085 | +11.9%  | 433,587,251      | +7.0%             | 19.1%     | 59,961      | 68,636            |
 
 
 ### FiatTokenProxy - initialize
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 2,026,599,170 | -       | 1,558,269,475    | -                 | 76.9%     | 246,199     | 30,068            |
-| FiatTokenProxy_pvm | 2,389,949,032 | +17.9%  | 1,921,630,521    | +23.3%            | 80.4%     | 342,559     | 128,139           |
+| FiatTokenProxy_evm | 1,914,382,739 | -       | 994,349,994      | -                 | 51.9%     | 133,043     | 141,718           |
+| FiatTokenProxy_pvm | 2,298,475,704 | +20.1%  | 1,378,442,959    | +38.6%            | 60.0%     | 224,660     | 233,335           |
 
 
 ### FiatTokenProxy - mint
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 1,568,165,840 | -       | 1,104,153,169    | -                 | 70.4%     | 162,921     | 30,784            |
-| FiatTokenProxy_pvm | 1,902,688,288 | +21.3%  | 1,438,686,801    | +30.3%            | 75.6%     | 259,409     | 128,680           |
+| FiatTokenProxy_evm | 1,787,609,404 | -       | 871,832,309      | -                 | 48.8%     | 101,210     | 109,885           |
+| FiatTokenProxy_pvm | 2,134,664,496 | +19.4%  | 1,218,887,401    | +39.8%            | 57.1%     | 192,827     | 201,502           |
 
 
 ### FiatTokenProxy - transfer
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 1,491,617,108 | -       | 1,027,604,437    | -                 | 68.9%     | 152,664     | 30,542            |
-| FiatTokenProxy_pvm | 1,801,477,548 | +20.8%  | 1,337,476,061    | +30.2%            | 74.2%     | 249,216     | 128,613           |
+| FiatTokenProxy_evm | 1,649,343,467 | -       | 733,566,372      | -                 | 44.5%     | 80,664      | 89,339            |
+| FiatTokenProxy_pvm | 1,965,062,494 | +19.1%  | 1,049,285,399    | +43.0%            | 53.4%     | 172,281     | 180,956           |
 
 
 ### FiatTokenProxy - transferFrom
 
 | Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenProxy_evm | 1,877,489,565 | -       | 1,413,141,374    | -                 | 75.3%     | 193,942     | 26,486            |
-| FiatTokenProxy_pvm | 2,284,348,133 | +21.7%  | 1,819,999,942    | +28.8%            | 79.7%     | 290,593     | 123,669           |
+| FiatTokenProxy_evm | 1,858,384,010 | -       | 942,276,165      | -                 | 50.7%     | 91,075      | 99,750            |
+| FiatTokenProxy_pvm | 2,278,107,169 | +22.6%  | 1,361,999,324    | +44.5%            | 59.8%     | 182,692     | 191,367           |
 
 
 ### FiatTokenV2_2 - deploy
 
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FiatTokenV2_2_evm | 1,550,449,566 | -       | 370,891,645      | -                 | 23.9%     | 105,057     | 11,641            |
-| FiatTokenV2_2_pvm | 3,998,966,787 | +157.9% | 389,678,446      | +5.1%             | 9.7%      | 369,203     | 11,973            |
+| FiatTokenV2_2_evm | 2,335,036,893 | -       | 332,156,754      | -                 | 14.2%     | 84,488      | 93,163            |
+| FiatTokenV2_2_pvm | 4,636,077,091 | +98.5%  | 351,480,757      | +5.8%             | 7.6%      | 334,817     | 343,492           |
 
 
 ### Fibonacci - deploy
 
-| Implementation                      | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ----------------------------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| fibonacci_u32_rust                  | 759,321,674 | -       | 38,174           | -                 | 0.0%      | 8,006       | 7,770             |
-| Fibonacci_evm                       | 760,375,995 | +0.1%   | 1,230,440        | +3123.2%          | 0.2%      | 7,991       | 8,679             |
-| fibonacci_u128_rust                 | 761,567,567 | +0.3%   | 38,174           | -                 | 0.0%      | 8,252       | 8,049             |
-| fibonacci_u32_macro_bump_alloc_rust | 764,767,891 | +0.7%   | 38,174           | -                 | 0.0%      | 8,600       | 8,340             |
-| fibonacci_u32_macro_no_alloc_rust   | 766,036,985 | +0.9%   | 38,174           | -                 | 0.0%      | 8,738       | 8,471             |
-| fibonacci_u256_rust                 | 779,914,252 | +2.7%   | 38,174           | -                 | 0.0%      | 10,247      | 7,978             |
-| Fibonacci_pvm                       | 792,163,322 | +4.3%   | 7,541,936        | +19656.7%         | 1.0%      | 10,763      | 8,679             |
-| fibonacci_u32_stylus                | 800,397,031 | +5.4%   | 5,622,893        | +14629.6%         | 0.7%      | 11,867      | 8,023             |
-| fibonacci_u32_ink                   | 867,083,969 | +14.2%  | 91,511,775       | +239622.8%        | 10.6%     | 20,036      | 6,730             |
+| Implementation                      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ----------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| fibonacci_u32_rust                  | 1,586,353,148 | -       | 41,444           | -                 | 0.0%      | 8,012       | 16,687            |
+| Fibonacci_evm                       | 1,587,446,979 | +0.1%   | 1,272,000        | +2969.2%          | 0.1%      | 7,997       | 16,672            |
+| fibonacci_u128_rust                 | 1,588,579,118 | +0.1%   | 41,444           | -                 | 0.0%      | 8,258       | 16,933            |
+| fibonacci_u32_macro_bump_alloc_rust | 1,591,751,138 | +0.3%   | 41,444           | -                 | 0.0%      | 8,606       | 17,281            |
+| fibonacci_u32_macro_no_alloc_rust   | 1,593,009,008 | +0.4%   | 41,444           | -                 | 0.0%      | 8,744       | 17,419            |
+| fibonacci_u32_dsl_rust              | 1,597,657,658 | +0.7%   | 41,444           | -                 | 0.0%      | 9,254       | 17,929            |
+| fibonacci_u32_macro_rust            | 1,598,139,278 | +0.7%   | 1,671,554        | +3933.3%          | 0.1%      | 9,128       | 17,803            |
+| fibonacci_u256_rust                 | 1,606,763,543 | +1.3%   | 41,444           | -                 | 0.0%      | 10,253      | 18,928            |
+| Fibonacci_pvm                       | 1,617,945,062 | +2.0%   | 8,215,013        | +19722.0%         | 0.5%      | 10,583      | 19,258            |
+| fibonacci_u32_stylus                | 1,627,648,862 | +2.6%   | 6,160,463        | +14764.5%         | 0.4%      | 11,873      | 20,548            |
+| fibonacci_u32_ink                   | 1,796,499,235 | +13.2%  | 179,304,001      | +432541.6%        | 10.0%     | 21,659      | 30,334            |
 
 
 ### Fibonacci - fib_10
 
 | Implementation                      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ----------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| fibonacci_u32_rust                  | 533,367,431   | -       | 69,746,200       | -                 | 13.1%     | 8,394       | 7,739             |
-| fibonacci_u32_macro_bump_alloc_rust | 536,242,308   | +0.5%   | 72,621,077       | +4.1%             | 13.5%     | 8,591       | 7,385             |
-| fibonacci_u32_macro_no_alloc_rust   | 540,203,354   | +1.3%   | 76,582,123       | +9.8%             | 14.2%     | 8,637       | 8,015             |
-| fibonacci_u32_stylus                | 541,410,978   | +1.5%   | 77,789,747       | +11.5%            | 14.4%     | 9,680       | 8,959             |
-| Fibonacci_evm                       | 593,896,838   | +11.3%  | 130,275,607      | +86.8%            | 21.9%     | 8,365       | 7,923             |
-| fibonacci_u128_rust                 | 624,647,246   | +17.1%  | 161,026,015      | +130.9%           | 25.8%     | 8,475       | 7,447             |
-| Fibonacci_pvm                       | 703,941,522   | +32.0%  | 240,320,291      | +244.6%           | 34.1%     | 9,312       | 8,804             |
-| fibonacci_u32_ink                   | 728,607,170   | +36.6%  | 264,985,939      | +279.9%           | 36.4%     | 29,498      | 9,195             |
-| fibonacci_u256_rust                 | 2,501,836,467 | +369.1% | 2,038,215,236    | +2822.3%          | 81.5%     | 9,140       | 8,424             |
+| fibonacci_u32_rust                  | 990,737,564   | -       | 75,324,294       | -                 | 7.6%      | 8,423       | 17,098            |
+| fibonacci_u32_macro_bump_alloc_rust | 993,839,485   | +0.3%   | 78,426,215       | +4.1%             | 7.9%      | 8,620       | 17,295            |
+| fibonacci_u32_macro_rust            | 994,333,909   | +0.4%   | 78,920,639       | +4.8%             | 7.9%      | 8,794       | 17,469            |
+| fibonacci_u32_macro_no_alloc_rust   | 998,133,749   | +0.7%   | 82,720,479       | +9.8%             | 8.3%      | 8,666       | 17,341            |
+| fibonacci_u32_stylus                | 999,355,459   | +0.9%   | 83,942,189       | +11.4%            | 8.4%      | 9,709       | 18,384            |
+| fibonacci_u32_dsl_rust              | 1,005,930,287 | +1.5%   | 90,517,017       | +20.2%            | 9.0%      | 8,836       | 17,511            |
+| Fibonacci_evm                       | 1,045,499,155 | +5.5%   | 130,085,885      | +72.7%            | 12.4%     | 8,394       | 17,069            |
+| fibonacci_u128_rust                 | 1,089,825,572 | +10.0%  | 174,412,302      | +131.5%           | 16.0%     | 8,504       | 17,179            |
+| fibonacci_u32_ink                   | 1,135,535,588 | +14.6%  | 220,122,318      | +192.2%           | 19.4%     | 19,809      | 28,484            |
+| Fibonacci_pvm                       | 1,176,334,963 | +18.7%  | 260,921,693      | +246.4%           | 22.2%     | 9,279       | 17,954            |
+| fibonacci_u256_rust                 | 3,127,727,368 | +215.7% | 2,212,314,098    | +2837.1%          | 70.7%     | 9,169       | 17,844            |
 
 
 ### Fibonacci_u256 - deploy
 
-| Implementation                           | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ---------------------------------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Fibonacci_u256_iter_evm                  | 759,040,203 | -       | 1,218,920        | +3093.1%          | 0.2%      | 7,847       | 10,095            |
-| Fibonacci_u256_evm                       | 759,151,519 | +0.0%   | 1,219,880        | +3095.6%          | 0.2%      | 7,859       | 9,867             |
-| fibonacci_u256_iter_primitive_types_rust | 776,355,271 | +2.3%   | 38,174           | -                 | 0.0%      | 9,860       | 9,714             |
-| fibonacci_u256_iter_rust                 | 777,431,242 | +2.4%   | 38,174           | -                 | 0.0%      | 9,977       | 8,456             |
-| fibonacci_u256_primitive_types_rust      | 777,707,132 | +2.5%   | 38,174           | -                 | 0.0%      | 10,007      | 8,912             |
-| fibonacci_u256_rust                      | 779,914,252 | +2.8%   | 38,174           | -                 | 0.0%      | 10,247      | 7,242             |
-| Fibonacci_u256_iter_pvm                  | 794,149,730 | +4.6%   | 7,541,936        | +19656.7%         | 0.9%      | 10,979      | 10,046            |
-| Fibonacci_u256_pvm                       | 796,853,452 | +5.0%   | 7,541,936        | +19656.7%         | 0.9%      | 11,273      | 8,608             |
-| fibonacci_u256_ink                       | 895,059,215 | +17.9%  | 91,511,775       | +239622.8%        | 10.2%     | 23,078      | 8,400             |
-| fibonacci_u256_iter_ink                  | 895,252,338 | +17.9%  | 91,511,775       | +239622.8%        | 10.2%     | 23,099      | 9,615             |
+| Implementation                           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| Fibonacci_u256_iter_evm                  | 1,586,122,899 | -       | 1,260,480        | +2941.4%          | 0.1%      | 7,853       | 16,528            |
+| Fibonacci_u256_evm                       | 1,586,233,239 | +0.0%   | 1,261,440        | +2943.7%          | 0.1%      | 7,865       | 16,540            |
+| fibonacci_u256_iter_primitive_types_rust | 1,603,236,038 | +1.1%   | 41,444           | -                 | 0.0%      | 9,866       | 18,541            |
+| fibonacci_u256_iter_rust                 | 1,604,302,493 | +1.1%   | 41,444           | -                 | 0.0%      | 9,983       | 18,658            |
+| fibonacci_u256_primitive_types_rust      | 1,604,575,943 | +1.2%   | 41,444           | -                 | 0.0%      | 10,013      | 18,688            |
+| fibonacci_u256_rust                      | 1,606,763,543 | +1.3%   | 41,444           | -                 | 0.0%      | 10,253      | 18,928            |
+| Fibonacci_u256_iter_pvm                  | 1,621,144,427 | +2.2%   | 8,215,013        | +19722.0%         | 0.5%      | 10,934      | 19,609            |
+| Fibonacci_u256_pvm                       | 1,622,949,197 | +2.3%   | 8,215,013        | +19722.0%         | 0.5%      | 11,132      | 19,807            |
+| fibonacci_u256_iter_ink                  | 1,814,835,337 | +14.4%  | 179,428,333      | +432841.6%        | 9.9%      | 23,657      | 32,332            |
+| fibonacci_u256_ink                       | 1,816,831,522 | +14.5%  | 179,428,333      | +432841.6%        | 9.9%      | 23,876      | 32,551            |
 
 
 ### Fibonacci_u256 - fib_10
 
 | Implementation                           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Fibonacci_u256_iter_evm                  | 469,707,225   | -       | 6,085,994        | -                 | 1.3%      | 8,317       | 7,631             |
-| Fibonacci_u256_iter_pvm                  | 492,944,638   | +4.9%   | 29,323,407       | +381.8%           | 5.9%      | 9,384       | 8,673             |
-| fibonacci_u256_iter_primitive_types_rust | 502,017,272   | +6.9%   | 38,396,041       | +530.9%           | 7.6%      | 9,011       | 8,348             |
-| fibonacci_u256_iter_rust                 | 554,143,665   | +18.0%  | 90,522,434       | +1387.4%          | 16.3%     | 9,050       | 8,131             |
-| Fibonacci_u256_evm                       | 571,902,557   | +21.8%  | 108,281,326      | +1679.2%          | 18.9%     | 8,321       | 7,539             |
-| fibonacci_u256_iter_ink                  | 672,229,109   | +43.1%  | 208,607,878      | +3327.7%          | 31.0%     | 30,519      | 10,122            |
-| Fibonacci_u256_pvm                       | 875,324,274   | +86.4%  | 411,703,043      | +6664.8%          | 47.0%     | 9,482       | 8,634             |
-| fibonacci_u256_primitive_types_rust      | 1,615,510,017 | +243.9% | 1,151,888,786    | +18826.9%         | 71.3%     | 9,060       | 8,283             |
-| fibonacci_u256_ink                       | 1,761,819,350 | +275.1% | 1,298,198,119    | +21230.9%         | 73.7%     | 30,512      | 9,864             |
-| fibonacci_u256_rust                      | 2,501,836,467 | +432.6% | 2,038,215,236    | +33390.3%         | 81.5%     | 9,140       | 8,424             |
+| Fibonacci_u256_iter_evm                  | 921,488,133   | -       | 6,074,863        | -                 | 0.7%      | 8,346       | 17,021            |
+| Fibonacci_u256_iter_pvm                  | 948,024,543   | +2.9%   | 32,611,273       | +436.8%           | 3.4%      | 9,396       | 18,071            |
+| fibonacci_u256_iter_primitive_types_rust | 956,619,936   | +3.8%   | 41,206,666       | +578.3%           | 4.3%      | 9,040       | 17,715            |
+| fibonacci_u256_iter_rust                 | 1,013,206,336 | +10.0%  | 97,793,066       | +1509.8%          | 9.7%      | 9,079       | 17,754            |
+| Fibonacci_u256_evm                       | 1,023,537,049 | +11.1%  | 108,123,779      | +1679.9%          | 10.6%     | 8,350       | 17,025            |
+| fibonacci_u256_iter_ink                  | 1,073,634,736 | +16.5%  | 158,221,466      | +2504.5%          | 14.7%     | 20,475      | 29,150            |
+| Fibonacci_u256_pvm                       | 1,365,005,835 | +48.1%  | 449,592,565      | +7300.9%          | 32.9%     | 9,462       | 18,137            |
+| fibonacci_u256_primitive_types_rust      | 2,165,488,428 | +135.0% | 1,250,075,158    | +20477.8%         | 57.7%     | 9,089       | 17,764            |
+| fibonacci_u256_ink                       | 2,263,639,708 | +145.7% | 1,348,226,438    | +22093.5%         | 59.6%     | 20,548      | 29,223            |
+| fibonacci_u256_rust                      | 3,127,727,368 | +239.4% | 2,212,314,098    | +36317.5%         | 70.7%     | 9,169       | 17,844            |
 
 
 ### Fibonacci_u256 - fib_15
 
 | Implementation                           | ref_time       | vs Best  | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------------------- | -------------- | -------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Fibonacci_u256_iter_evm                  | 472,088,335    | -        | 8,467,104        | -                 | 1.8%      | 8,317       | 7,631             |
-| Fibonacci_u256_iter_pvm                  | 504,778,578    | +6.9%    | 41,157,347       | +386.1%           | 8.2%      | 9,384       | 8,673             |
-| fibonacci_u256_iter_primitive_types_rust | 516,905,132    | +9.5%    | 53,283,901       | +529.3%           | 10.3%     | 9,011       | 8,348             |
-| fibonacci_u256_iter_rust                 | 598,043,765    | +26.7%   | 134,422,534      | +1487.6%          | 22.5%     | 9,050       | 8,131             |
-| fibonacci_u256_iter_ink                  | 698,760,039    | +48.0%   | 235,138,808      | +2677.1%          | 33.7%     | 30,519      | 10,122            |
-| Fibonacci_u256_evm                       | 1,660,561,411  | +251.7%  | 1,196,940,180    | +14036.4%         | 72.1%     | 8,321       | 7,539             |
-| Fibonacci_u256_pvm                       | 4,988,954,514  | +956.8%  | 4,525,333,283    | +53346.1%         | 90.7%     | 9,482       | 8,634             |
-| fibonacci_u256_primitive_types_rust      | 13,209,259,209 | +2698.0% | 12,745,637,978   | +150431.3%        | 96.5%     | 9,060       | 8,283             |
-| fibonacci_u256_ink                       | 13,321,288,290 | +2721.8% | 12,857,667,059   | +151754.4%        | 96.5%     | 30,512      | 9,864             |
-| fibonacci_u256_rust                      | 23,101,645,097 | +4793.5% | 22,638,012,682   | +267264.3%        | 98.0%     | 9,143       | 8,424             |
+| Fibonacci_u256_iter_evm                  | 923,865,833    | -        | 8,452,563        | -                 | 0.9%      | 8,346       | 17,021            |
+| Fibonacci_u256_iter_pvm                  | 961,908,283    | +4.1%    | 46,495,013       | +450.1%           | 4.8%      | 9,396       | 18,071            |
+| fibonacci_u256_iter_primitive_types_rust | 972,783,096    | +5.3%    | 57,369,826       | +578.7%           | 5.9%      | 9,040       | 17,715            |
+| fibonacci_u256_iter_rust                 | 1,060,866,936  | +14.8%   | 145,453,666      | +1620.8%          | 13.7%     | 9,079       | 17,754            |
+| fibonacci_u256_iter_ink                  | 1,098,708,356  | +18.9%   | 183,295,086      | +2068.5%          | 16.7%     | 20,475      | 29,150            |
+| Fibonacci_u256_evm                       | 2,110,636,829  | +128.5%  | 1,195,223,559    | +14040.4%         | 56.6%     | 8,350       | 17,025            |
+| Fibonacci_u256_pvm                       | 5,868,227,987  | +535.2%  | 4,952,814,717    | +58495.4%         | 84.4%     | 9,462       | 18,137            |
+| fibonacci_u256_primitive_types_rust      | 14,752,362,780 | +1496.8% | 13,836,949,510   | +163601.2%        | 93.8%     | 9,089       | 17,764            |
+| fibonacci_u256_ink                       | 14,813,297,348 | +1503.4% | 13,897,884,078   | +164322.1%        | 93.8%     | 20,548      | 29,223            |
+| fibonacci_u256_rust                      | 25,492,111,644 | +2659.3% | 24,576,698,374   | +290660.3%        | 96.4%     | 9,169       | 17,844            |
 
 
 ### Fibonacci_u256 - fib_5
 
-| Implementation                           | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ---------------------------------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Fibonacci_u256_iter_evm                  | 467,326,115 | -       | 3,704,884        | -                 | 0.8%      | 8,317       | 7,456             |
-| Fibonacci_u256_evm                       | 473,716,334 | +1.4%   | 10,095,103       | +172.5%           | 2.1%      | 8,321       | 7,364             |
-| Fibonacci_u256_iter_pvm                  | 481,110,698 | +2.9%   | 17,489,467       | +372.1%           | 3.6%      | 9,384       | 8,498             |
-| fibonacci_u256_iter_primitive_types_rust | 487,129,412 | +4.2%   | 23,508,181       | +534.5%           | 4.8%      | 9,011       | 8,173             |
-| Fibonacci_u256_pvm                       | 504,272,994 | +7.9%   | 40,651,763       | +997.2%           | 8.1%      | 9,482       | 8,459             |
-| fibonacci_u256_iter_rust                 | 510,243,565 | +9.2%   | 46,622,334       | +1158.4%          | 9.1%      | 9,050       | 7,956             |
-| fibonacci_u256_primitive_types_rust      | 570,267,723 | +22.0%  | 106,646,492      | +2778.5%          | 18.7%     | 9,060       | 8,108             |
-| fibonacci_u256_rust                      | 643,793,365 | +37.8%  | 180,172,134      | +4763.1%          | 28.0%     | 9,140       | 8,249             |
-| fibonacci_u256_iter_ink                  | 645,698,179 | +38.2%  | 182,076,948      | +4814.5%          | 28.2%     | 30,519      | 9,947             |
-| fibonacci_u256_ink                       | 719,669,150 | +54.0%  | 256,047,919      | +6811.1%          | 35.6%     | 30,512      | 9,689             |
+| Implementation                           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| Fibonacci_u256_iter_evm                  | 919,110,433   | -       | 3,697,163        | -                 | 0.4%      | 8,346       | 17,021            |
+| Fibonacci_u256_evm                       | 925,491,439   | +0.7%   | 10,078,169       | +172.6%           | 1.1%      | 8,350       | 17,025            |
+| Fibonacci_u256_iter_pvm                  | 934,140,803   | +1.6%   | 18,727,533       | +406.5%           | 2.0%      | 9,396       | 18,071            |
+| fibonacci_u256_iter_primitive_types_rust | 940,456,776   | +2.3%   | 25,043,506       | +577.4%           | 2.7%      | 9,040       | 17,715            |
+| Fibonacci_u256_pvm                       | 958,813,191   | +4.3%   | 43,399,921       | +1073.9%          | 4.5%      | 9,462       | 18,137            |
+| fibonacci_u256_iter_rust                 | 965,545,736   | +5.1%   | 50,132,466       | +1256.0%          | 5.2%      | 9,079       | 17,754            |
+| fibonacci_u256_primitive_types_rust      | 1,030,710,264 | +12.1%  | 115,296,994      | +3018.5%          | 11.2%     | 9,089       | 17,764            |
+| fibonacci_u256_iter_ink                  | 1,048,561,116 | +14.1%  | 133,147,846      | +3501.4%          | 12.7%     | 20,475      | 29,150            |
+| fibonacci_u256_rust                      | 1,110,523,556 | +20.8%  | 195,110,286      | +5177.3%          | 17.6%     | 9,169       | 17,844            |
+| fibonacci_u256_ink                       | 1,132,218,508 | +23.2%  | 216,805,238      | +5764.1%          | 19.1%     | 20,548      | 29,223            |
 
 
 ### FungibleCredential - burn
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FungibleCredential_evm   | 1,132,934,472 | -       | 668,944,169      | -                 | 59.0%     | 97,762      | 16,439            |
-| fungible_credential_rust | 1,326,968,637 | +17.1%  | 862,989,518      | +29.0%            | 65.0%     | 67,305      | 27,071            |
-| FungibleCredential_pvm   | 1,332,256,303 | +17.6%  | 868,266,000      | +29.8%            | 65.2%     | 156,311     | 74,342            |
+| FungibleCredential_evm   | 1,309,800,792 | -       | 394,045,747      | -                 | 30.1%     | 46,340      | 55,015            |
+| FungibleCredential_pvm   | 1,520,903,292 | +16.1%  | 605,148,247      | +53.6%            | 39.8%     | 105,124     | 113,799           |
+| fungible_credential_rust | 1,673,797,001 | +27.8%  | 758,041,956      | +92.4%            | 45.3%     | 46,683      | 55,358            |
 
 
 ### FungibleCredential - createClass_nontransferable
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| fungible_credential_rust | 1,246,126,385 | -       | 780,682,162      | -                 | 62.6%     | 57,189      | 31,412            |
-| FungibleCredential_evm   | 1,418,532,964 | +13.8%  | 953,077,557      | +22.1%            | 67.2%     | 139,151     | 20,422            |
-| FungibleCredential_pvm   | 2,069,502,085 | +66.1%  | 1,604,046,678    | +105.5%           | 77.5%     | 248,889     | 78,746            |
+| FungibleCredential_evm   | 1,663,374,272 | -       | 746,174,952      | -                 | 44.9%     | 77,440      | 86,115            |
+| fungible_credential_rust | 1,736,821,277 | +4.4%   | 819,621,957      | +9.8%             | 47.2%     | 46,950      | 55,625            |
+| FungibleCredential_pvm   | 1,950,903,253 | +17.3%  | 1,033,703,933    | +38.5%            | 53.0%     | 136,224     | 144,899           |
 
 
 ### FungibleCredential - createClass_transferable
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| fungible_credential_rust | 1,238,641,836 | -       | 773,197,613      | -                 | 62.4%     | 57,189      | 31,166            |
-| FungibleCredential_evm   | 1,418,521,348 | +14.5%  | 953,065,941      | +23.3%            | 67.2%     | 139,151     | 20,355            |
-| FungibleCredential_pvm   | 2,069,554,033 | +67.1%  | 1,604,098,626    | +107.5%           | 77.5%     | 248,953     | 78,504            |
+| FungibleCredential_evm   | 1,663,361,984 | -       | 746,162,664      | -                 | 44.9%     | 77,440      | 86,115            |
+| fungible_credential_rust | 1,728,695,474 | +3.9%   | 811,496,154      | +8.8%             | 46.9%     | 46,950      | 55,625            |
+| FungibleCredential_pvm   | 1,950,928,385 | +17.3%  | 1,033,729,065    | +38.5%            | 53.0%     | 136,224     | 144,899           |
 
 
 ### FungibleCredential - deploy
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FungibleCredential_evm   | 1,095,295,202 | -       | 142,849,929      | -                 | 13.0%     | 49,558      | 12,790            |
-| fungible_credential_rust | 1,386,225,727 | +26.6%  | 143,599,352      | +0.5%             | 10.4%     | 70,823      | 13,144            |
-| FungibleCredential_pvm   | 2,718,639,820 | +148.2% | 152,077,734      | +6.5%             | 5.6%      | 225,047     | 13,003            |
+| FungibleCredential_evm   | 1,858,482,958 | -       | 80,706,859       | -                 | 4.3%      | 39,278      | 47,953            |
+| fungible_credential_rust | 2,294,145,184 | +23.4%  | 228,754,375      | +183.4%           | 10.0%     | 70,832      | 79,507            |
+| FungibleCredential_pvm   | 3,474,713,647 | +87.0%  | 90,670,198       | +12.3%            | 2.6%      | 215,504     | 224,179           |
 
 
 ### FungibleCredential - issue
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FungibleCredential_evm   | 2,298,397,100 | -       | 1,834,026,541    | -                 | 79.8%     | 251,943     | 20,867            |
-| fungible_credential_rust | 2,427,029,647 | +5.6%   | 1,962,659,088    | +7.0%             | 80.9%     | 149,434     | 31,589            |
-| FungibleCredential_pvm   | 2,612,678,792 | +13.7%  | 2,148,308,233    | +17.1%            | 82.2%     | 310,108     | 78,841            |
+| FungibleCredential_evm   | 1,931,369,946 | -       | 1,015,240,051    | -                 | 52.6%     | 107,920     | 116,595           |
+| FungibleCredential_pvm   | 2,269,341,996 | +17.5%  | 1,353,212,101    | +33.3%            | 59.6%     | 166,704     | 175,379           |
+| fungible_credential_rust | 2,759,702,016 | +42.9%  | 1,843,572,121    | +81.6%            | 66.8%     | 98,054      | 106,729           |
 
 
 ### FungibleCredential - issue_more
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FungibleCredential_evm   | 1,189,689,428 | -       | 725,318,869      | -                 | 61.0%     | 108,153     | 16,650            |
-| FungibleCredential_pvm   | 1,387,348,850 | +16.6%  | 922,978,291      | +27.3%            | 66.5%     | 166,702     | 74,728            |
-| fungible_credential_rust | 1,474,502,170 | +23.9%  | 1,010,142,795    | +39.3%            | 68.5%     | 77,665      | 26,920            |
+| FungibleCredential_evm   | 1,446,145,482 | -       | 530,015,587      | -                 | 36.7%     | 67,020      | 75,695            |
+| FungibleCredential_pvm   | 1,657,829,008 | +14.6%  | 741,699,113      | +39.9%            | 44.7%     | 125,804     | 134,479           |
+| fungible_credential_rust | 1,840,265,179 | +27.3%  | 924,135,284      | +74.4%            | 50.2%     | 57,043      | 65,718            |
 
 
 ### FungibleCredential - revoke
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FungibleCredential_evm   | 1,134,370,046 | -       | 669,999,487      | -                 | 59.1%     | 97,864      | 16,443            |
-| FungibleCredential_pvm   | 1,332,036,437 | +17.4%  | 867,665,878      | +29.5%            | 65.1%     | 156,413     | 74,521            |
-| fungible_credential_rust | 1,352,356,466 | +19.2%  | 887,997,091      | +32.5%            | 65.7%     | 67,407      | 26,900            |
+| FungibleCredential_evm   | 1,311,077,902 | -       | 394,948,007      | -                 | 30.1%     | 46,442      | 55,117            |
+| FungibleCredential_pvm   | 1,520,657,670 | +16.0%  | 604,527,775      | +53.1%            | 39.8%     | 105,226     | 113,901           |
+| fungible_credential_rust | 1,701,321,276 | +29.8%  | 785,191,381      | +98.8%            | 46.2%     | 46,785      | 55,460            |
 
 
 ### FungibleCredential - transfer
 
 | Implementation           | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| FungibleCredential_evm   | 2,507,099,450 | -       | 2,042,751,259    | -                 | 81.5%     | 272,579     | 21,431            |
-| fungible_credential_rust | 2,556,946,297 | +2.0%   | 2,092,598,106    | +2.4%             | 81.8%     | 159,615     | 32,219            |
-| FungibleCredential_pvm   | 2,907,003,695 | +16.0%  | 2,442,655,504    | +19.6%            | 84.0%     | 330,840     | 79,755            |
+| FungibleCredential_evm   | 2,091,358,291 | -       | 1,175,250,446    | -                 | 56.2%     | 118,267     | 126,942           |
+| FungibleCredential_pvm   | 2,517,682,597 | +20.4%  | 1,601,574,752    | +36.3%            | 63.6%     | 177,051     | 185,726           |
+| fungible_credential_rust | 2,907,116,938 | +39.0%  | 1,991,009,093    | +69.4%            | 68.5%     | 108,329     | 117,004           |
 
 
 ### KeyRegistry - deploy
 
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| KeyRegistry_evm   | 873,622,900   | -       | 2,206,520        | +102.3%           | 0.3%      | 20,201      | 12,916            |
-| key_registry_rust | 1,271,664,837 | +45.6%  | 1,090,805        | -                 | 0.1%      | 63,605      | 12,702            |
-| KeyRegistry_pvm   | 1,833,306,079 | +109.9% | 8,000,024        | +633.4%           | 0.4%      | 123,926     | 11,978            |
+| KeyRegistry_evm   | 1,699,700,889 | -       | 2,248,080        | +96.5%            | 0.1%      | 20,207      | 28,882            |
+| key_registry_rust | 2,094,235,445 | +23.2%  | 1,144,151        | -                 | 0.1%      | 63,614      | 72,289            |
+| KeyRegistry_pvm   | 2,673,765,754 | +57.3%  | 8,753,785        | +665.1%           | 0.3%      | 126,359     | 135,034           |
 
 
 ### KeyRegistry - fetchPrekeyBundle
 
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| KeyRegistry_evm   | 1,707,871,818 | -       | 1,244,250,587    | -                 | 72.9%     | 187,281     | 18,254            |
-| KeyRegistry_pvm   | 2,202,478,256 | +29.0%  | 1,738,857,025    | +39.8%            | 79.0%     | 221,786     | 53,235            |
-| key_registry_rust | 2,261,530,083 | +32.4%  | 1,797,908,852    | +44.5%            | 79.5%     | 150,307     | 32,946            |
+| KeyRegistry_evm   | 1,861,863,497 | -       | 946,472,277      | -                 | 50.8%     | 115,281     | 123,956           |
+| KeyRegistry_pvm   | 2,418,007,799 | +29.9%  | 1,502,616,579    | +58.8%            | 62.1%     | 150,690     | 159,365           |
+| key_registry_rust | 2,418,047,917 | +29.9%  | 1,502,656,697    | +58.8%            | 62.1%     | 88,731      | 97,406            |
 
 
 ### KeyRegistry - registerIdentity
 
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| key_registry_rust | 1,577,844,844 | -       | 1,112,031,549    | -                 | 70.5%     | 89,056      | 31,755            |
-| KeyRegistry_evm   | 1,861,241,146 | +18.0%  | 1,395,427,851    | +25.5%            | 75.0%     | 187,645     | 17,420            |
-| KeyRegistry_pvm   | 2,170,297,959 | +37.5%  | 1,704,484,664    | +53.3%            | 78.5%     | 222,054     | 51,839            |
+| key_registry_rust | 2,091,669,087 | -       | 1,174,116,967    | -                 | 56.1%     | 68,565      | 77,240            |
+| KeyRegistry_evm   | 2,149,948,744 | +2.8%   | 1,232,396,624    | +5.0%             | 57.3%     | 105,356     | 114,031           |
+| KeyRegistry_pvm   | 2,498,292,931 | +19.4%  | 1,580,740,811    | +34.6%            | 63.3%     | 140,765     | 149,440           |
 
 
 ### KeyRegistry - updateSignedPrekey
 
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| KeyRegistry_evm   | 1,231,753,514 | -       | 766,655,995      | -                 | 62.2%     | 105,429     | 13,202            |
-| key_registry_rust | 1,331,629,922 | +8.1%   | 866,543,587      | +13.0%            | 65.1%     | 68,703      | 27,693            |
-| KeyRegistry_pvm   | 1,522,917,084 | +23.6%  | 1,057,819,565    | +38.0%            | 69.5%     | 160,608     | 48,071            |
+| KeyRegistry_evm   | 1,770,569,350 | -       | 853,722,830      | -                 | 48.2%     | 74,585      | 83,260            |
+| key_registry_rust | 1,775,315,904 | +0.3%   | 858,469,384      | +0.6%             | 48.4%     | 58,340      | 67,015            |
+| KeyRegistry_pvm   | 1,945,407,959 | +9.9%   | 1,028,561,439    | +20.5%            | 52.9%     | 109,994     | 118,669           |
 
 
 ### KeyRegistry - uploadOneTimePrekeys
 
 | Implementation    | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ----------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| KeyRegistry_evm   | 1,783,222,932 | -       | 1,318,125,413    | -                 | 73.9%     | 197,902     | 18,036            |
-| KeyRegistry_pvm   | 2,007,707,188 | +12.6%  | 1,542,609,669    | +17.0%            | 76.8%     | 232,311     | 52,309            |
-| key_registry_rust | 2,224,129,780 | +24.7%  | 1,759,032,261    | +33.4%            | 79.1%     | 150,498     | 32,449            |
+| KeyRegistry_evm   | 1,556,898,295 | -       | 640,051,775      | -                 | 41.1%     | 74,425      | 83,100            |
+| KeyRegistry_pvm   | 1,798,757,004 | +15.5%  | 881,910,484      | +37.8%            | 49.0%     | 109,834     | 118,509           |
+| key_registry_rust | 2,610,111,635 | +67.6%  | 1,693,265,115    | +164.6%           | 64.9%     | 88,947      | 97,622            |
 
 
 ### Log - addWriter
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Log_evm        | 1,209,056,040 | -       | 745,043,369      | -                 | 61.6%     | 107,023     | 19,175            |
-| Log_pvm        | 1,384,799,965 | +14.5%  | 920,798,478      | +23.6%            | 66.5%     | 154,761     | 67,880            |
-| log_rust       | 1,469,160,731 | +21.5%  | 1,005,148,060    | +34.9%            | 68.4%     | 86,476      | 29,584            |
+| Log_evm        | 1,370,767,323 | -       | 454,990,228      | -                 | 33.2%     | 55,601      | 64,276            |
+| Log_pvm        | 1,557,022,601 | +13.6%  | 641,245,506      | +40.9%            | 41.2%     | 104,160     | 112,835           |
+| log_rust       | 1,908,297,708 | +39.2%  | 992,520,613      | +118.1%           | 52.0%     | 65,985      | 74,660            |
 
 
 ### Log - append
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| log_rust       | 1,242,578,313 | -       | 778,576,826      | -                 | 62.7%     | 55,747      | 29,434            |
-| Log_evm        | 1,452,506,771 | +16.9%  | 988,494,100      | +27.0%            | 68.1%     | 148,147     | 19,152            |
-| Log_pvm        | 1,671,702,081 | +34.5%  | 1,207,689,410    | +55.1%            | 72.2%     | 195,920     | 67,507            |
+| Log_evm        | 1,573,708,166 | -       | 657,931,071      | -                 | 41.8%     | 76,147      | 84,822            |
+| log_rust       | 1,739,978,726 | +10.6%  | 824,201,631      | +25.3%            | 47.4%     | 45,471      | 54,146            |
+| Log_pvm        | 1,816,314,446 | +15.4%  | 900,537,351      | +36.9%            | 49.6%     | 124,706     | 133,381           |
 
 
 ### Log - append_2
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| log_rust       | 1,242,578,313 | -       | 778,576,826      | -                 | 62.7%     | 55,747      | 29,292            |
-| Log_evm        | 1,452,506,771 | +16.9%  | 988,494,100      | +27.0%            | 68.1%     | 148,147     | 19,284            |
-| Log_pvm        | 1,671,702,081 | +34.5%  | 1,207,689,410    | +55.1%            | 72.2%     | 195,920     | 67,814            |
+| Log_evm        | 1,573,708,166 | -       | 657,931,071      | -                 | 41.8%     | 76,147      | 84,822            |
+| log_rust       | 1,739,978,726 | +10.6%  | 824,201,631      | +25.3%            | 47.4%     | 45,471      | 54,146            |
+| Log_pvm        | 1,816,314,446 | +15.4%  | 900,537,351      | +36.9%            | 49.6%     | 124,706     | 133,381           |
 
 
 ### Log - create_nonpermissioned
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Log_evm        | 1,313,362,475 | -       | 849,718,876      | -                 | 64.7%     | 127,470     | 18,808            |
-| log_rust       | 1,473,706,714 | +12.2%  | 1,010,074,299    | +18.9%            | 68.5%     | 76,088      | 29,019            |
-| Log_pvm        | 1,822,563,156 | +38.8%  | 1,358,919,557    | +59.9%            | 74.6%     | 216,303     | 67,338            |
+| Log_evm        | 1,396,241,885 | -       | 480,828,615      | -                 | 34.4%     | 65,759      | 74,434            |
+| Log_pvm        | 1,677,135,828 | +20.1%  | 761,722,558      | +58.4%            | 45.4%     | 114,318     | 122,993           |
+| log_rust       | 2,131,448,088 | +52.7%  | 1,216,034,818    | +152.9%           | 57.1%     | 65,849      | 74,524            |
 
 
 ### Log - create_permissioned
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Log_evm        | 1,313,392,811 | -       | 849,749,212      | -                 | 64.7%     | 127,534     | 19,013            |
-| log_rust       | 1,473,714,298 | +12.2%  | 1,010,081,883    | +18.9%            | 68.5%     | 76,104      | 29,451            |
-| Log_pvm        | 1,822,361,060 | +38.8%  | 1,358,717,461    | +59.9%            | 74.6%     | 216,431     | 67,718            |
+| Log_evm        | 1,396,340,381 | -       | 480,927,111      | -                 | 34.4%     | 65,823      | 74,498            |
+| Log_pvm        | 1,676,902,772 | +20.1%  | 761,489,502      | +58.3%            | 45.4%     | 114,382     | 123,057           |
+| log_rust       | 2,131,455,032 | +52.6%  | 1,216,041,762    | +152.9%           | 57.1%     | 65,865      | 74,540            |
 
 
 ### Log - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Log_evm        | 1,069,191,600 | -       | 142,624,809      | -                 | 13.3%     | 46,744      | 12,089            |
-| log_rust       | 1,354,345,234 | +26.7%  | 142,866,840      | +0.2%             | 10.5%     | 67,436      | 12,339            |
-| Log_pvm        | 2,398,202,972 | +124.3% | 152,192,256      | +6.7%             | 6.3%      | 190,187     | 13,034            |
+| Log_evm        | 1,832,608,228 | -       | 80,481,739       | -                 | 4.4%      | 36,464      | 45,139            |
+| log_rust       | 2,262,478,033 | +23.5%  | 227,959,729      | +183.2%           | 10.1%     | 67,445      | 76,120            |
+| Log_pvm        | 3,169,439,362 | +72.9%  | 90,670,198       | +12.7%            | 2.9%      | 182,009     | 190,684           |
 
 
 ### Log - removeWriter
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| log_rust       | 1,078,455,976 | -       | 614,454,489      | -                 | 57.0%     | 55,704      | 25,390            |
-| Log_evm        | 1,732,620,422 | +60.7%  | 1,268,607,751    | +106.5%           | 73.2%     | 189,431     | 18,479            |
-| Log_pvm        | 1,971,599,416 | +82.8%  | 1,507,586,745    | +145.4%           | 76.5%     | 237,300     | 66,834            |
+| Log_evm        | 1,474,521,037 | -       | 558,743,942      | -                 | 37.9%     | 55,697      | 64,372            |
+| log_rust       | 1,495,943,880 | +1.5%   | 580,166,785      | +3.8%             | 38.8%     | 45,472      | 54,147            |
+| Log_pvm        | 1,728,321,412 | +17.2%  | 812,544,317      | +45.4%            | 47.0%     | 104,256     | 112,931           |
 
 
 ### Log - transfer
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| log_rust       | 1,011,704,348 | -       | 547,702,861      | -                 | 54.1%     | 45,490      | 25,162            |
-| Log_evm        | 1,975,935,020 | +95.3%  | 1,511,922,349    | +176.0%           | 76.5%     | 230,523     | 19,623            |
-| Log_pvm        | 2,201,666,049 | +117.6% | 1,737,653,378    | +217.3%           | 78.9%     | 278,328     | 68,153            |
+| log_rust       | 1,417,127,885 | -       | 501,350,790      | -                 | 35.4%     | 35,214      | 43,889            |
+| Log_evm        | 1,537,139,930 | +8.5%   | 621,362,835      | +23.9%            | 40.4%     | 65,922      | 74,597            |
+| Log_pvm        | 1,773,951,532 | +25.2%  | 858,174,437      | +71.2%            | 48.4%     | 114,481     | 123,156           |
+
+
+### Marketplace - deploy
+
+| Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| Marketplace_pvm | 8,690,115,757 | -       | 120,011,023      | -                 | 1.4%      | 784,463     | 793,138           |
+
+
+### MarketplaceProxy - createItem_digital
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 6,272,363,918 | -       | 5,353,036,773    | -                 | 85.3%     | 812,548     | 821,223           |
+| MarketplaceProxy_pvm | 6,399,093,516 | +2.0%   | 5,479,766,371    | +2.4%             | 85.6%     | 840,782     | 849,457           |
+
+
+### MarketplaceProxy - createItem_physical
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 6,157,994,831 | -       | 5,238,667,686    | -                 | 85.1%     | 812,580     | 821,255           |
+| MarketplaceProxy_pvm | 6,284,724,429 | +2.1%   | 5,365,397,284    | +2.4%             | 85.4%     | 840,814     | 849,489           |
+
+
+### MarketplaceProxy - deactivateItem
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 1,692,831,316 | -       | 777,418,046      | -                 | 45.9%     | 299,691     | 308,366           |
+| MarketplaceProxy_pvm | 1,755,797,159 | +3.7%   | 840,383,889      | +8.1%             | 47.9%     | 313,808     | 322,483           |
+
+
+### MarketplaceProxy - deploy
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 4,915,708,510 | -       | 3,255,816,706    | +3.6%             | 66.2%     | 412,546     | 421,221           |
+| MarketplaceProxy_pvm | 5,035,568,642 | +2.4%   | 3,141,615,818    | -                 | 62.4%     | 445,236     | 453,911           |
+
+
+### MarketplaceProxy - markAsShipped
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 3,043,515,776 | -       | 2,127,033,081    | -                 | 69.9%     | 423,322     | 431,997           |
+| MarketplaceProxy_pvm | 3,106,555,867 | +2.1%   | 2,190,073,172    | +3.0%             | 70.5%     | 437,439     | 446,114           |
+
+
+### MarketplaceProxy - purchaseItem_digital
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 7,946,787,209 | -       | 7,029,521,739    | -                 | 88.5%     | 705,175     | 713,850           |
+| MarketplaceProxy_pvm | 8,010,194,892 | +0.8%   | 7,092,929,422    | +0.9%             | 88.5%     | 719,292     | 727,967           |
+
+
+### MarketplaceProxy - purchaseItem_physical
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 8,047,902,397 | -       | 7,129,214,702    | -                 | 88.6%     | 731,632     | 740,307           |
+| MarketplaceProxy_pvm | 8,111,298,560 | +0.8%   | 7,192,610,865    | +0.9%             | 88.7%     | 745,749     | 754,424           |
+
+
+### MarketplaceProxy - purchaseItem_with_matchmaker
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 9,019,513,065 | -       | 8,102,247,595    | -                 | 89.8%     | 787,423     | 796,098           |
+| MarketplaceProxy_pvm | 9,082,920,748 | +0.7%   | 8,165,655,278    | +0.8%             | 89.9%     | 801,540     | 810,215           |
+
+
+### MarketplaceProxy - registerMatchMaker
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 2,902,502,059 | -       | 1,986,019,364    | -                 | 68.4%     | 371,749     | 380,424           |
+| MarketplaceProxy_pvm | 2,965,915,502 | +2.2%   | 2,049,432,807    | +3.2%             | 69.1%     | 385,866     | 394,541           |
+
+
+### MarketplaceProxy - registerShop
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 2,967,539,725 | -       | 2,048,565,380    | -                 | 69.0%     | 372,395     | 381,070           |
+| MarketplaceProxy_pvm | 3,030,559,656 | +2.1%   | 2,111,585,311    | +3.1%             | 69.7%     | 386,512     | 395,187           |
+
+
+### MarketplaceProxy - updateItem
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 3,526,718,574 | -       | 2,607,744,229    | -                 | 73.9%     | 393,165     | 401,840           |
+| MarketplaceProxy_pvm | 3,589,738,505 | +1.8%   | 2,670,764,160    | +2.4%             | 74.4%     | 407,282     | 415,957           |
+
+
+### MarketplaceProxy - updateMatchMakerFee
+
+| Implementation       | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MarketplaceProxy_evm | 1,831,768,766 | -       | 916,377,546      | -                 | 50.0%     | 309,974     | 318,649           |
+| MarketplaceProxy_pvm | 1,894,734,609 | +3.4%   | 979,343,389      | +6.9%             | 51.7%     | 324,091     | 332,766           |
 
 
 ### MixedERC20 - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedERC20_evm | 1,129,793,228 | -       | 293,249,344      | -                 | 26.0%     | 57,501      | 12,027            |
-| MixedERC20_pvm | 1,879,369,743 | +66.3%  | 439,541,131      | +49.9%            | 23.4%     | 123,365     | 12,758            |
+| MixedERC20_evm | 1,831,776,467 | -       | 168,887,738      | -                 | 9.2%      | 36,929      | 45,604            |
+| MixedERC20_pvm | 2,605,653,164 | +42.2%  | 338,194,985      | +100.2%           | 13.0%     | 103,583     | 112,258           |
 
 
 ### MixedERC20 - mint
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedERC20_evm | 785,182,845 | -       | 321,181,358      | -                 | 40.9%     | 51,294      | 14,225            |
-| MixedERC20_pvm | 875,789,157 | +11.5%  | 411,787,670      | +28.2%            | 47.0%     | 74,108      | 37,920            |
+| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MixedERC20_evm | 1,108,934,090 | -       | 193,156,995      | -                 | 17.4%     | 30,742      | 39,417            |
+| MixedERC20_pvm | 1,206,466,233 | +8.8%   | 290,689,138      | +50.5%            | 24.1%     | 53,861      | 62,536            |
 
 
 ### MixedERC20 - transfer
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedERC20_evm | 826,395,537 | -       | 362,394,050      | -                 | 43.9%     | 51,326      | 14,328            |
-| MixedERC20_pvm | 937,232,584 | +13.4%  | 473,231,097      | +30.6%            | 50.5%     | 74,172      | 38,023            |
+| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MixedERC20_evm | 1,143,150,670 | -       | 227,373,575      | -                 | 19.9%     | 30,774      | 39,449            |
+| MixedERC20_pvm | 1,263,510,627 | +10.5%  | 347,733,532      | +52.9%            | 27.5%     | 53,893      | 62,568            |
 
 
 ### MixedERC20Factory - deploy
 
 | Implementation        | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | --------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedERC20Factory_evm | 844,541,595   | -       | 1,955,720        | -                 | 0.2%      | 17,066      | 12,346            |
-| MixedERC20Factory_pvm | 859,579,913   | +1.8%   | 8,000,024        | +309.1%           | 0.9%      | 18,044      | 12,735            |
-| MixedERC20Factory_pvm | 1,425,947,345 | +68.8%  | 962,672,818      | +49123.4%         | 67.5%     | 102,124     | 48,100            |
-| MixedERC20Factory_evm | 1,443,449,641 | +70.9%  | 980,163,930      | +50017.8%         | 67.9%     | 79,145      | 22,766            |
+| MixedERC20Factory_evm | 1,670,874,564 | -       | 1,997,280        | -                 | 0.1%      | 17,072      | 25,747            |
+| MixedERC20Factory_pvm | 1,687,175,327 | +1.0%   | 8,836,673        | +342.4%           | 0.5%      | 18,110      | 26,785            |
+| MixedERC20Factory_pvm | 2,001,224,239 | +19.8%  | 1,086,163,769    | +54282.1%         | 54.3%     | 71,714      | 80,389            |
+| MixedERC20Factory_evm | 2,182,214,795 | +30.6%  | 1,267,154,325    | +63344.0%         | 58.1%     | 48,301      | 56,976            |
 
 
 ### MixedFactory - deploy
 
-| Implementation   | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ---------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedFactory_evm | 776,555,348 | -       | 1,369,400        | -                 | 0.2%      | 9,737       | 11,936            |
-| MixedFactory_pvm | 907,490,822 | +16.9%  | 8,000,024        | +484.2%           | 0.9%      | 23,252      | 12,483            |
+| Implementation   | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MixedFactory_evm | 1,603,484,409 | -       | 1,410,960        | -                 | 0.1%      | 9,743       | 18,418            |
+| MixedFactory_pvm | 1,739,961,349 | +8.5%   | 8,753,785        | +520.4%           | 0.5%      | 23,912      | 32,587            |
 
 
 ### MixedFactory - deployCreate
 
 | Implementation   | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedFactory_pvm | 1,011,065,001 | -       | 547,779,290      | -                 | 54.2%     | 39,885      | 25,526            |
-| MixedFactory_evm | 1,125,438,111 | +11.3%  | 662,152,400      | +20.9%            | 58.8%     | 35,610      | 21,869            |
+| MixedFactory_pvm | 1,752,264,044 | -       | 837,203,574      | -                 | 47.8%     | 29,998      | 38,673            |
+| MixedFactory_evm | 1,979,166,140 | +12.9%  | 1,064,105,670    | +27.1%            | 53.8%     | 25,344      | 34,019            |
 
 
 ### MixedFactory - deployCreate2
 
 | Implementation   | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedFactory_pvm | 1,011,651,085 | -       | 548,365,374      | -                 | 54.2%     | 39,949      | 23,833            |
-| MixedFactory_evm | 1,125,560,813 | +11.3%  | 662,275,102      | +20.8%            | 58.8%     | 35,642      | 18,082            |
+| MixedFactory_pvm | 1,753,142,172 | -       | 838,081,702      | -                 | 47.8%     | 30,030      | 38,705            |
+| MixedFactory_evm | 1,979,322,768 | +12.9%  | 1,064,262,298    | +27.0%            | 53.8%     | 25,376      | 34,051            |
 
 
 ### MixedPool - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedPool_evm  | 1,093,324,339 | -       | 284,479,811      | -                 | 26.0%     | 54,489      | 13,111            |
-| MixedPool_pvm  | 1,634,116,807 | +49.5%  | 317,479,653      | +11.6%            | 19.4%     | 109,751     | 12,607            |
+| MixedPool_evm  | 1,795,565,017 | -       | 160,130,668      | -                 | 8.9%      | 33,917      | 42,592            |
+| MixedPool_pvm  | 2,286,028,193 | +27.3%  | 198,136,509      | +23.7%            | 8.7%      | 83,666      | 92,341            |
 
 
 ### MixedSwapRouter - deploy
 
 | Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedSwapRouter_evm | 1,298,897,415 | -       | 515,202,871      | -                 | 39.7%     | 68,496      | 18,838            |
-| MixedSwapRouter_pvm | 1,590,136,431 | +22.4%  | 618,897,119      | +20.1%            | 38.9%     | 107,499     | 37,920            |
+| MixedSwapRouter_evm | 2,153,146,798 | -       | 542,651,089      | -                 | 25.2%     | 47,960      | 56,635            |
+| MixedSwapRouter_pvm | 2,456,157,392 | +14.1%  | 652,460,263      | +20.2%            | 26.6%     | 85,971      | 94,646            |
 
 
 ### MixedSwapRouter - swap
 
 | Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedSwapRouter_evm | 3,982,498,333 | -       | 3,518,485,662    | -                 | 88.3%     | 390,442     | 24,704            |
-| MixedSwapRouter_pvm | 4,994,431,824 | +25.4%  | 4,530,419,153    | +28.8%            | 90.7%     | 514,727     | 75,166            |
+| MixedSwapRouter_evm | 4,176,113,391 | -       | 3,260,336,296    | -                 | 78.1%     | 184,919     | 193,594           |
+| MixedSwapRouter_pvm | 5,278,978,837 | +26.4%  | 4,363,201,742    | +33.8%            | 82.7%     | 308,938     | 317,613           |
 
 
 ### MixedSwapToken0 - deploy
 
 | Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedSwapToken0_evm | 1,129,793,228 | -       | 293,249,344      | -                 | 26.0%     | 57,501      | 11,306            |
-| MixedSwapToken0_pvm | 1,877,422,869 | +66.2%  | 437,594,257      | +49.2%            | 23.3%     | 123,365     | 11,667            |
+| MixedSwapToken0_evm | 1,831,776,467 | -       | 168,887,738      | -                 | 9.2%      | 36,929      | 45,604            |
+| MixedSwapToken0_pvm | 2,603,539,520 | +42.1%  | 336,081,341      | +99.0%            | 12.9%     | 103,583     | 112,258           |
 
 
 ### MixedSwapToken1 - deploy
 
 | Implementation      | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| MixedSwapToken1_evm | 1,129,782,044 | -       | 293,249,344      | -                 | 26.0%     | 57,498      | 11,482            |
-| MixedSwapToken1_pvm | 1,877,422,869 | +66.2%  | 437,594,257      | +49.2%            | 23.3%     | 123,365     | 12,087            |
+| MixedSwapToken1_evm | 1,831,776,467 | -       | 168,887,738      | -                 | 9.2%      | 36,929      | 45,604            |
+| MixedSwapToken1_pvm | 2,603,539,520 | +42.1%  | 336,081,341      | +99.0%            | 12.9%     | 103,583     | 112,258           |
+
+
+### MockMobRule - addCounterEvidence
+
+| Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MockMobRule_evm | 1,204,096,029 | -       | 287,613,334      | -                 | 23.9%     | 44,823      | 53,498            |
+| MockMobRule_pvm | 1,403,896,748 | +16.6%  | 487,414,053      | +69.5%            | 34.7%     | 87,423      | 96,098            |
+
+
+### MockMobRule - createDispute
+
+| Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MockMobRule_evm | 2,181,838,485 | -       | 1,264,286,365    | -                 | 57.9%     | 127,170     | 135,845           |
+| MockMobRule_pvm | 2,620,188,124 | +20.1%  | 1,702,636,004    | +34.7%            | 65.0%     | 169,770     | 178,445           |
+
+
+### MockMobRule - deploy
+
+| Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MockMobRule_evm | 2,004,158,862 | -       | 261,357,018      | -                 | 13.0%     | 45,698      | 54,373            |
+| MockMobRule_pvm | 3,319,411,804 | +65.6%  | 422,326,880      | +61.6%            | 12.7%     | 172,442     | 181,117           |
+
+
+### MockMobRule - resolveCase
+
+| Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| MockMobRule_evm | 1,178,167,169 | -       | 262,390,074      | -                 | 22.3%     | 44,663      | 53,338            |
+| MockMobRule_pvm | 1,278,662,608 | +8.5%   | 362,885,513      | +38.3%            | 28.4%     | 87,263      | 95,938            |
 
 
 ### NonFungibleCredential - deploy
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| NonFungibleCredential_evm    | 1,079,961,423 | -       | 142,717,689      | -                 | 13.2%     | 47,905      | 12,891            |
-| non_fungible_credential_rust | 1,423,601,956 | +31.8%  | 143,095,884      | +0.3%             | 10.1%     | 74,942      | 12,845            |
-| NonFungibleCredential_pvm    | 2,714,783,779 | +151.4% | 152,001,386      | +6.5%             | 5.6%      | 224,636     | 12,731            |
+| NonFungibleCredential_evm    | 1,843,283,623 | -       | 80,574,619       | -                 | 4.4%      | 37,625      | 46,300            |
+| non_fungible_credential_rust | 2,331,143,887 | +26.5%  | 228,208,393      | +183.2%           | 9.8%      | 74,951      | 83,626            |
+| NonFungibleCredential_pvm    | 3,483,053,872 | +89.0%  | 90,670,198       | +12.5%            | 2.6%      | 216,419     | 225,094           |
 
 
 ### NonFungibleCredential - issue_nontransferable
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| non_fungible_credential_rust | 2,530,015,618 | -       | 2,064,202,323    | -                 | 81.6%     | 151,006     | 32,871            |
-| NonFungibleCredential_evm    | 3,040,987,937 | +20.2%  | 2,575,174,642    | +24.8%            | 84.7%     | 344,348     | 20,662            |
-| NonFungibleCredential_pvm    | 3,885,014,827 | +53.6%  | 3,419,201,532    | +65.6%            | 88.0%     | 444,115     | 79,507            |
+| NonFungibleCredential_evm    | 2,649,668,101 | -       | 1,732,115,981    | -                 | 65.4%     | 159,169     | 167,844           |
+| non_fungible_credential_rust | 3,094,969,836 | +16.8%  | 2,177,417,716    | +25.7%            | 70.4%     | 109,977     | 118,652           |
+| NonFungibleCredential_pvm    | 3,299,846,835 | +24.5%  | 2,382,294,715    | +37.5%            | 72.2%     | 218,809     | 227,484           |
 
 
 ### NonFungibleCredential - issue_transferable
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| non_fungible_credential_rust | 2,522,434,945 | -       | 2,056,621,650    | -                 | 81.5%     | 150,974     | 32,407            |
-| NonFungibleCredential_evm    | 3,040,927,178 | +20.6%  | 2,575,113,883    | +25.2%            | 84.7%     | 344,220     | 19,705            |
-| NonFungibleCredential_pvm    | 3,883,711,063 | +54.0%  | 3,417,897,768    | +66.2%            | 88.0%     | 443,955     | 78,550            |
+| NonFungibleCredential_evm    | 2,649,450,516 | -       | 1,731,898,396    | -                 | 65.4%     | 159,041     | 167,716           |
+| non_fungible_credential_rust | 3,086,742,905 | +16.5%  | 2,169,190,785    | +25.2%            | 70.3%     | 109,961     | 118,636           |
+| NonFungibleCredential_pvm    | 3,298,524,415 | +24.5%  | 2,380,972,295    | +37.5%            | 72.2%     | 218,681     | 227,356           |
 
 
 ### NonFungibleCredential - issue_with_expiry
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| non_fungible_credential_rust | 2,537,899,001 | -       | 2,072,085,706    | -                 | 81.6%     | 151,022     | 32,972            |
-| NonFungibleCredential_evm    | 3,041,042,378 | +19.8%  | 2,575,229,083    | +24.3%            | 84.7%     | 344,412     | 20,860            |
-| NonFungibleCredential_pvm    | 3,879,452,377 | +52.9%  | 3,413,639,082    | +64.7%            | 88.0%     | 444,403     | 79,705            |
+| NonFungibleCredential_evm    | 2,649,811,220 | -       | 1,732,259,100    | -                 | 65.4%     | 159,233     | 167,908           |
+| non_fungible_credential_rust | 3,103,526,409 | +17.1%  | 2,185,974,289    | +26.2%            | 70.4%     | 109,985     | 118,660           |
+| NonFungibleCredential_pvm    | 3,294,129,749 | +24.3%  | 2,376,577,629    | +37.2%            | 72.1%     | 218,873     | 227,548           |
 
 
 ### NonFungibleCredential - revoke
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| NonFungibleCredential_evm    | 699,387,994   | -       | 235,755,579      | -                 | 33.7%     | 45,670      | 15,683            |
-| NonFungibleCredential_pvm    | 814,376,568   | +16.4%  | 350,732,969      | +48.8%            | 43.1%     | 104,636     | 74,579            |
-| non_fungible_credential_rust | 1,012,129,585 | +44.7%  | 548,497,170      | +132.7%           | 54.2%     | 48,049      | 27,803            |
+| NonFungibleCredential_evm    | 1,101,629,593 | -       | 186,216,323      | -                 | 16.9%     | 35,407      | 44,082            |
+| NonFungibleCredential_pvm    | 1,220,043,814 | +10.7%  | 304,630,544      | +63.6%            | 25.0%     | 95,047      | 103,722           |
+| non_fungible_credential_rust | 1,417,273,111 | +28.7%  | 501,859,841      | +169.5%           | 35.4%     | 37,695      | 46,370            |
 
 
 ### NonFungibleCredential - transfer
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| non_fungible_credential_rust | 1,908,514,225 | -       | 1,444,523,922    | -                 | 75.7%     | 109,687     | 33,177            |
-| NonFungibleCredential_evm    | 4,390,413,710 | +130.0% | 3,926,423,407    | +171.8%           | 89.4%     | 508,515     | 21,540            |
-| NonFungibleCredential_pvm    | 5,139,477,471 | +169.3% | 4,675,487,168    | +223.7%           | 91.0%     | 567,222     | 80,385            |
+| non_fungible_credential_rust | 2,366,729,332 | -       | 1,450,974,287    | -                 | 61.3%     | 78,816      | 87,491            |
+| NonFungibleCredential_evm    | 3,452,576,434 | +45.9%  | 2,536,821,389    | +74.8%            | 73.5%     | 199,868     | 208,543           |
+| NonFungibleCredential_pvm    | 4,272,180,459 | +80.5%  | 3,356,425,414    | +131.3%           | 78.6%     | 259,508     | 268,183           |
 
 
 ### NonFungibleCredential - updateMetadata
 
 | Implementation               | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | ---------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| NonFungibleCredential_evm    | 653,602,946   | -       | 189,601,459      | -                 | 29.0%     | 35,480      | 15,929            |
-| NonFungibleCredential_pvm    | 776,436,111   | +18.8%  | 312,423,440      | +64.8%            | 40.2%     | 94,446      | 74,825            |
-| non_fungible_credential_rust | 1,041,539,971 | +59.4%  | 577,538,484      | +204.6%           | 55.5%     | 48,148      | 27,978            |
+| NonFungibleCredential_evm    | 1,203,480,655 | -       | 287,703,560      | -                 | 23.9%     | 35,506      | 44,181            |
+| NonFungibleCredential_pvm    | 1,331,736,842 | +10.7%  | 415,959,747      | +44.6%            | 31.2%     | 95,146      | 103,821           |
+| non_fungible_credential_rust | 1,448,442,670 | +20.4%  | 532,665,575      | +85.1%            | 36.8%     | 37,794      | 46,469            |
 
 
 ### SimpleToken - deploy
 
 | Implementation                          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | --------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| SimpleToken_evm                         | 769,458,953   | -       | 1,308,200        | +3326.9%          | 0.2%      | 8,972       | 11,090            |
-| simple_token_u32_no_alloc_rust          | 813,865,127   | +5.8%   | 38,174           | -                 | 0.0%      | 13,937      | 10,037            |
-| simple_token_u128_no_alloc_rust         | 833,988,692   | +8.4%   | 38,174           | -                 | 0.0%      | 16,127      | 10,839            |
-| simple_token_u256_no_alloc_rust         | 835,561,265   | +8.6%   | 38,174           | -                 | 0.0%      | 16,298      | 10,077            |
-| simple_token_u256_macro_no_alloc_rust   | 856,749,617   | +11.3%  | 38,174           | -                 | 0.0%      | 18,602      | 10,477            |
-| simple_token_u256_macro_bump_alloc_rust | 875,096,302   | +13.7%  | 38,174           | -                 | 0.0%      | 20,597      | 9,995             |
-| SimpleToken_pvm                         | 908,594,981   | +18.1%  | 7,961,850        | +20756.7%         | 0.9%      | 23,378      | 9,245             |
-| simple_token_u256_stylus                | 1,094,806,775 | +42.3%  | 10,127,425       | +26429.6%         | 0.9%      | 43,391      | 10,190            |
-| simple_token_u256_ink                   | 1,096,880,598 | +42.6%  | 110,114,609      | +288354.5%        | 10.0%     | 43,001      | 9,061             |
+| SimpleToken_evm                         | 1,596,450,234 | -       | 1,349,760        | +3156.8%          | 0.1%      | 8,978       | 17,653            |
+| simple_token_u32_no_alloc_rust          | 1,640,425,238 | +2.8%   | 41,444           | -                 | 0.0%      | 13,946      | 22,621            |
+| simple_token_u128_no_alloc_rust         | 1,660,359,743 | +4.0%   | 41,444           | -                 | 0.0%      | 16,133      | 24,808            |
+| simple_token_u256_no_alloc_rust         | 1,661,918,408 | +4.1%   | 41,444           | -                 | 0.0%      | 16,304      | 24,979            |
+| simple_token_u256_dsl_rust              | 1,673,075,168 | +4.8%   | 41,444           | -                 | 0.0%      | 17,528      | 26,203            |
+| simple_token_u256_macro_no_alloc_rust   | 1,682,919,368 | +5.4%   | 41,444           | -                 | 0.0%      | 18,608      | 27,283            |
+| simple_token_u256_macro_bump_alloc_rust | 1,701,103,793 | +6.6%   | 41,444           | -                 | 0.0%      | 20,603      | 29,278            |
+| simple_token_u256_macro_rust            | 1,715,807,882 | +7.5%   | 20,570,018       | +49533.3%         | 1.2%      | 19,964      | 28,639            |
+| SimpleToken_pvm                         | 1,735,051,642 | +8.7%   | 8,629,453        | +20722.0%         | 0.5%      | 23,387      | 32,062            |
+| simple_token_u256_stylus                | 1,919,891,539 | +20.3%  | 11,050,855       | +26564.5%         | 0.6%      | 43,400      | 52,075            |
+| simple_token_u256_ink                   | 2,096,733,861 | +31.3%  | 207,581,577      | +500772.4%        | 9.9%      | 51,497      | 60,172            |
 
 
 ### SimpleToken - mint
 
 | Implementation                          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | --------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| SimpleToken_evm                         | 781,308,277   | -       | 317,317,974      | -                 | 40.6%     | 49,880      | 13,611            |
-| SimpleToken_pvm                         | 832,457,743   | +6.5%   | 368,467,440      | +16.1%            | 44.3%     | 54,644      | 17,437            |
-| simple_token_u32_no_alloc_rust          | 854,131,814   | +9.3%   | 390,141,511      | +22.9%            | 45.7%     | 51,498      | 14,658            |
-| simple_token_u128_no_alloc_rust         | 855,131,065   | +9.4%   | 391,140,762      | +23.3%            | 45.7%     | 52,227      | 15,813            |
-| simple_token_u256_no_alloc_rust         | 886,567,406   | +13.5%  | 422,577,103      | +33.2%            | 47.7%     | 52,284      | 15,663            |
-| simple_token_u256_macro_no_alloc_rust   | 887,881,860   | +13.6%  | 423,891,557      | +33.6%            | 47.7%     | 53,052      | 16,476            |
-| simple_token_u256_macro_bump_alloc_rust | 888,740,233   | +13.8%  | 424,749,930      | +33.9%            | 47.8%     | 53,717      | 16,869            |
-| simple_token_u256_stylus                | 992,177,463   | +27.0%  | 528,187,160      | +66.5%            | 53.2%     | 61,315      | 24,782            |
-| simple_token_u256_ink                   | 1,002,170,752 | +28.3%  | 538,180,449      | +69.6%            | 53.7%     | 57,830      | 20,530            |
+| SimpleToken_evm                         | 1,105,037,501 | -       | 189,260,406      | -                 | 17.1%     | 29,331      | 38,006            |
+| SimpleToken_pvm                         | 1,159,523,383 | +4.9%   | 243,746,288      | +28.8%            | 21.0%     | 34,159      | 42,834            |
+| simple_token_u32_no_alloc_rust          | 1,178,578,134 | +6.7%   | 262,801,039      | +38.9%            | 22.3%     | 31,013      | 39,688            |
+| simple_token_u128_no_alloc_rust         | 1,179,565,646 | +6.7%   | 263,788,551      | +39.4%            | 22.4%     | 31,742      | 40,417            |
+| simple_token_u256_no_alloc_rust         | 1,213,686,130 | +9.8%   | 297,909,035      | +57.4%            | 24.5%     | 31,799      | 40,474            |
+| simple_token_u256_macro_no_alloc_rust   | 1,215,011,558 | +10.0%  | 299,234,463      | +58.1%            | 24.6%     | 32,567      | 41,242            |
+| simple_token_u256_macro_bump_alloc_rust | 1,215,855,466 | +10.0%  | 300,078,371      | +58.6%            | 24.7%     | 33,232      | 41,907            |
+| simple_token_u256_macro_rust            | 1,240,961,725 | +12.3%  | 325,184,630      | +71.8%            | 26.2%     | 33,019      | 41,694            |
+| simple_token_u256_dsl_rust              | 1,260,584,341 | +14.1%  | 344,807,246      | +82.2%            | 27.4%     | 32,207      | 40,882            |
+| simple_token_u256_stylus                | 1,327,155,703 | +20.1%  | 411,378,608      | +117.4%           | 31.0%     | 40,830      | 49,505            |
+| simple_token_u256_ink                   | 1,430,084,759 | +29.4%  | 514,307,664      | +171.7%           | 36.0%     | 40,142      | 48,817            |
 
 
 ### SimpleToken - transfer
 
 | Implementation                          | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | --------------------------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| SimpleToken_evm                         | 821,902,074   | -       | 357,911,771      | -                 | 43.5%     | 49,912      | 8,804             |
-| SimpleToken_pvm                         | 893,630,361   | +8.7%   | 429,640,058      | +20.0%            | 48.1%     | 54,708      | 13,703            |
-| simple_token_u128_no_alloc_rust         | 916,656,504   | +11.5%  | 452,666,201      | +26.5%            | 49.4%     | 52,259      | 16,228            |
-| simple_token_u32_no_alloc_rust          | 919,035,371   | +11.8%  | 455,045,068      | +27.1%            | 49.5%     | 51,506      | 15,060            |
-| simple_token_u256_no_alloc_rust         | 953,692,073   | +16.0%  | 489,701,770      | +36.8%            | 51.3%     | 52,348      | 16,065            |
-| simple_token_u256_macro_no_alloc_rust   | 954,662,961   | +16.2%  | 490,672,658      | +37.1%            | 51.4%     | 53,116      | 16,907            |
-| simple_token_u256_macro_bump_alloc_rust | 955,521,334   | +16.3%  | 491,531,031      | +37.3%            | 51.4%     | 53,781      | 17,300            |
-| simple_token_u256_stylus                | 1,101,824,375 | +34.1%  | 637,834,072      | +78.2%            | 57.9%     | 61,379      | 20,369            |
-| simple_token_u256_ink                   | 1,208,897,629 | +47.1%  | 744,918,510      | +108.1%           | 61.6%     | 78,405      | 20,853            |
+| SimpleToken_evm                         | 1,138,636,183 | -       | 222,859,088      | -                 | 19.6%     | 29,363      | 38,038            |
+| SimpleToken_pvm                         | 1,215,804,824 | +6.8%   | 300,027,729      | +34.6%            | 24.7%     | 34,191      | 42,866            |
+| simple_token_u128_no_alloc_rust         | 1,235,773,280 | +8.5%   | 319,996,185      | +43.6%            | 25.9%     | 31,758      | 40,433            |
+| simple_token_u32_no_alloc_rust          | 1,238,455,816 | +8.8%   | 322,678,721      | +44.8%            | 26.1%     | 31,017      | 39,692            |
+| simple_token_u256_macro_rust            | 1,274,355,080 | +11.9%  | 358,577,985      | +60.9%            | 28.1%     | 33,051      | 41,726            |
+| simple_token_u256_no_alloc_rust         | 1,275,969,212 | +12.1%  | 360,192,117      | +61.6%            | 28.2%     | 31,831      | 40,506            |
+| simple_token_u256_macro_no_alloc_rust   | 1,276,921,644 | +12.1%  | 361,144,549      | +62.1%            | 28.3%     | 32,599      | 41,274            |
+| simple_token_u256_macro_bump_alloc_rust | 1,277,765,552 | +12.2%  | 361,988,457      | +62.4%            | 28.3%     | 33,264      | 41,939            |
+| simple_token_u256_dsl_rust              | 1,294,533,429 | +13.7%  | 378,756,334      | +70.0%            | 29.3%     | 32,239      | 40,914            |
+| simple_token_u256_stylus                | 1,435,466,108 | +26.1%  | 519,689,013      | +133.2%           | 36.2%     | 40,862      | 49,537            |
+| simple_token_u256_ink                   | 1,597,437,410 | +40.3%  | 681,660,315      | +205.9%           | 42.7%     | 50,431      | 59,106            |
 
 
 ### Store - delegate
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Store_evm      | 1,494,879,511 | -       | 1,030,151,064    | -                 | 68.9%     | 139,574     | 19,833            |
-| store_rust     | 1,566,794,927 | +4.8%   | 1,102,066,480    | +7.0%             | 70.3%     | 91,367      | 44,285            |
-| Store_pvm      | 1,833,765,580 | +22.7%  | 1,369,037,133    | +32.9%            | 74.7%     | 206,438     | 88,224            |
+| Store_evm      | 1,512,479,120 | -       | 595,996,425      | -                 | 39.4%     | 67,574      | 76,249            |
+| Store_pvm      | 1,885,837,336 | +24.7%  | 969,354,641      | +62.6%            | 51.4%     | 134,395     | 143,070           |
+| store_rust     | 1,998,426,945 | +32.1%  | 1,081,944,250    | +81.5%            | 54.1%     | 70,876      | 79,551            |
 
 
 ### Store - deleteFor
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Store_evm      | 1,861,602,034 | -       | 1,396,895,955    | -                 | 75.0%     | 180,852     | 19,676            |
-| store_rust     | 2,130,038,968 | +14.4%  | 1,665,332,889    | +19.2%            | 78.2%     | 143,278     | 44,747            |
-| Store_pvm      | 2,689,127,296 | +44.5%  | 2,224,421,217    | +59.2%            | 82.7%     | 247,876     | 87,921            |
+| Store_evm      | 1,959,433,552 | -       | 1,042,972,907    | -                 | 53.2%     | 98,563      | 107,238           |
+| store_rust     | 2,610,714,859 | +33.2%  | 1,694,254,214    | +62.4%            | 64.9%     | 112,422     | 121,097           |
+| Store_pvm      | 2,923,426,865 | +49.2%  | 2,006,966,220    | +92.4%            | 68.7%     | 165,384     | 174,059           |
 
 
 ### Store - delete_
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Store_evm      | 1,494,502,844 | -       | 1,030,132,285    | -                 | 68.9%     | 129,317     | 19,240            |
-| Store_pvm      | 1,789,574,220 | +19.7%  | 1,325,203,661    | +28.6%            | 74.1%     | 196,341     | 87,485            |
-| store_rust     | 1,804,936,028 | +20.8%  | 1,340,565,469    | +30.1%            | 74.3%     | 122,548     | 44,145            |
+| Store_evm      | 1,648,952,943 | -       | 732,823,048      | -                 | 44.4%     | 67,606      | 76,281            |
+| Store_pvm      | 1,966,009,526 | +19.2%  | 1,049,879,631    | +43.3%            | 53.4%     | 134,427     | 143,102           |
+| store_rust     | 2,245,106,821 | +36.2%  | 1,328,976,926    | +81.4%            | 59.2%     | 91,692      | 100,367           |
 
 
 ### Store - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Store_evm      | 972,054,073   | -       | 3,055,400        | +180.1%           | 0.3%      | 30,812      | 10,888            |
-| store_rust     | 1,626,431,788 | +67.3%  | 1,090,805        | -                 | 0.1%      | 102,182     | 11,469            |
-| Store_pvm      | 2,826,311,735 | +190.8% | 8,000,024        | +633.4%           | 0.3%      | 231,908     | 11,988            |
+| Store_evm      | 1,797,280,059 | -       | 3,096,960        | +170.7%           | 0.2%      | 30,821      | 39,496            |
+| store_rust     | 2,445,864,800 | +36.1%  | 1,144,151        | -                 | 0.0%      | 102,191     | 110,866           |
+| Store_pvm      | 3,629,468,209 | +101.9% | 8,753,785        | +665.1%           | 0.2%      | 231,212     | 239,887           |
 
 
 ### Store - revokeDelegation
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| store_rust     | 1,576,219,506 | -       | 1,111,491,059    | -                 | 70.5%     | 91,837      | 43,980            |
-| Store_evm      | 1,885,716,182 | +19.6%  | 1,420,987,735    | +27.8%            | 75.4%     | 191,179     | 19,412            |
-| Store_pvm      | 2,267,706,853 | +43.9%  | 1,802,978,406    | +62.2%            | 79.5%     | 258,235     | 87,832            |
+| Store_evm      | 1,746,071,425 | -       | 829,588,730      | -                 | 47.5%     | 67,734      | 76,409            |
+| store_rust     | 1,942,023,515 | +11.2%  | 1,025,540,820    | +23.6%            | 52.8%     | 71,115      | 79,790            |
+| Store_pvm      | 2,161,386,507 | +23.8%  | 1,244,914,837    | +50.1%            | 57.6%     | 134,552     | 143,227           |
 
 
 ### Store - set
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Store_evm      | 1,562,349,092 | -       | 1,097,620,645    | -                 | 70.3%     | 149,863     | 19,833            |
-| store_rust     | 1,794,366,246 | +14.9%  | 1,329,637,799    | +21.1%            | 74.1%     | 111,881     | 44,048            |
-| Store_pvm      | 1,817,249,915 | +16.3%  | 1,352,521,468    | +23.2%            | 74.4%     | 216,759     | 88,224            |
+| Store_evm      | 1,705,944,412 | -       | 789,461,717      | -                 | 46.3%     | 67,574      | 76,249            |
+| Store_pvm      | 1,977,000,965 | +15.9%  | 1,060,518,270    | +34.3%            | 53.6%     | 134,395     | 143,070           |
+| store_rust     | 2,390,549,978 | +40.1%  | 1,474,067,283    | +86.7%            | 61.7%     | 91,390      | 100,065           |
 
 
 ### Store - setFor
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Store_evm      | 1,934,098,750 | -       | 1,469,023,599    | -                 | 76.0%     | 201,401     | 20,204            |
-| store_rust     | 2,127,051,734 | +10.0%  | 1,661,976,583    | +13.1%            | 78.1%     | 132,630     | 45,067            |
-| Store_pvm      | 2,714,730,905 | +40.4%  | 2,249,655,754    | +53.1%            | 82.9%     | 268,297     | 88,799            |
+| Store_evm      | 2,021,068,566 | -       | 1,104,244,096    | -                 | 54.6%     | 98,534      | 107,209           |
+| store_rust     | 2,764,387,265 | +36.8%  | 1,847,562,795    | +67.3%            | 66.8%     | 112,131     | 120,806           |
+| Store_pvm      | 2,932,089,829 | +45.1%  | 2,015,265,359    | +82.5%            | 68.7%     | 165,355     | 174,030           |
 
 
 ### Store - set_update
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| Store_evm      | 985,080,502   | -       | 520,363,239      | -                 | 52.8%     | 77,997      | 15,984            |
-| store_rust     | 1,051,522,373 | +6.7%   | 586,805,110      | +12.8%            | 55.8%     | 60,777      | 40,314            |
-| Store_pvm      | 1,168,770,350 | +18.6%  | 704,041,903      | +35.3%            | 60.2%     | 145,056     | 83,673            |
+| Store_evm      | 1,280,062,739 | -       | 363,580,044      | -                 | 28.4%     | 36,867      | 45,542            |
+| store_rust     | 1,450,121,897 | +13.3%  | 533,639,202      | +46.8%            | 36.8%     | 50,454      | 59,129            |
+| Store_pvm      | 1,472,154,193 | +15.0%  | 555,671,498      | +52.8%            | 37.7%     | 103,688     | 112,363           |
 
 
 ### TetherToken - approve
 
-| Implementation  | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| --------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| TetherToken_evm | 764,812,060 | -       | 300,821,757      | -                 | 39.3%     | 43,706      | 18,017            |
-| TetherToken_pvm | 908,705,382 | +18.8%  | 444,703,895      | +47.8%            | 48.9%     | 93,728      | 67,233            |
+| Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| TetherToken_evm | 1,156,296,364 | -       | 240,519,269      | -                 | 20.8%     | 33,414      | 42,089            |
+| TetherToken_pvm | 1,307,080,553 | +13.0%  | 391,303,458      | +62.7%            | 29.9%     | 83,351      | 92,026            |
 
 
 ### TetherToken - deploy
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| TetherToken_evm | 1,992,907,260 | -       | 1,078,010,616    | -                 | 54.1%     | 168,687     | 12,127            |
-| TetherToken_pvm | 3,536,250,654 | +77.4%  | 1,271,383,505    | +17.9%            | 36.0%     | 315,790     | 11,524            |
+| TetherToken_evm | 2,946,761,588 | -       | 1,206,202,034    | -                 | 40.9%     | 117,251     | 125,926           |
+| TetherToken_pvm | 4,502,058,729 | +52.8%  | 1,427,434,900    | +18.3%            | 31.7%     | 264,044     | 272,719           |
 
 
 ### TetherToken - transfer
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| TetherToken_evm | 1,145,509,745 | -       | 681,508,258      | -                 | 59.5%     | 105,443     | 18,085            |
-| TetherToken_pvm | 1,319,461,595 | +15.2%  | 855,460,108      | +25.5%            | 64.8%     | 155,366     | 67,301            |
+| TetherToken_evm | 1,536,149,641 | -       | 620,372,546      | -                 | 40.4%     | 84,763      | 93,438            |
+| TetherToken_pvm | 1,724,374,354 | +12.3%  | 808,597,259      | +30.3%            | 46.9%     | 134,700     | 143,375           |
 
 
 ### TetherToken - transferFrom
 
 | Implementation  | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | --------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| TetherToken_evm | 1,364,092,679 | -       | 899,744,488      | -                 | 66.0%     | 126,146     | 13,566            |
-| TetherToken_pvm | 1,584,667,240 | +16.2%  | 1,120,319,049    | +24.5%            | 70.7%     | 176,101     | 63,194            |
+| TetherToken_evm | 1,678,141,560 | -       | 762,033,715      | -                 | 45.4%     | 95,174      | 103,849           |
+| TetherToken_pvm | 1,915,552,131 | +14.1%  | 999,444,286      | +31.2%            | 52.2%     | 145,111     | 153,786           |
 
 
 ### W3S - buyTicket
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 3,717,683,239 | -       | 3,254,039,640    | -                 | 87.5%     | 409,790     | 31,860            |
-| W3S_pvm        | 4,398,945,063 | +18.3%  | 3,935,301,464    | +20.9%            | 89.5%     | 524,727     | 148,325           |
+| W3S_evm        | 3,533,116,174 | -       | 2,617,702,904    | -                 | 74.1%     | 214,361     | 223,036           |
+| W3S_pvm        | 4,278,735,271 | +21.1%  | 3,363,322,001    | +28.5%            | 78.6%     | 332,065     | 340,740           |
 
 
 ### W3S - checkIn
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 1,987,030,035 | -       | 1,523,408,804    | -                 | 76.7%     | 200,727     | 29,661            |
-| W3S_pvm        | 2,413,090,227 | +21.4%  | 1,949,468,996    | +28.0%            | 80.8%     | 316,016     | 145,946           |
+| W3S_evm        | 2,071,656,604 | -       | 1,156,265,384    | -                 | 55.8%     | 108,188     | 116,863           |
+| W3S_pvm        | 2,525,052,428 | +21.9%  | 1,609,661,208    | +39.2%            | 63.7%     | 225,892     | 234,567           |
 
 
 ### W3S - configurePaymentToken
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 1,268,371,069 | -       | 804,000,510      | -                 | 63.4%     | 122,477     | 24,126            |
-| W3S_pvm        | 1,557,005,496 | +22.8%  | 1,092,634,937    | +35.9%            | 70.2%     | 215,940     | 118,015           |
+| W3S_evm        | 1,526,320,684 | -       | 610,190,789      | -                 | 40.0%     | 71,055      | 79,730            |
+| W3S_pvm        | 1,831,144,119 | +20.0%  | 915,014,224      | +50.0%            | 50.0%     | 167,473     | 176,148           |
 
 
 ### W3S - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 1,959,032,296 | -       | 861,303,349      | -                 | 44.0%     | 157,829     | 12,164            |
-| W3S_pvm        | 4,771,469,848 | +143.6% | 1,125,046,713    | +30.6%            | 23.6%     | 434,783     | 12,543            |
+| W3S_evm        | 2,510,934,107 | -       | 589,159,238      | -                 | 23.5%     | 96,104      | 104,779           |
+| W3S_pvm        | 5,392,423,865 | +114.8% | 866,316,491      | +47.0%            | 16.1%     | 381,827     | 390,502           |
 
 
 ### W3S - grantVolunteerRole
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 804,610,245   | -       | 340,977,830      | -                 | 42.4%     | 60,609      | 24,156            |
-| W3S_pvm        | 1,078,171,241 | +34.0%  | 614,527,642      | +80.2%            | 57.0%     | 154,107     | 118,045           |
+| W3S_evm        | 1,152,226,331 | -       | 236,813,061      | -                 | 20.6%     | 40,057      | 48,732            |
+| W3S_pvm        | 1,428,366,952 | +24.0%  | 512,953,682      | +116.6%           | 35.9%     | 136,475     | 145,150           |
 
 
 ### W3S - pauseSales
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 719,532,539 | -       | 256,258,012      | -                 | 35.6%     | 50,224      | 24,388            |
-| W3S_pvm        | 915,611,893 | +27.3%  | 452,326,182      | +76.5%            | 49.4%     | 143,754     | 118,277           |
+| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| W3S_evm        | 1,121,676,357 | -       | 206,615,887      | -                 | 18.4%     | 39,961      | 48,636            |
+| W3S_pvm        | 1,323,041,398 | +18.0%  | 407,980,928      | +97.5%            | 30.8%     | 136,379     | 145,054           |
 
 
 ### W3S - redeemTicketStaff
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 2,812,840,181 | -       | 2,348,849,878    | -                 | 83.5%     | 310,982     | 24,394            |
-| W3S_pvm        | 3,349,443,182 | +19.1%  | 2,885,452,879    | +22.8%            | 86.1%     | 404,221     | 118,513           |
+| W3S_evm        | 2,729,924,626 | -       | 1,814,169,581    | -                 | 66.5%     | 156,702     | 165,377           |
+| W3S_pvm        | 3,316,445,403 | +21.5%  | 2,400,690,358    | +32.3%            | 72.4%     | 253,120     | 261,795           |
 
 
 ### W3S - revokeVolunteerRole
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 808,645,842   | -       | 345,013,427      | -                 | 42.7%     | 60,641      | 23,415            |
-| W3S_pvm        | 1,079,210,128 | +33.5%  | 615,566,529      | +78.4%            | 57.0%     | 154,203     | 117,304           |
+| W3S_evm        | 1,156,310,201 | -       | 240,896,931      | -                 | 20.8%     | 40,089      | 48,764            |
+| W3S_pvm        | 1,429,330,847 | +23.6%  | 513,917,577      | +113.3%           | 36.0%     | 136,507     | 145,182           |
 
 
 ### W3S - setMerkleRoot
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 674,265,479 | -       | 210,263,992      | -                 | 31.2%     | 40,162      | 19,920            |
-| W3S_pvm        | 878,181,354 | +30.2%  | 414,168,683      | +97.0%            | 47.2%     | 133,724     | 113,555           |
+| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| W3S_evm        | 1,224,124,707 | -       | 308,347,612      | -                 | 25.2%     | 40,188      | 48,863            |
+| W3S_pvm        | 1,434,896,954 | +17.2%  | 519,119,859      | +68.4%            | 36.2%     | 136,606     | 145,281           |
 
 
 ### W3S - unpauseSales
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| W3S_evm        | 721,056,449 | -       | 257,781,922      | -                 | 35.8%     | 50,256      | 23,204            |
-| W3S_pvm        | 917,988,564 | +27.3%  | 454,702,853      | +76.4%            | 49.5%     | 143,818     | 117,093           |
+| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| W3S_evm        | 1,123,232,297 | -       | 208,171,827      | -                 | 18.5%     | 39,993      | 48,668            |
+| W3S_pvm        | 1,325,435,993 | +18.0%  | 410,375,523      | +97.1%            | 31.0%     | 136,411     | 145,086           |
 
 
 ### WETH9 - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| WETH9_evm      | 1,231,520,102 | -       | 423,172,176      | -                 | 34.4%     | 74,981      | 11,108            |
-| WETH9_pvm      | 1,679,104,451 | +36.3%  | 450,769,178      | +6.5%             | 26.8%     | 120,554     | 11,980            |
+| WETH9_evm      | 1,871,599,466 | -       | 236,657,327      | -                 | 12.6%     | 44,120      | 52,795            |
+| WETH9_pvm      | 2,344,611,762 | +25.3%  | 267,599,328      | +13.1%            | 11.4%     | 92,621      | 101,296           |
 
 
 ### WETH9 - deposit
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| WETH9_evm      | 644,103,515 | -       | 180,750,700      | -                 | 28.1%     | 30,315      | 14,312            |
-| WETH9_pvm      | 702,663,435 | +9.1%   | 239,310,620      | +32.4%            | 34.1%     | 45,837      | 30,441            |
+| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| WETH9_evm      | 1,030,225,795 | -       | 115,077,125      | -                 | 11.2%     | 20,055      | 28,730            |
+| WETH9_pvm      | 1,094,792,853 | +6.3%   | 179,644,183      | +56.1%            | 16.4%     | 36,552      | 45,227            |
 
 
 ### WETH9 - transfer
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| WETH9_evm      | 879,603,177 | -       | 415,612,874      | -                 | 47.3%     | 61,353      | 14,626            |
-| WETH9_pvm      | 979,566,015 | +11.4%  | 515,575,712      | +24.1%            | 52.6%     | 76,875      | 30,755            |
+| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| WETH9_evm      | 1,149,072,175 | -       | 233,295,080      | -                 | 20.3%     | 30,515      | 39,190            |
+| WETH9_pvm      | 1,258,675,605 | +9.5%   | 342,898,510      | +47.0%            | 27.2%     | 47,012      | 55,687            |
 
 
 ### WETH9 - withdraw
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| WETH9_evm      | 961,470,571   | -       | 497,860,524      | -                 | 51.8%     | 45,367      | 12,540            |
-| WETH9_pvm      | 1,036,038,603 | +7.8%   | 572,417,372      | +15.0%            | 55.3%     | 60,924      | 28,565            |
+| WETH9_evm      | 1,496,750,880 | -       | 581,337,610      | -                 | 38.8%     | 24,860      | 33,535            |
+| WETH9_pvm      | 1,578,210,255 | +5.4%   | 662,796,985      | +14.0%            | 42.0%     | 41,357      | 50,032            |
 
 
 ### XENCrypto - deploy
 
 | Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
 | -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| XENCrypto_evm  | 1,417,782,748 | -       | 375,562,869      | -                 | 26.5%     | 90,123      | 12,144            |
-| XENCrypto_pvm  | 4,371,635,447 | +208.3% | 506,100,474      | +34.8%            | 11.6%     | 397,067     | 11,559            |
+| XENCrypto_evm  | 2,203,598,539 | -       | 336,841,810      | -                 | 15.3%     | 69,554      | 78,229            |
+| XENCrypto_pvm  | 4,866,128,674 | +120.8% | 554,077,960      | +64.5%            | 11.4%     | 337,829     | 346,504           |
 
 
 ### flipper - deploy
 
-| Implementation | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| flipper_evm    | 904,508,975   | -       | 142,951,993      | +37.1%            | 15.8%     | 28,801      | 11,079            |
-| flipper_ink    | 912,632,530   | +0.9%   | 104,262,269      | -                 | 11.4%     | 23,657      | 11,011            |
-| flipper_pvm    | 984,881,194   | +8.9%   | 167,434,152      | +60.6%            | 17.0%     | 34,901      | 11,509            |
-| flipper_stylus | 1,254,435,869 | +38.7%  | 401,592,140      | +285.2%           | 32.0%     | 69,521      | 10,727            |
+| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| flipper_evm        | 1,669,354,310 | -       | 80,789,291       | -                 | 4.8%      | 18,518      | 27,193            |
+| flipper_macro_rust | 1,723,900,860 | +3.3%   | 96,808,766       | +19.8%            | 5.6%      | 22,799      | 31,474            |
+| flipper_pvm        | 1,754,606,573 | +5.1%   | 109,029,259      | +35.0%            | 6.2%      | 24,827      | 33,502            |
+| flipper_dsl_rust   | 1,797,899,185 | +7.7%   | 173,897,076      | +115.2%           | 9.7%      | 22,460      | 31,135            |
+| flipper_ink        | 1,835,725,443 | +10.0%  | 194,058,464      | +140.2%           | 10.6%     | 24,398      | 33,073            |
+| flipper_stylus     | 1,914,849,048 | +14.7%  | 235,801,454      | +191.9%           | 12.3%     | 38,756      | 47,431            |
 
 
 ### flipper - flip
 
-| Implementation | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| -------------- | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| flipper_evm    | 604,512,031 | -       | 141,248,688      | -                 | 23.4%     | 28,774      | 12,984            |
-| flipper_pvm    | 618,675,659 | +2.3%   | 155,412,316      | +10.0%            | 25.1%     | 30,906      | 15,021            |
-| flipper_ink    | 619,571,091 | +2.5%   | 156,307,748      | +10.7%            | 25.2%     | 30,579      | 9,818             |
-| flipper_stylus | 691,735,296 | +14.4%  | 228,471,953      | +61.8%            | 33.0%     | 42,446      | 16,666            |
+| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| flipper_evm        | 994,120,135   | -       | 79,059,665       | -                 | 8.0%      | 18,514      | 27,189            |
+| flipper_pvm        | 1,008,349,466 | +1.4%   | 93,288,996       | +18.0%            | 9.3%      | 20,737      | 29,412            |
+| flipper_ink        | 1,018,890,809 | +2.5%   | 103,830,339      | +31.3%            | 10.2%     | 20,595      | 29,270            |
+| flipper_macro_rust | 1,027,904,108 | +3.4%   | 112,843,638      | +42.7%            | 11.0%     | 20,061      | 28,736            |
+| flipper_stylus     | 1,036,335,336 | +4.2%   | 121,274,866      | +53.4%            | 11.7%     | 21,961      | 30,636            |
+| flipper_dsl_rust   | 1,049,592,648 | +5.6%   | 134,532,178      | +70.2%            | 12.8%     | 19,980      | 28,655            |
 
 
 ### incrementer - deploy
 
-| Implementation     | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| incrementer_ink    | 891,296,823   | -       | 94,872,599       | -                 | 10.6%     | 22,358      | 10,039            |
-| incrementer_evm    | 906,336,328   | +1.7%   | 142,958,472      | +50.7%            | 15.8%     | 28,999      | 10,106            |
-| incrementer_pvm    | 997,578,553   | +11.9%  | 167,357,804      | +76.4%            | 16.8%     | 36,290      | 10,772            |
-| incrementer_stylus | 1,291,551,660 | +44.9%  | 395,255,256      | +316.6%           | 30.6%     | 74,246      | 11,832            |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| incrementer_evm        | 1,671,165,570 | -       | 80,795,781       | -                 | 4.8%      | 18,716      | 27,391            |
+| incrementer_macro_rust | 1,727,873,562 | +3.4%   | 97,554,758       | +20.7%            | 5.6%      | 23,153      | 31,828            |
+| incrementer_pvm        | 1,767,364,295 | +5.8%   | 109,153,591      | +35.1%            | 6.2%      | 26,213      | 34,888            |
+| incrementer_dsl_rust   | 1,800,551,650 | +7.7%   | 173,897,076      | +115.2%           | 9.7%      | 22,751      | 31,426            |
+| incrementer_ink        | 1,838,789,427 | +10.0%  | 186,102,413      | +130.3%           | 10.1%     | 25,607      | 34,282            |
+| incrementer_stylus     | 1,951,048,744 | +16.7%  | 228,921,750      | +183.3%           | 11.7%     | 43,484      | 52,159            |
 
 
 ### incrementer - inc
 
-| Implementation     | ref_time    | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
-| ------------------ | ----------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
-| incrementer_evm    | 605,607,554 | -       | 141,986,323      | -                 | 23.4%     | 28,929      | 12,365            |
-| incrementer_ink    | 618,232,604 | +2.1%   | 154,611,373      | +8.9%             | 25.0%     | 30,248      | 10,106            |
-| incrementer_pvm    | 623,396,311 | +2.9%   | 159,775,080      | +12.5%            | 25.6%     | 31,465      | 15,155            |
-| incrementer_stylus | 696,616,301 | +15.0%  | 232,995,070      | +64.1%            | 33.4%     | 44,117      | 18,931            |
+| Implementation         | ref_time      | vs Best | metered_ref_time | vs Best (metered) | % metered | metered pov | post_dispatch pov |
+| ---------------------- | ------------- | ------- | ---------------- | ----------------- | --------- | ----------- | ----------------- |
+| incrementer_evm        | 995,208,606   | -       | 79,795,336       | -                 | 8.0%      | 18,669      | 27,344            |
+| incrementer_pvm        | 1,013,391,800 | +1.8%   | 97,978,530       | +22.8%            | 9.7%      | 21,295      | 29,970            |
+| incrementer_ink        | 1,023,234,524 | +2.8%   | 107,821,254      | +35.1%            | 10.5%     | 21,097      | 29,772            |
+| incrementer_macro_rust | 1,024,526,755 | +2.9%   | 109,124,510      | +36.8%            | 10.7%     | 20,272      | 28,947            |
+| incrementer_stylus     | 1,041,389,888 | +4.6%   | 125,976,618      | +57.9%            | 12.1%     | 23,632      | 32,307            |
+| incrementer_dsl_rust   | 1,048,350,832 | +5.3%   | 132,937,562      | +66.6%            | 12.7%     | 20,173      | 28,848            |
 
 
